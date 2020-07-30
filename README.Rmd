@@ -1,0 +1,59 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# survnip
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of survnip is to ...
+
+## Installation
+
+You can install the released version of survnip from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("survnip")
+```
+
+## Models
+
+- Kaplan_Meier
+  - survival::survfit()
+
+- Cox_model
+  - survival::coxph()
+  - glmnet::glmnet()
+  - penalized::penalized()
+
+- Nelson_Aalen
+  - survival::survfit()
+  - timereg::aalen()
+  
+- boosting
+  - gbm::gbm()
+  
+- decision_tree
+  - rpart::rpart()
+  - party::ctree()
+  
+- random forest
+  - randomForestSRC::rfsrc()
+  - ranger::ranger()
+  - rpart::rpart()
+  
+- svm 
+  - survivalsvm::survivalsvm()
+  
