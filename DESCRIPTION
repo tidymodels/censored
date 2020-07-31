@@ -25,3 +25,5 @@ Imports:
     survival
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
+Remotes:  
+    tidymodels/parsnip
