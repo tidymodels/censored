@@ -23,3 +23,5 @@ Imports:
     tibble,
     withr,
     survival
+URL: https://github.com/EmilHvitfeldt/survnip
+BugReports: https://github.com/EmilHvitfeldt/survnip/issues
