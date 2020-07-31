@@ -46,4 +46,69 @@ make_cox_reg_survival <- function() {
   #)
 }
 
+make_cox_reg_glmnet <- function() {
+  parsnip::set_model_engine("cox_reg", mode = "risk prediction", eng = "glmnet")
+  parsnip::set_dependency("cox_reg", eng = "glmnet", pkg =  "glmnet")
+
+  parsnip::set_fit(
+    model = "cox_reg",
+    eng = "glmnet",
+    mode = "risk prediction",
+    value = list(
+      interface = "matrix",
+      protect = c("x", "y", "weights"),
+      func = c(pkg = "glmnet", fun = "glmnet"),
+      defaults = list(family = "cox")
+    )
+  )
+
+  set_encoding(
+    model = "cox_reg",
+    eng = "glmnet",
+    mode = "risk prediction",
+    options = list(
+      predictor_indicators = "traditional",
+      compute_intercept = TRUE,
+      remove_intercept = TRUE
+    )
+  )
+
+  set_model_arg(
+    model = "cox_reg",
+    eng = "glmnet",
+    parsnip = "penalty",
+    original = "lambda",
+    func = list(pkg = "dials", fun = "penalty"),
+    has_submodel = TRUE
+  )
+
+  set_model_arg(
+    model = "cox_reg",
+    eng = "glmnet",
+    parsnip = "mixture",
+    original = "alpha",
+    func = list(pkg = "dials", fun = "mixture"),
+    has_submodel = FALSE
+  )
+
+  #parsnip::set_pred(
+  #  model = "cox_reg",
+  #  eng = "survival",
+  #  mode = "risk prediction",
+  #  type = "survival",
+  #  value = list(
+  #    pre = NULL,
+  #    post = NULL,
+  #    func = c(fun = "predict"),
+  #    args =
+  #      list(
+  #        object = quote(object$fit),
+  #        newdata = quote(new_data)
+  #      )
+  #  )
+  #)
+}
+
+
+
 # nocov end
