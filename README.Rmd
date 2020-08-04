@@ -18,42 +18,31 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of survnip is to ...
+`rules` is a "`parsnip`-adjacent" packages with model definitions for survival analysis packages.
 
 ## Installation
 
-You can install the released version of survnip from [CRAN](https://CRAN.R-project.org) with:
+And the development version from [GitHub](https://github.com/) with:
 
 ``` r
-install.packages("survnip")
+# install.packages("devtools")
+devtools::install_github("EmilHvitfeldt/survnip")
+```
+## Example
+
+```{r example}
+library(survnip)
+library(survival)
+
+cox_mod <-
+  cox_reg() %>%
+  set_engine("survival") %>%
+  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+predict(cox_mod, new_data = lung, .time = 200)
+
+predict(cox_mod, new_data = lung, type = "time", .time = 200)
+
+predict(cox_mod, new_data = lung, type = "survival", .time = 200)
 ```
 
-## Models
-
-- Kaplan_Meier
-  - survival::survfit()
-
-- Cox_model
-  - survival::coxph()
-  - glmnet::glmnet()
-  - penalized::penalized()
-
-- Nelson_Aalen
-  - survival::survfit()
-  - timereg::aalen()
-  
-- boosting
-  - gbm::gbm()
-  
-- decision_tree
-  - rpart::rpart()
-  - party::ctree()
-  
-- random forest
-  - randomForestSRC::rfsrc()
-  - ranger::ranger()
-  - rpart::rpart()
-  
-- svm 
-  - survivalsvm::survivalsvm()
-  
