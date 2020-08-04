@@ -24,26 +24,39 @@ make_cox_reg_survival <- function() {
       interface = "formula",
       protect = c("formula", "data"),
       func = c(pkg = "survival", fun = "coxph"),
-      defaults = list()
+      defaults = list(x = TRUE)
     )
   )
 
-  #parsnip::set_pred(
-  #  model = "cox_reg",
-  #  eng = "survival",
-  #  mode = "risk prediction",
-  #  type = "survival",
-  #  value = list(
-  #    pre = NULL,
-  #    post = NULL,
-  #    func = c(fun = "predict"),
-  #    args =
-  #      list(
-  #        object = quote(object$fit),
-  #        newdata = quote(new_data)
-  #      )
-  #  )
-  #)
+  set_encoding(
+    model = "cox_reg",
+    eng = "survival",
+    mode = "risk prediction",
+    options = list(
+      predictor_indicators = "traditional",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE
+    )
+  )
+
+  parsnip::set_pred(
+    model = "cox_reg",
+    eng = "survival",
+    mode = "risk prediction",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        unname(summary(x)$table[, "*rmean"])
+      },
+      func = c(fun = "survfit"),
+      args =
+        list(
+          formula = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
 }
 
 make_cox_reg_glmnet <- function() {
