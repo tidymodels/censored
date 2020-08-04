@@ -57,6 +57,24 @@ make_cox_reg_survival <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "cox_reg",
+    eng = "survival",
+    mode = "risk prediction",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "pec", fun = "predictSurvProb"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data),
+          times = rlang::expr(.time)
+        )
+    )
+  )
 }
 
 make_cox_reg_glmnet <- function() {
