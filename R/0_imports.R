@@ -6,6 +6,8 @@
 #' @importFrom withr with_options
 #' @importFrom stats predict
 #' @importFrom dials new_quant_param
+#' @importFrom tidyr pivot_longer
+#' @importFrom dplyr group_nest
 
 utils::globalVariables(
   c(".time")

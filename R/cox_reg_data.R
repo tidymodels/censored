@@ -65,7 +65,15 @@ make_cox_reg_survival <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(x, object) {
+        colnames(x) <- object$spec$method$pred$survival$args$.time
+        res <- as_tibble(x)
+        res <- parsnip::add_rowindex(res)
+        res <-  pivot_longer(res, -.row,
+                             names_to = ".time",
+                             values_to = ".pred_survival")
+        group_nest(res, .row, .key = ".pred")$.pred
+      },
       func = c(pkg = "pec", fun = "predictSurvProb"),
       args =
         list(

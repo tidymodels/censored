@@ -18,12 +18,14 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     dials,
+    dplyr (>= 0.8.0.1),
     purrr,
     rlang,
     tibble,
+    tidyr (>= 1.0.0),
     withr,
     survival
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
-Remotes:  
+Remotes: 
     tidymodels/parsnip
