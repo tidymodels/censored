@@ -5,6 +5,11 @@
 
 <!-- badges: start -->
 
+[![R build
+status](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
+
 <!-- badges: end -->
 
 `survnip` is a “`parsnip`-adjacent” packages with model definitions for
@@ -32,7 +37,7 @@ cox_mod <-
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
 predict(cox_mod, new_data = lung, .time = 200)
-#> # A tibble: 227 x 1
+#> # A tibble: 228 x 1
 #>    .pred_time
 #>         <dbl>
 #>  1       342.
@@ -45,10 +50,10 @@ predict(cox_mod, new_data = lung, .time = 200)
 #>  8       256.
 #>  9       401.
 #> 10       278.
-#> # … with 217 more rows
+#> # … with 218 more rows
 
 predict(cox_mod, new_data = lung, type = "time", .time = 200)
-#> # A tibble: 227 x 1
+#> # A tibble: 228 x 1
 #>    .pred_time
 #>         <dbl>
 #>  1       342.
@@ -61,7 +66,7 @@ predict(cox_mod, new_data = lung, type = "time", .time = 200)
 #>  8       256.
 #>  9       401.
 #> 10       278.
-#> # … with 217 more rows
+#> # … with 218 more rows
 
 predict(cox_mod, new_data = lung, type = "survival", .time = 200)
 #> # A tibble: 228 x 1
