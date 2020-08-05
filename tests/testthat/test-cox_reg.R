@@ -19,7 +19,7 @@ test_that('model object', {
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
 
   # Removing x element from f_fit and call from both
-  expect_equal(f_fit$fit[-c(20)], exp_f_fit[-c(20)])
+  expect_equal(f_fit$fit[-c(21)], exp_f_fit[-c(21)])
 })
 
 # ------------------------------------------------------------------------------

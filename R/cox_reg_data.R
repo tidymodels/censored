@@ -53,7 +53,8 @@ make_cox_reg_survival <- function() {
       args =
         list(
           formula = quote(object$fit),
-          newdata = quote(new_data)
+          newdata = quote(new_data),
+          na.action = stats::na.pass
         )
     )
   )
