@@ -65,17 +65,17 @@ predict(cox_mod, new_data = lung, type = "time", .time = 200)
 
 predict(cox_mod, new_data = lung, type = "survival", .time = 200)
 #> # A tibble: 228 x 1
-#>    .pred_survival[,1]
-#>                 <dbl>
-#>  1              0.649
-#>  2              0.772
-#>  3              0.798
-#>  4              0.700
-#>  5              0.789
-#>  6              0.649
-#>  7              0.533
-#>  8              0.522
-#>  9              0.711
-#> 10              0.559
+#>        .pred_survival
+#>    <list<tbl_df[,2]>>
+#>  1            [1 × 2]
+#>  2            [1 × 2]
+#>  3            [1 × 2]
+#>  4            [1 × 2]
+#>  5            [1 × 2]
+#>  6            [1 × 2]
+#>  7            [1 × 2]
+#>  8            [1 × 2]
+#>  9            [1 × 2]
+#> 10            [1 × 2]
 #> # … with 218 more rows
 ```
