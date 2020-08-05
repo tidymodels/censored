@@ -24,8 +24,11 @@ Imports:
     tibble,
     tidyr (>= 1.0.0),
     withr,
-    survival
+    survival,
+    pec
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
 Remotes: 
     tidymodels/parsnip
+Suggests: 
+    testthat

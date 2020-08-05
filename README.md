@@ -7,7 +7,7 @@
 
 <!-- badges: end -->
 
-`rules` is a “`parsnip`-adjacent” packages with model definitions for
+`survnip` is a “`parsnip`-adjacent” packages with model definitions for
 survival analysis packages.
 
 ## Installation

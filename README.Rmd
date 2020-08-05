@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
-) 
+)
 ```
 
 # survnip
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-`rules` is a "`parsnip`-adjacent" packages with model definitions for survival analysis packages.
+`survnip` is a "`parsnip`-adjacent" packages with model definitions for survival analysis packages.
 
 ## Installation
 
@@ -28,6 +28,8 @@ And the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("EmilHvitfeldt/survnip")
 ```
+
+
 ## Example
 
 ```{r example}
