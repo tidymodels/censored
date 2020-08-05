@@ -10,6 +10,8 @@ status](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg
 [![Codecov test
 coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
 `survnip` is a “`parsnip`-adjacent” packages with model definitions for
