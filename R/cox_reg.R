@@ -4,7 +4,7 @@
 #'  fitting and allows the model to be created using different packages in R.
 #'
 #' @param mode A single character string for the type of model.
-#'  Possible values for this model are "unknown", or "risk prediction".
+#'  Possible values for this model are "unknown", or "censored regression".
 #'
 #' @details
 #'
@@ -35,7 +35,7 @@
 #'   fit(Surv(time, status) ~ x, data = aml)
 #' @export
 cox_reg <-
-  function(mode = "risk prediction") {
+  function(mode = "censored regression") {
     args <-
       list()
 

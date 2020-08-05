@@ -11,15 +11,15 @@
 
 make_cox_reg_survival <- function() {
   parsnip::set_new_model("cox_reg")
-  parsnip::set_model_mode("cox_reg", "risk prediction")
+  parsnip::set_model_mode("cox_reg", "censored regression")
 
-  parsnip::set_model_engine("cox_reg", mode = "risk prediction", eng = "survival")
+  parsnip::set_model_engine("cox_reg", mode = "censored regression", eng = "survival")
   parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "survival")
 
   parsnip::set_fit(
     model = "cox_reg",
     eng = "survival",
-    mode = "risk prediction",
+    mode = "censored regression",
     value = list(
       interface = "formula",
       protect = c("formula", "data"),
@@ -31,7 +31,7 @@ make_cox_reg_survival <- function() {
   set_encoding(
     model = "cox_reg",
     eng = "survival",
-    mode = "risk prediction",
+    mode = "censored regression",
     options = list(
       predictor_indicators = "traditional",
       compute_intercept = FALSE,
@@ -42,7 +42,7 @@ make_cox_reg_survival <- function() {
   parsnip::set_pred(
     model = "cox_reg",
     eng = "survival",
-    mode = "risk prediction",
+    mode = "censored regression",
     type = "time",
     value = list(
       pre = NULL,
@@ -61,7 +61,7 @@ make_cox_reg_survival <- function() {
   parsnip::set_pred(
     model = "cox_reg",
     eng = "survival",
-    mode = "risk prediction",
+    mode = "censored regression",
     type = "survival",
     value = list(
       pre = NULL,
@@ -78,13 +78,13 @@ make_cox_reg_survival <- function() {
 }
 
 make_cox_reg_glmnet <- function() {
-  parsnip::set_model_engine("cox_reg", mode = "risk prediction", eng = "glmnet")
+  parsnip::set_model_engine("cox_reg", mode = "censored regression", eng = "glmnet")
   parsnip::set_dependency("cox_reg", eng = "glmnet", pkg =  "glmnet")
 
   parsnip::set_fit(
     model = "cox_reg",
     eng = "glmnet",
-    mode = "risk prediction",
+    mode = "censored regression",
     value = list(
       interface = "matrix",
       protect = c("x", "y", "weights"),
@@ -96,7 +96,7 @@ make_cox_reg_glmnet <- function() {
   set_encoding(
     model = "cox_reg",
     eng = "glmnet",
-    mode = "risk prediction",
+    mode = "censored regression",
     options = list(
       predictor_indicators = "traditional",
       compute_intercept = TRUE,
@@ -125,7 +125,7 @@ make_cox_reg_glmnet <- function() {
   #parsnip::set_pred(
   #  model = "cox_reg",
   #  eng = "survival",
-  #  mode = "risk prediction",
+  #  mode = "censored regression",
   #  type = "survival",
   #  value = list(
   #    pre = NULL,

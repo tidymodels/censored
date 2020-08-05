@@ -5,13 +5,13 @@
 \alias{update.cox_reg}
 \title{General Interface for Cox Models}
 \usage{
-cox_reg(mode = "risk prediction")
+cox_reg(mode = "censored regression")
 
 \method{update}{cox_reg}(object, fresh = FALSE, ...)
 }
 \arguments{
 \item{mode}{A single character string for the type of model.
-Possible values for this model are "unknown", or "risk prediction".}
+Possible values for this model are "unknown", or "censored regression".}
 
 \item{object}{A cox model specification.}
 
