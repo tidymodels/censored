@@ -29,8 +29,8 @@ devtools::install_github("EmilHvitfeldt/survnip")
 
 The addition of censored regression comes with changes. One of these
 changes is the quantities we would like to predict from the model. The 3
-quantities we will consider are: `"time"`, `"survival"`, and `"linear
-predictor"`.
+quantities we will consider are: `"time"`, `"survival"`, and
+`"linear_pred"`.
 
 To showcase these the differences, here is a simple Cox regression model
 fitted on the `lung` data set.
@@ -48,7 +48,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  20ms 
+#> Fit time:  17ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, x = TRUE)
@@ -127,6 +127,32 @@ pred_vals_survival$.pred_survival[[1]]
 
 here we see that the first patient has a 85.5% probability of survival
 after 100 days and 64.9% probability of survival after 200 days.
+
+### linear\_pred
+
+when we specify `type = "linear_pred"` then we get back the linear
+predictor for the observation according to the model.
+
+``` r
+predict(cox_mod, type = "linear_pred", new_data = lung)
+#> # A tibble: 228 x 1
+#>    .pred_linear_pred
+#>                <dbl>
+#>  1            0.152 
+#>  2           -0.359 
+#>  3           -0.495 
+#>  4           -0.0401
+#>  5           -0.450 
+#>  6            0.152 
+#>  7            0.527 
+#>  8            0.561 
+#>  9           -0.0852
+#> 10            0.449 
+#> # … with 218 more rows
+```
+
+here we see that the linear predictor of the first observation is
+0.1517.
 
 ## Example
 
