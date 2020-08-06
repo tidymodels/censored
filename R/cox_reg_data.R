@@ -84,6 +84,23 @@ make_cox_reg_survival <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "cox_reg",
+    eng = "survival",
+    mode = "censored regression",
+    type = "linear_pred",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
 }
 
 make_cox_reg_glmnet <- function() {

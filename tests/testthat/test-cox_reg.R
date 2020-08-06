@@ -62,6 +62,21 @@ test_that('survival predictions', {
     as.numeric(t(exp_f_pred))
   )
 })
+
+# ------------------------------------------------------------------------------
+
+test_that('linear_pred predictions', {
+  # formula method
+  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  f_pred <- predict(f_fit, lung, type = "linear_pred")
+  exp_f_pred <- unname(predict(exp_f_fit, newdata = lung))
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(nrow(f_pred), nrow(lung))
+})
+
 # ------------------------------------------------------------------------------
 
 test_that('api errors', {
