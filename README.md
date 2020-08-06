@@ -18,10 +18,12 @@ model definitions for survival analysis packages.
 
 ## Installation
 
-And the development version from [GitHub](https://github.com/) with:
+This package is still in early development. You need to install the
+developmental branch of parsnip as well.
 
 ``` r
 # install.packages("devtools")
+remotes::install_github("tidymodels/parsnip#359")
 devtools::install_github("EmilHvitfeldt/survnip")
 ```
 
@@ -153,63 +155,3 @@ predict(cox_mod, type = "linear_pred", new_data = lung)
 
 here we see that the linear predictor of the first observation is
 0.1517.
-
-## Example
-
-``` r
-library(survnip)
-library(survival)
-
-cox_mod <-
-  cox_reg() %>%
-  set_engine("survival") %>%
-  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
-
-predict(cox_mod, new_data = lung, .time = 200)
-#> # A tibble: 228 x 1
-#>    .pred_time
-#>         <dbl>
-#>  1       342.
-#>  2       474.
-#>  3       511.
-#>  4       389.
-#>  5       498.
-#>  6       342.
-#>  7       263.
-#>  8       256.
-#>  9       401.
-#> 10       278.
-#> # … with 218 more rows
-
-predict(cox_mod, new_data = lung, type = "time", .time = 200)
-#> # A tibble: 228 x 1
-#>    .pred_time
-#>         <dbl>
-#>  1       342.
-#>  2       474.
-#>  3       511.
-#>  4       389.
-#>  5       498.
-#>  6       342.
-#>  7       263.
-#>  8       256.
-#>  9       401.
-#> 10       278.
-#> # … with 218 more rows
-
-predict(cox_mod, new_data = lung, type = "survival", .time = 200)
-#> # A tibble: 228 x 1
-#>        .pred_survival
-#>    <list<tbl_df[,2]>>
-#>  1            [1 × 2]
-#>  2            [1 × 2]
-#>  3            [1 × 2]
-#>  4            [1 × 2]
-#>  5            [1 × 2]
-#>  6            [1 × 2]
-#>  7            [1 × 2]
-#>  8            [1 × 2]
-#>  9            [1 × 2]
-#> 10            [1 × 2]
-#> # … with 218 more rows
-```

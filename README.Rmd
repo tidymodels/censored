@@ -24,10 +24,11 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-And the development version from [GitHub](https://github.com/) with:
+This package is still in early development. You need to install the developmental branch of parsnip as well.
 
 ``` {.r}
 # install.packages("devtools")
+remotes::install_github("tidymodels/parsnip#359")
 devtools::install_github("EmilHvitfeldt/survnip")
 ```
 
@@ -86,21 +87,3 @@ predict(cox_mod, type = "linear_pred", new_data = lung)
 ```
 
 here we see that the linear predictor of the first observation is  `r round(predict(cox_mod, type = "linear_pred", new_data = lung)$.pred_linear_pred[1], 4)`.
-
-## Example
-
-```{r example}
-library(survnip)
-library(survival)
-
-cox_mod <-
-  cox_reg() %>%
-  set_engine("survival") %>%
-  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
-
-predict(cox_mod, new_data = lung, .time = 200)
-
-predict(cox_mod, new_data = lung, type = "time", .time = 200)
-
-predict(cox_mod, new_data = lung, type = "survival", .time = 200)
-```
