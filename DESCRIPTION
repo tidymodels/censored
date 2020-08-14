@@ -32,4 +32,5 @@ BugReports: https://github.com/EmilHvitfeldt/survnip/issues
 Remotes: 
     tidymodels/parsnip#359
 Suggests: 
-    testthat
+    testthat,
+    glmnet
