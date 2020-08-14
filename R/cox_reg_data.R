@@ -148,22 +148,24 @@ make_cox_reg_glmnet <- function() {
     has_submodel = FALSE
   )
 
-  #parsnip::set_pred(
-  #  model = "cox_reg",
-  #  eng = "survival",
-  #  mode = "censored regression",
-  #  type = "survival",
-  #  value = list(
-  #    pre = NULL,
-  #    post = NULL,
-  #    func = c(fun = "predict"),
-  #    args =
-  #      list(
-  #        object = quote(object$fit),
-  #        newdata = quote(new_data)
-  #      )
-  #  )
-  #)
+  parsnip::set_pred(
+    model = "cox_reg",
+    eng = "glmnet",
+    mode = "censored regression",
+    type = "linear_pred",
+    value = list(
+      pre = NULL,
+      post = organize_glmnet_pred,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = expr(object$fit),
+          newx = expr(as.matrix(new_data)),
+          type = "link",
+          s = expr(object$spec$args$penalty)
+        )
+    )
+  )
 }
 
 

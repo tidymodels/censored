@@ -98,3 +98,73 @@ update.cox_reg <-
       engine = object$engine
     )
   }
+
+# ------------------------------------------------------------------------------
+
+organize_glmnet_pred <- function(x, object) {
+  if (ncol(x) == 1) {
+    res <- x[, 1]
+    res <- unname(res)
+  } else {
+    n <- nrow(x)
+    res <- utils::stack(as.data.frame(x))
+    if (!is.null(object$spec$args$penalty))
+      res$lambda <- rep(object$spec$args$penalty, each = n) else
+        res$lambda <- rep(object$fit$lambda, each = n)
+    res <- res[, colnames(res) %in% c("values", "lambda")]
+  }
+  res
+}
+
+# ------------------------------------------------------------------------------
+
+# For `predict` methods that use `glmnet`, we have specific methods.
+# Only one value of the penalty should be allowed when called by `predict()`:
+
+check_penalty <- function(penalty = NULL, object, multi = FALSE) {
+
+  if (is.null(penalty)) {
+    penalty <- object$fit$lambda
+  }
+
+  # when using `predict()`, allow for a single lambda
+  if (!multi) {
+    if (length(penalty) != 1)
+      rlang::abort(
+        glue::glue(
+          "`penalty` should be a single numeric value. `multi_predict()` ",
+          "can be used to get multiple predictions per row of data.",
+        )
+      )
+  }
+
+  if (length(object$fit$lambda) == 1 && penalty != object$fit$lambda)
+    rlang::abort(
+      glue::glue(
+        "The glmnet model was fit with a single penalty value of ",
+        "{object$fit$lambda}. Predicting with a value of {penalty} ",
+        "will give incorrect results from `glmnet()`."
+      )
+    )
+
+  penalty
+}
+
+# ------------------------------------------------------------------------------
+
+#' @export
+predict._coxnet <-
+  function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
+    if (any(names(enquos(...)) == "newdata"))
+      rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+    # See discussion in https://github.com/tidymodels/parsnip/issues/195
+    if (is.null(penalty) & !is.null(object$spec$args$penalty)) {
+      penalty <- object$spec$args$penalty
+    }
+
+    object$spec$args$penalty <- check_penalty(penalty, object, multi)
+
+    object$spec <- eval_args(object$spec)
+    predict.model_fit(object, new_data = new_data, type = type, opts = opts, ...)
+  }

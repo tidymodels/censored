@@ -25,7 +25,8 @@ Imports:
     tidyr (>= 1.0.0),
     withr,
     survival,
-    pec
+    pec,
+    glue
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
 Remotes: 

@@ -1,8 +1,8 @@
-#' @importFrom rlang enquo expr
+#' @importFrom rlang enquo expr enquos
 #' @importFrom purrr map_lgl
 #' @importFrom tibble is_tibble as_tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
-#' @importFrom parsnip set_encoding set_model_arg
+#' @importFrom parsnip set_encoding set_model_arg eval_args predict.model_fit
 #' @importFrom withr with_options
 #' @importFrom stats predict
 #' @importFrom dials new_quant_param
@@ -10,7 +10,7 @@
 #' @importFrom dplyr group_nest
 
 utils::globalVariables(
-  c(".time")
+  c(".time", "object", "new_data")
 )
 
 # ------------------------------------------------------------------------------
