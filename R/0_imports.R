@@ -1,10 +1,10 @@
 #' @importFrom rlang enquo expr enquos
-#' @importFrom purrr map_lgl
+#' @importFrom purrr map_lgl map_dbl
 #' @importFrom tibble is_tibble as_tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
 #' @importFrom parsnip set_encoding set_model_arg eval_args predict.model_fit
 #' @importFrom withr with_options
-#' @importFrom stats predict
+#' @importFrom stats predict approx
 #' @importFrom dials new_quant_param
 #' @importFrom tidyr pivot_longer
 #' @importFrom dplyr group_nest
