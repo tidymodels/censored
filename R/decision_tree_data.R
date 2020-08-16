@@ -38,26 +38,23 @@ make_decision_tree_rpart <- function() {
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "decision_tree",
-  #   eng = "survival",
-  #   mode = "censored regression",
-  #   type = "time",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       unname(summary(x)$table[, "*rmean"])
-  #     },
-  #     func = c(fun = "survfit"),
-  #     args =
-  #       list(
-  #         formula = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         na.action = stats::na.pass
-  #       )
-  #   )
-  # )
-  #
+  parsnip::set_pred(
+    model = "decision_tree",
+    eng = "rpart",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = unname,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
+
   # parsnip::set_pred(
   #   model = "decision_tree",
   #   eng = "survival",
