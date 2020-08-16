@@ -1,6 +1,6 @@
-# These functions define the discriminant analysis models. They are executed when
-# this package is loaded via `.onLoad()` and modify the parsnip package's
-# model environment.
+# These functions define the Cox regression models.
+# They are executed when this package is loaded via `.onLoad()` and modify the
+# parsnip package's model environment.
 
 # These functions are tested indirectly when the models are used. Since this
 # function is executed on package startup, you can't execute them to test since
