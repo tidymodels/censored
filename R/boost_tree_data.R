@@ -38,41 +38,23 @@ make_boost_tree_mboost <- function() {
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "cox_reg",
-  #   eng = "survival",
-  #   mode = "censored regression",
-  #   type = "survival",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       colnames(x) <- object$spec$method$pred$survival$args$.time
-  #       res <- as_tibble(x)
-  #       res <- parsnip::add_rowindex(res)
-  #       res <-  pivot_longer(res, -.row,
-  #                            names_to = ".time",
-  #                            values_to = ".pred_survival")
-  #       group_nest(res, .row, .key = ".pred")$.pred
-  #     },
-  #     func = c(pkg = "pec", fun = "predictSurvProb"),
-  #     args =
-  #       list(
-  #         object = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         times = rlang::expr(.time)
-  #       )
-  #   )
-  # )
-  #
   parsnip::set_pred(
     model = "boost_tree",
     eng = "mboost",
     mode = "censored regression",
-    type = "linear_pred",
+    type = "survival",
     value = list(
       pre = NULL,
-      post = NULL,
-      func = c(fun = "predict"),
+      post = function(x, object) {
+        res <- floor_surv_mboost(
+          x,
+          object$spec$method$pred$survival$args$.time
+        )
+        colnames(res) <- object$spec$method$pred$survival$args$.time
+
+        matrix_to_nested_tibbles_survival(res)
+      },
+      func = c(pkg = "mboost", fun = "survFit"),
       args =
         list(
           object = quote(object$fit),
@@ -80,6 +62,31 @@ make_boost_tree_mboost <- function() {
         )
     )
   )
+
+  # parsnip::set_pred(
+  #   model = "boost_tree",
+  #   eng = "mboost",
+  #   mode = "censored regression",
+  #   type = "linear_pred",
+  #   value = list(
+  #     pre = NULL,
+  #     post = NULL,
+  #     func = c(fun = "predict"),
+  #     args =
+  #       list(
+  #         object = quote(object$fit),
+  #         newdata = quote(new_data)
+  #       )
+  #   )
+  # )
 }
 
 # nocov end
+
+# the mboost::survFit isn't able to predict survival probabilities for a given
+# timepoint. This function rounds down to nearest timepoint and uses that
+# for prediction.
+floor_surv_mboost <- function(x, .time) {
+  ind <- purrr::map_int(.time, ~ max(which(.x > c(-Inf, unname(x$time)))))
+  t(unname(rbind(1, x$surv))[ind, ])
+}
