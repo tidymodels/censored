@@ -26,4 +26,6 @@ utils::globalVariables(
 
   make_boost_tree_mboost()
 
+  make_decision_tree_rpart()
+
 }
