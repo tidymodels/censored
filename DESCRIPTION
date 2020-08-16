@@ -33,4 +33,5 @@ Remotes:
     tidymodels/parsnip#359
 Suggests: 
     testthat,
-    glmnet
+    glmnet,
+    mboost

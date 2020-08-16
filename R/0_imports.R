@@ -24,4 +24,6 @@ utils::globalVariables(
   make_cox_reg_survival()
   make_cox_reg_glmnet()
 
+  make_boost_tree_mboost()
+
 }
