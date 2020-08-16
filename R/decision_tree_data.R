@@ -13,7 +13,7 @@ make_decision_tree_rpart <- function() {
   parsnip::set_model_mode("decision_tree", "censored regression")
 
   parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "rpart")
-  parsnip::set_dependency("decision_tree", eng = "rpart", pkg =  "rpart")
+  parsnip::set_dependency("decision_tree", eng = "rpart", pkg = c("pec"))
 
   parsnip::set_fit(
     model = "decision_tree",
@@ -22,7 +22,7 @@ make_decision_tree_rpart <- function() {
     value = list(
       interface = "formula",
       protect = c("formula", "data"),
-      func = c(pkg = "rpart", fun = "rpart"),
+      func = c(pkg = "pec", fun = "pecRpart"),
       defaults = list()
     )
   )
@@ -49,32 +49,32 @@ make_decision_tree_rpart <- function() {
       func = c(fun = "predict"),
       args =
         list(
-          object = quote(object$fit),
+          object = quote(object$fit$rpart),
           newdata = quote(new_data)
         )
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "decision_tree",
-  #   eng = "survival",
-  #   mode = "censored regression",
-  #   type = "survival",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       colnames(x) <- object$spec$method$pred$survival$args$.time
-  #       matrix_to_nested_tibbles_survival(x)
-  #     },
-  #     func = c(pkg = "pec", fun = "predictSurvProb"),
-  #     args =
-  #       list(
-  #         object = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         times = rlang::expr(.time)
-  #       )
-  #   )
-  # )
+  parsnip::set_pred(
+    model = "decision_tree",
+    eng = "rpart",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        colnames(x) <- object$spec$method$pred$survival$args$.time
+        matrix_to_nested_tibbles_survival(x)
+      },
+      func = c(pkg = "pec", fun = "predictSurvProb"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data),
+          times = rlang::expr(.time)
+        )
+    )
+  )
 
 }
 
