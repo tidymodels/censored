@@ -63,22 +63,22 @@ make_boost_tree_mboost <- function() {
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "boost_tree",
-  #   eng = "mboost",
-  #   mode = "censored regression",
-  #   type = "linear_pred",
-  #   value = list(
-  #     pre = NULL,
-  #     post = NULL,
-  #     func = c(fun = "predict"),
-  #     args =
-  #       list(
-  #         object = quote(object$fit),
-  #         newdata = quote(new_data)
-  #       )
-  #   )
-  # )
+  parsnip::set_pred(
+    model = "boost_tree",
+    eng = "mboost",
+    mode = "censored regression",
+    type = "linear_pred",
+    value = list(
+      pre = NULL,
+      post = as.numeric,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
 }
 
 # nocov end
