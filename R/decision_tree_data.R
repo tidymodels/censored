@@ -78,4 +78,73 @@ make_decision_tree_rpart <- function() {
 
 }
 
+make_decision_tree_party <- function() {
+  parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "party")
+  parsnip::set_dependency("decision_tree", eng = "party", pkg = "pec")
+
+  parsnip::set_fit(
+    model = "decision_tree",
+    eng = "party",
+    mode = "censored regression",
+    value = list(
+      interface = "formula",
+      protect = c("formula", "data"),
+      func = c(pkg = "pec", fun = "pecCtree"),
+      defaults = list()
+    )
+  )
+
+  set_encoding(
+    model = "decision_tree",
+    eng = "party",
+    mode = "censored regression",
+    options = list(
+      predictor_indicators = "traditional",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE
+    )
+  )
+
+  parsnip::set_pred(
+    model = "decision_tree",
+    eng = "party",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = unname,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit$ctree),
+          newdata = quote(new_data)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "decision_tree",
+    eng = "party",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        x <- x[, -1, drop = FALSE]
+        colnames(x) <- object$spec$method$pred$survival$args$.time
+        matrix_to_nested_tibbles_survival(x)
+      },
+      func = c(pkg = "pec", fun = "predictSurvProb"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data),
+          times = rlang::expr(pmin(c(0, .time), max(object$fit$ctree@responses@variables)))
+        )
+    )
+  )
+
+}
+
 # nocov end
+
