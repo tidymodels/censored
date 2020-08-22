@@ -87,3 +87,25 @@ predict(cox_mod, type = "linear_pred", new_data = lung)
 ```
 
 here we see that the linear predictor of the first observation is  `r round(predict(cox_mod, type = "linear_pred", new_data = lung)$.pred_linear_pred[1], 4)`.
+
+## Prediction type table
+
+```{r, echo=FALSE, message=FALSE}
+library(survnip)
+library(dplyr)
+library(purrr)
+library(tidyr)
+mod_names <- get_from_env("models")
+model_info <-
+  map_dfr(mod_names, ~ get_from_env(paste0(.x, "_predict")) %>% mutate(alias = .x))
+
+model_info %>%
+  filter(mode == "censored regression") %>%
+  select(alias, engine, mode, type, -value) %>%
+  pivot_wider(names_from = type, 
+              values_from = mode, 
+              values_fill = FALSE, 
+              values_fn = function(x) TRUE) %>%
+  knitr::kable()
+```
+

@@ -155,3 +155,13 @@ predict(cox_mod, type = "linear_pred", new_data = lung)
 
 here we see that the linear predictor of the first observation is
 0.1517.
+
+## Prediction type table
+
+| alias          | engine   | survival | linear\_pred | time  |
+| :------------- | :------- | :------- | :----------- | :---- |
+| boost\_tree    | mboost   | TRUE     | TRUE         | FALSE |
+| decision\_tree | rpart    | TRUE     | FALSE        | TRUE  |
+| decision\_tree | party    | TRUE     | FALSE        | TRUE  |
+| cox\_reg       | survival | TRUE     | TRUE         | TRUE  |
+| cox\_reg       | glmnet   | FALSE    | TRUE         | FALSE |
