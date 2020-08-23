@@ -88,7 +88,7 @@ predict(cox_mod, type = "linear_pred", new_data = lung)
 
 here we see that the linear predictor of the first observation is  `r round(predict(cox_mod, type = "linear_pred", new_data = lung)$.pred_linear_pred[1], 4)`.
 
-## Prediction type table
+## Prediction type table 
 
 ```{r, echo=FALSE, message=FALSE}
 library(survnip)

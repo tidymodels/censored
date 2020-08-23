@@ -57,26 +57,28 @@ make_bag_tree_ipred <- function() {
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "bag_tree",
-  #   eng = "ipred",
-  #   mode = "censored regression",
-  #   type = "survival",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       colnames(x) <- object$spec$method$pred$survival$args$.time
-  #       matrix_to_nested_tibbles_survival(x)
-  #     },
-  #     func = c(pkg = "pec", fun = "predictSurvProb"),
-  #     args =
-  #       list(
-  #         object = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         times = rlang::expr(.time)
-  #       )
-  #   )
-  # )
+  parsnip::set_pred(
+    model = "bag_tree",
+    eng = "ipred",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        .time <- object$spec$method$pred$survival$args$.time
+        res <- map(x, ~ summary(.x, times = pmin(.time, max(.x$time)))$surv)
+        res <- matrix(unlist(res), ncol = length(.time), byrow = TRUE)
+        colnames(res) <- .time
+        matrix_to_nested_tibbles_survival(res)
+      },
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
 }
 
 # nocov end
