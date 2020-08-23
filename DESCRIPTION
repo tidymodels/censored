@@ -27,7 +27,8 @@ Imports:
     survival,
     pec,
     glue,
-    baguette
+    baguette,
+    ipred
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
 Remotes: 
