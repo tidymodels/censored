@@ -13,7 +13,7 @@ make_rand_forest_party <- function() {
   parsnip::set_model_mode("rand_forest", "censored regression")
 
   parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "party")
-  parsnip::set_dependency("rand_forest", eng = "party", pkg =  "party")
+  parsnip::set_dependency("rand_forest", eng = "party", pkg = "pec")
 
   parsnip::set_fit(
     model = "rand_forest",
@@ -22,7 +22,7 @@ make_rand_forest_party <- function() {
     value = list(
       interface = "formula",
       protect = c("formula", "data"),
-      func = c(pkg = "party", fun = "cforest"),
+      func = c(pkg = "pec", fun = "pecCforest"),
       defaults = list()
     )
   )
@@ -49,32 +49,33 @@ make_rand_forest_party <- function() {
       func = c(fun = "predict"),
       args =
         list(
-          object = quote(object$fit),
+          object = quote(object$fit$forest),
           newdata = quote(new_data)
         )
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "rand_forest",
-  #   eng = "parrty",
-  #   mode = "censored regression",
-  #   type = "survival",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       colnames(x) <- object$spec$method$pred$survival$args$.time
-  #       matrix_to_nested_tibbles_survival(x)
-  #     },
-  #     func = c(pkg = "pec", fun = "predictSurvProb"),
-  #     args =
-  #       list(
-  #         object = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         times = rlang::expr(.time)
-  #       )
-  #   )
-  # )
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "party",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        x <- x[, -1, drop = FALSE]
+        colnames(x) <- object$spec$method$pred$survival$args$.time
+        matrix_to_nested_tibbles_survival(x)
+      },
+      func = c(pkg = "pec", fun = "predictSurvProb"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data),
+          times = rlang::expr(pmin(c(0, .time), max(object$fit$forest@responses@variables)))
+        )
+    )
+  )
 }
 
 # nocov end

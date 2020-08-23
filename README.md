@@ -50,7 +50,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  18ms 
+#> Fit time:  17ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, x = TRUE)
@@ -163,6 +163,7 @@ here we see that the linear predictor of the first observation is
 | boost\_tree    | mboost   | TRUE     | TRUE         | FALSE |
 | decision\_tree | rpart    | TRUE     | FALSE        | TRUE  |
 | decision\_tree | party    | TRUE     | FALSE        | TRUE  |
+| rand\_forest   | party    | TRUE     | FALSE        | TRUE  |
 | bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  |
 | cox\_reg       | survival | TRUE     | TRUE         | TRUE  |
 | cox\_reg       | glmnet   | FALSE    | TRUE         | FALSE |
