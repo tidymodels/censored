@@ -38,26 +38,25 @@ make_bag_tree_ipred <- function() {
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "bag_tree",
-  #   eng = "ipred",
-  #   mode = "censored regression",
-  #   type = "time",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       unname(summary(x)$table[, "*rmean"])
-  #     },
-  #     func = c(fun = "survfit"),
-  #     args =
-  #       list(
-  #         formula = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         na.action = stats::na.pass
-  #       )
-  #   )
-  # )
-  #
+  parsnip::set_pred(
+    model = "bag_tree",
+    eng = "ipred",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        map_dbl(x, ~ quantile(.x, probs = .5)$quantile)
+      },
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
+
   # parsnip::set_pred(
   #   model = "bag_tree",
   #   eng = "ipred",
