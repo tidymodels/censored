@@ -33,4 +33,6 @@ utils::globalVariables(
 
   make_bag_tree_ipred()
 
+  make_rand_forest_party()
+
 }

@@ -23,7 +23,7 @@ make_bag_tree_ipred <- function() {
       interface = "formula",
       protect = c("formula", "data"),
       func = c(pkg = "ipred", fun = "bagging"),
-      defaults = list(x = TRUE)
+      defaults = list()
     )
   )
 
