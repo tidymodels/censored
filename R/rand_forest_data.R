@@ -38,26 +38,23 @@ make_rand_forest_party <- function() {
     )
   )
 
-  # parsnip::set_pred(
-  #   model = "rand_forest",
-  #   eng = "party",
-  #   mode = "censored regression",
-  #   type = "time",
-  #   value = list(
-  #     pre = NULL,
-  #     post = function(x, object) {
-  #       unname(summary(x)$table[, "*rmean"])
-  #     },
-  #     func = c(fun = "survfit"),
-  #     args =
-  #       list(
-  #         formula = quote(object$fit),
-  #         newdata = quote(new_data),
-  #         na.action = stats::na.pass
-  #       )
-  #   )
-  # )
-  #
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "party",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = quote(object$fit),
+          newdata = quote(new_data)
+        )
+    )
+  )
+
   # parsnip::set_pred(
   #   model = "rand_forest",
   #   eng = "parrty",
