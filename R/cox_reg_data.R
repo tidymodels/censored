@@ -109,8 +109,8 @@ make_cox_reg_glmnet <- function() {
     value = list(
       interface = "matrix",
       protect = c("x", "y", "weights"),
-      func = c(pkg = "glmnet", fun = "glmnet"),
-      defaults = list(family = "cox")
+      func = c(pkg = "survnip", fun = "glmnet_fit_wrapper"),
+      defaults = list()
     )
   )
 
@@ -154,7 +154,7 @@ make_cox_reg_glmnet <- function() {
       func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit),
+          object = expr(object$fit$fit),
           newx = expr(as.matrix(new_data)),
           type = "link",
           s = expr(object$spec$args$penalty)
@@ -163,6 +163,28 @@ make_cox_reg_glmnet <- function() {
   )
 }
 
-
-
 # nocov end
+
+#' Wrapper for glmnet for survnip
+#'
+#' Not to be used directly by users
+#'
+#' @inheritParams glmnet::glmnet
+#' @param ... additional parameters passed to glmnet::glmnet.
+#' @export
+#' @keywords internal
+glmnet_fit_wrapper <- function(x, y, ...) {
+  fit <- glmnet::glmnet(x, y, family = "cox")
+
+  lp <- predict(fit, x)
+  lp_list <- map(seq_len(ncol(lp)), ~ unname(lp[, .x]))
+  basesurvs <- map(
+    lp_list,
+    ~ calculate_basesurv(y[, 1], y[, 2], .x, sort(unique(y[, 1])))
+  )
+
+  res <- list(fit = fit,
+              basesurv = basesurvs)
+  class(res) <- "coxnet"
+  res
+}
