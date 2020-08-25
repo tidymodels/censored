@@ -15,6 +15,7 @@ make_cox_reg_survival <- function() {
 
   parsnip::set_model_engine("cox_reg", mode = "censored regression", eng = "survival")
   parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "survival")
+  parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "riskRegression")
 
   parsnip::set_fit(
     model = "cox_reg",
