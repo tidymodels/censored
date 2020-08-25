@@ -81,6 +81,7 @@ make_decision_tree_rpart <- function() {
 make_decision_tree_party <- function() {
   parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "party")
   parsnip::set_dependency("decision_tree", eng = "party", pkg = "pec")
+  parsnip::set_dependency("decision_tree", eng = "party", pkg = "party")
 
   parsnip::set_fit(
     model = "decision_tree",
