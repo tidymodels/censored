@@ -28,6 +28,7 @@ Imports:
     pec,
     glue,
     baguette,
+    mboost,
     ipred
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
@@ -36,6 +37,5 @@ Remotes:
 Suggests: 
     testthat,
     glmnet,
-    mboost,
     rpart,
     riskRegression
