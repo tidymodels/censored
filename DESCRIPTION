@@ -37,4 +37,5 @@ Suggests:
     testthat,
     glmnet,
     mboost,
-    rpart
+    rpart,
+    riskRegression
