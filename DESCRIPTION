@@ -38,4 +38,5 @@ Suggests:
     testthat,
     glmnet,
     rpart,
-    riskRegression
+    riskRegression,
+    party
