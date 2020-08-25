@@ -161,6 +161,35 @@ make_cox_reg_glmnet <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "cox_reg",
+    eng = "glmnet",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        .time <- object$spec$method$pred$survival$args$.time
+        res <- calculate_survival_prop(x,
+                                       object$fit$time,
+                                       object$fit$event,
+                                       .time)
+
+        colnames(res) <- .time
+        matrix_to_nested_tibbles_survival(res)
+
+      },
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = expr(object$fit$fit),
+          newx = expr(as.matrix(new_data)),
+          type = "link",
+          s = expr(object$spec$args$penalty)
+        )
+    )
+  )
 }
 
 # nocov end
@@ -175,16 +204,10 @@ make_cox_reg_glmnet <- function() {
 #' @keywords internal
 glmnet_fit_wrapper <- function(x, y, ...) {
   fit <- glmnet::glmnet(x, y, family = "cox")
-
-  lp <- predict(fit, x)
-  lp_list <- map(seq_len(ncol(lp)), ~ unname(lp[, .x]))
-  basesurvs <- map(
-    lp_list,
-    ~ calculate_basesurv(y[, 1], y[, 2], .x, sort(unique(y[, 1])))
-  )
-
   res <- list(fit = fit,
-              basesurv = basesurvs)
+              time = y[, 1],
+              event = y[, 2],
+              times.eval = sort(unique(y[, 1])))
   class(res) <- "coxnet"
   res
 }

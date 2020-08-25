@@ -1,8 +1,9 @@
-calculate_basesurv <- function (time, event, lp, times.eval) {
+calculate_basesurv <- function(time, event, lp, times.eval) {
   t.unique <- sort(unique(time[event == 1L]))
   alpha <- map_dbl(
     t.unique,
-    ~ sum(time[event == 1L] == .x) / sum(exp(lp[time >= .x]))
+    ~ sum(time[event == 1L] == .x, na.rm = TRUE) /
+      sum(exp(lp[time >= .x]), na.rm = TRUE)
   )
   obj <- approx(t.unique, cumsum(alpha),
                 yleft = 0, xout = times.eval, rule = 2)
@@ -11,7 +12,7 @@ calculate_basesurv <- function (time, event, lp, times.eval) {
   obj
 }
 
-calculate_survival_prop <- function (lp, time, event, survtime) {
+calculate_survival_prop <- function(lp, time, event, survtime) {
   lp <- as.numeric(lp)
   basesurv <- calculate_basesurv(time, event, lp, sort(survtime))
   exp(exp(lp) %*% (-t(basesurv$cumulative_base_hazard)))
