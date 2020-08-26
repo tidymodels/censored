@@ -8,3 +8,15 @@ matrix_to_nested_tibbles_survival <- function(x) {
                        values_to = ".pred_survival")
   group_nest(res, .row, .key = ".pred")$.pred
 }
+
+# ------------------------------------------------------------------------------
+
+# copied form recipes
+
+names0 <- function (num, prefix = "x") {
+  if (num < 1)
+    rlang::abort("`num` should be > 0.")
+  ind <- format(1:num)
+  ind <- gsub(" ", "0", ind)
+  paste0(prefix, ind)
+}

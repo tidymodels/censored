@@ -1,17 +1,20 @@
 #' @importFrom rlang enquo expr enquos
 #' @importFrom purrr map_lgl map_dbl map
-#' @importFrom tibble is_tibble as_tibble
+#' @importFrom tibble is_tibble as_tibble tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
 #' @importFrom parsnip set_encoding set_model_arg eval_args predict.model_fit
+#' @importFrom parsnip translate model_printer translate.default
+#' @importFrom parsnip update_engine_parameters check_final_param
+#' @importFrom parsnip update_main_parameters show_call
 #' @importFrom withr with_options
-#' @importFrom stats predict approx
+#' @importFrom stats predict approx quantile
 #' @importFrom dials new_quant_param
-#' @importFrom tidyr pivot_longer
-#' @importFrom dplyr group_nest
+#' @importFrom tidyr pivot_longer gather
+#' @importFrom dplyr group_nest %>% arrange
 #' @importFrom baguette bag_tree
 
 utils::globalVariables(
-  c(".time", "object", "new_data")
+  c(".time", "object", "new_data", ".label", ".pred")
 )
 
 # ------------------------------------------------------------------------------
@@ -34,5 +37,8 @@ utils::globalVariables(
   make_bag_tree_ipred()
 
   make_rand_forest_party()
+
+  make_surv_reg_survival()
+  make_surv_reg_flexsurv()
 
 }

@@ -29,7 +29,8 @@ Imports:
     glue,
     baguette,
     mboost,
-    ipred
+    ipred,
+    flexsurv
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
 Remotes: 
