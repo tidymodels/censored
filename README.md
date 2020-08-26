@@ -166,4 +166,4 @@ here we see that the linear predictor of the first observation is
 | rand\_forest   | party    | TRUE     | FALSE        | TRUE  |
 | bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  |
 | cox\_reg       | survival | TRUE     | TRUE         | TRUE  |
-| cox\_reg       | glmnet   | FALSE    | TRUE         | FALSE |
+| cox\_reg       | glmnet   | TRUE     | TRUE         | FALSE |
