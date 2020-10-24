@@ -1,4 +1,4 @@
-#' @importFrom rlang enquo expr enquos
+#' @importFrom rlang enquo expr enquos call2 eval_tidy
 #' @importFrom purrr map_lgl map_dbl map
 #' @importFrom tibble is_tibble as_tibble tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
@@ -12,6 +12,7 @@
 #' @importFrom tidyr pivot_longer gather
 #' @importFrom dplyr group_nest %>% arrange
 #' @importFrom baguette bag_tree
+#' @importFrom utils getFromNamespace
 
 utils::globalVariables(
   c(".time", "object", "new_data", ".label", ".pred")
