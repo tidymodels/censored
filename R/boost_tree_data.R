@@ -15,6 +15,15 @@ make_boost_tree_mboost <- function() {
   parsnip::set_model_engine("boost_tree", mode = "censored regression", eng = "mboost")
   parsnip::set_dependency("boost_tree", eng = "mboost", pkg = "mboost")
 
+  set_model_arg(
+    model = "boost_tree",
+    eng = "mboost",
+    parsnip = "tree_depth",
+    original = "maxdepth",
+    func = list(pkg = "dials", fun = "tree_depth"),
+    has_submodel = FALSE
+  )
+
   parsnip::set_fit(
     model = "boost_tree",
     eng = "mboost",
