@@ -8,6 +8,23 @@
 #'
 #' @param x A data frame or matrix of predictors.
 #' @param y A factor vector with 2 or more levels
+#' @param teststat a character specifying the type of the test statistic to be
+#'   applied for variable selection.
+#' @param testtype a character specifying how to compute the distribution of
+#'   the test statistic. The first three options refer to p-values as criterion,
+#'   Teststatistic uses the raw statistic as criterion. Bonferroni and
+#'   Univariate relate to p-values from the asymptotic distribution (adjusted or
+#'   unadjusted). Bonferroni-adjusted Monte-Carlo p-values are computed when
+#'   both Bonferroni and MonteCarlo are given.
+#' @param mincriterion the value of the test statistic or 1 - p-value that must
+#'   be exceeded in order to implement a split.
+#' @param minsplit the minimum sum of weights in a node in order to be
+#'   considered for splitting.
+#' @param minbucket the minimum sum of weights in a terminal node.
+#' @param maxdepth maximum depth of the tree. The default maxdepth = Inf means
+#'   that no restrictions are applied to tree sizes.
+#' @param saveinfo logical. Store information about variable selection procedure
+#'   in info slot of each partynode.
 #' @param ... Other arguments to pass.
 #' @return A fitted blackboost model.
 #' @keywords internal
