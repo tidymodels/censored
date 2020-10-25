@@ -18,6 +18,15 @@ make_boost_tree_mboost <- function() {
   set_model_arg(
     model = "boost_tree",
     eng = "mboost",
+    parsnip = "mtry",
+    original = "mtry",
+    func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+
+  set_model_arg(
+    model = "boost_tree",
+    eng = "mboost",
     parsnip = "trees",
     original = "mstop",
     func = list(pkg = "dials", fun = "trees"),
