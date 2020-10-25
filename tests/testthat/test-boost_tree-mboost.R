@@ -102,3 +102,17 @@ test_that('primary arguments', {
 
 })
 
+# ------------------------------------------------------------------------------
+
+test_that('updating', {
+  expr1     <- boost_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+  expr1_exp <- boost_tree(tree_depth = 10) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(update(expr1, tree_depth = 10), expr1_exp)
+
+})
+
