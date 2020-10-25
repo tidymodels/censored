@@ -30,7 +30,7 @@ make_boost_tree_mboost <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data", "family"),
+      protect = c("formula", "data"),
       func = c(pkg = "survnip", fun = "blackboost_train"),
       defaults = list(family = mboost::CoxPH())
     )

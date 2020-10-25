@@ -1,6 +1,7 @@
 library(testthat)
 library(survival)
 library(mboost)
+library(rlang)
 
 # ------------------------------------------------------------------------------
 
@@ -67,3 +68,37 @@ test_that('linear_pred predictions', {
   expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 })
+
+# ------------------------------------------------------------------------------
+
+test_that('primary arguments', {
+
+  tree_depth <- boost_tree(tree_depth = 3) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(tree_depth)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 maxdepth = new_empty_quosure(3),
+                 family = mboost::CoxPH()
+               )
+  )
+
+  tree_depth_v <- boost_tree(tree_depth = varying()) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(tree_depth_v)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 maxdepth = new_empty_quosure(varying()),
+                 family = mboost::CoxPH()
+               )
+  )
+
+
+})
+
