@@ -40,6 +40,16 @@ fitted on the `lung` data set.
 ``` r
 library(survnip)
 #> Loading required package: parsnip
+#> Registered S3 methods overwritten by 'survnip':
+#>   method             from   
+#>   print.surv_reg     parsnip
+#>   translate.surv_reg parsnip
+#>   update.surv_reg    parsnip
+#> 
+#> Attaching package: 'survnip'
+#> The following object is masked from 'package:parsnip':
+#> 
+#>     surv_reg
 library(survival)
 
 cox_mod <-
@@ -50,7 +60,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  17ms 
+#> Fit time:  18ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, x = TRUE)
