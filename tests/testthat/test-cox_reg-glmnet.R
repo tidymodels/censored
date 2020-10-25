@@ -1,6 +1,7 @@
 library(testthat)
 library(survival)
 library(glmnet)
+library(rlang)
 
 # ------------------------------------------------------------------------------
 
@@ -92,3 +93,72 @@ test_that('printing', {
     "Cox Model Specification \\(censored regression\\)"
   )
 })
+
+# ------------------------------------------------------------------------------
+
+test_that('primary arguments', {
+
+  # penalty ------------------------------------------------------
+  penalty <- cox_reg(penalty = 0.05) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expect_equal(translate(penalty)$method$fit$args,
+               list(
+                 x = expr(missing_arg()),
+                 y = expr(missing_arg()),
+                 weights = expr(missing_arg())
+               )
+  )
+
+  # mixture -----------------------------------------------------------
+  mixture <- cox_reg(mixture = 0.34) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expect_equal(translate(mixture)$method$fit$args,
+               list(
+                 x = expr(missing_arg()),
+                 y = expr(missing_arg()),
+                 weights = expr(missing_arg()),
+                 alpha = new_empty_quosure(0.34)
+               )
+  )
+
+  mixture_v <- cox_reg(mixture = varying()) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expect_equal(translate(mixture_v)$method$fit$args,
+               list(
+                 x = expr(missing_arg()),
+                 y = expr(missing_arg()),
+                 weights = expr(missing_arg()),
+                 alpha = new_empty_quosure(varying())
+               )
+  )
+})
+
+# ------------------------------------------------------------------------------
+
+test_that('updating', {
+  expr1 <- cox_reg() %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+  expr1_exp <- cox_reg(mixture = 0.76) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expr2 <- cox_reg() %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+  expr2_exp <- cox_reg(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+
+  expect_equal(update(expr1, mixture = 0.76), expr1_exp)
+  expect_equal(update(expr2, penalty = 0.123), expr2_exp)
+})
+
+

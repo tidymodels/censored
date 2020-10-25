@@ -17,6 +17,24 @@ make_cox_reg_survival <- function() {
   parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "survival")
   parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "riskRegression")
 
+  set_model_arg(
+    model = "cox_reg",
+    eng = "glmnet",
+    parsnip = "penalty",
+    original = "lambda",
+    func = list(pkg = "dials", fun = "penalty"),
+    has_submodel = TRUE
+  )
+
+  set_model_arg(
+    model = "cox_reg",
+    eng = "glmnet",
+    parsnip = "mixture",
+    original = "alpha",
+    func = list(pkg = "dials", fun = "mixture"),
+    has_submodel = FALSE
+  )
+
   parsnip::set_fit(
     model = "cox_reg",
     eng = "survival",
@@ -203,8 +221,8 @@ make_cox_reg_glmnet <- function() {
 #' @param ... additional parameters passed to glmnet::glmnet.
 #' @export
 #' @keywords internal
-glmnet_fit_wrapper <- function(x, y, ...) {
-  fit <- glmnet::glmnet(x, y, family = "cox")
+glmnet_fit_wrapper <- function(x, y, alpha = 1, lambda = NULL, ...) {
+  fit <- glmnet::glmnet(x, y, family = "cox", alpha = alpha, lambda = lambda)
   res <- list(fit = fit,
               time = y[, 1],
               event = y[, 2],

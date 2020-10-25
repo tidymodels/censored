@@ -3,6 +3,7 @@
 S3method(predict,"_coxnet")
 S3method(print,cox_reg)
 S3method(print,surv_reg)
+S3method(translate,cox_reg)
 S3method(translate,surv_reg)
 S3method(update,cox_reg)
 S3method(update,surv_reg)

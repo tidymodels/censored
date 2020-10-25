@@ -4,7 +4,7 @@
 \alias{glmnet_fit_wrapper}
 \title{Wrapper for glmnet for survnip}
 \usage{
-glmnet_fit_wrapper(x, y, ...)
+glmnet_fit_wrapper(x, y, alpha = 1, lambda = NULL, ...)
 }
 \arguments{
 \item{x}{input matrix, of dimension nobs x nvars; each row is an observation
@@ -26,6 +26,20 @@ latter is a binary variable, with '1' indicating death, and '0' indicating
 right censored. The function \code{Surv()} in package \pkg{survival}
 produces such a matrix. For \code{family="mgaussian"}, \code{y} is a matrix
 of quantitative responses.}
+
+\item{alpha}{The elasticnet mixing parameter, with \eqn{0\le\alpha\le 1}.
+The penalty is defined as
+\deqn{(1-\alpha)/2||\beta||_2^2+\alpha||\beta||_1.} \code{alpha=1} is the
+lasso penalty, and \code{alpha=0} the ridge penalty.}
+
+\item{lambda}{A user supplied \code{lambda} sequence. Typical usage is to
+have the program compute its own \code{lambda} sequence based on
+\code{nlambda} and \code{lambda.min.ratio}. Supplying a value of
+\code{lambda} overrides this. WARNING: use with care. Avoid supplying a
+single value for \code{lambda} (for predictions after CV use
+\code{predict()} instead).  Supply instead a decreasing sequence of
+\code{lambda} values. \code{glmnet} relies on its warms starts for speed,
+and its often faster to fit a whole path than compute a single fit.}
 
 \item{...}{additional parameters passed to glmnet::glmnet.}
 }

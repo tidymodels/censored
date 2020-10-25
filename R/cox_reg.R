@@ -2,9 +2,23 @@
 #'
 #' `cox_reg()` is a way to generate a _specification_ of a model before
 #'  fitting and allows the model to be created using different packages in R.
+#'  The main arguments for the model are:
+#' \itemize{
+#'   \item \code{penalty}: The total amount of regularization
+#'  in the model. Note that this must be zero for some engines.
+#'   \item \code{mixture}: The mixture amounts of different types of
+#'   regularization (see below). Note that this will be ignored for some engines.
+#' }
+#' These arguments are converted to their specific names at the
+#'  time that the model is fit. Other options and arguments can be
+#'  set using `set_engine()`. If left to their defaults
+#'  here (`NULL`), the values are taken from the underlying model
+#'  functions. If parameters need to be modified, `update()` can be used
+#'  in lieu of recreating the object from scratch.
 #'
 #' @param mode A single character string for the type of model.
 #'  Possible values for this model are "unknown", or "censored regression".
+#' @inheritParams parsnip::linear_reg
 #'
 #' @details
 #'
@@ -35,9 +49,14 @@
 #'   fit(Surv(time, status) ~ x, data = aml)
 #' @export
 cox_reg <-
-  function(mode = "censored regression") {
-    args <-
-      list()
+  function(mode = "censored regression",
+           penalty = NULL,
+           mixture = NULL) {
+
+    args <- list(
+      penalty = enquo(penalty),
+      mixture = enquo(mixture)
+    )
 
     new_model_spec(
       "cox_reg",
@@ -62,31 +81,64 @@ print.cox_reg <- function(x, ...) {
   invisible(x)
 }
 
+#' @export
+translate.cox_reg <- function(x, engine = x$engine, ...) {
+  x <- translate.default(x, engine, ...)
+
+  if (engine == "glmnet") {
+    # See discussion in https://github.com/tidymodels/parsnip/issues/195
+    x$method$fit$args$lambda <- NULL
+    # Since the `fit` information is gone for the penalty, we need to have an
+    # evaluated value for the parameter.
+    x$args$penalty <- rlang::eval_tidy(x$args$penalty)
+  }
+
+  x
+}
+
 # ------------------------------------------------------------------------------
 
 #' @param object A cox model specification.
 #' @param ... Not used for `update()`.
 #' @param fresh A logical for whether the arguments should be
 #'  modified in-place of or replaced wholesale.
-#'
+#' @examples
+#' model <- cox_reg(penalty = 10, mixture = 0.1)
+#' model
+#' update(model, penalty = 1)
+#' update(model, penalty = 1, fresh = TRUE)
 #' @method update cox_reg
 #' @rdname cox_reg
 #' @export
 update.cox_reg <-
-  function(object, fresh = FALSE, ...) {
-    update_dot_check(...)
-    args <-
-      list(
-      )
+  function(object,
+           parameters = NULL,
+           penalty = NULL, mixture = NULL,
+           fresh = FALSE, ...) {
+
+    eng_args <- update_engine_parameters(object$eng_args, ...)
+
+    if (!is.null(parameters)) {
+      parameters <- check_final_param(parameters)
+    }
+    args <- list(
+      penalty = enquo(penalty),
+      mixture = enquo(mixture)
+    )
+
+    args <- update_main_parameters(args, parameters)
 
     if (fresh) {
       object$args <- args
+      object$eng_args <- eng_args
     } else {
       null_args <- map_lgl(args, null_value)
       if (any(null_args))
         args <- args[!null_args]
       if (length(args) > 0)
         object$args[names(args)] <- args
+      if (length(eng_args) > 0)
+        object$eng_args[names(eng_args)] <- eng_args
     }
 
     new_model_spec(
