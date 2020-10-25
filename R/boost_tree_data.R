@@ -42,6 +42,24 @@ make_boost_tree_mboost <- function() {
     has_submodel = FALSE
   )
 
+  set_model_arg(
+    model = "boost_tree",
+    eng = "mboost",
+    parsnip = "min_n",
+    original = "minsplit",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = FALSE
+  )
+
+  set_model_arg(
+    model = "boost_tree",
+    eng = "mboost",
+    parsnip = "loss_reduction",
+    original = "mincriterion",
+    func = list(pkg = "dials", fun = "loss_reduction"),
+    has_submodel = FALSE
+  )
+
   parsnip::set_fit(
     model = "boost_tree",
     eng = "mboost",

@@ -154,6 +154,60 @@ test_that('primary arguments', {
                )
   )
 
+  # min_n ------------------------------------------------------
+  min_n <- boost_tree(min_n = 10) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(min_n)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 minsplit = new_empty_quosure(10),
+                 family = mboost::CoxPH()
+               )
+  )
+
+  min_n_v <- boost_tree(min_n = varying()) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(min_n_v)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 minsplit = new_empty_quosure(varying()),
+                 family = mboost::CoxPH()
+               )
+  )
+
+  # loss_reduction ------------------------------------------------------
+  loss_reduction <- boost_tree(loss_reduction = 0.2) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(loss_reduction)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 mincriterion = new_empty_quosure(0.2),
+                 family = mboost::CoxPH()
+               )
+  )
+
+  loss_reduction_v <- boost_tree(loss_reduction = varying()) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(loss_reduction_v)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 mincriterion = new_empty_quosure(varying()),
+                 family = mboost::CoxPH()
+               )
+  )
+
 })
 
 # ------------------------------------------------------------------------------
@@ -180,9 +234,25 @@ test_that('updating', {
     set_mode("censored regression") %>%
     set_engine("mboost")
 
+  expr4 <- boost_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+  expr4_exp <- boost_tree(min_n = 10) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expr5 <- boost_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+  expr5_exp <- boost_tree(loss_reduction = 10) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
   expect_equal(update(expr1, tree_depth = 10), expr1_exp)
   expect_equal(update(expr2, trees = 10), expr2_exp)
   expect_equal(update(expr3, mtry = 10), expr3_exp)
+  expect_equal(update(expr4, min_n = 10), expr4_exp)
+  expect_equal(update(expr5, loss_reduction = 10), expr5_exp)
 
 })
 
