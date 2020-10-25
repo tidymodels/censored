@@ -18,6 +18,15 @@ make_boost_tree_mboost <- function() {
   set_model_arg(
     model = "boost_tree",
     eng = "mboost",
+    parsnip = "trees",
+    original = "mstop",
+    func = list(pkg = "dials", fun = "trees"),
+    has_submodel = FALSE
+  )
+
+  set_model_arg(
+    model = "boost_tree",
+    eng = "mboost",
     parsnip = "tree_depth",
     original = "maxdepth",
     func = list(pkg = "dials", fun = "tree_depth"),

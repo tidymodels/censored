@@ -73,6 +73,7 @@ test_that('linear_pred predictions', {
 
 test_that('primary arguments', {
 
+  # tree_depth ------------------------------------------------------
   tree_depth <- boost_tree(tree_depth = 3) %>%
     set_mode("censored regression") %>%
     set_engine("mboost")
@@ -99,6 +100,33 @@ test_that('primary arguments', {
                )
   )
 
+  # trees -----------------------------------------------------------
+  trees <- boost_tree(trees = 1000) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(trees)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 mstop = new_empty_quosure(1000),
+                 family = mboost::CoxPH()
+               )
+  )
+
+  trees_v <- boost_tree(trees = varying()) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
+  expect_equal(translate(trees_v)$method$fit$args,
+               list(
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 mstop = new_empty_quosure(varying()),
+                 family = mboost::CoxPH()
+               )
+  )
+
 
 })
 
@@ -112,7 +140,15 @@ test_that('updating', {
     set_mode("censored regression") %>%
     set_engine("mboost")
 
+  expr2     <- boost_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+  expr2_exp <- boost_tree(trees = 10) %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost")
+
   expect_equal(update(expr1, tree_depth = 10), expr1_exp)
+  expect_equal(update(expr2, trees = 10), expr2_exp)
 
 })
 
