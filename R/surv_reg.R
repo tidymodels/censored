@@ -1,6 +1,6 @@
 #' General Interface for Parametric Survival Models
 #'
-#' `surv_reg()` is a way to generate a _specification_ of a model
+#' `survival_reg()` is a way to generate a _specification_ of a model
 #'  before fitting and allows the model to be created using
 #'  R. The main argument for the
 #'  model is:
@@ -14,7 +14,7 @@
 #'  functions.
 #'
 #' The data given to the function are not saved and are only used
-#'  to determine the _mode_ of the model. For `surv_reg()`,the
+#'  to determine the _mode_ of the model. For `survival_reg()`,the
 #'  mode will always be "regression".
 #'
 #'  Since survival models typically involve censoring (and require the use of
@@ -31,7 +31,7 @@
 #' @param dist A character string for the outcome distribution. "weibull" is
 #'  the default.
 #' @details
-#' For `surv_reg()`, the mode will always be "regression".
+#' For `survival_reg()`, the mode will always be "regression".
 #'
 #' The model can be created using the `fit()` function using the
 #'  following _engines_:
@@ -43,19 +43,19 @@
 #' @references Jackson, C. (2016). `flexsurv`: A Platform for Parametric Survival
 #'  Modeling in R. _Journal of Statistical Software_, 70(8), 1 - 33.
 #' @examples
-#' surv_reg()
+#' survival_reg()
 #' # Parameters can be represented by a placeholder:
-#' surv_reg(dist = varying())
+#' survival_reg(dist = varying())
 #'
 #' @export
-surv_reg <- function(mode = "regression", dist = NULL) {
+survival_reg <- function(mode = "regression", dist = NULL) {
 
   args <- list(
     dist = enquo(dist)
   )
 
   new_model_spec(
-    "surv_reg",
+    "survival_reg",
     args = args,
     eng_args = NULL,
     mode = mode,
@@ -65,7 +65,7 @@ surv_reg <- function(mode = "regression", dist = NULL) {
 }
 
 #' @export
-print.surv_reg <- function(x, ...) {
+print.survival_reg <- function(x, ...) {
   cat("Parametric Survival Regression Model Specification (", x$mode, ")\n\n", sep = "")
   model_printer(x, ...)
 
@@ -87,13 +87,13 @@ print.surv_reg <- function(x, ...) {
 #' @inheritParams parsnip::update.boost_tree
 #' @param object A survival regression model specification.
 #' @examples
-#' model <- surv_reg(dist = "weibull")
+#' model <- survival_reg(dist = "weibull")
 #' model
 #' update(model, dist = "lnorm")
-#' @method update surv_reg
-#' @rdname surv_reg
+#' @method update survival_reg
+#' @rdname survival_reg
 #' @export
-update.surv_reg <- function(object, parameters = NULL, dist = NULL, fresh = FALSE, ...) {
+update.survival_reg <- function(object, parameters = NULL, dist = NULL, fresh = FALSE, ...) {
 
   eng_args <- update_engine_parameters(object$eng_args, ...)
 
@@ -121,7 +121,7 @@ update.surv_reg <- function(object, parameters = NULL, dist = NULL, fresh = FALS
   }
 
   new_model_spec(
-    "surv_reg",
+    "survival_reg",
     args = object$args,
     eng_args = object$eng_args,
     mode = object$mode,
@@ -134,7 +134,7 @@ update.surv_reg <- function(object, parameters = NULL, dist = NULL, fresh = FALS
 # ------------------------------------------------------------------------------
 
 #' @export
-translate.surv_reg <- function(x, engine = x$engine, ...) {
+translate.survival_reg <- function(x, engine = x$engine, ...) {
   if (is.null(engine)) {
     message("Used `engine = 'survival'` for translation.")
     engine <- "survival"
@@ -145,7 +145,7 @@ translate.surv_reg <- function(x, engine = x$engine, ...) {
 
 # ------------------------------------------------------------------------------
 
-check_args.surv_reg <- function(object) {
+check_args.survival_reg <- function(object) {
 
   if (object$engine == "flexsurv") {
 
