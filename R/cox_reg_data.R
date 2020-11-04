@@ -47,14 +47,15 @@ make_cox_reg_survival <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "cox_reg",
     eng = "survival",
     mode = "censored regression",
     options = list(
-      predictor_indicators = "traditional",
+      predictor_indicators = "none",
       compute_intercept = FALSE,
-      remove_intercept = FALSE
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
@@ -133,14 +134,15 @@ make_cox_reg_glmnet <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "cox_reg",
     eng = "glmnet",
     mode = "censored regression",
     options = list(
       predictor_indicators = "traditional",
       compute_intercept = TRUE,
-      remove_intercept = TRUE
+      remove_intercept = TRUE,
+      allow_sparse_x = TRUE
     )
   )
 

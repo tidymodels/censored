@@ -28,14 +28,15 @@ make_rand_forest_party <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "rand_forest",
     eng = "party",
     mode = "censored regression",
     options = list(
       predictor_indicators = "traditional",
       compute_intercept = FALSE,
-      remove_intercept = FALSE
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 

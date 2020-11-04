@@ -27,14 +27,15 @@ make_bag_tree_ipred <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "bag_tree",
     eng = "ipred",
     mode = "censored regression",
     options = list(
       predictor_indicators = "traditional",
       compute_intercept = FALSE,
-      remove_intercept = FALSE
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
