@@ -72,14 +72,15 @@ make_boost_tree_mboost <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "boost_tree",
     eng = "mboost",
     mode = "censored regression",
     options = list(
-      predictor_indicators = "traditional",
+      predictor_indicators = "none",
       compute_intercept = FALSE,
-      remove_intercept = FALSE
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 

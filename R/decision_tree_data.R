@@ -27,14 +27,15 @@ make_decision_tree_rpart <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "decision_tree",
     eng = "rpart",
     mode = "censored regression",
     options = list(
-      predictor_indicators = "traditional",
+      predictor_indicators = "none",
       compute_intercept = FALSE,
-      remove_intercept = FALSE
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
@@ -95,14 +96,15 @@ make_decision_tree_party <- function() {
     )
   )
 
-  set_encoding(
+  parsnip::set_encoding(
     model = "decision_tree",
     eng = "party",
     mode = "censored regression",
     options = list(
-      predictor_indicators = "traditional",
+      predictor_indicators = "none",
       compute_intercept = FALSE,
-      remove_intercept = FALSE
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
     )
   )
 
