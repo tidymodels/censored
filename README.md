@@ -23,7 +23,7 @@ developmental branch of parsnip as well.
 
 ``` r
 # install.packages("devtools")
-remotes::install_github("tidymodels/parsnip#359")
+remotes::install_github("tidymodels/parsnip#396")
 devtools::install_github("EmilHvitfeldt/survnip")
 ```
 
@@ -40,16 +40,6 @@ fitted on the `lung` data set.
 ``` r
 library(survnip)
 #> Loading required package: parsnip
-#> Registered S3 methods overwritten by 'survnip':
-#>   method             from   
-#>   print.surv_reg     parsnip
-#>   translate.surv_reg parsnip
-#>   update.surv_reg    parsnip
-#> 
-#> Attaching package: 'survnip'
-#> The following object is masked from 'package:parsnip':
-#> 
-#>     surv_reg
 library(survival)
 
 cox_mod <-
@@ -169,7 +159,7 @@ here we see that the linear predictor of the first observation is
 ## Prediction type table
 
 | alias          | engine   | survival | linear\_pred | time  |
-| :------------- | :------- | :------- | :----------- | :---- |
+|:---------------|:---------|:---------|:-------------|:------|
 | boost\_tree    | mboost   | TRUE     | TRUE         | FALSE |
 | decision\_tree | rpart    | TRUE     | FALSE        | TRUE  |
 | decision\_tree | party    | TRUE     | FALSE        | TRUE  |

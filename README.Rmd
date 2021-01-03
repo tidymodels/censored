@@ -28,7 +28,7 @@ This package is still in early development. You need to install the developmenta
 
 ``` {.r}
 # install.packages("devtools")
-remotes::install_github("tidymodels/parsnip#359")
+remotes::install_github("tidymodels/parsnip#396")
 devtools::install_github("EmilHvitfeldt/survnip")
 ```
 
