@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • survnip</title>
+<title>Number of days before a movie grosses $1M USD — time_to_million • survnip</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Number of days before a movie grosses $1M USD — time_to_million" />
+<meta property="og:description" content="These data are a somewhat biased random sample of 551 movies released between
+2015 and 2018. Columns include" />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,54 +107,50 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Number of days before a movie grosses $1M USD</h1>
+    <small class="dont-index">Source: <a href='https://github.com/EmilHvitfeldt/survnip/blob/master/R/data.R'><code>R/data.R</code></a></small>
+    <div class="hidden name"><code>time_to_million.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>These data are a somewhat biased random sample of 551 movies released between
+2015 and 2018. Columns include</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="cox_reg.html">cox_reg()</a></code> <code><a href="cox_reg.html">update(<i>&lt;cox_reg&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>General Interface for Cox Models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="survival_reg.html">survival_reg()</a></code> <code><a href="survival_reg.html">update(<i>&lt;survival_reg&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>General Interface for Parametric Survival Models</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="time_to_million.html">time_to_million</a></code> </p>
-        </td>
-        <td><p>Number of days before a movie grosses $1M USD</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    
+
+<dt>time_to_million</dt><dd><p>a tibble</p></dd>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    
+<ul>
+<li><p><code>title</code>: a character string for the movie title.</p></li>
+<li><p><code>time</code>: number of days until the movie earns a million US dollars.</p></li>
+<li><p><code>event</code>: a binary value for whether the movie reached this goal. About 94%
+of the movies had observed events.</p></li>
+<li><p><code>released</code>: a date field for the release date.</p></li>
+<li><p><code>distributor</code>: a factor with the the name of the distributor.</p></li>
+<li><p><code>released_theaters</code>: the maximum number of theaters where the movie played
+in the first two weeks of release.</p></li>
+<li><p><code>year</code>: the release year.</p></li>
+<li><p><code>rated</code>: a factor for the Motion Picture Association film rating.</p></li>
+<li><p><code>runtime</code>: the length of the movie (in minutes).</p></li>
+<li><p>A set of indicators columns for the movie genre (e.g. <code>action</code>, <code>crime</code>,
+etc.).</p></li>
+<li><p>A set of indicators for the language (e.g., <code>english</code>, <code>hindi</code>, etc.).</p></li>
+<li><p>A set of indicators for countries where the movie was released (e.g., <code>uk</code>,
+<code>japan</code>, etc.)</p></li>
+</ul>
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
