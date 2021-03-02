@@ -71,15 +71,15 @@
 <a href="#survnip" class="anchor"></a>survnip</h1></div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p><code>survnip</code> (survival + parsnip) is a “<code>parsnip</code>-adjacent” packages with model definitions for survival analysis packages.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>This package is still in early development. You need to install the developmental branch of parsnip as well.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"tidymodels/parsnip#396"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"EmilHvitfeldt/survnip"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co"># install.packages("pak")</span>
+<span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"EmilHvitfeldt/survnip"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="prediction-types" class="section level2">
 <h2 class="hasAnchor">
@@ -99,7 +99,7 @@
 <span class="va">cox_mod</span>
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Fit time:  18ms </span>
+<span class="co">#&gt; Fit time:  10ms </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, </span>
 <span class="co">#&gt;     data = data, x = TRUE)</span>
@@ -145,18 +145,18 @@
 
 <span class="va">pred_vals_survival</span>
 <span class="co">#&gt; # A tibble: 228 x 1</span>
-<span class="co">#&gt;        .pred_survival</span>
-<span class="co">#&gt;    &lt;list&lt;tbl_df[,2]&gt;&gt;</span>
-<span class="co">#&gt;  1            [2 × 2]</span>
-<span class="co">#&gt;  2            [2 × 2]</span>
-<span class="co">#&gt;  3            [2 × 2]</span>
-<span class="co">#&gt;  4            [2 × 2]</span>
-<span class="co">#&gt;  5            [2 × 2]</span>
-<span class="co">#&gt;  6            [2 × 2]</span>
-<span class="co">#&gt;  7            [2 × 2]</span>
-<span class="co">#&gt;  8            [2 × 2]</span>
-<span class="co">#&gt;  9            [2 × 2]</span>
-<span class="co">#&gt; 10            [2 × 2]</span>
+<span class="co">#&gt;    .pred_survival</span>
+<span class="co">#&gt;    &lt;list&lt;tibble&gt;&gt;</span>
+<span class="co">#&gt;  1        [2 × 2]</span>
+<span class="co">#&gt;  2        [2 × 2]</span>
+<span class="co">#&gt;  3        [2 × 2]</span>
+<span class="co">#&gt;  4        [2 × 2]</span>
+<span class="co">#&gt;  5        [2 × 2]</span>
+<span class="co">#&gt;  6        [2 × 2]</span>
+<span class="co">#&gt;  7        [2 × 2]</span>
+<span class="co">#&gt;  8        [2 × 2]</span>
+<span class="co">#&gt;  9        [2 × 2]</span>
+<span class="co">#&gt; 10        [2 × 2]</span>
 <span class="co">#&gt; # … with 218 more rows</span>
 
 <span class="va">pred_vals_survival</span><span class="op">$</span><span class="va">.pred_survival</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
@@ -284,7 +284,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/EmilHvitfeldt/survnip/actions"><img src="https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://github.com/EmilHvitfeldt/survnip/actions"><img src="https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master"><img src="https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 </ul>
