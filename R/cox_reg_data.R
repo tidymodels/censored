@@ -129,7 +129,7 @@ make_cox_reg_glmnet <- function() {
     value = list(
       interface = "matrix",
       protect = c("x", "y", "weights"),
-      func = c(pkg = "survnip", fun = "glmnet_fit_wrapper"),
+      func = c(pkg = "censored", fun = "glmnet_fit_wrapper"),
       defaults = list()
     )
   )
@@ -215,7 +215,7 @@ make_cox_reg_glmnet <- function() {
 
 # nocov end
 
-#' Wrapper for glmnet for survnip
+#' Wrapper for glmnet for censored
 #'
 #' Not to be used directly by users
 #'

@@ -1,20 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# survnip
+# censored
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions)
+[![R-CMD-check](https://github.com/EmilHvitfeldt/censored/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/censored/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
+coverage](https://codecov.io/gh/EmilHvitfeldt/censored/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/censored?branch=master)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
 <!-- badges: end -->
 
-`survnip` (survival + parsnip) is a “`parsnip`-adjacent” packages with
-model definitions for survival analysis packages.
+`censored` is a “`parsnip`-adjacent” packages with model definitions for
+censored regression and survival analysis models.
 
 ## Installation
 
@@ -23,7 +23,7 @@ developmental branch of parsnip as well.
 
 ``` r
 # install.packages("pak")
-pak::pak("EmilHvitfeldt/survnip")
+pak::pak("EmilHvitfeldt/censored")
 ```
 
 ## Prediction Types
@@ -37,7 +37,7 @@ To showcase these the differences, here is a simple Cox regression model
 fitted on the `lung` data set.
 
 ``` r
-library(survnip)
+library(censored)
 #> Loading required package: parsnip
 library(survival)
 
@@ -49,7 +49,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  10ms 
+#> Fit time:  18ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, x = TRUE)
@@ -87,7 +87,7 @@ predict(cox_mod, type = "time", new_data = lung)
 #> # … with 218 more rows
 ```
 
-Here we see that the first patient is predicted to have 342.355592 days
+Here we see that the first patient is predicted to have 342.36 days
 left.
 
 ### survival
@@ -157,12 +157,14 @@ here we see that the linear predictor of the first observation is
 
 ## Prediction type table
 
-| alias          | engine   | survival | linear\_pred | time  |
-| :------------- | :------- | :------- | :----------- | :---- |
-| boost\_tree    | mboost   | TRUE     | TRUE         | FALSE |
-| decision\_tree | rpart    | TRUE     | FALSE        | TRUE  |
-| decision\_tree | party    | TRUE     | FALSE        | TRUE  |
-| rand\_forest   | party    | TRUE     | FALSE        | TRUE  |
-| bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  |
-| cox\_reg       | survival | TRUE     | TRUE         | TRUE  |
-| cox\_reg       | glmnet   | TRUE     | TRUE         | FALSE |
+| alias          | engine   | survival | linear\_pred | time  | numeric | quantile |
+|:---------------|:---------|:---------|:-------------|:------|:--------|:---------|
+| boost\_tree    | mboost   | TRUE     | TRUE         | FALSE | FALSE   | FALSE    |
+| decision\_tree | rpart    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
+| decision\_tree | party    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
+| rand\_forest   | party    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
+| bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
+| cox\_reg       | survival | TRUE     | TRUE         | TRUE  | FALSE   | FALSE    |
+| cox\_reg       | glmnet   | TRUE     | TRUE         | FALSE | FALSE   | FALSE    |
+| survival\_reg  | survival | FALSE    | FALSE        | FALSE | TRUE    | TRUE     |
+| survival\_reg  | flexsurv | FALSE    | FALSE        | FALSE | TRUE    | TRUE     |

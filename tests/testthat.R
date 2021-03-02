@@ -1,4 +1,4 @@
 library(testthat)
-library(survnip)
+library(censored)
 
-test_check("survnip")
+test_check("censored")

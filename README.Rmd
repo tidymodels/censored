@@ -13,16 +13,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-# survnip
+# censored
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions)
-[![Codecov test coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
+[![R-CMD-check](https://github.com/EmilHvitfeldt/censored/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/censored/actions)
+[![Codecov test coverage](https://codecov.io/gh/EmilHvitfeldt/censored/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/censored?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) 
 
 <!-- badges: end -->
 
-`survnip` (survival + parsnip) is a "`parsnip`-adjacent" packages with model definitions for survival analysis packages.
+`censored` is a “`parsnip`-adjacent” packages with
+model definitions for censored regression and survival analysis models.
 
 ## Installation
 
@@ -30,7 +31,7 @@ This package is still in early development. You need to install the developmenta
 
 ``` {.r}
 # install.packages("pak")
-pak::pak("EmilHvitfeldt/survnip")
+pak::pak("EmilHvitfeldt/censored")
 ```
 
 ## Prediction Types
@@ -40,7 +41,7 @@ The addition of censored regression comes with changes. One of these changes is 
 To showcase these the differences, here is a simple Cox regression model fitted on the `lung` data set.
 
 ```{r}
-library(survnip)
+library(censored)
 library(survival)
 
 cox_mod <-
@@ -59,7 +60,7 @@ when we specify `type = "time"` then we get back the predicted survival time of 
 predict(cox_mod, type = "time", new_data = lung)
 ```
 
-Here we see that the first patient is predicted to have `r predict(cox_mod, type = "time", new_data = lung)$.pred_time[1]` days left.
+Here we see that the first patient is predicted to have `r round(predict(cox_mod, type = "time", new_data = lung)$.pred_time[1], 2)` days left.
 
 ### survival
 
@@ -92,7 +93,7 @@ here we see that the linear predictor of the first observation is  `r round(pred
 ## Prediction type table 
 
 ```{r, echo=FALSE, message=FALSE}
-library(survnip)
+library(censored)
 library(dplyr)
 library(purrr)
 library(tidyr)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cox_reg_data.R
 \name{glmnet_fit_wrapper}
 \alias{glmnet_fit_wrapper}
-\title{Wrapper for glmnet for survnip}
+\title{Wrapper for glmnet for censored}
 \usage{
 glmnet_fit_wrapper(x, y, alpha = 1, lambda = NULL, ...)
 }
