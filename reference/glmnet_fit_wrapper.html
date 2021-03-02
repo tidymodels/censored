@@ -126,8 +126,7 @@
       <th>x</th>
       <td><p>input matrix, of dimension nobs x nvars; each row is an observation
 vector. Can be in sparse matrix format (inherit from class
-<code>"sparseMatrix"</code> as in package <code>Matrix</code>; not yet available for
-<code>family="cox"</code>)</p></td>
+<code>"sparseMatrix"</code> as in package <code>Matrix</code>)</p></td>
     </tr>
     <tr>
       <th>y</th>
@@ -137,13 +136,11 @@ should be either a factor with two levels, or a two-column matrix of counts
 or proportions (the second column is treated as the target class; for a
 factor, the last level in alphabetical order is the target class). For
 <code>family="multinomial"</code>, can be a <code>nc&gt;=2</code> level factor, or a matrix
-with <code>nc</code> columns of counts or proportions.  For either
+with <code>nc</code> columns of counts or proportions. For either
 <code>"binomial"</code> or <code>"multinomial"</code>, if <code>y</code> is presented as a
-vector, it will be coerced into a factor. For <code>family="cox"</code>, <code>y</code>
-should be a two-column matrix with columns named 'time' and 'status'. The
-latter is a binary variable, with '1' indicating death, and '0' indicating
-right censored. The function <code><a href='https://rdrr.io/pkg/survival/man/Surv.html'>Surv()</a></code> in package <span class="pkg">survival</span>
-produces such a matrix. For <code>family="mgaussian"</code>, <code>y</code> is a matrix
+vector, it will be coerced into a factor. For <code>family="cox"</code>, preferably
+a <code>Surv</code> object from the survival package: see Details section for
+more information. For <code>family="mgaussian"</code>, <code>y</code> is a matrix
 of quantitative responses.</p></td>
     </tr>
     <tr>
