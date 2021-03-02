@@ -48,7 +48,7 @@ test_that('survival predictions', {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   expect_error(predict(f_fit, lung2, type = "survival", penalty = 0.01),
-               'argument ".time" is missing, with no default')
+               "When using 'type' values of 'survival' or 'hazard' are given")
   f_pred <- predict(f_fit, lung2, type = "survival", penalty = 0.01, .time = 100:200)
 
   lp <- predict(exp_f_fit, as.matrix(lung2[, c(4, 6)]), s = 0.01, type = "link")
