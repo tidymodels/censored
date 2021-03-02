@@ -34,7 +34,7 @@ Imports:
 URL: https://github.com/EmilHvitfeldt/survnip
 BugReports: https://github.com/EmilHvitfeldt/survnip/issues
 Remotes: 
-    tidymodels/parsnip#396
+    tidymodels/parsnip
 Suggests: 
     testthat,
     glmnet,
