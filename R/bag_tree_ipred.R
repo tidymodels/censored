@@ -14,6 +14,7 @@ make_bag_tree_ipred <- function() {
 
   parsnip::set_model_engine("bag_tree", mode = "censored regression", eng = "ipred")
   parsnip::set_dependency("bag_tree", eng = "ipred", pkg =  "ipred")
+  parsnip::set_dependency("bag_tree", eng = "ipred", pkg = "censored")
 
   parsnip::set_fit(
     model = "bag_tree",
