@@ -9,8 +9,7 @@ glmnet_fit_wrapper(x, y, alpha = 1, lambda = NULL, ...)
 \arguments{
 \item{x}{input matrix, of dimension nobs x nvars; each row is an observation
 vector. Can be in sparse matrix format (inherit from class
-\code{"sparseMatrix"} as in package \code{Matrix}; not yet available for
-\code{family="cox"})}
+\code{"sparseMatrix"} as in package \code{Matrix})}
 
 \item{y}{response variable. Quantitative for \code{family="gaussian"}, or
 \code{family="poisson"} (non-negative counts). For \code{family="binomial"}
@@ -18,13 +17,11 @@ should be either a factor with two levels, or a two-column matrix of counts
 or proportions (the second column is treated as the target class; for a
 factor, the last level in alphabetical order is the target class). For
 \code{family="multinomial"}, can be a \code{nc>=2} level factor, or a matrix
-with \code{nc} columns of counts or proportions.  For either
+with \code{nc} columns of counts or proportions. For either
 \code{"binomial"} or \code{"multinomial"}, if \code{y} is presented as a
-vector, it will be coerced into a factor. For \code{family="cox"}, \code{y}
-should be a two-column matrix with columns named 'time' and 'status'. The
-latter is a binary variable, with '1' indicating death, and '0' indicating
-right censored. The function \code{Surv()} in package \pkg{survival}
-produces such a matrix. For \code{family="mgaussian"}, \code{y} is a matrix
+vector, it will be coerced into a factor. For \code{family="cox"}, preferably
+a \code{Surv} object from the survival package: see Details section for
+more information. For \code{family="mgaussian"}, \code{y} is a matrix
 of quantitative responses.}
 
 \item{alpha}{The elasticnet mixing parameter, with \eqn{0\le\alpha\le 1}.

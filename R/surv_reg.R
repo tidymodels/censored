@@ -27,11 +27,11 @@
 #'
 #' @inheritParams parsnip::boost_tree
 #' @param mode A single character string for the type of model.
-#'  The only possible value for this model is "regression".
+#'  The only possible value for this model is "censored regression".
 #' @param dist A character string for the outcome distribution. "weibull" is
 #'  the default.
 #' @details
-#' For `survival_reg()`, the mode will always be "regression".
+#' For `survival_reg()`, the mode will always be "censored regression".
 #'
 #' The model can be created using the `fit()` function using the
 #'  following _engines_:
@@ -48,7 +48,7 @@
 #' survival_reg(dist = varying())
 #'
 #' @export
-survival_reg <- function(mode = "regression", dist = NULL) {
+survival_reg <- function(mode = "censored regression", dist = NULL) {
 
   args <- list(
     dist = enquo(dist)

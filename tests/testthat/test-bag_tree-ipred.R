@@ -53,7 +53,7 @@ test_that('survival predictions', {
   set.seed(1234)
   expect_error(f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
-               'argument ".time" is missing, with no default')
+               "When using 'type' values of 'survival' or 'hazard' are given")
   f_pred <- predict(f_fit, lung, type = "survival", .time = 100:200)
   exp_f_pred <- map(predict(exp_f_fit, lung),
                     ~ summary(.x, times = c(100:200))$surv)

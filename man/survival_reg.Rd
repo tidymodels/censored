@@ -5,13 +5,13 @@
 \alias{update.survival_reg}
 \title{General Interface for Parametric Survival Models}
 \usage{
-survival_reg(mode = "regression", dist = NULL)
+survival_reg(mode = "censored regression", dist = NULL)
 
 \method{update}{survival_reg}(object, parameters = NULL, dist = NULL, fresh = FALSE, ...)
 }
 \arguments{
 \item{mode}{A single character string for the type of model.
-The only possible value for this model is "regression".}
+The only possible value for this model is "censored regression".}
 
 \item{dist}{A character string for the outcome distribution. "weibull" is
 the default.}
@@ -58,7 +58,7 @@ Also, for the \code{flexsurv::flexsurvfit} engine, the typical
 \code{strata} function cannot be used. To achieve the same effect,
 the extra parameter roles can be used (as described above).
 
-For \code{survival_reg()}, the mode will always be "regression".
+For \code{survival_reg()}, the mode will always be "censored regression".
 
 The model can be created using the \code{fit()} function using the
 following \emph{engines}:
