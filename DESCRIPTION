@@ -40,4 +40,5 @@ Suggests:
     glmnet,
     rpart,
     riskRegression,
-    party
+    party,
+    covr

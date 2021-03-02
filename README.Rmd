@@ -16,8 +16,10 @@ knitr::opts_chunk$set(
 # survnip
 
 <!-- badges: start -->
-[![R build status](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions) [![Codecov test coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
+[![R-CMD-check](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions)
+[![Codecov test coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) 
+
 <!-- badges: end -->
 
 `survnip` (survival + parsnip) is a "`parsnip`-adjacent" packages with model definitions for survival analysis packages.
@@ -27,9 +29,8 @@ knitr::opts_chunk$set(
 This package is still in early development. You need to install the developmental branch of parsnip as well.
 
 ``` {.r}
-# install.packages("devtools")
-remotes::install_github("tidymodels/parsnip#396")
-devtools::install_github("EmilHvitfeldt/survnip")
+# install.packages("pak")
+pak::pak("EmilHvitfeldt/survnip")
 ```
 
 ## Prediction Types
