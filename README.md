@@ -5,12 +5,12 @@
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions)
+[![R-CMD-check](https://github.com/EmilHvitfeldt/survnip/workflows/R-CMD-check/badge.svg)](https://github.com/EmilHvitfeldt/survnip/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/EmilHvitfeldt/survnip/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/survnip?branch=master)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
 <!-- badges: end -->
 
 `survnip` (survival + parsnip) is a “`parsnip`-adjacent” packages with
@@ -22,9 +22,8 @@ This package is still in early development. You need to install the
 developmental branch of parsnip as well.
 
 ``` r
-# install.packages("devtools")
-remotes::install_github("tidymodels/parsnip#396")
-devtools::install_github("EmilHvitfeldt/survnip")
+# install.packages("pak")
+pak::pak("EmilHvitfeldt/survnip")
 ```
 
 ## Prediction Types
@@ -50,7 +49,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  18ms 
+#> Fit time:  10ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, x = TRUE)
@@ -105,18 +104,18 @@ pred_vals_survival <- predict(cox_mod,
 
 pred_vals_survival
 #> # A tibble: 228 x 1
-#>        .pred_survival
-#>    <list<tbl_df[,2]>>
-#>  1            [2 × 2]
-#>  2            [2 × 2]
-#>  3            [2 × 2]
-#>  4            [2 × 2]
-#>  5            [2 × 2]
-#>  6            [2 × 2]
-#>  7            [2 × 2]
-#>  8            [2 × 2]
-#>  9            [2 × 2]
-#> 10            [2 × 2]
+#>    .pred_survival
+#>    <list<tibble>>
+#>  1        [2 × 2]
+#>  2        [2 × 2]
+#>  3        [2 × 2]
+#>  4        [2 × 2]
+#>  5        [2 × 2]
+#>  6        [2 × 2]
+#>  7        [2 × 2]
+#>  8        [2 × 2]
+#>  9        [2 × 2]
+#> 10        [2 × 2]
 #> # … with 218 more rows
 
 pred_vals_survival$.pred_survival[[1]]
@@ -159,7 +158,7 @@ here we see that the linear predictor of the first observation is
 ## Prediction type table
 
 | alias          | engine   | survival | linear\_pred | time  |
-|:---------------|:---------|:---------|:-------------|:------|
+| :------------- | :------- | :------- | :----------- | :---- |
 | boost\_tree    | mboost   | TRUE     | TRUE         | FALSE |
 | decision\_tree | rpart    | TRUE     | FALSE        | TRUE  |
 | decision\_tree | party    | TRUE     | FALSE        | TRUE  |
