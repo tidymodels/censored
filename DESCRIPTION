@@ -1,4 +1,4 @@
-Package: survnip
+Package: censored
 Title: Parsnip Wrappers for Survival Models
 Version: 0.0.0.9000
 Authors@R: 
@@ -31,8 +31,8 @@ Imports:
     mboost,
     ipred,
     flexsurv
-URL: https://github.com/EmilHvitfeldt/survnip
-BugReports: https://github.com/EmilHvitfeldt/survnip/issues
+URL: https://github.com/EmilHvitfeldt/censored
+BugReports: https://github.com/EmilHvitfeldt/censored/issues
 Remotes: 
     tidymodels/parsnip
 Suggests: 
