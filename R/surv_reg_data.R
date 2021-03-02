@@ -11,10 +11,10 @@
 
 make_surv_reg_survival <- function() {
   parsnip::set_new_model("survival_reg")
-  parsnip::set_model_mode("survival_reg", "regression")
+  parsnip::set_model_mode("survival_reg", "censored regression")
 
   # ------------------------------------------------------------------------------
-  parsnip::set_model_engine("survival_reg", mode = "regression", eng = "survival")
+  parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "survival")
   parsnip::set_dependency("survival_reg", eng = "survival", pkg = "survival")
 
   parsnip::set_model_arg(
@@ -29,7 +29,7 @@ make_surv_reg_survival <- function() {
   parsnip::set_fit(
     model = "survival_reg",
     eng = "survival",
-    mode = "regression",
+    mode = "censored regression",
     value = list(
       interface = "formula",
       protect = c("formula", "data", "weights"),
@@ -41,7 +41,7 @@ make_surv_reg_survival <- function() {
   parsnip::set_encoding(
     model = "survival_reg",
     eng = "survival",
-    mode = "regression",
+    mode = "censored regression",
     options = list(
       predictor_indicators = "none",
       compute_intercept = FALSE,
@@ -53,7 +53,7 @@ make_surv_reg_survival <- function() {
   parsnip::set_pred(
     model = "survival_reg",
     eng = "survival",
-    mode = "regression",
+    mode = "censored regression",
     type = "numeric",
     value = list(
       pre = NULL,
@@ -71,7 +71,7 @@ make_surv_reg_survival <- function() {
   parsnip::set_pred(
     model = "survival_reg",
     eng = "survival",
-    mode = "regression",
+    mode = "censored regression",
     type = "quantile",
     value = list(
       pre = NULL,
@@ -89,7 +89,7 @@ make_surv_reg_survival <- function() {
 }
 
 make_surv_reg_flexsurv <- function() {
-  parsnip::set_model_engine("survival_reg", mode = "regression", eng = "flexsurv")
+  parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "flexsurv")
   parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "flexsurv")
   parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "survival")
 
@@ -105,7 +105,7 @@ make_surv_reg_flexsurv <- function() {
   parsnip::set_fit(
     model = "survival_reg",
     eng = "flexsurv",
-    mode = "regression",
+    mode = "censored regression",
     value = list(
       interface = "formula",
       protect = c("formula", "data", "weights"),
@@ -117,7 +117,7 @@ make_surv_reg_flexsurv <- function() {
   parsnip::set_encoding(
     model = "survival_reg",
     eng = "flexsurv",
-    mode = "regression",
+    mode = "censored regression",
     options = list(
       predictor_indicators = "none",
       compute_intercept = FALSE,
@@ -129,7 +129,7 @@ make_surv_reg_flexsurv <- function() {
   parsnip::set_pred(
     model = "survival_reg",
     eng = "flexsurv",
-    mode = "regression",
+    mode = "censored regression",
     type = "numeric",
     value = list(
       pre = NULL,
@@ -147,7 +147,7 @@ make_surv_reg_flexsurv <- function() {
   parsnip::set_pred(
     model = "survival_reg",
     eng = "flexsurv",
-    mode = "regression",
+    mode = "censored regression",
     type = "quantile",
     value = list(
       pre = NULL,

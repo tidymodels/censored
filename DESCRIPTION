@@ -10,7 +10,7 @@ Authors@R:
 Description: Bindings for additional models for use with the 'parsnip' package. 
 License: MIT + file LICENSE
 Depends:
-    parsnip (>= 0.1.4),
+    parsnip (>= 0.1.5.9001),
     R (>= 2.10)
 Encoding: UTF-8
 LazyData: true
