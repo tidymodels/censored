@@ -55,7 +55,7 @@ make_surv_reg_survival <- function() {
     model = "survival_reg",
     eng = "survival",
     mode = "censored regression",
-    type = "numeric",
+    type = "time",
     value = list(
       pre = NULL,
       post = NULL,
@@ -167,7 +167,7 @@ make_surv_reg_flexsurv <- function() {
     model = "survival_reg",
     eng = "flexsurv",
     mode = "censored regression",
-    type = "numeric",
+    type = "time",
     value = list(
       pre = NULL,
       post = flexsurv_mean,
@@ -196,6 +196,42 @@ make_surv_reg_flexsurv <- function() {
           newdata = expr(new_data),
           type = "quantile",
           quantiles = expr(quantile)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurv",
+    mode = "censored regression",
+    type = "hazard",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "flexsurv_probs"),
+      args =
+        list(
+          object = expr(object$fit),
+          new_data = expr(new_data),
+          type = "hazard"
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurv",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "flexsurv_probs"),
+      args =
+        list(
+          object = expr(object$fit),
+          new_data = expr(new_data),
+          type = "survival"
         )
     )
   )

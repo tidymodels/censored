@@ -201,6 +201,23 @@ flexsurv_quant <- function(results, object) {
   results <- purrr::map(results, setNames, c(".quantile", ".pred", ".pred_lower", ".pred_upper"))
 }
 
+#' Internal function helps for parametric survival models
+#' @param object A `survreg` or `flexsurvreg` object.
+#' @param new_data A data frame.
+#' @param .time A vector of time points
+#' @return A nested tibble with column name `.pred`
+#' @keywords internal
+#' @export
+flexsurv_probs <- function(object, new_data, .time, type = "survival") {
+  type <- rlang::arg_match(type, c("survival", "hazard"))
+  res <- summary(object, newdata = new_data, type = type, t = .time)
+  res <- unname(res)
+  col_name <- rlang::sym(paste0(".pred_", type))
+  res <- purrr::map(res, ~ dplyr::select(.x, time, est))
+  res <- purrr::map(res, ~ setNames(.x, c(".time", col_name)))
+  tibble::tibble(.pred = res)
+}
+
 # ------------------------------------------------------------------------------
 # helpers for survreg prediction
 
@@ -208,17 +225,12 @@ survreg_survival <- function(location, object, time, scale = object$scale, .time
   distr <- object$dist
   tibble::tibble(
     .time = .time,
-    .prob_survival = 1 - survival::psurvreg(.time, location, distribution = distr, scale, ...)
+    .pred_survival = 1 - survival::psurvreg(.time, location, distribution = distr, scale, ...)
   )
 }
 
-#' Internal function helps for parameteric survival models
-#' @param object A `survreg` object.
-#' @param new_data A data frame.
-#' @param .time A vector of time points
-#' @return A nested tibble with column name `.pred`
-#' @keywords internal
 #' @export
+#' @rdname flexsurv_probs
 survreg_survival_probs <- function(object, new_data, .time) {
   lp_pred <- predict(object, new_data, type = "lp")
   res <- purrr::map(lp_pred, survreg_survival, object = object, .time = .time)
@@ -232,12 +244,12 @@ survreg_hazard <- function(location, object, scale = object$scale, .time, ...) {
     (1 - survival::psurvreg(.time, location, distribution = distr, scale, ...))
   tibble::tibble(
     .time = .time,
-    .prob_hazard = prob
+    .pred_hazard = prob
   )
 }
 
 #' @export
-#' @rdname survreg_survival_probs
+#' @rdname flexsurv_probs
 survreg_hazard_probs <- function(object, new_data, .time) {
   lp_pred <- predict(object, new_data, type = "lp")
   res <- purrr::map(lp_pred, survreg_hazard, object = object, .time = .time)
