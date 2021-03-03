@@ -170,11 +170,11 @@ survreg_quant <- function(results, object) {
   colnames(results) <- names0(p)
   results <-
     results %>%
-    as_tibble(results) %>%
-    mutate(.row = 1:n) %>%
-    gather(.label, .pred, -.row) %>%
-    arrange(.row, .label) %>%
-    mutate(.quantile = rep(pctl, n)) %>%
+    tibble::as_tibble(results) %>%
+    dplyr::mutate(.row = 1:n) %>%
+    tidyr::gather(.label, .pred, -.row) %>%
+    dplyr::arrange(.row, .label) %>%
+    dplyr::mutate(.quantile = rep(pctl, n)) %>%
     dplyr::select(-.label)
   .row <- results[[".row"]]
   results <-
@@ -182,7 +182,7 @@ survreg_quant <- function(results, object) {
     dplyr::select(-.row)
   results <- split(results, .row)
   names(results) <- NULL
-  tibble(.pred = results)
+  tibble::tibble(.pred = results)
 }
 
 # ------------------------------------------------------------------------------
@@ -190,13 +190,57 @@ survreg_quant <- function(results, object) {
 #' @importFrom dplyr bind_rows
 flexsurv_mean <- function(results, object) {
   results <- unclass(results)
-  results <- bind_rows(results)
+  results <- dplyr::bind_rows(results)
   results$est
 }
 
 #' @importFrom stats setNames
 flexsurv_quant <- function(results, object) {
-  results <- map(results, as_tibble)
+  results <- purrr::map(results, as_tibble)
   names(results) <- NULL
-  results <- map(results, setNames, c(".quantile", ".pred", ".pred_lower", ".pred_upper"))
+  results <- purrr::map(results, setNames, c(".quantile", ".pred", ".pred_lower", ".pred_upper"))
 }
+
+# ------------------------------------------------------------------------------
+# helpers for survreg prediction
+
+survreg_survival <- function(location, object, time, scale = object$scale, .time, ...) {
+  distr <- object$dist
+  tibble::tibble(
+    .time = .time,
+    .prob_survival = 1 - survival::psurvreg(.time, location, distribution = distr, scale, ...)
+  )
+}
+
+#' Internal function helps for parameteric survival models
+#' @param object A `survreg` object.
+#' @param new_data A data frame.
+#' @param .time A vector of time points
+#' @return A nested tibble with column name `.pred`
+#' @keywords internal
+#' @export
+survreg_survival_probs <- function(object, new_data, .time) {
+  lp_pred <- predict(object, new_data, type = "lp")
+  res <- purrr::map(lp_pred, survreg_survival, object = object, .time = .time)
+  tibble::tibble(.pred = unname(res))
+}
+
+survreg_hazard <- function(location, object, scale = object$scale, .time, ...) {
+  distr <- object$dist
+  prob <-
+    survival::dsurvreg(.time, location, scale, distribution = distr, ...) /
+    (1 - survival::psurvreg(.time, location, distribution = distr, scale, ...))
+  tibble::tibble(
+    .time = .time,
+    .prob_hazard = prob
+  )
+}
+
+#' @export
+#' @rdname survreg_survival_probs
+survreg_hazard_probs <- function(object, new_data, .time) {
+  lp_pred <- predict(object, new_data, type = "lp")
+  res <- purrr::map(lp_pred, survreg_hazard, object = object, .time = .time)
+  tibble::tibble(.pred = unname(res))
+}
+

@@ -87,6 +87,41 @@ make_surv_reg_survival <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "survival",
+    mode = "censored regression",
+    type = "hazard",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survreg_hazard_probs"),
+      args =
+        list(
+          object = expr(object$fit),
+          new_data = expr(new_data)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "survival",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survreg_survival_probs"),
+      args =
+        list(
+          object = expr(object$fit),
+          new_data = expr(new_data)
+        )
+    )
+  )
+
 }
 
 make_surv_reg_flexsurv <- function() {
