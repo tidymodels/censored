@@ -221,7 +221,55 @@ flexsurv_probs <- function(object, new_data, .time, type = "survival") {
 # ------------------------------------------------------------------------------
 # helpers for survreg prediction
 
-survreg_survival <- function(location, object, time, scale = object$scale, .time, ...) {
+# When strata are used with parametric models, the scale is different for each
+# strata. The parameter estimates are saved in a named vector. For example:
+#
+#  c(`ecog.ps=1` = 1.111, `ecog.ps=2` = 0.714)
+#
+# When getting probability estimates we need to match the scale coefficients to
+# the original column in the data. The survival package has code to do this
+# but it is buried inside of `predict.survreg()`
+
+get_survreg_scale <- function(object, new_data) {
+  n <- nrow(new_data)
+  if (length(object$scale) == 1) {
+    res <- rep(unname(object$scale), n)
+  } else {
+    res <- deparse_survreg_strata(object, new_data)
+  }
+  res
+}
+
+deparse_survreg_strata <- function(object, new_data) {
+  trms <- object$terms
+
+  # identify original column used in strata (if any)
+  mm_vars <- attr(trms, "term.labels")
+  strata_col_index <- grep("^strata", mm_vars)
+  strata_sym <- attr(trms, "variables")[[ strata_col_index + 2 ]]
+  orig_strata_col <- all.vars(strata_sym)
+
+  # use strata() with model data to translate
+  strata_train <- rlang::eval_tidy(strata_sym, object$model)
+  strata_key <- tibble::tibble(.orig = object$model[[orig_strata_col]],
+                               coded = as.character(strata_train))
+  strata_key <- dplyr::distinct(strata_key)
+  names(strata_key) <- c(orig_strata_col, "coded")
+
+  # link this to scales vector
+  scales <- tibble(coded = names(object$scale), .scale = unname(object$scale))
+  strata_key <- dplyr::inner_join(strata_key, scales, by = "coded")
+  strata_key$coded <- NULL
+
+  # return a vector with appropriate estimates for new data
+  new_data$.row <- 1:nrow(new_data)
+  new_data <- dplyr::left_join(new_data, strata_key, by = orig_strata_col)
+  new_data <- new_data[order(new_data$.row), ]
+  new_data$.scale
+}
+
+
+survreg_survival <- function(location, object, time, scale, .time, ...) {
   distr <- object$dist
   tibble::tibble(
     .time = .time,
@@ -232,8 +280,14 @@ survreg_survival <- function(location, object, time, scale = object$scale, .time
 #' @export
 #' @rdname flexsurv_probs
 survreg_survival_probs <- function(object, new_data, .time) {
-  lp_pred <- predict(object, new_data, type = "lp")
-  res <- purrr::map(lp_pred, survreg_survival, object = object, .time = .time)
+  lp_estimate <- predict(object, new_data, type = "lp")
+  scale_estimate <- get_survreg_scale(object, new_data)
+  res <-
+    purrr::map2(
+      lp_estimate,
+      scale_estimate,
+      ~ survreg_survival(.x, object = object, .time = .time, scale = .y)
+    )
   tibble::tibble(.pred = unname(res))
 }
 
@@ -251,8 +305,14 @@ survreg_hazard <- function(location, object, scale = object$scale, .time, ...) {
 #' @export
 #' @rdname flexsurv_probs
 survreg_hazard_probs <- function(object, new_data, .time) {
-  lp_pred <- predict(object, new_data, type = "lp")
-  res <- purrr::map(lp_pred, survreg_hazard, object = object, .time = .time)
+  lp_estimate <- predict(object, new_data, type = "lp")
+  scale_estimate <- get_survreg_scale(object, new_data)
+  res <-
+    purrr::map2(
+      lp_estimate,
+      scale_estimate,
+      ~ survreg_hazard(.x, object = object, .time = .time, scale = .y)
+    )
   tibble::tibble(.pred = unname(res))
 }
 
