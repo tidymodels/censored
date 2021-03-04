@@ -242,30 +242,25 @@ get_survreg_scale <- function(object, new_data) {
 
 deparse_survreg_strata <- function(object, new_data) {
   trms <- object$terms
-
-  # identify original column used in strata (if any)
-  mm_vars <- attr(trms, "term.labels")
-  strata_col_index <- grep("^strata", mm_vars)
-  strata_sym <- attr(trms, "variables")[[ strata_col_index + 2 ]]
-  orig_strata_col <- all.vars(strata_sym)
-
-  # use strata() with model data to translate
-  strata_train <- rlang::eval_tidy(strata_sym, object$model)
-  strata_key <- tibble::tibble(.orig = object$model[[orig_strata_col]],
-                               coded = as.character(strata_train))
-  strata_key <- dplyr::distinct(strata_key)
-  names(strata_key) <- c(orig_strata_col, "coded")
+  new_new_data <-
+    stats::model.frame(trms,
+                       data = new_data,
+                       na.action = na.pass,
+                       xlev = object$xlevels)
+  strata_info <- survival::untangle.specials(trms, 'strata', 1)
+  new_new_data$.strata <-
+    survival::strata(new_new_data[, strata_info$vars], shortlabel = TRUE)
+  lvls <- levels(new_new_data$.strata)
 
   # link this to scales vector
-  scales <- tibble(coded = names(object$scale), .scale = unname(object$scale))
-  strata_key <- dplyr::inner_join(strata_key, scales, by = "coded")
-  strata_key$coded <- NULL
+  scales <- tibble(.strata = names(object$scale), .scale = unname(object$scale))
+  scales$.strata <- factor(scales$.strata, levels = lvls)
 
   # return a vector with appropriate estimates for new data
-  new_data$.row <- 1:nrow(new_data)
-  new_data <- dplyr::left_join(new_data, strata_key, by = orig_strata_col)
-  new_data <- new_data[order(new_data$.row), ]
-  new_data$.scale
+  new_new_data$.row <- 1:nrow(new_new_data)
+  new_new_data <- dplyr::left_join(new_new_data, scales, by = ".strata")
+  new_new_data <- new_new_data[order(new_new_data$.row), ]
+  new_new_data$.scale
 }
 
 
