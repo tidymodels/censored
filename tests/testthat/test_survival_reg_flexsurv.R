@@ -22,7 +22,7 @@ surv_weib <- survival_reg(dist = "weibull") %>% set_engine("flexsurv")
 
 # ------------------------------------------------------------------------------
 
-test_that('flexsurv execution', {
+test_that("flexsurv execution", {
   skip_if_not_installed("flexsurv")
 
   expect_error(
@@ -56,7 +56,7 @@ test_that('flexsurv execution', {
   )
 })
 
-test_that('flexsurv time prediction', {
+test_that("flexsurv time prediction", {
   skip_if_not_installed("flexsurv")
 
   res <- fit(
@@ -72,7 +72,7 @@ test_that('flexsurv time prediction', {
 })
 
 
-test_that('survival probability prediction', {
+test_that("survival probability prediction", {
   skip_on_travis()
 
   res <- fit(
@@ -96,7 +96,7 @@ test_that('survival probability prediction', {
 })
 
 
-test_that('survival hazard prediction', {
+test_that("survival hazard prediction", {
   skip_on_travis()
 
   res <- fit(

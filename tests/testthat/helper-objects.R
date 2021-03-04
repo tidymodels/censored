@@ -2,7 +2,7 @@ ctrl          <- control_parsnip(verbosity = 1, catch = FALSE)
 caught_ctrl   <- control_parsnip(verbosity = 1, catch = TRUE)
 quiet_ctrl    <- control_parsnip(verbosity = 0, catch = TRUE)
 
-run_glmnet <- utils::compareVersion('3.6.0', as.character(getRversion())) > 0
+run_glmnet <- utils::compareVersion("3.6.0", as.character(getRversion())) > 0
 
 # ------------------------------------------------------------------------------
 # expected parametric probability results form the rms package for row 1 of

@@ -20,7 +20,7 @@ suppressWarnings(
 
 # ------------------------------------------------------------------------------
 
-test_that('model object', {
+test_that("model object", {
 
   # formula method
   set.seed(1234)
@@ -37,7 +37,7 @@ test_that('model object', {
 
 # ------------------------------------------------------------------------------
 
-test_that('time predictions', {
+test_that("time predictions", {
   # formula method
   set.seed(1234)
   expect_error(
@@ -57,7 +57,7 @@ test_that('time predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('survival predictions', {
+test_that("survival predictions", {
   # formula method
   set.seed(1234)
   expect_error(

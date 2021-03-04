@@ -19,7 +19,7 @@ exp_f_fit <- blackboost(Surv(time, status) ~ age + ph.ecog,
 
 # ------------------------------------------------------------------------------
 
-test_that('model object', {
+test_that("model object", {
 
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
@@ -30,7 +30,7 @@ test_that('model object', {
 
 # ------------------------------------------------------------------------------
 
-test_that('survival predictions', {
+test_that("survival predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   expect_error(predict(f_fit, lung2, type = "survival"),
@@ -57,7 +57,7 @@ test_that('survival predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('linear_pred predictions', {
+test_that("linear_pred predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   f_pred <- predict(f_fit, lung2, type = "linear_pred")
@@ -71,7 +71,7 @@ test_that('linear_pred predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('primary arguments', {
+test_that("primary arguments", {
 
   # mtry ------------------------------------------------------
   mtry <- boost_tree(mtry = 5) %>%
@@ -212,7 +212,7 @@ test_that('primary arguments', {
 
 # ------------------------------------------------------------------------------
 
-test_that('updating', {
+test_that("updating", {
   expr1 <- boost_tree() %>%
     set_mode("censored regression") %>%
     set_engine("mboost")

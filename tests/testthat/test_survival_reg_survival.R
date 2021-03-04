@@ -23,7 +23,7 @@ surv_exp <- survival_reg(dist = "exponential") %>% set_engine("survival")
 
 # ------------------------------------------------------------------------------
 
-test_that('survival execution', {
+test_that("survival execution", {
 
   skip_on_travis()
 
@@ -56,7 +56,7 @@ test_that('survival execution', {
   )
 })
 
-test_that('survival time prediction', {
+test_that("survival time prediction", {
   skip_on_travis()
 
   res <- fit(
@@ -81,7 +81,7 @@ test_that('survival time prediction', {
 })
 
 
-test_that('survival probability prediction', {
+test_that("survival probability prediction", {
   skip_on_travis()
 
   res <- fit(
@@ -105,7 +105,7 @@ test_that('survival probability prediction', {
 })
 
 
-test_that('survival hazard prediction', {
+test_that("survival hazard prediction", {
   skip_on_travis()
 
   res <- fit(

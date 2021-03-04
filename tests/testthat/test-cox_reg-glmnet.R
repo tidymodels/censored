@@ -19,7 +19,7 @@ exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
 
 # ------------------------------------------------------------------------------
 
-test_that('model object', {
+test_that("model object", {
 
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
@@ -30,7 +30,7 @@ test_that('model object', {
 
 # ------------------------------------------------------------------------------
 
-test_that('linear_pred predictions', {
+test_that("linear_pred predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   f_pred <- predict(f_fit, lung2, type = "linear_pred", penalty = 0.01)
@@ -44,7 +44,7 @@ test_that('linear_pred predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('survival predictions', {
+test_that("survival predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   expect_error(predict(f_fit, lung2, type = "survival", penalty = 0.01),
@@ -77,7 +77,7 @@ test_that('survival predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('api errors', {
+test_that("api errors", {
   expect_error(
     cox_reg() %>% set_engine("lda"),
     regexp = "Engine 'lda' is not available"
@@ -87,7 +87,7 @@ test_that('api errors', {
 
 # ------------------------------------------------------------------------------
 
-test_that('printing', {
+test_that("printing", {
   expect_output(
     print(cox_reg()),
     "Cox Model Specification \\(censored regression\\)"
@@ -96,7 +96,7 @@ test_that('printing', {
 
 # ------------------------------------------------------------------------------
 
-test_that('primary arguments', {
+test_that("primary arguments", {
 
   # penalty ------------------------------------------------------
   penalty <- cox_reg(penalty = 0.05) %>%
@@ -141,7 +141,7 @@ test_that('primary arguments', {
 
 # ------------------------------------------------------------------------------
 
-test_that('updating', {
+test_that("updating", {
   expr1 <- cox_reg() %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")

@@ -13,7 +13,7 @@ exp_f_fit <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung, x = TRUE)
 
 # ------------------------------------------------------------------------------
 
-test_that('model object', {
+test_that("model object", {
 
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
@@ -24,7 +24,7 @@ test_that('model object', {
 
 # ------------------------------------------------------------------------------
 
-test_that('time predictions', {
+test_that("time predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "time")
@@ -38,7 +38,7 @@ test_that('time predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('survival predictions', {
+test_that("survival predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
@@ -65,7 +65,7 @@ test_that('survival predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('linear_pred predictions', {
+test_that("linear_pred predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "linear_pred")
@@ -79,7 +79,7 @@ test_that('linear_pred predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('api errors', {
+test_that("api errors", {
   expect_error(
     cox_reg() %>% set_engine("lda"),
     regexp = "Engine 'lda' is not available"
@@ -89,7 +89,7 @@ test_that('api errors', {
 
 # ------------------------------------------------------------------------------
 
-test_that('printing', {
+test_that("printing", {
   expect_output(
     print(cox_reg()),
     "Cox Model Specification \\(censored regression\\)"

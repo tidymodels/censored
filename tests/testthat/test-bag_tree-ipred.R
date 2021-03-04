@@ -18,7 +18,7 @@ exp_f_fit <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
 
 # ------------------------------------------------------------------------------
 
-test_that('model object', {
+test_that("model object", {
 
   # formula method
   set.seed(1234)
@@ -30,7 +30,7 @@ test_that('model object', {
 
 # ------------------------------------------------------------------------------
 
-test_that('time predictions', {
+test_that("time predictions", {
   # formula method
   set.seed(1234)
   expect_error(f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
@@ -48,7 +48,7 @@ test_that('time predictions', {
 
 # ------------------------------------------------------------------------------
 
-test_that('survival predictions', {
+test_that("survival predictions", {
   # formula method
   set.seed(1234)
   expect_error(f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)

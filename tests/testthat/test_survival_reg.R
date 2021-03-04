@@ -9,7 +9,7 @@ source("helpers.R")
 
 # ------------------------------------------------------------------------------
 
-test_that('primary arguments', {
+test_that("primary arguments", {
   basic <- survival_reg()
   basic_flexsurv <- translate(basic %>% set_engine("flexsurv"))
 
@@ -44,7 +44,7 @@ test_that('primary arguments', {
   )
 })
 
-test_that('engine arguments', {
+test_that("engine arguments", {
   fs_cl <- survival_reg()
   expect_equal(translate(fs_cl %>% set_engine("flexsurv", cl = .99))$method$fit$args,
                list(
@@ -58,7 +58,7 @@ test_that('engine arguments', {
 })
 
 
-test_that('updating', {
+test_that("updating", {
   expr1     <- survival_reg() %>% set_engine("flexsurv", cl = varying())
   expr1_exp <- survival_reg(dist = "lnorm") %>% set_engine("flexsurv", cl = .99)
   expect_equal(update(expr1, dist = "lnorm", cl = 0.99), expr1_exp)
@@ -73,7 +73,7 @@ test_that('updating', {
   expect_equal(expr1_updated_lst$args$dist, "weibull")
 })
 
-test_that('bad input', {
+test_that("bad input", {
   expect_error(survival_reg(mode = ", classification"))
   expect_error(translate(survival_reg() %>% set_engine("wat")))
   expect_error(translate(survival_reg() %>% set_engine(NULL)))
