@@ -69,7 +69,7 @@ print.survival_reg <- function(x, ...) {
   cat("Parametric Survival Regression Model Specification (", x$mode, ")\n\n", sep = "")
   model_printer(x, ...)
 
-  if(!is.null(x$method$fit$args)) {
+  if (!is.null(x$method$fit$args)) {
     cat("Model fit template:\n")
     print(show_call(x))
   }
@@ -247,7 +247,7 @@ deparse_survreg_strata <- function(object, new_data) {
                        data = new_data,
                        na.action = na.pass,
                        xlev = object$xlevels)
-  strata_info <- survival::untangle.specials(trms, 'strata', 1)
+  strata_info <- survival::untangle.specials(trms, "strata", 1)
   new_new_data$.strata <-
     survival::strata(new_new_data[, strata_info$vars], shortlabel = TRUE)
   lvls <- levels(new_new_data$.strata)
@@ -257,7 +257,7 @@ deparse_survreg_strata <- function(object, new_data) {
   scales$.strata <- factor(scales$.strata, levels = lvls)
 
   # return a vector with appropriate estimates for new data
-  new_new_data$.row <- 1:nrow(new_new_data)
+  new_new_data$.row <- seq_len(nrow(new_new_data))
   new_new_data <- dplyr::left_join(new_new_data, scales, by = ".strata")
   new_new_data <- new_new_data[order(new_new_data$.row), ]
   new_new_data$.scale
@@ -310,4 +310,3 @@ survreg_hazard_probs <- function(object, new_data, .time) {
     )
   tibble::tibble(.pred = unname(res))
 }
-
