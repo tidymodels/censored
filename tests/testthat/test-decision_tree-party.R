@@ -73,6 +73,6 @@ test_that("survival predictions", {
 
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-    exp_f_pred[,-1]
+    exp_f_pred[, -1]
   )
 })

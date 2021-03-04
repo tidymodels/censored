@@ -69,12 +69,12 @@ test_that("survival time prediction", {
   exp_pred <- tibble(.pred_time = unname(exp_pred))
   expect_equal(exp_pred, predict(res, head(lung)))
 
-  exp_quant <- predict(res$fit, head(lung), p = (2:4)/5, type = "quantile")
+  exp_quant <- predict(res$fit, head(lung), p = (2:4) / 5, type = "quantile")
   exp_quant <-
     apply(exp_quant, 1, function(x)
       tibble(.pred = x, .quantile = (2:4) / 5))
   exp_quant <- tibble(.pred = exp_quant)
-  obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4)/5)
+  obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4) / 5)
 
   expect_equal(as.data.frame(exp_quant), as.data.frame(obs_quant))
 
@@ -127,4 +127,3 @@ test_that("survival hazard prediction", {
   # using rms for expected results
   expect_equal(exp_pred$.pred[[1]]$.pred_hazard[-1], rms_haz[-1], tol = 0.001)
 })
-

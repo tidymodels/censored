@@ -13,7 +13,7 @@ matrix_to_nested_tibbles_survival <- function(x) {
 
 # copied form recipes
 
-names0 <- function (num, prefix = "x") {
+names0 <- function(num, prefix = "x") {
   if (num < 1)
     rlang::abort("`num` should be > 0.")
   ind <- format(1:num)
@@ -29,4 +29,3 @@ names0 <- function (num, prefix = "x") {
 new_empty_quosure <- function(expr) {
   new_quosure(expr, env = empty_env())
 }
-

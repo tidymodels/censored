@@ -160,5 +160,3 @@ test_that("updating", {
   expect_equal(update(expr1, mixture = 0.76), expr1_exp)
   expect_equal(update(expr2, penalty = 0.123), expr2_exp)
 })
-
-

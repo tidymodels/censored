@@ -152,4 +152,3 @@ make_decision_tree_party <- function() {
 }
 
 # nocov end
-

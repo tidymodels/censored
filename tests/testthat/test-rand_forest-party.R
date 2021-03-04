@@ -11,11 +11,9 @@ context("Random forest - party")
 mod_spec <- rand_forest() %>% set_mode("censored regression") %>% set_engine("party")
 
 set.seed(1234)
-suppressWarnings(
-  {
+suppressWarnings({
     exp_f_fit <- pecCforest(Surv(time, status) ~ age + ph.ecog, data = lung)
-  }
-)
+})
 
 
 # ------------------------------------------------------------------------------
@@ -25,11 +23,11 @@ test_that("model object", {
   # formula method
   set.seed(1234)
   expect_error(
-    suppressWarnings(
-      {
-    f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-      }
-    ), NA)
+    suppressWarnings({
+      f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+    }),
+    NA
+  )
 
   # Removing x element from f_fit and call from both
   expect_equal(f_fit$fit$forest, exp_f_fit$forest)
@@ -41,11 +39,11 @@ test_that("time predictions", {
   # formula method
   set.seed(1234)
   expect_error(
-    suppressWarnings(
-      {
-        f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-      }
-    ), NA)
+    suppressWarnings({
+      f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+    }),
+    NA
+  )
   f_pred <- predict(f_fit, lung, type = "time")
   exp_f_pred <- predict(exp_f_fit$forest, newdata = lung)
 
@@ -61,11 +59,11 @@ test_that("survival predictions", {
   # formula method
   set.seed(1234)
   expect_error(
-    suppressWarnings(
-      {
-        f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-      }
-    ), NA)
+    suppressWarnings({
+      f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+    }),
+    NA
+  )
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
   f_pred <- predict(f_fit, lung, type = "survival", .time = 100:200)
@@ -93,6 +91,6 @@ test_that("survival predictions", {
 
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-    exp_f_pred[,-1]
+    exp_f_pred[, -1]
   )
 })
