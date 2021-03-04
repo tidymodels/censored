@@ -7,7 +7,8 @@
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
 #' @importFrom withr with_options
-#' @importFrom stats predict approx quantile
+#' @importFrom stats predict approx quantile na.pass
+#' @importFrom survival strata untangle.specials
 #' @importFrom dials new_quant_param
 #' @importFrom tidyr pivot_longer gather
 #' @importFrom dplyr group_nest %>% arrange

@@ -10,7 +10,7 @@ source("helpers.R")
 # ------------------------------------------------------------------------------
 
 test_that('primary arguments', {
-  basic <- surv_reg()
+  basic <- survival_reg()
   basic_flexsurv <- translate(basic %>% set_engine("flexsurv"))
 
   expect_equal(basic_flexsurv$method$fit$args,
@@ -21,7 +21,7 @@ test_that('primary arguments', {
                )
   )
 
-  normal <- surv_reg(dist = "lnorm")
+  normal <- survival_reg(dist = "lnorm")
   normal_flexsurv <- translate(normal %>% set_engine("flexsurv"))
   expect_equal(normal_flexsurv$method$fit$args,
                list(
@@ -32,7 +32,7 @@ test_that('primary arguments', {
                )
   )
 
-  dist_v <- surv_reg(dist = varying())
+  dist_v <- survival_reg(dist = varying())
   dist_v_flexsurv <- translate(dist_v %>% set_engine("flexsurv"))
   expect_equal(dist_v_flexsurv$method$fit$args,
                list(
@@ -45,7 +45,7 @@ test_that('primary arguments', {
 })
 
 test_that('engine arguments', {
-  fs_cl <- surv_reg()
+  fs_cl <- survival_reg()
   expect_equal(translate(fs_cl %>% set_engine("flexsurv", cl = .99))$method$fit$args,
                list(
                  formula = expr(missing_arg()),
@@ -59,8 +59,8 @@ test_that('engine arguments', {
 
 
 test_that('updating', {
-  expr1     <- surv_reg() %>% set_engine("flexsurv", cl = varying())
-  expr1_exp <- surv_reg(dist = "lnorm") %>% set_engine("flexsurv", cl = .99)
+  expr1     <- survival_reg() %>% set_engine("flexsurv", cl = varying())
+  expr1_exp <- survival_reg(dist = "lnorm") %>% set_engine("flexsurv", cl = .99)
   expect_equal(update(expr1, dist = "lnorm", cl = 0.99), expr1_exp)
 
   param_tibb <- tibble::tibble(dist = "weibull")
@@ -74,7 +74,7 @@ test_that('updating', {
 })
 
 test_that('bad input', {
-  expect_error(surv_reg(mode = ", classification"))
-  expect_error(translate(surv_reg() %>% set_engine("wat")))
-  expect_error(translate(surv_reg() %>% set_engine(NULL)))
+  expect_error(survival_reg(mode = ", classification"))
+  expect_error(translate(survival_reg() %>% set_engine("wat")))
+  expect_error(translate(survival_reg() %>% set_engine(NULL)))
 })
