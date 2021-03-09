@@ -1,76 +1,75 @@
-calc_cph_km_table <- function(x, ...) {
-  y <- survival::survfit(x, ...)
-  # pad with a zero time point
+cph_survival_prob <- function(x, new_data, .times, conf.int = .95, ...) {
+  new_data$.id <- 1:nrow(new_data)
+  y <- survival::survfit(x, newdata = new_data, id = .id, ...)
   res <-
-    tibble::tibble(
-      .time = y$time,
-      .pred_survival = y$surv,
-      .pred_survival_lower = y$lower,
-      .pred_survival_upper = y$upper,
-      .pred_hazard_cumulative = y$cumhaz
-    )
-  has_strata <- any(names(y) == "strata")
-  if (has_strata) {
-    res$.strata <- rep(names(y$strata), y$strata)
-    time_0 <-
-      dplyr::group_by(res, .strata) %>%
-      dplyr::summarize(dplyr::across(where(is.numeric), mean), .groups= "drop") %>%
-      dplyr::select(dplyr::all_of(names(res)))
-  } else {
-    time_0 <- res[1,]
-  }
-  time_0$.time <- 0
-  time_0$.pred_survival <- 1
-  time_0$.pred_hazard_cumulative <- 0
-  time_0$.pred_survival_lower <- time_0$.pred_survival_upper <- NA_real_
-
-  # TODO should we pad with Inf too?
-
-  res <- dplyr::bind_rows(time_0, res)
-  if (has_strata) {
-    res <- dplyr::group_nest(res, .strata, .key = ".pred") %>%
-      dplyr::mutate(.pred = purrr::map(.pred, km_with_cuts))
-  } else {
-    res <- km_with_cuts(res)
-  }
+    stack_survfit_cph(y, nrow(new_data)) %>%
+    dplyr::group_nest(.row, .key = ".pred") %>%
+    mutate(
+      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
+      .pred = purrr::map(.pred, interpolate_km_values, .times)
+    ) %>%
+    dplyr::select(-.row)
   res
 }
 
-interpolate_km_values <- function(x, .time, new_data) {
-  km <- x$.km_data
-  has_strata <- any(grepl(".strata", names(km), fixed = TRUE))
+stack_survfit_cph <- function(x, n) {
+  has_strata <- any(names(x) == "strata")
   if (has_strata) {
-    .pred <- dplyr::mutate(km, .pred = purrr::map(.pred, km_probs, .time))
-    new_new_data <- compute_strata(x, new_data) %>% mutate(.row = dplyr::row_number())
-    new_new_data <- new_new_data[, c(".strata", ".row")]
-    res <- dplyr::left_join(new_new_data, .pred, by = ".strata")
-    res <- res[order(res$.row),]
-    res <- dplyr::select(res, .pred)
+    # All components are vectors of length {t_i x n}
+    res <- tibble::tibble(
+      .time = x$time,
+      .pred_survival = x$surv,
+      .pred_survival_lower = x$lower,
+      .pred_survival_upper = x$upper,
+      .pred_hazard_cumulative = x$cumhaz,
+      .row = rep(1:n, x$strata)
+    )
   } else {
-    res <- tibble::tibble(.pred = list(km_probs(km, .time)))
+    # All components are {t x n} matrices
+    times <- nrow(x$surv)
+    res <- tibble::tibble(
+      .time = rep(x$time, n),
+      .pred_survival = as.vector(x$surv),
+      .pred_survival_lower = as.vector(x$lower),
+      .pred_survival_upper = as.vector(x$upper),
+      .pred_hazard_cumulative = as.vector(x$cumhaz),
+      .row = rep(1:n, each = times)
+    )
   }
+
   res
+}
+
+prob_template <- tibble::tibble(
+  .time = 0,
+  .pred_survival = 1,
+  .pred_survival_lower = NA_real_,
+  .pred_survival_upper = NA_real_,
+  .pred_hazard_cumulative = 0
+)
+
+# We want to maintain the step-function aspect of the predictions so, rather
+# than use `approx()`, we cut the times and match the new times based on these
+# intervals.
+interpolate_km_values <- function(x, .times) {
+  x <- km_with_cuts(x)
+  pred_times <-
+    tibble::tibble(.time = .times) %>%
+    km_with_cuts(.times = x$.time) %>%
+    dplyr::rename(.tmp = .time) %>%
+    dplyr::left_join(x, by = ".cuts") %>%
+    dplyr::select(-.time, .time = .tmp, -.cuts, -.pred_hazard_cumulative)
+  pred_times
 }
 
 km_with_cuts <- function(x, .times = NULL) {
   if (is.null(.times)) {
+    # When cutting the original data in the survfit object
     .times <- unique(x$.time)
   }
   .times <- c(-Inf, .times, Inf)
   .times <- unique(.times)
-
   x$.cuts <- cut(x$.time, .times)
   x
-}
-
-km_probs <- function(x, .times) {
-  all_times <- tibble(.time = .times)
-  pred_times <- km_with_cuts(all_times, .times = unique(x$.time))
-  pred_times <- dplyr::rename(pred_times, .tmp_time = .time)
-  res <-
-    dplyr::left_join(pred_times, x, by = ".cuts") %>%
-    dplyr::select(-.cuts, -.time, -.pred_hazard_cumulative) %>%
-    dplyr::rename(.time = .tmp_time)
-  res
 }
 
