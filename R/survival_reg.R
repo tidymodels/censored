@@ -210,7 +210,7 @@ flexsurv_quant <- function(results, object) {
 #' @export
 flexsurv_probs <- function(object, new_data, .time, type = "survival") {
   type <- rlang::arg_match(type, c("survival", "hazard"))
-  res <- summary(object, newdata = new_data, type = type, t = .time)
+  res <- summary(object, newdata = new_data, type = type, t = .time, ci = FALSE)
   res <- unname(res)
   col_name <- rlang::sym(paste0(".pred_", type))
   res <- purrr::map(res, ~ dplyr::select(.x, time, est))
