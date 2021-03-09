@@ -29,14 +29,44 @@ calc_cph_km_table <- function(x, ...) {
       .pred_survival_upper = y$upper,
       .pred_hazard_cumulative = y$cumhaz
     )
-  if (any(names(y) == "strata")) {
-    res$.strata <- rep(names(y$strata), y$strata)
+  has_strata <- any(names(y) == "strata")
+  if (has_strata) {
+    res$.strata <- factor(rep(names(y$strata), y$strata))
+    time_0 <-
+      dplyr::group_by(res, .strata) %>%
+      dplyr::summarize(dplyr::across(where(is.numeric), mean), .groups= "drop") %>%
+      dplyr::select(dplyr::all_of(names(res)))
+  } else {
+    time_0 <- res[1,]
+  }
+  time_0$.time <- 0
+  time_0$.pred_survival <- 1
+  time_0$.pred_hazard_cumulative <- 0
+  time_0$.pred_survival_lower <- time_0$.pred_survival_upper <- NA_real_
+
+  res <- dplyr::bind_rows(time_0, res)
+  if (has_strata) {
+    res <- dplyr::group_nest(res, .strata, .key = "curves") %>%
+      dplyr::mutate(curves = purrr::map(curves, km_with_cuts))
+  } else {
+    res <- km_with_cuts(res)
   }
   res
 }
 
 interpolate_km_values <- function(x, .time, new_data) {
-
+  km <- x$.km_data
+  has_strata <- grepl(".strata", names(km), fixed = TRUE)
 }
+
+km_with_cuts <- function(x, .times = NULL) {
+  if (is.null(.times)) {
+    .times <- unique(x$.time)
+    .times <- c(-Inf, .times, Inf)
+  }
+  x$.cuts <- cut(x$.time, .times)
+  x
+}
+
 
 
