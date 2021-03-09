@@ -1,23 +1,3 @@
-calculate_basesurv <- function(time, event, lp, .time) {
-  unique_event_times <- sort(unique(time[event == 1L]))
-  alpha <- purrr::map_dbl(
-    unique_event_times,
-    ~ sum(time[event == 1L] == .x, na.rm = TRUE) /
-      sum(exp(lp[time >= .x]), na.rm = TRUE)
-  )
-  obj <- approx(unique_event_times, cumsum(alpha),
-                yleft = 0, xout = .time, rule = 2)
-  obj$z <- exp(-obj$y)
-  names(obj) <- c("times", "cumulative_base_hazard", "base_surv")
-  obj
-}
-
-calculate_survival_prop <- function(lp, time, event, survtime) {
-  lp <- as.numeric(lp)
-  basesurv <- calculate_basesurv(time, event, lp, sort(survtime))
-  exp(exp(lp) %*% (-t(basesurv$cumulative_base_hazard)))
-}
-
 calc_cph_km_table <- function(x, ...) {
   y <- survival::survfit(x, ...)
   # pad with a zero time point
@@ -31,7 +11,7 @@ calc_cph_km_table <- function(x, ...) {
     )
   has_strata <- any(names(y) == "strata")
   if (has_strata) {
-    res$.strata <- factor(rep(names(y$strata), y$strata))
+    res$.strata <- rep(names(y$strata), y$strata)
     time_0 <-
       dplyr::group_by(res, .strata) %>%
       dplyr::summarize(dplyr::across(where(is.numeric), mean), .groups= "drop") %>%
@@ -44,10 +24,12 @@ calc_cph_km_table <- function(x, ...) {
   time_0$.pred_hazard_cumulative <- 0
   time_0$.pred_survival_lower <- time_0$.pred_survival_upper <- NA_real_
 
+  # TODO should we pad with Inf too?
+
   res <- dplyr::bind_rows(time_0, res)
   if (has_strata) {
-    res <- dplyr::group_nest(res, .strata, .key = "curves") %>%
-      dplyr::mutate(curves = purrr::map(curves, km_with_cuts))
+    res <- dplyr::group_nest(res, .strata, .key = ".pred") %>%
+      dplyr::mutate(.pred = purrr::map(.pred, km_with_cuts))
   } else {
     res <- km_with_cuts(res)
   }
@@ -56,17 +38,39 @@ calc_cph_km_table <- function(x, ...) {
 
 interpolate_km_values <- function(x, .time, new_data) {
   km <- x$.km_data
-  has_strata <- grepl(".strata", names(km), fixed = TRUE)
+  has_strata <- any(grepl(".strata", names(km), fixed = TRUE))
+  if (has_strata) {
+    .pred <- dplyr::mutate(km, .pred = purrr::map(.pred, km_probs, .time))
+    new_new_data <- compute_strata(x, new_data) %>% mutate(.row = dplyr::row_number())
+    new_new_data <- new_new_data[, c(".strata", ".row")]
+    res <- dplyr::left_join(new_new_data, .pred, by = ".strata")
+    res <- res[order(res$.row),]
+    res <- dplyr::select(res, .pred)
+  } else {
+    res <- tibble::tibble(.pred = list(km_probs(km, .time)))
+  }
+  res
 }
 
 km_with_cuts <- function(x, .times = NULL) {
   if (is.null(.times)) {
     .times <- unique(x$.time)
-    .times <- c(-Inf, .times, Inf)
   }
+  .times <- c(-Inf, .times, Inf)
+  .times <- unique(.times)
+
   x$.cuts <- cut(x$.time, .times)
   x
 }
 
-
+km_probs <- function(x, .times) {
+  all_times <- tibble(.time = .times)
+  pred_times <- km_with_cuts(all_times, .times = unique(x$.time))
+  pred_times <- dplyr::rename(pred_times, .tmp_time = .time)
+  res <-
+    dplyr::left_join(pred_times, x, by = ".cuts") %>%
+    dplyr::select(-.cuts, -.time, -.pred_hazard_cumulative) %>%
+    dplyr::rename(.time = .tmp_time)
+  res
+}
 

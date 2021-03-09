@@ -240,7 +240,7 @@ get_survreg_scale <- function(object, new_data) {
   res
 }
 
-deparse_survreg_strata <- function(object, new_data) {
+compute_strata <- function(object, new_data) {
   trms <- object$terms
   new_new_data <-
     stats::model.frame(trms,
@@ -250,6 +250,11 @@ deparse_survreg_strata <- function(object, new_data) {
   strata_info <- survival::untangle.specials(trms, "strata", 1)
   new_new_data$.strata <-
     survival::strata(new_new_data[, strata_info$vars], shortlabel = TRUE)
+  tibble::as_tibble(new_new_data)
+}
+
+deparse_survreg_strata <- function(object, new_data) {
+  new_new_data <- compute_strata(object, new_data)
   lvls <- levels(new_new_data$.strata)
 
   # link this to scales vector
