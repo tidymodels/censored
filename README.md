@@ -49,7 +49,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  18ms 
+#> Fit time:  12ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, x = TRUE)
@@ -70,21 +70,16 @@ time of an observation based on its predictors. The survival time is the
 time it takes for the observation to observe an event.
 
 ``` r
-predict(cox_mod, type = "time", new_data = lung)
-#> # A tibble: 228 x 1
-#>    .pred_time
-#>         <dbl>
-#>  1       342.
-#>  2       474.
-#>  3       511.
-#>  4       389.
-#>  5       498.
-#>  6       342.
-#>  7       263.
-#>  8       256.
-#>  9       401.
-#> 10       278.
-#> # … with 218 more rows
+predict(cox_mod, type = "time", new_data = head(lung))
+#> # A tibble: 6 x 1
+#>   .pred_time
+#>        <dbl>
+#> 1       342.
+#> 2       474.
+#> 3       511.
+#> 4       389.
+#> 5       498.
+#> 6       342.
 ```
 
 Here we see that the first patient is predicted to have 342.36 days
@@ -93,41 +88,36 @@ left.
 ### survival
 
 when we specify `type = "survival"` then we are trying to get the
-properbility of survival (not observing an event) at a given time
+probabilities of survival (not observing an event) up to a given time
 `.time`.
 
 ``` r
 pred_vals_survival <- predict(cox_mod, 
                               type = "survival", 
-                              new_data = lung, 
+                              new_data = head(lung), 
                               .time = c(100, 200))
 
 pred_vals_survival
-#> # A tibble: 228 x 1
-#>    .pred_survival
-#>    <list<tibble>>
-#>  1        [2 × 2]
-#>  2        [2 × 2]
-#>  3        [2 × 2]
-#>  4        [2 × 2]
-#>  5        [2 × 2]
-#>  6        [2 × 2]
-#>  7        [2 × 2]
-#>  8        [2 × 2]
-#>  9        [2 × 2]
-#> 10        [2 × 2]
-#> # … with 218 more rows
+#> # A tibble: 6 x 1
+#>   .pred           
+#>   <list>          
+#> 1 <tibble [2 × 4]>
+#> 2 <tibble [2 × 4]>
+#> 3 <tibble [2 × 4]>
+#> 4 <tibble [2 × 4]>
+#> 5 <tibble [2 × 4]>
+#> 6 <tibble [2 × 4]>
 
-pred_vals_survival$.pred_survival[[1]]
-#> # A tibble: 2 x 2
-#>   .time .pred_survival
-#>   <chr>          <dbl>
-#> 1 100            0.855
-#> 2 200            0.649
+pred_vals_survival$.pred[[1]]
+#> # A tibble: 2 x 4
+#>   .time .pred_survival .pred_survival_lower .pred_survival_upper
+#>   <dbl>          <dbl>                <dbl>                <dbl>
+#> 1   100          0.850                0.796                0.908
+#> 2   200          0.639                0.557                0.733
 ```
 
-here we see that the first patient has a 85.5% probability of survival
-after 100 days and 64.9% probability of survival after 200 days.
+here we see that the first patient has a 85% probability of survival up
+to 100 days and 63.9% probability of survival up to 200 days.
 
 ### linear\_pred
 
@@ -135,36 +125,35 @@ when we specify `type = "linear_pred"` then we get back the linear
 predictor for the observation according to the model.
 
 ``` r
-predict(cox_mod, type = "linear_pred", new_data = lung)
-#> # A tibble: 228 x 1
-#>    .pred_linear_pred
-#>                <dbl>
-#>  1            0.152 
-#>  2           -0.359 
-#>  3           -0.495 
-#>  4           -0.0401
-#>  5           -0.450 
-#>  6            0.152 
-#>  7            0.527 
-#>  8            0.561 
-#>  9           -0.0852
-#> 10            0.449 
-#> # … with 218 more rows
+predict(cox_mod, type = "linear_pred", new_data = head(lung))
+#> # A tibble: 6 x 1
+#>   .pred_linear_pred
+#>               <dbl>
+#> 1           -0.152 
+#> 2            0.359 
+#> 3            0.495 
+#> 4            0.0401
+#> 5            0.450 
+#> 6           -0.152
 ```
 
 here we see that the linear predictor of the first observation is
-0.1517.
+-0.1517.
+
+Note that, for linear predictor prediction types, the results are
+formatted for all models such that the prediction *increases* with time.
+For the proportional hazards model, the sign is reversed.
 
 ## Prediction type table
 
-| alias          | engine   | survival | linear\_pred | time  | numeric | quantile |
-|:---------------|:---------|:---------|:-------------|:------|:--------|:---------|
-| boost\_tree    | mboost   | TRUE     | TRUE         | FALSE | FALSE   | FALSE    |
-| decision\_tree | rpart    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
-| decision\_tree | party    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
-| rand\_forest   | party    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
-| bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  | FALSE   | FALSE    |
-| cox\_reg       | survival | TRUE     | TRUE         | TRUE  | FALSE   | FALSE    |
-| cox\_reg       | glmnet   | TRUE     | TRUE         | FALSE | FALSE   | FALSE    |
-| survival\_reg  | survival | FALSE    | FALSE        | FALSE | TRUE    | TRUE     |
-| survival\_reg  | flexsurv | FALSE    | FALSE        | FALSE | TRUE    | TRUE     |
+| alias          | engine   | survival | linear\_pred | time  | quantile | hazard |
+| :------------- | :------- | :------- | :----------- | :---- | :------- | :----- |
+| boost\_tree    | mboost   | TRUE     | TRUE         | FALSE | FALSE    | FALSE  |
+| decision\_tree | rpart    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| decision\_tree | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| rand\_forest   | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| cox\_reg       | survival | TRUE     | TRUE         | TRUE  | FALSE    | FALSE  |
+| cox\_reg       | glmnet   | FALSE    | TRUE         | FALSE | FALSE    | FALSE  |
+| survival\_reg  | survival | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
+| survival\_reg  | flexsurv | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |

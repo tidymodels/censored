@@ -105,7 +105,11 @@ make_cox_reg_survival <- function() {
     type = "linear_pred",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(x, object) {
+        # For consistency with other models, we want the lp to increase with
+        # time. For this, we change the sign
+        -unname(x)
+      },
       func = c(fun = "predict"),
       args =
         list(
