@@ -1,6 +1,8 @@
+#' @export
 cph_survival_prob <- function(x, new_data, .times, conf.int = .95, ...) {
   new_data$.id <- 1:nrow(new_data)
-  y <- survival::survfit(x, newdata = new_data, id = .id, ...)
+  y <- survival::survfit(x, newdata = new_data, id = .id,
+                         conf.int = conf.int, na.action = na.exclude, ...)
   res <-
     stack_survfit_cph(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
