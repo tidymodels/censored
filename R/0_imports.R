@@ -7,7 +7,7 @@
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
 #' @importFrom withr with_options
-#' @importFrom stats predict approx quantile na.pass
+#' @importFrom stats predict approx quantile na.pass na.exclude
 #' @importFrom survival strata untangle.specials
 #' @importFrom dials new_quant_param
 #' @importFrom tidyr pivot_longer gather
@@ -16,7 +16,8 @@
 #' @importFrom utils getFromNamespace
 
 utils::globalVariables(
-  c(".time", "object", "new_data", ".label", ".pred")
+  c(".time", "object", "new_data", ".label", ".pred",
+    ".cuts", ".id", ".pred_hazard_cumulative", ".tmp")
 )
 
 # ------------------------------------------------------------------------------

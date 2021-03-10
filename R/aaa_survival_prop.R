@@ -1,5 +1,15 @@
+#' A wrapper for survival probabilities with cph models
+#' @param x A model from `coxph()`.
+#' @param new_data Data for prediction
+#' @param .times A vector of integers for prediction times.
+#' @param output One of "surv", "conf", or "haz".
+#' @param conf.int The confidence level
+#' @param ... Options to pass to [survival::survfit()]
+#' @return A nested tibble
+#' @keywords internal
 #' @export
-cph_survival_prob <- function(x, new_data, .times, conf.int = .95, ...) {
+cph_survival_prob <- function(x, new_data, .times, output = "surv", conf.int = .95, ...) {
+  output <- match.arg(output, c("surv", "conf", "haz"))
   new_data$.id <- 1:nrow(new_data)
   y <- survival::survfit(x, newdata = new_data, id = .id,
                          conf.int = conf.int, na.action = na.exclude, ...)
@@ -9,9 +19,30 @@ cph_survival_prob <- function(x, new_data, .times, conf.int = .95, ...) {
     mutate(
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
       .pred = purrr::map(.pred, interpolate_km_values, .times)
-    ) %>%
-    dplyr::select(-.row)
-  res
+    )
+
+  keep_cols(res, output)
+}
+
+keep_cols <- function(x, output) {
+  if (output == "surv") {
+    x <- dplyr::mutate(x,
+                       .pred =
+                         purrr::map(.pred,
+                                    ~ dplyr::select(.x, .time, .pred_survival)))
+  } else if (output == "conf") {
+    x <- dplyr::mutate(x,
+                       .pred =
+                         purrr::map(.pred,
+                                    ~ dplyr::select(.x, .time, .pred_survival_lower,
+                                                    .pred_survival_upper)))
+  } else {
+    x <- dplyr::mutate(x,
+                       .pred =
+                         purrr::map(.pred,
+                                    ~ dplyr::select(.x, .time, .pred_hazard_cumulative)))
+  }
+  dplyr::select(x, -.row)
 }
 
 stack_survfit_cph <- function(x, n) {
@@ -60,7 +91,7 @@ interpolate_km_values <- function(x, .times) {
     km_with_cuts(.times = x$.time) %>%
     dplyr::rename(.tmp = .time) %>%
     dplyr::left_join(x, by = ".cuts") %>%
-    dplyr::select(-.time, .time = .tmp, -.cuts, -.pred_hazard_cumulative)
+    dplyr::select(-.time, .time = .tmp, -.cuts)
   pred_times
 }
 

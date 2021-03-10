@@ -44,7 +44,7 @@ make_cox_reg_survival <- function() {
       interface = "formula",
       protect = c("formula", "data"),
       func = c(pkg = "survival", fun = "coxph"),
-      defaults = list(x = TRUE)
+      defaults = list(x = TRUE, model = TRUE)
     )
   )
 
