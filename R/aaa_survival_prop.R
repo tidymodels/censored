@@ -10,7 +10,7 @@
 #' @export
 cph_survival_prob <- function(x, new_data, .times, output = "surv", conf.int = .95, ...) {
   output <- match.arg(output, c("surv", "conf", "haz"))
-  new_data$.id <- 1:nrow(new_data)
+  new_data$.id <- seq_len(nrow(new_data))
   y <- survival::survfit(x, newdata = new_data, id = .id,
                          conf.int = conf.int, na.action = na.exclude, ...)
   res <-
@@ -105,4 +105,3 @@ km_with_cuts <- function(x, .times = NULL) {
   x$.cuts <- cut(x$.time, .times)
   x
 }
-
