@@ -44,7 +44,7 @@ make_cox_reg_survival <- function() {
       interface = "formula",
       protect = c("formula", "data"),
       func = c(pkg = "survival", fun = "coxph"),
-      defaults = list(x = TRUE)
+      defaults = list(x = TRUE, model = TRUE)
     )
   )
 
@@ -75,7 +75,7 @@ make_cox_reg_survival <- function() {
         list(
           formula = quote(object$fit),
           newdata = quote(new_data),
-          na.action = stats::na.pass
+          na.action = quote(stats::na.exclude)
         )
     )
   )
@@ -87,16 +87,13 @@ make_cox_reg_survival <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = function(x, object) {
-        colnames(x) <- object$spec$method$pred$survival$args$.time
-        matrix_to_nested_tibbles_survival(x)
-      },
-      func = c(pkg = "pec", fun = "predictSurvProb"),
+      post = NULL,
+      func = c(pkg = "censored", fun = "cph_survival_prob"),
       args =
         list(
-          object = quote(object$fit),
-          newdata = quote(new_data),
-          times = rlang::expr(.time)
+          x = quote(object$fit),
+          new_data = quote(new_data),
+          .times = rlang::expr(.time)
         )
     )
   )
@@ -108,12 +105,17 @@ make_cox_reg_survival <- function() {
     type = "linear_pred",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(x, object) {
+        # For consistency with other models, we want the lp to increase with
+        # time. For this, we change the sign
+        -unname(x)
+      },
       func = c(fun = "predict"),
       args =
         list(
           object = quote(object$fit),
-          newdata = quote(new_data)
+          newdata = quote(new_data),
+          na.action = quote(stats::na.exclude)
         )
     )
   )
@@ -184,36 +186,8 @@ make_cox_reg_glmnet <- function() {
         )
     )
   )
-
-  parsnip::set_pred(
-    model = "cox_reg",
-    eng = "glmnet",
-    mode = "censored regression",
-    type = "survival",
-    value = list(
-      pre = NULL,
-      post = function(x, object) {
-        .time <- object$spec$method$pred$survival$args$.time
-        res <- calculate_survival_prop(x,
-                                       object$fit$time,
-                                       object$fit$event,
-                                       .time)
-
-        colnames(res) <- .time
-        matrix_to_nested_tibbles_survival(res)
-
-      },
-      func = c(fun = "predict"),
-      args =
-        list(
-          object = expr(object$fit$fit),
-          newx = expr(as.matrix(new_data)),
-          type = "link",
-          s = expr(object$spec$args$penalty)
-        )
-    )
-  )
 }
+
 
 # nocov end
 

@@ -40,7 +40,13 @@
 #' survival::coxph(formula = missing_arg())
 #' }
 #'
+#' Note that, for linear predictor prediction types, the results are formatted
+#' for all models such that the prediction _increases_ with time. For the
+#'  proportional hazards model, the sign is reversed.
+#'
 #' @examples
+#' parsnip::show_engines("cox_reg")
+#'
 #' library(survival)
 #'
 #' cox_mod <-

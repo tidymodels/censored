@@ -44,39 +44,6 @@ test_that("linear_pred predictions", {
 
 # ------------------------------------------------------------------------------
 
-test_that("survival predictions", {
-  # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
-  expect_error(predict(f_fit, lung2, type = "survival", penalty = 0.01),
-               "When using 'type' values of 'survival' or 'hazard' are given")
-  f_pred <- predict(f_fit, lung2, type = "survival", penalty = 0.01, .time = 100:200)
-
-  lp <- predict(exp_f_fit, as.matrix(lung2[, c(4, 6)]), s = 0.01, type = "link")
-  exp_surv <- Surv(lung2$time, lung2$status)
-  exp_f_pred <- calculate_survival_prop(lp = lp,
-                                        time = exp_surv[, 1],
-                                        event = exp_surv[, 2],
-                                        survtime = 100:200)
-
-  expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred_survival")
-  expect_equal(nrow(f_pred), nrow(lung2))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(dim(.x) == c(101, 2))))
-  )
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(names(.x) == c(".time", ".pred_survival"))))
-  )
-  expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-    as.numeric(t(exp_f_pred))
-  )
-})
-
-# ------------------------------------------------------------------------------
-
 test_that("api errors", {
   expect_error(
     cox_reg() %>% set_engine("lda"),
