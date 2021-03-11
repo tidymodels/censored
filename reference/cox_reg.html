@@ -217,9 +217,18 @@ For this type of model, the template of the fit calls are:</p>
 <span class='fu'>survival</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/survival/man/coxph.html'>coxph</a></span><span class='op'>(</span>formula <span class='op'>=</span> <span class='fu'>missing_arg</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 </pre>
 
+<p>Note that, for linear predictor prediction types, the results are formatted
+for all models such that the prediction <em>increases</em> with time. For the
+proportional hazards model, the sign is reversed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/therneau/survival'>survival</a></span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='fu'>parsnip</span><span class='fu'>::</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/show_engines.html'>show_engines</a></span><span class='op'>(</span><span class='st'>"cox_reg"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 2</span><span>
+#&gt;   engine   mode               
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>              
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> survival censored regression
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> glmnet   censored regression</div><div class='input'>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/therneau/survival'>survival</a></span><span class='op'>)</span>
 
 <span class='va'>cox_mod</span> <span class='op'>&lt;-</span>
   <span class='fu'>cox_reg</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
@@ -243,7 +252,7 @@ For this type of model, the template of the fit calls are:</p>
 #&gt; 
 #&gt; Main Arguments:
 #&gt;   penalty = 1
-#&gt; </div></pre>
+#&gt; </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

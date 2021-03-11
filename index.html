@@ -99,7 +99,7 @@
 <span class="va">cox_mod</span>
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Fit time:  18ms </span>
+<span class="co">#&gt; Fit time:  12ms </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, </span>
 <span class="co">#&gt;     data = data, x = TRUE)</span>
@@ -116,78 +116,64 @@
 <a href="#time" class="anchor"></a>time</h3>
 <p>when we specify <code>type = "time"</code> then we get back the predicted survival time of an observation based on its predictors. The survival time is the time it takes for the observation to observe an event.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"time"</span>, new_data <span class="op">=</span> <span class="va">lung</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 228 x 1</span>
-<span class="co">#&gt;    .pred_time</span>
-<span class="co">#&gt;         &lt;dbl&gt;</span>
-<span class="co">#&gt;  1       342.</span>
-<span class="co">#&gt;  2       474.</span>
-<span class="co">#&gt;  3       511.</span>
-<span class="co">#&gt;  4       389.</span>
-<span class="co">#&gt;  5       498.</span>
-<span class="co">#&gt;  6       342.</span>
-<span class="co">#&gt;  7       263.</span>
-<span class="co">#&gt;  8       256.</span>
-<span class="co">#&gt;  9       401.</span>
-<span class="co">#&gt; 10       278.</span>
-<span class="co">#&gt; # … with 218 more rows</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"time"</span>, new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 1</span>
+<span class="co">#&gt;   .pred_time</span>
+<span class="co">#&gt;        &lt;dbl&gt;</span>
+<span class="co">#&gt; 1       342.</span>
+<span class="co">#&gt; 2       474.</span>
+<span class="co">#&gt; 3       511.</span>
+<span class="co">#&gt; 4       389.</span>
+<span class="co">#&gt; 5       498.</span>
+<span class="co">#&gt; 6       342.</span></code></pre></div>
 <p>Here we see that the first patient is predicted to have 342.36 days left.</p>
 </div>
 <div id="survival" class="section level3">
 <h3 class="hasAnchor">
 <a href="#survival" class="anchor"></a>survival</h3>
-<p>when we specify <code>type = "survival"</code> then we are trying to get the properbility of survival (not observing an event) at a given time <code>.time</code>.</p>
+<p>when we specify <code>type = "survival"</code> then we are trying to get the probabilities of survival (not observing an event) up to a given time <code>.time</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pred_vals_survival</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, 
                               type <span class="op">=</span> <span class="st">"survival"</span>, 
-                              new_data <span class="op">=</span> <span class="va">lung</span>, 
+                              new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span>, 
                               .time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">pred_vals_survival</span>
-<span class="co">#&gt; # A tibble: 228 x 1</span>
-<span class="co">#&gt;    .pred_survival</span>
-<span class="co">#&gt;    &lt;list&lt;tibble&gt;&gt;</span>
-<span class="co">#&gt;  1        [2 × 2]</span>
-<span class="co">#&gt;  2        [2 × 2]</span>
-<span class="co">#&gt;  3        [2 × 2]</span>
-<span class="co">#&gt;  4        [2 × 2]</span>
-<span class="co">#&gt;  5        [2 × 2]</span>
-<span class="co">#&gt;  6        [2 × 2]</span>
-<span class="co">#&gt;  7        [2 × 2]</span>
-<span class="co">#&gt;  8        [2 × 2]</span>
-<span class="co">#&gt;  9        [2 × 2]</span>
-<span class="co">#&gt; 10        [2 × 2]</span>
-<span class="co">#&gt; # … with 218 more rows</span>
+<span class="co">#&gt; # A tibble: 6 x 1</span>
+<span class="co">#&gt;   .pred           </span>
+<span class="co">#&gt;   &lt;list&gt;          </span>
+<span class="co">#&gt; 1 &lt;tibble [2 × 4]&gt;</span>
+<span class="co">#&gt; 2 &lt;tibble [2 × 4]&gt;</span>
+<span class="co">#&gt; 3 &lt;tibble [2 × 4]&gt;</span>
+<span class="co">#&gt; 4 &lt;tibble [2 × 4]&gt;</span>
+<span class="co">#&gt; 5 &lt;tibble [2 × 4]&gt;</span>
+<span class="co">#&gt; 6 &lt;tibble [2 × 4]&gt;</span>
 
-<span class="va">pred_vals_survival</span><span class="op">$</span><span class="va">.pred_survival</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="co">#&gt; # A tibble: 2 x 2</span>
-<span class="co">#&gt;   .time .pred_survival</span>
-<span class="co">#&gt;   &lt;chr&gt;          &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 100            0.855</span>
-<span class="co">#&gt; 2 200            0.649</span></code></pre></div>
-<p>here we see that the first patient has a 85.5% probability of survival after 100 days and 64.9% probability of survival after 200 days.</p>
+<span class="va">pred_vals_survival</span><span class="op">$</span><span class="va">.pred</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt; # A tibble: 2 x 4</span>
+<span class="co">#&gt;   .time .pred_survival .pred_survival_lower .pred_survival_upper</span>
+<span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;                &lt;dbl&gt;                &lt;dbl&gt;</span>
+<span class="co">#&gt; 1   100          0.850                0.796                0.908</span>
+<span class="co">#&gt; 2   200          0.639                0.557                0.733</span></code></pre></div>
+<p>here we see that the first patient has a 85% probability of survival up to 100 days and 63.9% probability of survival up to 200 days.</p>
 </div>
 <div id="linear_pred" class="section level3">
 <h3 class="hasAnchor">
 <a href="#linear_pred" class="anchor"></a>linear_pred</h3>
 <p>when we specify <code>type = "linear_pred"</code> then we get back the linear predictor for the observation according to the model.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"linear_pred"</span>, new_data <span class="op">=</span> <span class="va">lung</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 228 x 1</span>
-<span class="co">#&gt;    .pred_linear_pred</span>
-<span class="co">#&gt;                &lt;dbl&gt;</span>
-<span class="co">#&gt;  1            0.152 </span>
-<span class="co">#&gt;  2           -0.359 </span>
-<span class="co">#&gt;  3           -0.495 </span>
-<span class="co">#&gt;  4           -0.0401</span>
-<span class="co">#&gt;  5           -0.450 </span>
-<span class="co">#&gt;  6            0.152 </span>
-<span class="co">#&gt;  7            0.527 </span>
-<span class="co">#&gt;  8            0.561 </span>
-<span class="co">#&gt;  9           -0.0852</span>
-<span class="co">#&gt; 10            0.449 </span>
-<span class="co">#&gt; # … with 218 more rows</span></code></pre></div>
-<p>here we see that the linear predictor of the first observation is 0.1517.</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"linear_pred"</span>, new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 1</span>
+<span class="co">#&gt;   .pred_linear_pred</span>
+<span class="co">#&gt;               &lt;dbl&gt;</span>
+<span class="co">#&gt; 1           -0.152 </span>
+<span class="co">#&gt; 2            0.359 </span>
+<span class="co">#&gt; 3            0.495 </span>
+<span class="co">#&gt; 4            0.0401</span>
+<span class="co">#&gt; 5            0.450 </span>
+<span class="co">#&gt; 6           -0.152</span></code></pre></div>
+<p>here we see that the linear predictor of the first observation is -0.1517.</p>
+<p>Note that, for linear predictor prediction types, the results are formatted for all models such that the prediction <em>increases</em> with time. For the proportional hazards model, the sign is reversed.</p>
 </div>
 </div>
 <div id="prediction-type-table" class="section level2">
@@ -200,8 +186,8 @@
 <th align="left">survival</th>
 <th align="left">linear_pred</th>
 <th align="left">time</th>
-<th align="left">numeric</th>
 <th align="left">quantile</th>
+<th align="left">hazard</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -261,7 +247,7 @@
 <tr class="odd">
 <td align="left">cox_reg</td>
 <td align="left">glmnet</td>
-<td align="left">TRUE</td>
+<td align="left">FALSE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
@@ -270,18 +256,18 @@
 <tr class="even">
 <td align="left">survival_reg</td>
 <td align="left">survival</td>
+<td align="left">TRUE</td>
 <td align="left">FALSE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
 <td align="left">survival_reg</td>
 <td align="left">flexsurv</td>
+<td align="left">TRUE</td>
 <td align="left">FALSE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
 </tr>
