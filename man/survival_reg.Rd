@@ -2,33 +2,10 @@
 % Please edit documentation in R/survival_reg.R
 \name{survival_reg}
 \alias{survival_reg}
-\alias{update.survival_reg}
-\title{General Interface for Parametric Survival Models}
-\usage{
-survival_reg(mode = "censored regression", dist = NULL)
-
-\method{update}{survival_reg}(object, parameters = NULL, dist = NULL, fresh = FALSE, ...)
-}
-\arguments{
-\item{mode}{A single character string for the type of model.
-The only possible value for this model is "censored regression".}
-
-\item{dist}{A character string for the outcome distribution. "weibull" is
-the default.}
-
-\item{object}{A survival regression model specification.}
-
-\item{parameters}{A 1-row tibble or named list with \emph{main}
-parameters to update. If the individual arguments are used,
-these will supersede the values in \code{parameters}. Also, using
-engine arguments in this object will result in an error.}
-
-\item{fresh}{A logical for whether the arguments should be
-modified in-place of or replaced wholesale.}
-
-\item{...}{Not used for \code{update()}.}
-}
+\title{Parsnip Engines for Parametric Survival Models}
 \description{
+These are engines for the \code{\link[parsnip:survival_reg]{parsnip::survival_reg()}} model specification.
+
 \code{survival_reg()} is a way to generate a \emph{specification} of a model
 before fitting and allows the model to be created using
 R. The main argument for the
@@ -42,14 +19,6 @@ set using \code{set_engine()}. If left to its default
 here (\code{NULL}), the value is taken from the underlying model
 functions.
 
-If parameters need to be modified, this function can be used
-in lieu of recreating the object from scratch.
-}
-\details{
-The data given to the function are not saved and are only used
-to determine the \emph{mode} of the model. For \code{survival_reg()},the
-mode will always be "regression".
-
 Since survival models typically involve censoring (and require the use of
 \code{\link[survival:Surv]{survival::Surv()}} objects), the \code{\link[=fit]{fit()}} function will require that the
 survival model be specified via the formula interface.
@@ -58,27 +27,16 @@ Also, for the \code{flexsurv::flexsurvfit} engine, the typical
 \code{strata} function cannot be used. To achieve the same effect,
 the extra parameter roles can be used (as described above).
 
-For \code{survival_reg()}, the mode will always be "censored regression".
-
 The model can be created using the \code{fit()} function using the
 following \emph{engines}:
 \itemize{
 \item \pkg{R}:  \code{"flexsurv"}, \code{"survival"} (the default)
 }
 }
-\examples{
-survival_reg()
-# Parameters can be represented by a placeholder:
-survival_reg(dist = varying())
-
-model <- survival_reg(dist = "weibull")
-model
-update(model, dist = "lnorm")
-}
 \references{
 Jackson, C. (2016). \code{flexsurv}: A Platform for Parametric Survival
 Modeling in R. \emph{Journal of Statistical Software}, 70(8), 1 - 33.
 }
 \seealso{
-\code{\link[=fit]{fit()}}, \code{\link[survival:Surv]{survival::Surv()}}
+\code{\link[parsnip:survival_reg]{parsnip::survival_reg()}}, \code{\link[parsnip:reexports]{parsnip::fit()}}, \code{\link[survival:Surv]{survival::Surv()}}
 }
