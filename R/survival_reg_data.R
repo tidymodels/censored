@@ -9,7 +9,7 @@
 
 # nocov
 
-make_surv_reg_survival <- function() {
+make_survival_reg_survival <- function() {
 
   parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "survival")
   parsnip::set_dependency("survival_reg", eng = "survival", pkg = "survival")
@@ -121,7 +121,7 @@ make_surv_reg_survival <- function() {
 
 }
 
-make_surv_reg_flexsurv <- function() {
+make_survival_reg_flexsurv <- function() {
 
   parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "flexsurv")
   parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "flexsurv")
