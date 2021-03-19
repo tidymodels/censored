@@ -33,6 +33,56 @@ following \emph{engines}:
 \item \pkg{R}:  \code{"flexsurv"}, \code{"survival"} (the default)
 }
 }
+\section{Engine Details}{
+Engines may have pre-set default arguments when executing the model fit
+call. For this type of model, the template of the fit calls are below.
+\subsection{flexsurv}{\if{html}{\out{<div class="r">}}\preformatted{survival_reg() \%>\% 
+  set_engine("flexsurv") \%>\% 
+  set_mode("censored regression") \%>\% 
+  translate()
+}\if{html}{\out{</div>}}\preformatted{## Parametric Survival Regression Model Specification (censored regression)
+## 
+## Computational engine: flexsurv 
+## 
+## Model fit template:
+## flexsurv::flexsurvreg(formula = missing_arg(), data = missing_arg(), 
+##     weights = missing_arg())
+}
+}
+
+\subsection{survival}{\if{html}{\out{<div class="r">}}\preformatted{survival_reg() \%>\% 
+  set_engine("survival") \%>\% 
+  set_mode("censored regression") \%>\% 
+  translate()
+}\if{html}{\out{</div>}}\preformatted{## Parametric Survival Regression Model Specification (censored regression)
+## 
+## Computational engine: survival 
+## 
+## Model fit template:
+## survival::survreg(formula = missing_arg(), data = missing_arg(), 
+##     weights = missing_arg(), model = TRUE)
+}
+
+Note that \code{model = TRUE} is needed to produce quantile predictions when
+there is a stratification variable and can be overridden in other cases.
+
+\code{fit()} passes the data directly to \code{survival::curvreg()} so that its
+formula method can create dummy variables as-needed.
+}
+
+\subsection{Parameter translations}{
+
+The standardized parameter names in parsnip can be mapped to their
+original names in each engine that has main parameters. Each engine
+typically has a different default value (shown in parentheses) for each
+parameter.\tabular{lll}{
+   \strong{parsnip} \tab \strong{survival} \tab \strong{flexsurv} \cr
+   dist \tab dist \tab dist \cr
+}
+
+}
+}
+
 \references{
 Jackson, C. (2016). \code{flexsurv}: A Platform for Parametric Survival
 Modeling in R. \emph{Journal of Statistical Software}, 70(8), 1 - 33.

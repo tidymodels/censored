@@ -33,6 +33,8 @@
 #' \item \pkg{R}:  `"flexsurv"`, `"survival"` (the default)
 #' }
 #'
+#' @includeRmd man/rmd/survival_reg.Rmd details
+#'
 #' @seealso [parsnip::survival_reg()], [parsnip::fit()], [survival::Surv()]
 #' @references Jackson, C. (2016). `flexsurv`: A Platform for Parametric Survival
 #'  Modeling in R. _Journal of Statistical Software_, 70(8), 1 - 33.
