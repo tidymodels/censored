@@ -10,7 +10,7 @@ context("Cox Regression - survival")
 
 # ------------------------------------------------------------------------------
 
-cox_spec <- cox_reg() %>% set_engine("survival")
+cox_spec <- proportional_hazards() %>% set_engine("survival")
 
 exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
@@ -85,17 +85,7 @@ test_that("linear_pred predictions", {
 
 test_that("api errors", {
   expect_error(
-    cox_reg() %>% set_engine("lda"),
+    proportional_hazards() %>% set_engine("lda"),
     regexp = "Engine 'lda' is not available"
-  )
-})
-
-
-# ------------------------------------------------------------------------------
-
-test_that("printing", {
-  expect_output(
-    print(cox_reg()),
-    "Cox Model Specification \\(censored regression\\)"
   )
 })
