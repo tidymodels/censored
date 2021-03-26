@@ -34,7 +34,7 @@ Imports:
 URL: https://github.com/EmilHvitfeldt/censored
 BugReports: https://github.com/EmilHvitfeldt/censored/issues
 Remotes: 
-    tidymodels/parsnip
+    tidymodels/parsnip@9fef469
 Suggests: 
     testthat,
     glmnet,
