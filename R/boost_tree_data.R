@@ -93,13 +93,9 @@ make_boost_tree_mboost <- function() {
     value = list(
       pre = NULL,
       post = function(x, object) {
-        res <- floor_surv_mboost(
-          x,
-          object$spec$method$pred$survival$args$.time
-        )
-        colnames(res) <- object$spec$method$pred$survival$args$.time
-
-        matrix_to_nested_tibbles_survival(res)
+        .time <- object$spec$method$pred$survival$args$.time
+        res <- floor_surv_mboost(x, .time)
+        matrix_to_nested_tibbles_survival(res, .time)
       },
       func = c(pkg = "mboost", fun = "survFit"),
       args =

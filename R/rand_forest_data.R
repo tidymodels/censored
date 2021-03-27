@@ -67,8 +67,8 @@ make_rand_forest_party <- function() {
       pre = NULL,
       post = function(x, object) {
         x <- x[, -1, drop = FALSE]
-        colnames(x) <- object$spec$method$pred$survival$args$.time
-        matrix_to_nested_tibbles_survival(x)
+        .time <- object$spec$method$pred$survival$args$.time
+        matrix_to_nested_tibbles_survival(x, .time)
       },
       func = c(pkg = "pec", fun = "predictSurvProb"),
       args =
