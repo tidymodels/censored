@@ -63,6 +63,11 @@ test_that("survival predictions", {
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
   expect_equal(
+    tidyr::unnest(f_pred, cols = c(.pred_survival))$.time,
+    rep(100:200, nrow(lung))
+  )
+
+  expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
     as.numeric(t(exp_f_pred))
   )

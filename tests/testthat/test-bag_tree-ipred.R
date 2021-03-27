@@ -73,6 +73,10 @@ test_that("survival predictions", {
     tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
     unlist(exp_f_pred)
   )
+  expect_equal(
+    tidyr::unnest(f_pred, cols = c(.pred_survival))$.time,
+    rep(100:200, nrow(lung))
+  )
 
   # Out of domain prediction
   f_pred <- predict(f_fit, lung, type = "survival", .time = 10000)
