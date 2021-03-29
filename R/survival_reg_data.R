@@ -1,4 +1,4 @@
-# These functions define the Survival Regression models.
+# These functions define engines for the `survival_reg` model from parsnip.
 # They are executed when this package is loaded via `.onLoad()` and modify the
 # parsnip package's model environment.
 
@@ -9,11 +9,8 @@
 
 # nocov
 
-make_surv_reg_survival <- function() {
-  parsnip::set_new_model("survival_reg")
-  parsnip::set_model_mode("survival_reg", "censored regression")
+make_survival_reg_survival <- function() {
 
-  # ------------------------------------------------------------------------------
   parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "survival")
   parsnip::set_dependency("survival_reg", eng = "survival", pkg = "survival")
   parsnip::set_dependency("survival_reg", eng = "survival", pkg = "censored")
@@ -124,7 +121,8 @@ make_surv_reg_survival <- function() {
 
 }
 
-make_surv_reg_flexsurv <- function() {
+make_survival_reg_flexsurv <- function() {
+
   parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "flexsurv")
   parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "flexsurv")
   parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "survival")
