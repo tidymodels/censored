@@ -40,7 +40,7 @@ utils::globalVariables(
 
   make_rand_forest_party()
 
-  make_surv_reg_survival()
-  make_surv_reg_flexsurv()
+  make_survival_reg_survival()
+  make_survival_reg_flexsurv()
 
 }
