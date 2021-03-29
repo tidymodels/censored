@@ -10,9 +10,8 @@
 #' @export
 cph_survival_prob <- function(x, new_data, .times, output = "surv", conf.int = .95, ...) {
   output <- match.arg(output, c("surv", "conf", "haz"))
-  new_data$.id <- seq_len(nrow(new_data))
-  y <- survival::survfit(x, newdata = new_data, id = .id,
-                         conf.int = conf.int, na.action = na.exclude, ...)
+  y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
+                         na.action = na.exclude, ...)
   res <-
     stack_survfit_cph(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
