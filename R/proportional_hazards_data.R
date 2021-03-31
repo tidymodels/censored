@@ -64,7 +64,7 @@ make_proportional_hazards_survival <- function() {
     mode = "censored regression",
     type = "time",
     value = list(
-      pre = NULL,
+      pre = cph_survival_pre,
       post = function(x, object) {
         unname(summary(x)$table[, "*rmean"])
       },
@@ -84,7 +84,7 @@ make_proportional_hazards_survival <- function() {
     mode = "censored regression",
     type = "survival",
     value = list(
-      pre = NULL,
+      pre = cph_survival_pre,
       post = NULL,
       func = c(pkg = "censored", fun = "cph_survival_prob"),
       args =

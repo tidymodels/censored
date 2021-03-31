@@ -37,6 +37,16 @@ test_that("time predictions", {
   expect_true(all(names(f_pred) == ".pred_time"))
   expect_equivalent(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
+
+  # stratified model but no strata info
+  cox_model <- proportional_hazards() %>% set_engine("survival")
+  cox_fit_strata <- cox_model %>%
+    fit(Surv(time, status) ~ age + sex + wt.loss + strata(inst), data = lung)
+  new_data_0 <- data.frame(age = c(50, 60), sex = 1, wt.loss = 5)
+  expect_error(
+    predict(cox_fit_strata, new_data = new_data_0, type = "time"),
+    "provide the strata"
+  )
 })
 
 # ------------------------------------------------------------------------------
@@ -46,7 +56,7 @@ test_that("survival predictions", {
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
-  # Test at observed event times since we use the step funciton and pec does not
+  # Test at observed event times since we use the step function and pec does not
   f_pred <- predict(f_fit, lung, type = "survival", .time = c(306, 455))
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = c(306, 455))
 
@@ -64,6 +74,16 @@ test_that("survival predictions", {
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     as.numeric(t(exp_f_pred))
+  )
+
+  # stratified model but no strata info
+  cox_model <- proportional_hazards() %>% set_engine("survival")
+  cox_fit_strata <- cox_model %>%
+    fit(Surv(time, status) ~ age + sex + wt.loss + strata(inst), data = lung)
+  new_data_0 <- data.frame(age = c(50, 60), sex = 1, wt.loss = 5)
+  expect_error(
+    predict(cox_fit_strata, new_data = new_data_0, type = "survival", .time = 200),
+    "provide the strata"
   )
 })
 
