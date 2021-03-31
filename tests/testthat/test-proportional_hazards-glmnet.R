@@ -11,7 +11,7 @@ context("Cox Regression - glmnet")
 
 lung2 <- lung[-14, ]
 
-cox_spec <- cox_reg() %>% set_engine("glmnet")
+cox_spec <- proportional_hazards() %>% set_engine("glmnet")
 
 exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
                     y = Surv(lung2$time, lung2$status),
@@ -46,18 +46,8 @@ test_that("linear_pred predictions", {
 
 test_that("api errors", {
   expect_error(
-    cox_reg() %>% set_engine("lda"),
+    proportional_hazards() %>% set_engine("lda"),
     regexp = "Engine 'lda' is not available"
-  )
-})
-
-
-# ------------------------------------------------------------------------------
-
-test_that("printing", {
-  expect_output(
-    print(cox_reg()),
-    "Cox Model Specification \\(censored regression\\)"
   )
 })
 
@@ -66,7 +56,7 @@ test_that("printing", {
 test_that("primary arguments", {
 
   # penalty ------------------------------------------------------
-  penalty <- cox_reg(penalty = 0.05) %>%
+  penalty <- proportional_hazards(penalty = 0.05) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -79,7 +69,7 @@ test_that("primary arguments", {
   )
 
   # mixture -----------------------------------------------------------
-  mixture <- cox_reg(mixture = 0.34) %>%
+  mixture <- proportional_hazards(mixture = 0.34) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -92,7 +82,7 @@ test_that("primary arguments", {
                )
   )
 
-  mixture_v <- cox_reg(mixture = varying()) %>%
+  mixture_v <- proportional_hazards(mixture = varying()) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -109,17 +99,17 @@ test_that("primary arguments", {
 # ------------------------------------------------------------------------------
 
 test_that("updating", {
-  expr1 <- cox_reg() %>%
+  expr1 <- proportional_hazards() %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
-  expr1_exp <- cox_reg(mixture = 0.76) %>%
+  expr1_exp <- proportional_hazards(mixture = 0.76) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
-  expr2 <- cox_reg() %>%
+  expr2 <- proportional_hazards() %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
-  expr2_exp <- cox_reg(penalty = 0.123) %>%
+  expr2_exp <- proportional_hazards(penalty = 0.123) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 

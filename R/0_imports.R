@@ -28,9 +28,8 @@ utils::globalVariables(
 
 .onLoad <- function(libname, pkgname) {
 
-  # This defines cox_reg in the model database
-  make_cox_reg_survival()
-  make_cox_reg_glmnet()
+  make_proportional_hazards_survival()
+  make_proportional_hazards_glmnet()
 
   make_boost_tree_mboost()
 

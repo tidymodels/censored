@@ -1,4 +1,4 @@
-# These functions define the Cox regression models.
+# These functions define the proportional hazards models.
 # They are executed when this package is loaded via `.onLoad()` and modify the
 # parsnip package's model environment.
 
@@ -9,17 +9,15 @@
 
 # nocov
 
-make_cox_reg_survival <- function() {
-  parsnip::set_new_model("cox_reg")
-  parsnip::set_model_mode("cox_reg", "censored regression")
+make_proportional_hazards_survival <- function() {
 
-  parsnip::set_model_engine("cox_reg", mode = "censored regression", eng = "survival")
-  parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "survival")
-  parsnip::set_dependency("cox_reg", eng = "survival", pkg =  "riskRegression")
-  parsnip::set_dependency("cox_reg", eng = "survival", pkg = "censored")
+  parsnip::set_model_engine("proportional_hazards", mode = "censored regression", eng = "survival")
+  parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "survival")
+  parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "riskRegression")
+  parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "censored")
 
   set_model_arg(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     parsnip = "penalty",
     original = "lambda",
@@ -28,7 +26,7 @@ make_cox_reg_survival <- function() {
   )
 
   set_model_arg(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     parsnip = "mixture",
     original = "alpha",
@@ -37,7 +35,7 @@ make_cox_reg_survival <- function() {
   )
 
   parsnip::set_fit(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "survival",
     mode = "censored regression",
     value = list(
@@ -49,7 +47,7 @@ make_cox_reg_survival <- function() {
   )
 
   parsnip::set_encoding(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "survival",
     mode = "censored regression",
     options = list(
@@ -61,7 +59,7 @@ make_cox_reg_survival <- function() {
   )
 
   parsnip::set_pred(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "survival",
     mode = "censored regression",
     type = "time",
@@ -81,7 +79,7 @@ make_cox_reg_survival <- function() {
   )
 
   parsnip::set_pred(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "survival",
     mode = "censored regression",
     type = "survival",
@@ -99,7 +97,7 @@ make_cox_reg_survival <- function() {
   )
 
   parsnip::set_pred(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "survival",
     mode = "censored regression",
     type = "linear_pred",
@@ -121,13 +119,13 @@ make_cox_reg_survival <- function() {
   )
 }
 
-make_cox_reg_glmnet <- function() {
-  parsnip::set_model_engine("cox_reg", mode = "censored regression", eng = "glmnet")
-  parsnip::set_dependency("cox_reg", eng = "glmnet", pkg =  "glmnet")
-  parsnip::set_dependency("cox_reg", eng = "glmnet", pkg = "censored")
+make_proportional_hazards_glmnet <- function() {
+  parsnip::set_model_engine("proportional_hazards", mode = "censored regression", eng = "glmnet")
+  parsnip::set_dependency("proportional_hazards", eng = "glmnet", pkg =  "glmnet")
+  parsnip::set_dependency("proportional_hazards", eng = "glmnet", pkg = "censored")
 
   parsnip::set_fit(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     mode = "censored regression",
     value = list(
@@ -139,7 +137,7 @@ make_cox_reg_glmnet <- function() {
   )
 
   parsnip::set_encoding(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     mode = "censored regression",
     options = list(
@@ -151,7 +149,7 @@ make_cox_reg_glmnet <- function() {
   )
 
   set_model_arg(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     parsnip = "penalty",
     original = "lambda",
@@ -160,7 +158,7 @@ make_cox_reg_glmnet <- function() {
   )
 
   set_model_arg(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     parsnip = "mixture",
     original = "alpha",
@@ -169,7 +167,7 @@ make_cox_reg_glmnet <- function() {
   )
 
   parsnip::set_pred(
-    model = "cox_reg",
+    model = "proportional_hazards",
     eng = "glmnet",
     mode = "censored regression",
     type = "linear_pred",
