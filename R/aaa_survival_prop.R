@@ -104,3 +104,26 @@ km_with_cuts <- function(x, .times = NULL) {
   x$.cuts <- cut(x$.time, .times)
   x
 }
+
+cph_survival_pre <- function(new_data, object) {
+
+  # Check that the stratification variable is part of `new_data`.
+  # If this information is missing, survival::survfit() does not error but
+  # instead returns the survival curves for _all_ strata.
+  terms_x <- stats::terms(object$fit)
+  terms_special <- attr(terms_x, "specials")
+  has_strata <- !is.null(terms_special$strata)
+
+  if (has_strata) {
+    strata <- attr(terms_x, "term.labels")
+    strata <- grep(pattern = "^strata", x = strata, value = TRUE)
+    strata <- sub(pattern = "strata\\(", replacement = "", x = strata)
+    strata <- sub(pattern = "\\)", replacement = "", x = strata)
+
+    if (!strata %in% names(new_data)) {
+      rlang::abort("Please provide the strata variable in `new_data`.")
+    }
+  }
+
+  new_data
+}
