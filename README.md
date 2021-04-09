@@ -19,18 +19,18 @@ censored regression and survival analysis models.
 ## Installation
 
 This package is still in early development. You need to install the
-developmental branch of parsnip as well.
+development version of parsnip as well.
 
 ``` r
 # install.packages("pak")
-pak::pak("EmilHvitfeldt/censored")
+pak::pak("tidymodels/censored")
 ```
 
 ## Prediction Types
 
 The addition of censored regression comes with changes. One of these
-changes is the quantities we would like to predict from the model. The 3
-quantities we will consider are: `"time"`, `"survival"`, and
+changes is the quantities we would like to predict from the model. The
+three quantities we will consider are: `"time"`, `"survival"`, and
 `"linear_pred"`.
 
 To showcase these the differences, here is a simple Cox regression model
@@ -42,17 +42,17 @@ library(censored)
 library(survival)
 
 cox_mod <-
-  cox_reg() %>%
+  proportional_hazards() %>%
   set_engine("survival") %>%
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  12ms 
+#> Fit time:  23ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
-#>     data = data, x = TRUE)
+#>     data = data, model = TRUE, x = TRUE)
 #> 
 #>             coef exp(coef) se(coef)     z        p
 #> age     0.011281  1.011345 0.009319 1.211 0.226082
@@ -65,7 +65,7 @@ cox_mod
 
 ### time
 
-when we specify `type = "time"` then we get back the predicted survival
+When we specify `type = "time"` then we get back the predicted survival
 time of an observation based on its predictors. The survival time is the
 time it takes for the observation to observe an event.
 
@@ -87,7 +87,7 @@ left.
 
 ### survival
 
-when we specify `type = "survival"` then we are trying to get the
+When we specify `type = "survival"` then we are trying to get the
 probabilities of survival (not observing an event) up to a given time
 `.time`.
 
@@ -99,21 +99,21 @@ pred_vals_survival <- predict(cox_mod,
 
 pred_vals_survival
 #> # A tibble: 6 x 1
-#>   .pred           
-#>   <list>          
-#> 1 <tibble [2 × 4]>
-#> 2 <tibble [2 × 4]>
-#> 3 <tibble [2 × 4]>
-#> 4 <tibble [2 × 4]>
-#> 5 <tibble [2 × 4]>
-#> 6 <tibble [2 × 4]>
+#>   .pred               
+#>   <list>              
+#> 1 <tibble[,2] [2 × 2]>
+#> 2 <tibble[,2] [2 × 2]>
+#> 3 <tibble[,2] [2 × 2]>
+#> 4 <tibble[,2] [2 × 2]>
+#> 5 <tibble[,2] [2 × 2]>
+#> 6 <tibble[,2] [2 × 2]>
 
 pred_vals_survival$.pred[[1]]
-#> # A tibble: 2 x 4
-#>   .time .pred_survival .pred_survival_lower .pred_survival_upper
-#>   <dbl>          <dbl>                <dbl>                <dbl>
-#> 1   100          0.850                0.796                0.908
-#> 2   200          0.639                0.557                0.733
+#> # A tibble: 2 x 2
+#>   .time .pred_survival
+#>   <dbl>          <dbl>
+#> 1   100          0.850
+#> 2   200          0.639
 ```
 
 here we see that the first patient has a 85% probability of survival up
@@ -146,14 +146,14 @@ For the proportional hazards model, the sign is reversed.
 
 ## Prediction type table
 
-| alias          | engine   | survival | linear\_pred | time  | quantile | hazard |
-| :------------- | :------- | :------- | :----------- | :---- | :------- | :----- |
-| boost\_tree    | mboost   | TRUE     | TRUE         | FALSE | FALSE    | FALSE  |
-| decision\_tree | rpart    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
-| decision\_tree | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
-| rand\_forest   | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
-| bag\_tree      | ipred    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
-| cox\_reg       | survival | TRUE     | TRUE         | TRUE  | FALSE    | FALSE  |
-| cox\_reg       | glmnet   | FALSE    | TRUE         | FALSE | FALSE    | FALSE  |
-| survival\_reg  | survival | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
-| survival\_reg  | flexsurv | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
+| alias                 | engine   | survival | linear\_pred | time  | quantile | hazard |
+|:----------------------|:---------|:---------|:-------------|:------|:---------|:-------|
+| boost\_tree           | mboost   | TRUE     | TRUE         | FALSE | FALSE    | FALSE  |
+| decision\_tree        | rpart    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| decision\_tree        | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| proportional\_hazards | survival | TRUE     | TRUE         | TRUE  | FALSE    | FALSE  |
+| proportional\_hazards | glmnet   | FALSE    | TRUE         | FALSE | FALSE    | FALSE  |
+| rand\_forest          | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
+| survival\_reg         | survival | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
+| survival\_reg         | flexsurv | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
+| bag\_tree             | ipred    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |

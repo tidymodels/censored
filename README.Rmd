@@ -27,16 +27,16 @@ model definitions for censored regression and survival analysis models.
 
 ## Installation
 
-This package is still in early development. You need to install the developmental branch of parsnip as well.
+This package is still in early development. You need to install the development version of parsnip as well.
 
 ``` {.r}
 # install.packages("pak")
-pak::pak("EmilHvitfeldt/censored")
+pak::pak("tidymodels/censored")
 ```
 
 ## Prediction Types
 
-The addition of censored regression comes with changes. One of these changes is the quantities we would like to predict from the model. The 3 quantities we will consider are: `"time"`, `"survival"`, and `"linear_pred"`.
+The addition of censored regression comes with changes. One of these changes is the quantities we would like to predict from the model. The three quantities we will consider are: `"time"`, `"survival"`, and `"linear_pred"`.
 
 To showcase these the differences, here is a simple Cox regression model fitted on the `lung` data set.
 
@@ -45,7 +45,7 @@ library(censored)
 library(survival)
 
 cox_mod <-
-  cox_reg() %>%
+  proportional_hazards() %>%
   set_engine("survival") %>%
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -54,7 +54,7 @@ cox_mod
 
 ### time
 
-when we specify `type = "time"` then we get back the predicted survival time of an observation based on its predictors. The survival time is the time it takes for the observation to observe an event.
+When we specify `type = "time"` then we get back the predicted survival time of an observation based on its predictors. The survival time is the time it takes for the observation to observe an event.
 
 ```{r}
 predict(cox_mod, type = "time", new_data = head(lung))
@@ -64,7 +64,7 @@ Here we see that the first patient is predicted to have `r round(predict(cox_mod
 
 ### survival
 
-when we specify `type = "survival"` then we are trying to get the probabilities of survival (not observing an event) up to a given time `.time`. 
+When we specify `type = "survival"` then we are trying to get the probabilities of survival (not observing an event) up to a given time `.time`. 
 
 ```{r}
 pred_vals_survival <- predict(cox_mod, 
