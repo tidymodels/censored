@@ -76,15 +76,15 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>This package is still in early development. You need to install the developmental branch of parsnip as well.</p>
+<p>This package is still in early development. You need to install the development version of parsnip as well.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("pak")</span>
-<span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"EmilHvitfeldt/censored"</span><span class="op">)</span></code></pre></div>
+<span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"tidymodels/censored"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="prediction-types" class="section level2">
 <h2 class="hasAnchor">
 <a href="#prediction-types" class="anchor"></a>Prediction Types</h2>
-<p>The addition of censored regression comes with changes. One of these changes is the quantities we would like to predict from the model. The 3 quantities we will consider are: <code>"time"</code>, <code>"survival"</code>, and <code>"linear_pred"</code>.</p>
+<p>The addition of censored regression comes with changes. One of these changes is the quantities we would like to predict from the model. The three quantities we will consider are: <code>"time"</code>, <code>"survival"</code>, and <code>"linear_pred"</code>.</p>
 <p>To showcase these the differences, here is a simple Cox regression model fitted on the <code>lung</code> data set.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/EmilHvitfeldt/censored">censored</a></span><span class="op">)</span>
@@ -92,17 +92,17 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
 
 <span class="va">cox_mod</span> <span class="op">&lt;-</span>
-  <span class="fu">cox_reg</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="reference/proportional_hazards.html">proportional_hazards</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">set_engine</span><span class="op">(</span><span class="st">"survival"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">fit</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">ph.ecog</span>, data <span class="op">=</span> <span class="va">lung</span><span class="op">)</span>
 
 <span class="va">cox_mod</span>
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Fit time:  12ms </span>
+<span class="co">#&gt; Fit time:  23ms </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, </span>
-<span class="co">#&gt;     data = data, x = TRUE)</span>
+<span class="co">#&gt;     data = data, model = TRUE, x = TRUE)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;             coef exp(coef) se(coef)     z        p</span>
 <span class="co">#&gt; age     0.011281  1.011345 0.009319 1.211 0.226082</span>
@@ -114,7 +114,7 @@
 <div id="time" class="section level3">
 <h3 class="hasAnchor">
 <a href="#time" class="anchor"></a>time</h3>
-<p>when we specify <code>type = "time"</code> then we get back the predicted survival time of an observation based on its predictors. The survival time is the time it takes for the observation to observe an event.</p>
+<p>When we specify <code>type = "time"</code> then we get back the predicted survival time of an observation based on its predictors. The survival time is the time it takes for the observation to observe an event.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"time"</span>, new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 6 x 1</span>
@@ -131,7 +131,7 @@
 <div id="survival" class="section level3">
 <h3 class="hasAnchor">
 <a href="#survival" class="anchor"></a>survival</h3>
-<p>when we specify <code>type = "survival"</code> then we are trying to get the probabilities of survival (not observing an event) up to a given time <code>.time</code>.</p>
+<p>When we specify <code>type = "survival"</code> then we are trying to get the probabilities of survival (not observing an event) up to a given time <code>.time</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pred_vals_survival</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, 
                               type <span class="op">=</span> <span class="st">"survival"</span>, 
@@ -140,21 +140,21 @@
 
 <span class="va">pred_vals_survival</span>
 <span class="co">#&gt; # A tibble: 6 x 1</span>
-<span class="co">#&gt;   .pred           </span>
-<span class="co">#&gt;   &lt;list&gt;          </span>
-<span class="co">#&gt; 1 &lt;tibble [2 × 4]&gt;</span>
-<span class="co">#&gt; 2 &lt;tibble [2 × 4]&gt;</span>
-<span class="co">#&gt; 3 &lt;tibble [2 × 4]&gt;</span>
-<span class="co">#&gt; 4 &lt;tibble [2 × 4]&gt;</span>
-<span class="co">#&gt; 5 &lt;tibble [2 × 4]&gt;</span>
-<span class="co">#&gt; 6 &lt;tibble [2 × 4]&gt;</span>
+<span class="co">#&gt;   .pred               </span>
+<span class="co">#&gt;   &lt;list&gt;              </span>
+<span class="co">#&gt; 1 &lt;tibble[,2] [2 × 2]&gt;</span>
+<span class="co">#&gt; 2 &lt;tibble[,2] [2 × 2]&gt;</span>
+<span class="co">#&gt; 3 &lt;tibble[,2] [2 × 2]&gt;</span>
+<span class="co">#&gt; 4 &lt;tibble[,2] [2 × 2]&gt;</span>
+<span class="co">#&gt; 5 &lt;tibble[,2] [2 × 2]&gt;</span>
+<span class="co">#&gt; 6 &lt;tibble[,2] [2 × 2]&gt;</span>
 
 <span class="va">pred_vals_survival</span><span class="op">$</span><span class="va">.pred</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="co">#&gt; # A tibble: 2 x 4</span>
-<span class="co">#&gt;   .time .pred_survival .pred_survival_lower .pred_survival_upper</span>
-<span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;                &lt;dbl&gt;                &lt;dbl&gt;</span>
-<span class="co">#&gt; 1   100          0.850                0.796                0.908</span>
-<span class="co">#&gt; 2   200          0.639                0.557                0.733</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 2 x 2</span>
+<span class="co">#&gt;   .time .pred_survival</span>
+<span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;</span>
+<span class="co">#&gt; 1   100          0.850</span>
+<span class="co">#&gt; 2   200          0.639</span></code></pre></div>
 <p>here we see that the first patient has a 85% probability of survival up to 100 days and 63.9% probability of survival up to 200 days.</p>
 </div>
 <div id="linear_pred" class="section level3">
@@ -218,6 +218,24 @@
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
+<td align="left">proportional_hazards</td>
+<td align="left">survival</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">proportional_hazards</td>
+<td align="left">glmnet</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
 <td align="left">rand_forest</td>
 <td align="left">party</td>
 <td align="left">TRUE</td>
@@ -227,33 +245,6 @@
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
-<td align="left">bag_tree</td>
-<td align="left">ipred</td>
-<td align="left">TRUE</td>
-<td align="left">FALSE</td>
-<td align="left">TRUE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
-</tr>
-<tr class="even">
-<td align="left">cox_reg</td>
-<td align="left">survival</td>
-<td align="left">TRUE</td>
-<td align="left">TRUE</td>
-<td align="left">TRUE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="left">cox_reg</td>
-<td align="left">glmnet</td>
-<td align="left">FALSE</td>
-<td align="left">TRUE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
-</tr>
-<tr class="even">
 <td align="left">survival_reg</td>
 <td align="left">survival</td>
 <td align="left">TRUE</td>
@@ -262,7 +253,7 @@
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">survival_reg</td>
 <td align="left">flexsurv</td>
 <td align="left">TRUE</td>
@@ -270,6 +261,15 @@
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">bag_tree</td>
+<td align="left">ipred</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
 </tr>
 </tbody>
 </table>
