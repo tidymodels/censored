@@ -12,7 +12,7 @@ mod_spec <- rand_forest() %>% set_mode("censored regression") %>% set_engine("pa
 
 set.seed(1234)
 suppressWarnings({
-    exp_f_fit <- pecCforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- pecCforest(Surv(time, status) ~ age + ph.ecog, data = lung)
 })
 
 
@@ -83,6 +83,11 @@ test_that("survival predictions", {
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
     as.numeric(t(exp_f_pred))
+  )
+
+  expect_equal(
+    tidyr::unnest(f_pred, cols = c(.pred_survival))$.time,
+    rep(100:200, nrow(lung))
   )
 
   # Out of domain prediction
