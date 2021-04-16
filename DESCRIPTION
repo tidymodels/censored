@@ -31,8 +31,8 @@ Imports:
     mboost,
     ipred,
     flexsurv
-URL: https://github.com/EmilHvitfeldt/censored
-BugReports: https://github.com/EmilHvitfeldt/censored/issues
+URL: https://github.com/tidymodels/censored
+BugReports: https://github.com/tidymodels/censored/issues
 Remotes: 
     tidymodels/parsnip
 Suggests: 
