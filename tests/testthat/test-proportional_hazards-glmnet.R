@@ -117,3 +117,73 @@ test_that("updating", {
   expect_equal(update(expr1, mixture = 0.76), expr1_exp)
   expect_equal(update(expr2, penalty = 0.123), expr2_exp)
 })
+
+
+# -------------------------------------------------------------------------
+
+test_that("survival probabilities - non-stratified model", {
+
+  # load the `lung` dataset
+  data(cancer, package = "survival")
+  # remove row with missing value
+  lung2 <- lung[-14, ]
+
+  # penalty specification: in predict()
+  cox_spec <- proportional_hazards() %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  set.seed(14)
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2),
+    NA
+  )
+
+  expect_error(
+    pred_1 <- predict(f_fit, new_data = lung2[1, ], type = "survival",
+                      .time = c(100, 200), penalty = 0.123),
+    NA
+  )
+
+  pred_2 <- predict(f_fit, new_data = lung2[1:2, ], type = "survival",
+                    .time = c(100, 200), penalty = 0.123)
+
+  expect_s3_class(pred_2, "tbl_df")
+  expect_equal(names(pred_2), ".pred")
+  expect_equal(nrow(pred_2), 2)
+  expect_true(
+    all(purrr::map_lgl(pred_2$.pred, ~ all(dim(.x) == c(2, 2))))
+  )
+  expect_true(
+    all(purrr::map_lgl(pred_2$.pred,
+                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+  )
+
+
+  # penalty specification: in model spec
+  cox_spec_penalty <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  set.seed(14)
+  expect_error(
+    f_fit_penalty <- fit(cox_spec_penalty,
+                         Surv(time, status) ~ age + ph.ecog, data = lung2),
+    NA
+  )
+
+  # use penalty from model spec
+  expect_error(
+    predict(f_fit_penalty, new_data = lung2[1, ], type = "survival",
+            .time = c(100, 200)),
+    NA
+  )
+  # use penalty along the path
+  expect_error(
+    predict(f_fit_penalty, new_data = lung2[1, ], type = "survival",
+            .time = c(100, 200), penalty = 0.012),
+    NA
+  )
+
+})
+

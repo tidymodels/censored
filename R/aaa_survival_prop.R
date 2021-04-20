@@ -147,7 +147,6 @@ coxnet_survival_prob <- function(x, new_data, .times, output = "surv", ...) {
 
   y <- survival::survfit(x$fit,
                          newx = as.matrix(new_data), # newstrata
-                         #s = 0.05, # penalty
                          x = x$x, y = x$y,
                          na.action = na.exclude, ...)
   res <-

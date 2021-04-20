@@ -184,6 +184,25 @@ make_proportional_hazards_glmnet <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "proportional_hazards",
+    eng = "glmnet",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "coxnet_survival_prob"),
+      args =
+        list(
+          x = quote(object$fit),
+          new_data = quote(new_data),
+          .times = rlang::expr(.time),
+          s = expr(object$spec$args$penalty)
+        )
+    )
+  )
 }
 
 
@@ -198,11 +217,12 @@ make_proportional_hazards_glmnet <- function() {
 #' @export
 #' @keywords internal
 glmnet_fit_wrapper <- function(x, y, alpha = 1, lambda = NULL, ...) {
-  fit <- glmnet::glmnet(x, y, family = "cox", alpha = alpha, lambda = lambda)
+  fit <- glmnet::glmnet(x, y, family = "cox",
+                        alpha = alpha, lambda = lambda, ...)
   res <- list(fit = fit,
-              time = y[, 1],
-              event = y[, 2],
-              times.eval = sort(unique(y[, 1])))
+              x = x,
+              y = y
+              )
   class(res) <- "coxnet"
   res
 }

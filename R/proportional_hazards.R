@@ -126,6 +126,19 @@ check_penalty <- function(penalty = NULL, object, multi = FALSE) {
 
 # ------------------------------------------------------------------------------
 
+# notes adapted from parsnip:
+
+# glmnet call stack for censored regression using `predict` when object has
+# classes "_coxnet" and "model_fit":
+#
+#  predict()
+#   predict._coxnet(penalty = NULL)   <-- checks and sets penalty
+#    predict.model_fit()              <-- checks for extra vars in ...
+#     predict_survival()
+#      predict_survival._coxnet()
+#       predict_survival.model_fit()
+#        coxnet_survival_prob()
+
 #' @export
 predict._coxnet <-
   function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
@@ -142,3 +155,12 @@ predict._coxnet <-
     object$spec <- eval_args(object$spec)
     predict.model_fit(object, new_data = new_data, type = type, opts = opts, ...)
   }
+
+#' @export
+predict_survival._coxnet <- function(object, new_data, ...) {
+  if (any(names(enquos(...)) == "newdata"))
+    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+  object$spec <- eval_args(object$spec)
+  predict_survival.model_fit(object, new_data = new_data, ...)
+}
