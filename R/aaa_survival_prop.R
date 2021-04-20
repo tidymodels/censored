@@ -13,7 +13,7 @@ cph_survival_prob <- function(x, new_data, .times, output = "surv", conf.int = .
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
   res <-
-    stack_survfit_cph(y, nrow(new_data)) %>%
+    stack_survfit(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
     mutate(
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
@@ -44,8 +44,13 @@ keep_cols <- function(x, output) {
   dplyr::select(x, -.row)
 }
 
-stack_survfit_cph <- function(x, n) {
+stack_survfit <- function(x, n) {
+  # glmnet does not calculate confidence intervals
+  if (is.null(x$lower)) x$lower <- NA_real_
+  if (is.null(x$upper)) x$upper <- NA_real_
+
   has_strata <- any(names(x) == "strata")
+
   if (has_strata) {
     # All components are vectors of length {t_i x n}
     res <- tibble::tibble(
@@ -54,18 +59,18 @@ stack_survfit_cph <- function(x, n) {
       .pred_survival_lower = x$lower,
       .pred_survival_upper = x$upper,
       .pred_hazard_cumulative = x$cumhaz,
-      .row = rep(1:n, x$strata)
+      .row = rep(seq_len(n), x$strata)
     )
   } else {
     # All components are {t x n} matrices
-    times <- nrow(x$surv)
+    times <- length(x$time)
     res <- tibble::tibble(
       .time = rep(x$time, n),
       .pred_survival = as.vector(x$surv),
       .pred_survival_lower = as.vector(x$lower),
       .pred_survival_upper = as.vector(x$upper),
       .pred_hazard_cumulative = as.vector(x$cumhaz),
-      .row = rep(1:n, each = times)
+      .row = rep(seq_len(n), each = times)
     )
   }
 
@@ -126,4 +131,32 @@ cph_survival_pre <- function(new_data, object) {
   }
 
   new_data
+}
+
+#' A wrapper for survival probabilities with coxnet models
+#' @param x A model from `glmnet()`.
+#' @param new_data Data for prediction
+#' @param .times A vector of integers for prediction times.
+#' @param output One of "surv" or "haz".
+#' @param ... Options to pass to [survival::survfit()]
+#' @return A nested tibble
+#' @keywords internal
+#' @export
+coxnet_survival_prob <- function(x, new_data, .times, output = "surv", ...) {
+  output <- match.arg(output, c("surv", "haz"))
+
+  y <- survival::survfit(x$fit,
+                         newx = as.matrix(new_data), # newstrata
+                         #s = 0.05, # penalty
+                         x = x$x, y = x$y,
+                         na.action = na.exclude, ...)
+  res <-
+    stack_survfit(y, nrow(new_data)) %>%
+    dplyr::group_nest(.row, .key = ".pred") %>%
+    mutate(
+      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
+      .pred = purrr::map(.pred, interpolate_km_values, .times)
+    )
+
+  keep_cols(res, output)
 }
