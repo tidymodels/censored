@@ -164,3 +164,17 @@ predict_survival._coxnet <- function(object, new_data, ...) {
   object$spec <- eval_args(object$spec)
   predict_survival.model_fit(object, new_data = new_data, ...)
 }
+
+#' @export
+print._coxnet <- function(x, ...) {
+  cat("parsnip model object\n\n")
+  cat("Fit time: ", prettyunits::pretty_sec(x$elapsed[["elapsed"]]), "\n")
+
+  if (inherits(x$fit$fit, "try-error")) {
+    cat("Model fit failed with error:\n", x$fit$fit, "\n")
+  } else {
+    print(x$fit$fit, ...)
+    cat("The training data has been saved for prediction.\n")
+  }
+  invisible(x)
+}
