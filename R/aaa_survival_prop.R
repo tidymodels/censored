@@ -57,8 +57,12 @@ stack_survfit_cph <- function(x, n) {
       .row = rep(1:n, x$strata)
     )
   } else {
-    # All components are {t x n} matrices
-    times <- nrow(x$surv)
+    # All components are {t x n} matrices (unless nrow(new_data) = 1)
+    if (is.matrix(x$surv)) {
+      times <- nrow(x$surv)
+    } else {
+      times <- 1
+    }
     res <- tibble::tibble(
       .time = rep(x$time, n),
       .pred_survival = as.vector(x$surv),

@@ -9,12 +9,11 @@
 
 # nocov
 
-make_rand_forest_party <- function() {
-  parsnip::set_model_mode("rand_forest", "censored regression")
+make_rand_forest_cforest <- function() {
 
   parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "party")
-  parsnip::set_dependency("rand_forest", eng = "party", pkg = "pec")
   parsnip::set_dependency("rand_forest", eng = "party", pkg = "party")
+  parsnip::set_dependency("rand_forest", eng = "party", pkg = "modeltools")
   parsnip::set_dependency("rand_forest", eng = "party", pkg = "censored")
 
   parsnip::set_fit(
@@ -24,17 +23,17 @@ make_rand_forest_party <- function() {
     value = list(
       interface = "formula",
       protect = c("formula", "data"),
-      func = c(pkg = "pec", fun = "pecCforest"),
+      func = c(pkg = "censored", fun = "cond_inference_surv_cforest"),
       defaults = list()
     )
   )
 
   parsnip::set_encoding(
     model = "rand_forest",
-    eng = "party",
     mode = "censored regression",
+    eng = "party",
     options = list(
-      predictor_indicators = "traditional",
+      predictor_indicators = "none",
       compute_intercept = FALSE,
       remove_intercept = FALSE,
       allow_sparse_x = FALSE
@@ -49,12 +48,8 @@ make_rand_forest_party <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(fun = "predict"),
-      args =
-        list(
-          object = quote(object$fit$forest),
-          newdata = quote(new_data)
-        )
+      func = c(pkg = "modeltools", fun = "Predict"),
+      args = list(object = quote(object$fit), newdata = quote(new_data))
     )
   )
 
@@ -65,20 +60,41 @@ make_rand_forest_party <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = function(x, object) {
-        x <- x[, -1, drop = FALSE]
-        .time <- object$spec$method$pred$survival$args$.time
-        matrix_to_nested_tibbles_survival(x, .time)
-      },
-      func = c(pkg = "pec", fun = "predictSurvProb"),
-      args =
-        list(
-          object = quote(object$fit),
-          newdata = quote(new_data),
-          times = rlang::expr(pmin(c(0, .time), max(object$fit$forest@responses@variables)))
-        )
+      post = NULL,
+      func = c(pkg = "censored", fun = "surv_prob_cforest"),
+      args = list(object = quote(object$fit),
+                  new_data = quote(new_data),
+                  .time = rlang::expr(.time))
     )
   )
+
+  # model args ----------------------------------------------------
+
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "party",
+    parsnip = "trees",
+    original = "ntree",
+    func = list(pkg = "dials", fun = "trees"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "party",
+    parsnip = "min_n",
+    original = "minsplit",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = TRUE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "party",
+    parsnip = "mtry",
+    original = "mtry",
+    func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+
 }
 
 # nocov end
