@@ -95,6 +95,12 @@ test_that("survival predictions", {
     all(purrr::map_lgl(f_pred$.pred,
                        ~ identical(names(.x), cf_names)))
   )
+
+  expect_equal(
+    tidyr::unnest(f_pred, cols = c(.pred))$.time,
+    rep(100:200, nrow(lung))
+  )
+
   f_pred <- predict(f_fit, lung[1,], type = "survival", .time = 306)
   new_km <- party::treeresponse(exp_f_fit, lung[1,])[[1]]
   # Prediction should be fairly near the actual value
@@ -104,10 +110,4 @@ test_that("survival predictions", {
     new_km$surv[new_km$time == 306],
     tolerance = .1
   )
-
-  expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred))$.time,
-    rep(100:200, nrow(lung))
-  )
-
 })
