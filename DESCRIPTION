@@ -30,7 +30,8 @@ Imports:
     baguette,
     mboost,
     ipred,
-    flexsurv
+    flexsurv,
+    methods
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Remotes: 

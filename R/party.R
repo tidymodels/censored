@@ -261,5 +261,39 @@ surv_prob_cforest <- function(object, new_data, .time) {
   tibble::tibble(.pred = res)
 }
 
+# ------------------------------------------------------------------------------
+# Enable easy tuning of engine parameters
 
 
+cforest_engine_args <-
+  tibble::tibble(
+    name = c(
+      "teststat",
+      "testtype",
+      "mincriterion"
+    ),
+    call_info = list(
+      list(pkg = "dials", fun = "conditional_test_statistic"),
+      list(pkg = "dials", fun = "conditional_test_type"),
+      list(pkg = "dials", fun = "conditional_min_criterion")
+    ),
+    source = "model_spec",
+    component = "rand_forest",
+    component_id = "engine"
+  )
+ctree_engine_args <-
+  tibble::tibble(
+    name = c(
+      "teststat",
+      "testtype",
+      "mincriterion"
+    ),
+    call_info = list(
+      list(pkg = "dials", fun = "conditional_test_statistic"),
+      list(pkg = "dials", fun = "conditional_test_type"),
+      list(pkg = "dials", fun = "conditional_min_criterion")
+    ),
+    source = "model_spec",
+    component = "decision_tree",
+    component_id = "engine"
+  )

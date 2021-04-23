@@ -58,7 +58,6 @@ test_that("survival predictions", {
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
   f_pred <- predict(f_fit, lung, type = "survival", .time = 100:200)
-  # exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
@@ -73,21 +72,18 @@ test_that("survival predictions", {
     all(purrr::map_lgl(f_pred$.pred,
                        ~ identical(names(.x), cf_names)))
   )
-  # expect_equal(
-  #   tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-  #   as.numeric(t(exp_f_pred))
-  # )
+  f_pred <- predict(f_fit, lung[1,], type = "survival", .time = 306)
+  new_km <- party::treeresponse(exp_f_fit, lung[1,])[[1]]
+  # Prediction should be fairly near the actual value
+
+  expect_equal(
+    f_pred$.pred[[1]]$.pred_survival,
+    new_km$surv[new_km$time == 306],
+    tolerance = .1
+  )
+
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.time,
     rep(100:200, nrow(lung))
   )
-
-  # Out of domain prediction
-  # f_pred <- predict(f_fit, lung, type = "survival", .time = 10000)
-  # exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = c(1, max(lung$time)))
-  #
-  # expect_equal(
-  #   tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-  #   exp_f_pred[, -1]
-  # )
 })
