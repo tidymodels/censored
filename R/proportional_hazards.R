@@ -55,6 +55,29 @@
 #'   fit(Surv(time, status) ~ x, data = aml)
 NULL
 
+# export?
+fit.proportional_hazards <- function(
+  object,
+  formula,
+  data,
+  control = parsnip::control_parsnip(),
+  ...
+) {
+
+  # any formula handling here?
+
+  # call parsnip::fit.model_spec()
+  res <- NextMethod()
+
+  if (object$engine == "glmnet") {
+    res$training_data <- res$fit[c("x", "y")]
+    res$fit <- res$fit$fit
+  }
+
+  res
+}
+
+
 #' @export
 translate.proportional_hazards <- function(x, engine = x$engine, ...) {
   x <- translate.default(x, engine, ...)
@@ -73,10 +96,7 @@ translate.proportional_hazards <- function(x, engine = x$engine, ...) {
 
 # ------------------------------------------------------------------------------
 
-# modified copy of the unexported parsnip:::organize_glmnet_pred():
-# In parsnip object$fit contains the fitted `*net` object, for
-# `proportional_hazards` models, object$fit is a list containing the
-# fitted model object as well as the training data.
+# copy of the unexported parsnip:::organize_glmnet_pred():
 organize_glmnet_pred <- function(x, object) {
   if (ncol(x) == 1) {
     res <- x[, 1]
@@ -86,7 +106,7 @@ organize_glmnet_pred <- function(x, object) {
     res <- utils::stack(as.data.frame(x))
     if (!is.null(object$spec$args$penalty))
       res$lambda <- rep(object$spec$args$penalty, each = n) else
-        res$lambda <- rep(object$fit$fit$lambda, each = n)
+        res$lambda <- rep(object$fit$lambda, each = n)
     res <- res[, colnames(res) %in% c("values", "lambda")]
   }
   res
@@ -94,10 +114,7 @@ organize_glmnet_pred <- function(x, object) {
 
 # ------------------------------------------------------------------------------
 
-# modified copy of the unexported parsnip:::check_penalty():
-# In parsnip object$fit contains the fitted `*net` object, for
-# `proportional_hazards` models, object$fit is a list containing the
-# fitted model object as well as the training data.
+# copy of the unexported parsnip:::check_penalty():
 
 # For `predict` methods that use `glmnet`, we have specific methods.
 # Only one value of the penalty should be allowed when called by `predict()`:
@@ -105,7 +122,7 @@ organize_glmnet_pred <- function(x, object) {
 check_penalty <- function(penalty = NULL, object, multi = FALSE) {
 
   if (is.null(penalty)) {
-    penalty <- object$fit$fit$lambda
+    penalty <- object$fit$lambda
   }
 
   # when using `predict()`, allow for a single lambda
@@ -119,7 +136,7 @@ check_penalty <- function(penalty = NULL, object, multi = FALSE) {
       )
   }
 
-  if (length(object$fit$fit$lambda) == 1 && penalty != object$fit$fit$lambda)
+  if (length(object$fit$lambda) == 1 && penalty != object$fit$lambda)
     rlang::abort(
       glue::glue(
         "The glmnet model was fit with a single penalty value of ",
@@ -178,9 +195,9 @@ print._coxnet <- function(x, ...) {
   cat("Fit time: ", prettyunits::pretty_sec(x$elapsed[["elapsed"]]), "\n")
 
   if (inherits(x$fit$fit, "try-error")) {
-    cat("Model fit failed with error:\n", x$fit$fit, "\n")
+    cat("Model fit failed with error:\n", x$fit, "\n")
   } else {
-    print(x$fit$fit, ...)
+    print(x$fit, ...)
     cat("The training data has been saved for prediction.\n")
   }
   invisible(x)

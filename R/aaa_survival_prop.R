@@ -138,16 +138,17 @@ cph_survival_pre <- function(new_data, object) {
 #' @param new_data Data for prediction
 #' @param .times A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
+#' @param training_data A list of `x` and `y` containing the training data.
 #' @param ... Options to pass to [survival::survfit()]
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-coxnet_survival_prob <- function(x, new_data, .times, output = "surv", ...) {
+coxnet_survival_prob <- function(x, new_data, .times, output = "surv", training_data, ...) {
   output <- match.arg(output, c("surv", "haz"))
 
-  y <- survival::survfit(x$fit,
+  y <- survival::survfit(x,
                          newx = as.matrix(new_data), # newstrata
-                         x = x$x, y = x$y,
+                         x = training_data$x, y = training_data$y,
                          na.action = na.exclude, ...)
   res <-
     stack_survfit(y, nrow(new_data)) %>%
