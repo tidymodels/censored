@@ -31,7 +31,8 @@ Imports:
     mboost,
     ipred,
     flexsurv,
-    prettyunits
+    prettyunits,
+    generics
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Remotes: 

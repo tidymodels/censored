@@ -55,7 +55,7 @@
 #'   fit(Surv(time, status) ~ x, data = aml)
 NULL
 
-# export?
+#' @export
 fit.proportional_hazards <- function(
   object,
   formula,
