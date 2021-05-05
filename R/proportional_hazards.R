@@ -56,15 +56,11 @@
 NULL
 
 #' @export
-fit.proportional_hazards <- function(
-  object,
-  formula,
-  data,
-  control = parsnip::control_parsnip(),
-  ...
-) {
-
-  # any formula handling here?
+fit.proportional_hazards <- function(object,
+                                     formula,
+                                     data,
+                                     control = parsnip::control_parsnip(),
+                                     ...) {
 
   # call parsnip::fit.model_spec()
   res <- NextMethod()
@@ -76,7 +72,6 @@ fit.proportional_hazards <- function(
 
   res
 }
-
 
 #' @export
 translate.proportional_hazards <- function(x, engine = x$engine, ...) {
