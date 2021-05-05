@@ -143,7 +143,7 @@ cph_survival_pre <- function(new_data, object) {
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-coxnet_survival_prob <- function(x, new_data, .times, output = "surv", training_data, ...) {
+coxnet_survival_prob <- function(x, new_data, .times, training_data, output = "surv", ...) {
   output <- match.arg(output, c("surv", "haz"))
 
   y <- survival::survfit(x,
