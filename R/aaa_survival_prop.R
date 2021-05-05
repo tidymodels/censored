@@ -137,8 +137,8 @@ cph_survival_pre <- function(new_data, object) {
 #' @param x A model from `glmnet()`.
 #' @param new_data Data for prediction
 #' @param .times A vector of integers for prediction times.
-#' @param output One of "surv" or "haz".
 #' @param training_data A list of `x` and `y` containing the training data.
+#' @param output One of "surv" or "haz".
 #' @param ... Options to pass to [survival::survfit()]
 #' @return A nested tibble
 #' @keywords internal

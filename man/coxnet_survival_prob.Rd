@@ -4,7 +4,7 @@
 \alias{coxnet_survival_prob}
 \title{A wrapper for survival probabilities with coxnet models}
 \usage{
-coxnet_survival_prob(x, new_data, .times, output = "surv", training_data, ...)
+coxnet_survival_prob(x, new_data, .times, training_data, output = "surv", ...)
 }
 \arguments{
 \item{x}{A model from \code{glmnet()}.}
@@ -13,9 +13,9 @@ coxnet_survival_prob(x, new_data, .times, output = "surv", training_data, ...)
 
 \item{.times}{A vector of integers for prediction times.}
 
-\item{output}{One of "surv" or "haz".}
-
 \item{training_data}{A list of \code{x} and \code{y} containing the training data.}
+
+\item{output}{One of "surv" or "haz".}
 
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}}
 }
