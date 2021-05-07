@@ -177,7 +177,7 @@ make_proportional_hazards_glmnet <- function() {
       func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit$fit),
+          object = expr(object$fit),
           newx = expr(as.matrix(new_data)),
           type = "link",
           s = expr(object$spec$args$penalty)
@@ -196,10 +196,11 @@ make_proportional_hazards_glmnet <- function() {
       func = c(pkg = "censored", fun = "coxnet_survival_prob"),
       args =
         list(
-          x = quote(object$fit),
-          new_data = quote(new_data),
-          .times = rlang::expr(.time),
-          s = expr(object$spec$args$penalty)
+          x = expr(object$fit),
+          new_data = expr(new_data),
+          .times = expr(.time),
+          s = expr(object$spec$args$penalty),
+          training_data = expr(object$training_data)
         )
     )
   )

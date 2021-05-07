@@ -15,6 +15,7 @@
 #' @importFrom dplyr group_nest %>% arrange
 #' @importFrom baguette bag_tree
 #' @importFrom utils getFromNamespace
+#' @importFrom generics fit
 
 utils::globalVariables(
   c(".time", "object", "new_data", ".label", ".pred",
