@@ -117,7 +117,7 @@
     <p>A wrapper for survival probabilities with coxnet models</p>
     </div>
 
-    <pre class="usage"><span class='fu'>coxnet_survival_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>new_data</span>, <span class='va'>.times</span>, output <span class='op'>=</span> <span class='st'>"surv"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>coxnet_survival_prob</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>new_data</span>, <span class='va'>.times</span>, <span class='va'>training_data</span>, output <span class='op'>=</span> <span class='st'>"surv"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,6 +133,10 @@
     <tr>
       <th>.times</th>
       <td><p>A vector of integers for prediction times.</p></td>
+    </tr>
+    <tr>
+      <th>training_data</th>
+      <td><p>A list of <code>x</code> and <code>y</code> containing the training data.</p></td>
     </tr>
     <tr>
       <th>output</th>
