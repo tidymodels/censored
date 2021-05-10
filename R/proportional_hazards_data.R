@@ -16,24 +16,6 @@ make_proportional_hazards_survival <- function() {
   parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "riskRegression")
   parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "censored")
 
-  set_model_arg(
-    model = "proportional_hazards",
-    eng = "glmnet",
-    parsnip = "penalty",
-    original = "lambda",
-    func = list(pkg = "dials", fun = "penalty"),
-    has_submodel = TRUE
-  )
-
-  set_model_arg(
-    model = "proportional_hazards",
-    eng = "glmnet",
-    parsnip = "mixture",
-    original = "alpha",
-    func = list(pkg = "dials", fun = "mixture"),
-    has_submodel = FALSE
-  )
-
   parsnip::set_fit(
     model = "proportional_hazards",
     eng = "survival",
