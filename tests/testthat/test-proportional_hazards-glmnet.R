@@ -62,9 +62,9 @@ test_that("primary arguments", {
 
   expect_equal(translate(penalty)$method$fit$args,
                list(
-                 x = expr(missing_arg()),
-                 y = expr(missing_arg()),
-                 weights = expr(missing_arg())
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 family = expr(missing_arg())
                )
   )
 
@@ -75,9 +75,9 @@ test_that("primary arguments", {
 
   expect_equal(translate(mixture)$method$fit$args,
                list(
-                 x = expr(missing_arg()),
-                 y = expr(missing_arg()),
-                 weights = expr(missing_arg()),
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 family = expr(missing_arg()),
                  alpha = new_empty_quosure(0.34)
                )
   )
@@ -88,9 +88,9 @@ test_that("primary arguments", {
 
   expect_equal(translate(mixture_v)$method$fit$args,
                list(
-                 x = expr(missing_arg()),
-                 y = expr(missing_arg()),
-                 weights = expr(missing_arg()),
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 family = expr(missing_arg()),
                  alpha = new_empty_quosure(varying())
                )
   )
