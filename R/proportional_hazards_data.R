@@ -284,8 +284,8 @@ convert_form_to_strata <- function(formula,
   strata
 }
 
-remove_terms_from_rhs <- function(formula, ind){
-  form_terms <- attr(formula, "variables")
+remove_terms_from_rhs <- function(f, ind){
+  form_terms <- attr(f, "variables")
   rhs <- form_terms[-c(1:2, ind)]
   if (length(rhs) == 0) {
     rhs <- rlang::expr(1)
@@ -294,9 +294,9 @@ remove_terms_from_rhs <- function(formula, ind){
   } else {
     rhs <- rlang::expr(!!rhs[[1]])
   }
-  formula[[3]] <- rhs
+  f[[3]] <- rhs
 
-  formula
+  formula(f) # FIXME: discuss this
 }
 
 check_dots_coxnet <- function(x) {
