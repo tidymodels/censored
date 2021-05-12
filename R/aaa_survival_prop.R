@@ -134,21 +134,34 @@ cph_survival_pre <- function(new_data, object) {
 }
 
 #' A wrapper for survival probabilities with coxnet models
-#' @param x A model from `glmnet()`.
-#' @param new_data Data for prediction
+#' @param object A fitted `_coxnet` object.
+#' @param new_data Data for prediction.
 #' @param .times A vector of integers for prediction times.
-#' @param training_data A list of `x` and `y` containing the training data.
 #' @param output One of "surv" or "haz".
-#' @param ... Options to pass to [survival::survfit()]
-#' @return A nested tibble
+#' @param ... Options to pass to [survival::survfit()].
+#' @return A nested tibble.
 #' @keywords internal
 #' @export
-coxnet_survival_prob <- function(x, new_data, .times, training_data, output = "surv", ...) {
+coxnet_survival_prob <- function(object, new_data, .times, output = "surv", ...) {
+
   output <- match.arg(output, c("surv", "haz"))
 
-  y <- survival::survfit(x,
-                         newx = as.matrix(new_data), # newstrata
-                         x = training_data$x, y = training_data$y,
+  # TODO: discuss exporting the function from parsnip
+  new_x <- parsnip:::convert_form_to_xy_new(object$preproc$coxnet, new_data,
+                                            composition = "matrix")$x
+
+  mod_terms <- terms(object$formula, specials = "strata")
+  has_strata <- !is.null(attr(mod_terms, "specials")$strata)
+
+  if (has_strata) {
+    new_strata <- convert_form_to_strata(formula = mod_terms, data = new_data)
+  } else {
+    new_strata <- NULL
+  }
+
+  y <- survival::survfit(object$fit,
+                         newx = new_x, newstrata = new_strata,
+                         x = object$training_data$x, y = object$training_data$y,
                          na.action = na.exclude, ...)
   res <-
     stack_survfit(y, nrow(new_data)) %>%
