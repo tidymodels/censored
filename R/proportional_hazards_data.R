@@ -274,10 +274,7 @@ convert_form_to_strata <- function(formula,
                                    data,
                                    na.action = na.omit) {
 
-  mf_call <- quote(model.frame(formula, data))
-  mf_call$na.action <- match.call()$na.action
-
-  mod_frame <- eval_tidy(mf_call)
+  mod_frame <- model.frame(formula, data, na.action = na.action)
   mod_terms <- attr(mod_frame, "terms")
 
   strata_ind <- attr(mod_terms,"specials")$strata
