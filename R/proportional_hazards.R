@@ -62,12 +62,32 @@ fit.proportional_hazards <- function(object,
                                      control = parsnip::control_parsnip(),
                                      ...) {
 
+  # TODO declare specials here? (only for glmnet or for all?)
+
   # call parsnip::fit.model_spec()
   res <- NextMethod()
 
+  # TODO find a public place to document that
+  # For coxnet models, we need the training data for prediction. It's being
+  # returned by fit.model_spec() in the $fit slot. Since we want $fit to only
+  # contain the fitted model object, we move the training one level up into the
+  # parsnip object.
+  # For stratification, glmnet requires that we stratify the response. Having
+  # the strata variable on the left-hand side of the formula would mean it's not
+  # available for prediction so we are requiring the strata specification to be
+  # part of the right-hand side of the formula and do the translation between
+  # formula and glmnet's matrix interface manually. To be able to do this also
+  # at prediction time, we save the original formula and the pre-processing
+  # results.
   if (object$engine == "glmnet") {
-    res$training_data <- res$fit[c("x", "y")]
+    training_data_ind <- names(res$fit$preproc) %in% c("x", "y")
+    res$training_data <- res$fit$preproc[training_data_ind]
+    # this is not stored in $preproc directly due to how prediction in parsnip
+    # is set up: parsnip::prepare_data() would automatically run with the
+    # modified terms in $preproc$terms which are missing the strata term
+    res$preproc$coxnet <- res$fit$preproc[!training_data_ind]
     res$fit <- res$fit$fit
+    res$formula <- formula
   }
 
   res

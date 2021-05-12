@@ -179,11 +179,10 @@ make_proportional_hazards_glmnet <- function() {
       func = c(pkg = "censored", fun = "coxnet_survival_prob"),
       args =
         list(
-          x = expr(object$fit),
+          object = expr(object),
           new_data = expr(new_data),
           .times = expr(.time),
-          s = expr(object$spec$args$penalty),
-          training_data = expr(object$training_data)
+          s = expr(object$spec$args$penalty)
         )
     )
   )
@@ -196,6 +195,8 @@ make_proportional_hazards_glmnet <- function() {
 #'
 #' Not to be used directly by users
 #'
+#' @param formula The model formula.
+#' @param data The data.
 #' @inheritParams glmnet::glmnet
 #' @param ... additional parameters passed to glmnet::glmnet.
 #' @export
@@ -259,10 +260,11 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
 
   fit <- glmnet::glmnet(data_obj$x, data_obj$y, family = "cox",
                         alpha = alpha, lambda = lambda, ...)
+
+  # TODO: remove weights and offset from data_obj?
   res <- list(
     fit = fit,
-    x = data_obj$x,
-    y = data_obj$y
+    preproc = data_obj
   )
   class(res) <- "coxnet"
   res
