@@ -76,5 +76,6 @@ test_that("updating", {
 test_that("bad input", {
   expect_error(survival_reg(mode = ", classification"))
   expect_error(translate(survival_reg() %>% set_engine("wat")))
-  expect_error(translate(survival_reg() %>% set_engine(NULL)))
+  expect_warning(translate(survival_reg() %>% set_engine(NULL)),
+                 "`engine` was NULL and updated")
 })
