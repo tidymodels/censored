@@ -92,10 +92,10 @@ test_that("survival probability prediction", {
   )
   expect_error(
     predict(res, head(lung), type = "survival"),
-    "a numeric vector '.time'"
+    "a numeric vector 'time'"
   )
 
-  exp_pred <- predict(res, head(lung), type = "survival", .time = prob_times)
+  exp_pred <- predict(res, head(lung), type = "survival", time = prob_times)
   exp_pred_vert <- exp_pred %>% mutate(.patient = row_number()) %>% unnest(cols = .pred)
   expect_true(all(names(exp_pred) == ".pred"))
   expect_equal(names(exp_pred_vert), c(".time", ".pred_survival", ".patient"))
@@ -116,10 +116,10 @@ test_that("survival hazard prediction", {
   )
   expect_error(
     predict(res, head(lung), type = "hazard"),
-    "a numeric vector '.time'"
+    "a numeric vector 'time'"
   )
 
-  exp_pred <- predict(res, head(lung), type = "hazard", .time = prob_times)
+  exp_pred <- predict(res, head(lung), type = "hazard", time = prob_times)
   exp_pred_vert <- exp_pred %>% mutate(.patient = row_number()) %>% unnest(cols = .pred)
   expect_true(all(names(exp_pred) == ".pred"))
   expect_equal(names(exp_pred_vert), c(".time", ".pred_hazard", ".patient"))

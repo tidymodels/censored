@@ -67,15 +67,15 @@ make_rand_forest_party <- function() {
       pre = NULL,
       post = function(x, object) {
         x <- x[, -1, drop = FALSE]
-        .time <- object$spec$method$pred$survival$args$.time
-        matrix_to_nested_tibbles_survival(x, .time)
+        time <- object$spec$method$pred$survival$args$time
+        matrix_to_nested_tibbles_survival(x, time)
       },
       func = c(pkg = "pec", fun = "predictSurvProb"),
       args =
         list(
           object = quote(object$fit),
           newdata = quote(new_data),
-          times = rlang::expr(pmin(c(0, .time), max(object$fit$forest@responses@variables)))
+          times = rlang::expr(pmin(c(0, time), max(object$fit$forest@responses@variables)))
         )
     )
   )

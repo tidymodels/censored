@@ -18,7 +18,7 @@
 #' @importFrom generics fit
 
 utils::globalVariables(
-  c(".time", "object", "new_data", ".label", ".pred",
+  c("time", ".time", "object", "new_data", ".label", ".pred",
     ".cuts", ".id", ".pred_hazard_cumulative", ".tmp")
 )
 

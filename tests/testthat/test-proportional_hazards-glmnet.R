@@ -145,12 +145,12 @@ test_that("survival probabilities - non-stratified model", {
 
   expect_error(
     pred_1 <- predict(f_fit, new_data = lung2[1, ], type = "survival",
-                      .time = c(100, 200)),
+                      time = c(100, 200)),
     NA
   )
 
   pred_2 <- predict(f_fit, new_data = lung2[1:2, ], type = "survival",
-                    .time = c(100, 200), penalty = 0.1)
+                    time = c(100, 200), penalty = 0.1)
 
   expect_s3_class(pred_2, "tbl_df")
   expect_equal(names(pred_2), ".pred")
