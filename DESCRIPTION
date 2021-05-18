@@ -36,7 +36,7 @@ Imports:
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Remotes: 
-    tidymodels/parsnip#493
+    tidymodels/parsnip
 Suggests: 
     testthat,
     glmnet,
