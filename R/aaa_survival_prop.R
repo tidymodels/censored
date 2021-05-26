@@ -16,32 +16,25 @@ cph_survival_prob <- function(x, new_data, times, output = "surv", conf.int = .9
     stack_survfit(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
     mutate(
-      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
-      .pred = purrr::map(.pred, interpolate_km_values, times)
-    )
-
-  keep_cols(res, output)
+      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x))
+    ) %>%
+    tidyr::unnest(cols = c(.pred)) %>%
+    interpolate_km_values(times) %>%
+    keep_cols(output) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
 }
 
 keep_cols <- function(x, output) {
   if (output == "surv") {
-    x <- dplyr::mutate(x,
-                       .pred =
-                         purrr::map(.pred,
-                                    ~ dplyr::select(.x, .time, .pred_survival)))
+    x <- dplyr::select(x, .time, .pred_survival, .row)
   } else if (output == "conf") {
-    x <- dplyr::mutate(x,
-                       .pred =
-                         purrr::map(.pred,
-                                    ~ dplyr::select(.x, .time, .pred_survival_lower,
-                                                    .pred_survival_upper)))
+    x <- dplyr::select(x, .time, .pred_survival_lower, .pred_survival_upper,
+                       .row)
   } else {
-    x <- dplyr::mutate(x,
-                       .pred =
-                         purrr::map(.pred,
-                                    ~ dplyr::select(.x, .time, .pred_hazard_cumulative)))
+    x <- dplyr::select(x, .time, .pred_hazard_cumulative, .row)
   }
-  dplyr::select(x, -.row)
+  x
 }
 
 stack_survfit <- function(x, n) {
@@ -154,9 +147,11 @@ coxnet_survival_prob <- function(x, new_data, times, training_data, output = "su
     stack_survfit(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
     mutate(
-      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
-      .pred = purrr::map(.pred, interpolate_km_values, times)
-    )
-
-  keep_cols(res, output)
+      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x))
+    ) %>%
+    tidyr::unnest(cols = c(.pred)) %>%
+    interpolate_km_values(times) %>%
+    keep_cols(output) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
 }
