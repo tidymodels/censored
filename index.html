@@ -90,6 +90,7 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored">censored</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: parsnip</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
+<span class="co">#&gt; Warning: package 'survival' was built under R version 4.0.2</span>
 
 <span class="va">cox_mod</span> <span class="op">&lt;-</span>
   <span class="fu"><a href="reference/proportional_hazards.html">proportional_hazards</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -99,7 +100,7 @@
 <span class="va">cox_mod</span>
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Fit time:  23ms </span>
+<span class="co">#&gt; Fit time:  13ms </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, </span>
 <span class="co">#&gt;     data = data, model = TRUE, x = TRUE)</span>
@@ -131,23 +132,23 @@
 <div id="survival" class="section level3">
 <h3 class="hasAnchor">
 <a href="#survival" class="anchor"></a>survival</h3>
-<p>When we specify <code>type = "survival"</code> then we are trying to get the probabilities of survival (not observing an event) up to a given time <code>.time</code>.</p>
+<p>When we specify <code>type = "survival"</code> then we are trying to get the probabilities of survival (not observing an event) up to a given time <code>time</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pred_vals_survival</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, 
                               type <span class="op">=</span> <span class="st">"survival"</span>, 
                               new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span>, 
-                              .time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>
+                              time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">pred_vals_survival</span>
 <span class="co">#&gt; # A tibble: 6 x 1</span>
-<span class="co">#&gt;   .pred               </span>
-<span class="co">#&gt;   &lt;list&gt;              </span>
-<span class="co">#&gt; 1 &lt;tibble[,2] [2 × 2]&gt;</span>
-<span class="co">#&gt; 2 &lt;tibble[,2] [2 × 2]&gt;</span>
-<span class="co">#&gt; 3 &lt;tibble[,2] [2 × 2]&gt;</span>
-<span class="co">#&gt; 4 &lt;tibble[,2] [2 × 2]&gt;</span>
-<span class="co">#&gt; 5 &lt;tibble[,2] [2 × 2]&gt;</span>
-<span class="co">#&gt; 6 &lt;tibble[,2] [2 × 2]&gt;</span>
+<span class="co">#&gt;   .pred           </span>
+<span class="co">#&gt;   &lt;list&gt;          </span>
+<span class="co">#&gt; 1 &lt;tibble [2 × 2]&gt;</span>
+<span class="co">#&gt; 2 &lt;tibble [2 × 2]&gt;</span>
+<span class="co">#&gt; 3 &lt;tibble [2 × 2]&gt;</span>
+<span class="co">#&gt; 4 &lt;tibble [2 × 2]&gt;</span>
+<span class="co">#&gt; 5 &lt;tibble [2 × 2]&gt;</span>
+<span class="co">#&gt; 6 &lt;tibble [2 × 2]&gt;</span>
 
 <span class="va">pred_vals_survival</span><span class="op">$</span><span class="va">.pred</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; # A tibble: 2 x 2</span>
@@ -229,7 +230,7 @@
 <tr class="odd">
 <td align="left">proportional_hazards</td>
 <td align="left">glmnet</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
