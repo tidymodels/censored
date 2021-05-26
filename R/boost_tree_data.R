@@ -93,9 +93,9 @@ make_boost_tree_mboost <- function() {
     value = list(
       pre = NULL,
       post = function(x, object) {
-        .time <- object$spec$method$pred$survival$args$.time
-        res <- floor_surv_mboost(x, .time)
-        matrix_to_nested_tibbles_survival(res, .time)
+        time <- object$spec$method$pred$survival$args$time
+        res <- floor_surv_mboost(x, time)
+        matrix_to_nested_tibbles_survival(res, time)
       },
       func = c(pkg = "mboost", fun = "survFit"),
       args =
@@ -129,7 +129,7 @@ make_boost_tree_mboost <- function() {
 # the mboost::survFit isn't able to predict survival probabilities for a given
 # timepoint. This function rounds down to nearest timepoint and uses that
 # for prediction.
-floor_surv_mboost <- function(x, .time) {
-  ind <- purrr::map_int(.time, ~ max(which(.x > c(-Inf, unname(x$time)))))
+floor_surv_mboost <- function(x, time) {
+  ind <- purrr::map_int(time, ~ max(which(.x > c(-Inf, unname(x$time)))))
   t(unname(rbind(1, x$surv))[ind, ])
 }

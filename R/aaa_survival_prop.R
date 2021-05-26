@@ -1,14 +1,14 @@
 #' A wrapper for survival probabilities with cph models
 #' @param x A model from `coxph()`.
 #' @param new_data Data for prediction
-#' @param .times A vector of integers for prediction times.
+#' @param times A vector of integers for prediction times.
 #' @param output One of "surv", "conf", or "haz".
 #' @param conf.int The confidence level
 #' @param ... Options to pass to [survival::survfit()]
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-cph_survival_prob <- function(x, new_data, .times, output = "surv", conf.int = .95, ...) {
+cph_survival_prob <- function(x, new_data, times, output = "surv", conf.int = .95, ...) {
   output <- match.arg(output, c("surv", "conf", "haz"))
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
@@ -17,7 +17,7 @@ cph_survival_prob <- function(x, new_data, .times, output = "surv", conf.int = .
     dplyr::group_nest(.row, .key = ".pred") %>%
     mutate(
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
-      .pred = purrr::map(.pred, interpolate_km_values, .times)
+      .pred = purrr::map(.pred, interpolate_km_values, times)
     )
 
   keep_cols(res, output)
@@ -88,25 +88,25 @@ prob_template <- tibble::tibble(
 # We want to maintain the step-function aspect of the predictions so, rather
 # than use `approx()`, we cut the times and match the new times based on these
 # intervals.
-interpolate_km_values <- function(x, .times) {
+interpolate_km_values <- function(x, times) {
   x <- km_with_cuts(x)
   pred_times <-
-    tibble::tibble(.time = .times) %>%
-    km_with_cuts(.times = x$.time) %>%
+    tibble::tibble(.time = times) %>%
+    km_with_cuts(times = x$.time) %>%
     dplyr::rename(.tmp = .time) %>%
     dplyr::left_join(x, by = ".cuts") %>%
     dplyr::select(-.time, .time = .tmp, -.cuts)
   pred_times
 }
 
-km_with_cuts <- function(x, .times = NULL) {
-  if (is.null(.times)) {
+km_with_cuts <- function(x, times = NULL) {
+  if (is.null(times)) {
     # When cutting the original data in the survfit object
-    .times <- unique(x$.time)
+    times <- unique(x$.time)
   }
-  .times <- c(-Inf, .times, Inf)
-  .times <- unique(.times)
-  x$.cuts <- cut(x$.time, .times)
+  times <- c(-Inf, times, Inf)
+  times <- unique(times)
+  x$.cuts <- cut(x$.time, times)
   x
 }
 
@@ -136,14 +136,14 @@ cph_survival_pre <- function(new_data, object) {
 #' A wrapper for survival probabilities with coxnet models
 #' @param x A model from `glmnet()`.
 #' @param new_data Data for prediction
-#' @param .times A vector of integers for prediction times.
+#' @param times A vector of integers for prediction times.
 #' @param training_data A list of `x` and `y` containing the training data.
 #' @param output One of "surv" or "haz".
 #' @param ... Options to pass to [survival::survfit()]
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-coxnet_survival_prob <- function(x, new_data, .times, training_data, output = "surv", ...) {
+coxnet_survival_prob <- function(x, new_data, times, training_data, output = "surv", ...) {
   output <- match.arg(output, c("surv", "haz"))
 
   y <- survival::survfit(x,
@@ -155,7 +155,7 @@ coxnet_survival_prob <- function(x, new_data, .times, training_data, output = "s
     dplyr::group_nest(.row, .key = ".pred") %>%
     mutate(
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x)),
-      .pred = purrr::map(.pred, interpolate_km_values, .times)
+      .pred = purrr::map(.pred, interpolate_km_values, times)
     )
 
   keep_cols(res, output)

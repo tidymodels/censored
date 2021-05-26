@@ -67,10 +67,10 @@ make_bag_tree_ipred <- function() {
     value = list(
       pre = NULL,
       post = function(x, object) {
-        .time <- object$spec$method$pred$survival$args$.time
-        res <- map(x, ~ summary(.x, times = pmin(.time, max(.x$time)))$surv)
-        res <- matrix(unlist(res), ncol = length(.time), byrow = TRUE)
-        matrix_to_nested_tibbles_survival(res, .time)
+        time <- object$spec$method$pred$survival$args$time
+        res <- map(x, ~ summary(.x, times = pmin(time, max(.x$time)))$surv)
+        res <- matrix(unlist(res), ncol = length(time), byrow = TRUE)
+        matrix_to_nested_tibbles_survival(res, time)
       },
       func = c(fun = "predict"),
       args =

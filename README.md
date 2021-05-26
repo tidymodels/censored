@@ -40,6 +40,7 @@ fitted on the `lung` data set.
 library(censored)
 #> Loading required package: parsnip
 library(survival)
+#> Warning: package 'survival' was built under R version 4.0.2
 
 cox_mod <-
   proportional_hazards() %>%
@@ -49,7 +50,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  23ms 
+#> Fit time:  13ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, model = TRUE, x = TRUE)
@@ -89,24 +90,24 @@ left.
 
 When we specify `type = "survival"` then we are trying to get the
 probabilities of survival (not observing an event) up to a given time
-`.time`.
+`time`.
 
 ``` r
 pred_vals_survival <- predict(cox_mod, 
                               type = "survival", 
                               new_data = head(lung), 
-                              .time = c(100, 200))
+                              time = c(100, 200))
 
 pred_vals_survival
 #> # A tibble: 6 x 1
-#>   .pred               
-#>   <list>              
-#> 1 <tibble[,2] [2 × 2]>
-#> 2 <tibble[,2] [2 × 2]>
-#> 3 <tibble[,2] [2 × 2]>
-#> 4 <tibble[,2] [2 × 2]>
-#> 5 <tibble[,2] [2 × 2]>
-#> 6 <tibble[,2] [2 × 2]>
+#>   .pred           
+#>   <list>          
+#> 1 <tibble [2 × 2]>
+#> 2 <tibble [2 × 2]>
+#> 3 <tibble [2 × 2]>
+#> 4 <tibble [2 × 2]>
+#> 5 <tibble [2 × 2]>
+#> 6 <tibble [2 × 2]>
 
 pred_vals_survival$.pred[[1]]
 #> # A tibble: 2 x 2
@@ -152,7 +153,7 @@ For the proportional hazards model, the sign is reversed.
 | decision\_tree        | rpart    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
 | decision\_tree        | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
 | proportional\_hazards | survival | TRUE     | TRUE         | TRUE  | FALSE    | FALSE  |
-| proportional\_hazards | glmnet   | FALSE    | TRUE         | FALSE | FALSE    | FALSE  |
+| proportional\_hazards | glmnet   | TRUE     | TRUE         | FALSE | FALSE    | FALSE  |
 | rand\_forest          | party    | TRUE     | FALSE        | TRUE  | FALSE    | FALSE  |
 | survival\_reg         | survival | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
 | survival\_reg         | flexsurv | TRUE     | FALSE        | TRUE  | TRUE     | TRUE   |
