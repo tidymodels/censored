@@ -91,7 +91,7 @@ make_proportional_hazards_survival <- function() {
         list(
           x = quote(object$fit),
           new_data = quote(new_data),
-          .times = rlang::expr(.time)
+          times = rlang::expr(time)
         )
     )
   )
@@ -198,7 +198,7 @@ make_proportional_hazards_glmnet <- function() {
         list(
           x = expr(object$fit),
           new_data = expr(new_data),
-          .times = expr(.time),
+          times = expr(time),
           s = expr(object$spec$args$penalty),
           training_data = expr(object$training_data)
         )

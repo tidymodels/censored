@@ -114,13 +114,13 @@ flexsurv_quant <- function(results, object) {
 #' Internal function helps for parametric survival models
 #' @param object A `survreg` or `flexsurvreg` object.
 #' @param new_data A data frame.
-#' @param .time A vector of time points
+#' @param time A vector of time points
 #' @return A nested tibble with column name `.pred`
 #' @keywords internal
 #' @export
-flexsurv_probs <- function(object, new_data, .time, type = "survival") {
+flexsurv_probs <- function(object, new_data, time, type = "survival") {
   type <- rlang::arg_match(type, c("survival", "hazard"))
-  res <- summary(object, newdata = new_data, type = type, t = .time, ci = FALSE)
+  res <- summary(object, newdata = new_data, type = type, t = time, ci = FALSE)
   res <- unname(res)
   col_name <- rlang::sym(paste0(".pred_", type))
   res <- purrr::map(res, ~ dplyr::select(.x, time, est))
@@ -179,49 +179,49 @@ deparse_survreg_strata <- function(object, new_data) {
 }
 
 
-survreg_survival <- function(location, object, time, scale, .time, ...) {
+survreg_survival <- function(location, object, scale, time, ...) {
   distr <- object$dist
   tibble::tibble(
-    .time = .time,
-    .pred_survival = 1 - survival::psurvreg(.time, location, distribution = distr, scale, ...)
+    .time = time,
+    .pred_survival = 1 - survival::psurvreg(time, location, distribution = distr, scale, ...)
   )
 }
 
 #' @export
 #' @rdname flexsurv_probs
-survreg_survival_probs <- function(object, new_data, .time) {
+survreg_survival_probs <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
   res <-
     purrr::map2(
       lp_estimate,
       scale_estimate,
-      ~ survreg_survival(.x, object = object, .time = .time, scale = .y)
+      ~ survreg_survival(.x, object = object, time = time, scale = .y)
     )
   tibble::tibble(.pred = unname(res))
 }
 
-survreg_hazard <- function(location, object, scale = object$scale, .time, ...) {
+survreg_hazard <- function(location, object, scale = object$scale, time, ...) {
   distr <- object$dist
   prob <-
-    survival::dsurvreg(.time, location, scale, distribution = distr, ...) /
-    (1 - survival::psurvreg(.time, location, distribution = distr, scale, ...))
+    survival::dsurvreg(time, location, scale, distribution = distr, ...) /
+    (1 - survival::psurvreg(time, location, distribution = distr, scale, ...))
   tibble::tibble(
-    .time = .time,
+    .time = time,
     .pred_hazard = prob
   )
 }
 
 #' @export
 #' @rdname flexsurv_probs
-survreg_hazard_probs <- function(object, new_data, .time) {
+survreg_hazard_probs <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
   res <-
     purrr::map2(
       lp_estimate,
       scale_estimate,
-      ~ survreg_hazard(.x, object = object, .time = .time, scale = .y)
+      ~ survreg_hazard(.x, object = object, time = time, scale = .y)
     )
   tibble::tibble(.pred = unname(res))
 }

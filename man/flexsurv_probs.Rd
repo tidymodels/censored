@@ -6,18 +6,18 @@
 \alias{survreg_hazard_probs}
 \title{Internal function helps for parametric survival models}
 \usage{
-flexsurv_probs(object, new_data, .time, type = "survival")
+flexsurv_probs(object, new_data, time, type = "survival")
 
-survreg_survival_probs(object, new_data, .time)
+survreg_survival_probs(object, new_data, time)
 
-survreg_hazard_probs(object, new_data, .time)
+survreg_hazard_probs(object, new_data, time)
 }
 \arguments{
 \item{object}{A \code{survreg} or \code{flexsurvreg} object.}
 
 \item{new_data}{A data frame.}
 
-\item{.time}{A vector of time points}
+\item{time}{A vector of time points}
 }
 \value{
 A nested tibble with column name \code{.pred}
