@@ -187,3 +187,27 @@ test_that("survival probabilities - non-stratified model", {
 
 })
 
+
+# helper functions --------------------------------------------------------
+
+
+test_that("formula modifications", {
+  # base case
+  expect_equal(
+    drop_strata(expr(x + strata(s))),
+    expr(x)
+  )
+
+  expect_equal(
+    drop_strata(expr(x + x + x + strata(s))),
+    expr(x + x + x)
+  )
+  expect_equal(
+    drop_strata(expr(x * (y + strata(s)) + z)),
+    expr(x * (y + strata(s)) + z)
+  )
+
+  expect_error(
+    check_for_incorrect_strata_usage(expr(x * (y + strata(s)) + z))
+  )
+})

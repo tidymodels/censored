@@ -1,4 +1,5 @@
 #' @importFrom rlang enquo expr enquos call2 eval_tidy new_quosure empty_env
+#' @importFrom rlang is_call expr
 #' @importFrom purrr map_lgl map_dbl map
 #' @importFrom tibble is_tibble as_tibble tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value

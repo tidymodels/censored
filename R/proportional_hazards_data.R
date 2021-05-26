@@ -229,21 +229,13 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   if (has_strata) {
 
     # glmnet only allows one strata column so we require that there is only one term
-    strata_ind <- attr(trms, "specials")$strata + 1
-    if (length(strata_ind) > 1) {
-      rlang::abort(
-        paste(
-          "There should be a single 'strata' term specified using the `strata()`",
-          "function. It can contain multiple strata colums, e.g., ` ~ x + strata(s1, s2)`."
-        )
-      )
-    }
+    trms <- check_number_of_strata_terms(trms)
 
     strata <- convert_form_to_strata(formula = trms, data = data)
-    trms <- remove_terms_from_rhs(trms, strata_ind)
+    formula_without_strata <- remove_strata(formula)
+    trms <- terms(formula_without_strata, specials = "strata")
   }
 
-  # convert formula to x and y with parsnip function
   # TODO: discuss exporting the function from parsnip
   data_obj <- parsnip:::convert_form_to_xy_fit(
     formula = trms,
@@ -270,6 +262,18 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   res
 }
 
+check_number_of_strata_terms <- function(mod_terms) {
+  strata_terms <- attr(trms, "specials")$strata
+  if (length(strata_terms) > 1) {
+    rlang::abort(
+      paste(
+        "There should be a single 'strata' term specified using the `strata()`",
+        "function. It can contain multiple strata colums, e.g., ` ~ x + strata(s1, s2)`."
+      )
+    )
+  }
+}
+
 convert_form_to_strata <- function(formula,
                                    data,
                                    na.action = na.omit) {
@@ -283,19 +287,51 @@ convert_form_to_strata <- function(formula,
   strata
 }
 
-remove_terms_from_rhs <- function(f, ind){
-  form_terms <- attr(f, "variables")
-  rhs <- form_terms[-c(1:2, ind)]
-  if (length(rhs) == 0) {
-    rhs <- rlang::expr(1)
-  } else if (length(rhs) > 1) {
-    rhs <- purrr::reduce(rhs, function(l, r) rlang::expr(!!l + !!r))
-  } else {
-    rhs <- rlang::expr(!!rhs[[1]])
-  }
-  f[[3]] <- rhs
+remove_strata <- function(f) {
+  rhs <- f[[3]]
+  f[[3]] <- rhs %>%
+    drop_strata() %>%
+    check_for_intercept_model() %>%
+    check_for_incorrect_strata_usage()
+  f
+}
 
-  formula(f) # FIXME: discuss this
+# strata() must be part of a sequence of `+` calls
+# only drop correct usage of strata so we can check for incorrect usage in
+# its own function
+drop_strata <- function(expr, in_plus = TRUE) {
+  if (is_call(expr, "+", n = 2) && in_plus) {
+    lhs <- drop_strata(expr[[2]], in_plus = in_plus)
+    rhs <- drop_strata(expr[[3]], in_plus = in_plus)
+    if (is_call(lhs, "strata")) {
+      rhs
+    } else if (is_call(rhs, "strata")) {
+      lhs
+    } else {
+      rlang::call2("+", lhs, rhs)
+    }
+  } else if (is_call(expr)) {
+    expr[-1] <- map(as.list(expr[-1]), drop_strata, in_plus = FALSE)
+    expr
+  } else {
+    expr
+  }
+}
+check_for_intercept_model <- function(expr) {
+  if (expr == rlang::sym("1") | is_call(expr, "strata")) {
+    abort("The Cox model does not contain an intercept, please add a predictor.")
+  }
+  expr
+}
+check_for_incorrect_strata_usage <- function(expr) {
+  if (is_call(expr, "strata")) {
+    abort("Stratification needs to be specified via `+ strata()`.")
+  } else if (is_call(expr)) {
+    expr[-1] <- map(as.list(expr[-1]), check_strata_usage)
+    expr
+  } else {
+    expr
+  }
 }
 
 check_dots_coxnet <- function(x) {
