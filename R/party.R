@@ -157,7 +157,7 @@ cond_inference_surv_cforest <-
     # Edit the control options to put some argument values into the controls
     # function. This is a challenge since the control objects are S4 objects
     # of S4 objects. If the top-level tuning parameter disagrees with an
-    # existing value, we over-write it an issue a warning.
+    # existing value, we over-write it and issue a warning.
     if (any(names(opts) == "controls")) {
       opts$controls <-
         resub_party_arg(opts$controls, "splitctrl", "minsplit", minsplit, warn = FALSE)
