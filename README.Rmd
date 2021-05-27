@@ -64,13 +64,13 @@ Here we see that the first patient is predicted to have `r round(predict(cox_mod
 
 ### survival
 
-When we specify `type = "survival"` then we are trying to get the probabilities of survival (not observing an event) up to a given time `.time`. 
+When we specify `type = "survival"` then we are trying to get the probabilities of survival (not observing an event) up to a given time `time`. 
 
 ```{r}
 pred_vals_survival <- predict(cox_mod, 
                               type = "survival", 
                               new_data = head(lung), 
-                              .time = c(100, 200))
+                              time = c(100, 200))
 
 pred_vals_survival
 

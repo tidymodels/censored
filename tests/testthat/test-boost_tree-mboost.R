@@ -37,7 +37,7 @@ test_that("survival predictions", {
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   expect_error(predict(f_fit, lung2, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
-  f_pred <- predict(f_fit, lung2, type = "survival", .time = pred_time)
+  f_pred <- predict(f_fit, lung2, type = "survival", time = pred_time)
   exp_f_pred <- mboost::survFit(exp_f_fit, lung2)
 
   expect_s3_class(f_pred, "tbl_df")

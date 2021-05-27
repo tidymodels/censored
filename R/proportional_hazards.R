@@ -56,6 +56,24 @@
 NULL
 
 #' @export
+fit.proportional_hazards <- function(object,
+                                     formula,
+                                     data,
+                                     control = parsnip::control_parsnip(),
+                                     ...) {
+
+  # call parsnip::fit.model_spec()
+  res <- NextMethod()
+
+  if (object$engine == "glmnet") {
+    res$training_data <- res$fit[c("x", "y")]
+    res$fit <- res$fit$fit
+  }
+
+  res
+}
+
+#' @export
 translate.proportional_hazards <- function(x, engine = x$engine, ...) {
   x <- translate.default(x, engine, ...)
 
@@ -65,6 +83,7 @@ translate.proportional_hazards <- function(x, engine = x$engine, ...) {
     # Since the `fit` information is gone for the penalty, we need to have an
     # evaluated value for the parameter.
     x$args$penalty <- rlang::eval_tidy(x$args$penalty)
+    check_glmnet_penalty(x)
   }
 
   x
@@ -73,7 +92,7 @@ translate.proportional_hazards <- function(x, engine = x$engine, ...) {
 
 # ------------------------------------------------------------------------------
 
-# copy of the unexported parsnip:::organize_glmnet_pred()
+# copy of the unexported parsnip:::organize_glmnet_pred():
 organize_glmnet_pred <- function(x, object) {
   if (ncol(x) == 1) {
     res <- x[, 1]
@@ -91,7 +110,8 @@ organize_glmnet_pred <- function(x, object) {
 
 # ------------------------------------------------------------------------------
 
-# copy of the unexported parsnip:::check_penalty()
+# copy of the unexported parsnip:::check_penalty():
+
 # For `predict` methods that use `glmnet`, we have specific methods.
 # Only one value of the penalty should be allowed when called by `predict()`:
 
@@ -124,7 +144,31 @@ check_penalty <- function(penalty = NULL, object, multi = FALSE) {
   penalty
 }
 
+# copy of the unexported parsnip:::check_glmnet_penalty():
+check_glmnet_penalty <- function(x) {
+  if (length(x$args$penalty) != 1) {
+    rlang::abort(c(
+      "For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).",
+      glue::glue("There are {length(x$args$penalty)} values for `penalty`."),
+      "To try multiple values for total regularization, use the tune package.",
+      "To predict multiple penalties, use `multi_predict()`"
+    ))
+  }
+}
 # ------------------------------------------------------------------------------
+
+# notes adapted from parsnip:
+
+# glmnet call stack for censored regression using `predict` when object has
+# classes "_coxnet" and "model_fit":
+#
+#  predict()
+#   predict._coxnet(penalty = NULL)   <-- checks and sets penalty
+#    predict.model_fit()              <-- checks for extra vars in ...
+#     predict_survival()
+#      predict_survival._coxnet()
+#       predict_survival.model_fit()
+#        coxnet_survival_prob()
 
 #' @export
 predict._coxnet <-
@@ -142,3 +186,26 @@ predict._coxnet <-
     object$spec <- eval_args(object$spec)
     predict.model_fit(object, new_data = new_data, type = type, opts = opts, ...)
   }
+
+#' @export
+predict_survival._coxnet <- function(object, new_data, ...) {
+  if (any(names(enquos(...)) == "newdata"))
+    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+  object$spec <- eval_args(object$spec)
+  predict_survival.model_fit(object, new_data = new_data, ...)
+}
+
+#' @export
+print._coxnet <- function(x, ...) {
+  cat("parsnip model object\n\n")
+  cat("Fit time: ", prettyunits::pretty_sec(x$elapsed[["elapsed"]]), "\n")
+
+  if (inherits(x$fit$fit, "try-error")) {
+    cat("Model fit failed with error:\n", x$fit, "\n")
+  } else {
+    print(x$fit, ...)
+    cat("The training data has been saved for prediction.\n")
+  }
+  invisible(x)
+}

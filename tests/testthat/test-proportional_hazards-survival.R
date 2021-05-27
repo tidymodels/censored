@@ -57,7 +57,7 @@ test_that("survival predictions", {
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
   # Test at observed event times since we use the step function and pec does not
-  f_pred <- predict(f_fit, lung, type = "survival", .time = c(306, 455))
+  f_pred <- predict(f_fit, lung, type = "survival", time = c(306, 455))
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = c(306, 455))
 
   expect_s3_class(f_pred, "tbl_df")
@@ -82,7 +82,7 @@ test_that("survival predictions", {
     fit(Surv(time, status) ~ age + sex + wt.loss + strata(inst), data = lung)
   new_data_0 <- data.frame(age = c(50, 60), sex = 1, wt.loss = 5)
   expect_error(
-    predict(cox_fit_strata, new_data = new_data_0, type = "survival", .time = 200),
+    predict(cox_fit_strata, new_data = new_data_0, type = "survival", time = 200),
     "provide the strata"
   )
 })
@@ -106,6 +106,6 @@ test_that("linear_pred predictions", {
 test_that("api errors", {
   expect_error(
     proportional_hazards() %>% set_engine("lda"),
-    regexp = "Engine 'lda' is not available"
+    regexp = "Available engines are:"
   )
 })

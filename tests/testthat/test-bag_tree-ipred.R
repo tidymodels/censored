@@ -54,7 +54,7 @@ test_that("survival predictions", {
   expect_error(f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
-  f_pred <- predict(f_fit, lung, type = "survival", .time = 100:200)
+  f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
   exp_f_pred <- map(predict(exp_f_fit, lung),
                     ~ summary(.x, times = c(100:200))$surv)
 
@@ -79,7 +79,7 @@ test_that("survival predictions", {
   )
 
   # Out of domain prediction
-  f_pred <- predict(f_fit, lung, type = "survival", .time = 10000)
+  f_pred <- predict(f_fit, lung, type = "survival", time = 10000)
   exp_f_pred <- map(predict(exp_f_fit, lung),
                     ~ summary(.x, times = c(max(.x$time)))$surv)
 
