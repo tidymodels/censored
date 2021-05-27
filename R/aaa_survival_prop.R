@@ -8,7 +8,7 @@
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-cph_survival_prob <- function(x, new_data, times, output = "surv", conf.int = .95, ...) {
+survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .95, ...) {
   output <- match.arg(output, c("surv", "conf", "haz"))
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
@@ -62,8 +62,12 @@ stack_survfit <- function(x, n) {
       .row = rep(seq_len(n), x$strata)
     )
   } else {
-    # All components are {t x n} matrices
-    times <- length(x$time)
+    # All components are {t x n} matrices (unless nrow(new_data) = 1)
+    if (is.matrix(x$surv)) {
+      times <- nrow(x$surv)
+    } else {
+      times <- 1
+    }
     res <- tibble::tibble(
       .time = rep(x$time, n),
       .pred_survival = as.vector(x$surv),
@@ -143,7 +147,7 @@ cph_survival_pre <- function(new_data, object) {
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-coxnet_survival_prob <- function(x, new_data, times, training_data, output = "surv", ...) {
+survival_prob_coxnet <- function(x, new_data, times, training_data, output = "surv", ...) {
   output <- match.arg(output, c("surv", "haz"))
 
   y <- survival::survfit(x,

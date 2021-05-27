@@ -73,6 +73,11 @@ jobs:
           pak::pkg_install("rcmdcheck")
         shell: Rscript {0}
 
+      - name: Install devel versions
+        run: |
+          try(pak::pkg_install("topepo/C5.0"))
+        shell: Rscript {0}
+
       - name: Session info
         run: |
           options(width = 100)

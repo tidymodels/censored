@@ -31,6 +31,7 @@ Imports:
     mboost,
     ipred,
     flexsurv,
+    methods,
     prettyunits,
     generics
 URL: https://github.com/tidymodels/censored
