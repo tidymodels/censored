@@ -81,14 +81,14 @@ cond_inference_surv_ctree <-
 # some wrappers for ctree predictions
 
 approx_surv_fit <- function(x, .time = 0) {
-  dat <- stack_survfit_cph(x, n = 1)
+  dat <- stack_survfit(x, n = 1)
   interpolate_km_values(dat, .time)
 }
 
 #' @export
 #' @keywords internal
 #' @rdname party_internal
-surv_prob_ctree <- function(object, new_data, .time) {
+survival_prob_ctree <- function(object, new_data, time) {
   cl <-
     rlang::call2(
       "Predict",
@@ -98,7 +98,7 @@ surv_prob_ctree <- function(object, new_data, .time) {
       type = "prob"
     )
   res <- rlang::eval_tidy(cl)
-  res <- purrr::map(res, approx_surv_fit, .time)
+  res <- purrr::map(res, approx_surv_fit, time)
   res <- purrr::map(res, ~ dplyr::select(.x, -.pred_hazard_cumulative, -.row))
   tibble::tibble(.pred = res)
 }
@@ -254,9 +254,9 @@ resub_party_arg <- function(x, slot, arg, value, warn = TRUE) {
 #' @export
 #' @keywords internal
 #' @rdname party_internal
-surv_prob_cforest <- function(object, new_data, .time) {
+survival_prob_cforest <- function(object, new_data, time) {
   res <- object@predict_response(newdata = new_data, type = "prob")
-  res <- purrr::map(res, approx_surv_fit, .time)
+  res <- purrr::map(res, approx_surv_fit, time)
   res <- purrr::map(res, ~ dplyr::select(.x, -.pred_hazard_cumulative, -.row))
   tibble::tibble(.pred = res)
 }

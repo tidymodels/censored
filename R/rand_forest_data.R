@@ -9,7 +9,7 @@
 
 # nocov
 
-make_rand_forest_cforest <- function() {
+make_rand_forest_party <- function() {
 
   parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "party")
   parsnip::set_dependency("rand_forest", eng = "party", pkg = "party")
@@ -61,10 +61,9 @@ make_rand_forest_cforest <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "surv_prob_cforest"),
+      func = c(pkg = "censored", fun = "survival_prob_cforest"),
       args = list(object = quote(object$fit),
-                  new_data = quote(new_data),
-                  .time = rlang::expr(.time))
+                  new_data = quote(new_data))
     )
   )
 

@@ -80,7 +80,7 @@ make_decision_tree_rpart <- function() {
 
 }
 
-make_decision_tree_ctree <- function() {
+make_decision_tree_party <- function() {
 
   parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "party")
   parsnip::set_dependency("decision_tree", eng = "party", pkg = "party")
@@ -131,10 +131,9 @@ make_decision_tree_ctree <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "surv_prob_ctree"),
+      func = c(pkg = "censored", fun = "survival_prob_ctree"),
       args = list(object = quote(object$fit),
-                  new_data = quote(new_data),
-                  .time = rlang::expr(.time))
+                  new_data = quote(new_data))
     )
   )
 
