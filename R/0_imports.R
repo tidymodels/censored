@@ -42,6 +42,6 @@ utils::globalVariables(
   make_survival_reg_survival()
   make_survival_reg_flexsurv()
 
-  make_decision_tree_ctree()
-  make_rand_forest_cforest()
+  make_decision_tree_party()
+  make_rand_forest_party()
 }

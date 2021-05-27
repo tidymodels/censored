@@ -86,7 +86,7 @@ make_proportional_hazards_survival <- function() {
     value = list(
       pre = cph_survival_pre,
       post = NULL,
-      func = c(pkg = "censored", fun = "cph_survival_prob"),
+      func = c(pkg = "censored", fun = "survival_prob_cph"),
       args =
         list(
           x = quote(object$fit),
@@ -193,7 +193,7 @@ make_proportional_hazards_glmnet <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "coxnet_survival_prob"),
+      func = c(pkg = "censored", fun = "survival_prob_coxnet"),
       args =
         list(
           x = expr(object$fit),
