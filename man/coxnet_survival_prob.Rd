@@ -4,14 +4,14 @@
 \alias{coxnet_survival_prob}
 \title{A wrapper for survival probabilities with coxnet models}
 \usage{
-coxnet_survival_prob(object, new_data, .times, output = "surv", ...)
+coxnet_survival_prob(object, new_data, times, output = "surv", ...)
 }
 \arguments{
 \item{object}{A fitted \verb{_coxnet} object.}
 
 \item{new_data}{Data for prediction.}
 
-\item{.times}{A vector of integers for prediction times.}
+\item{times}{A vector of integers for prediction times.}
 
 \item{output}{One of "surv" or "haz".}
 

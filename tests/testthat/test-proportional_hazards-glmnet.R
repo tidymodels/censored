@@ -11,7 +11,7 @@ context("Cox Regression - glmnet")
 
 lung2 <- lung[-14, ]
 
-cox_spec <- proportional_hazards() %>% set_engine("glmnet")
+cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
 
 exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
                     y = Surv(lung2$time, lung2$status),
@@ -47,7 +47,7 @@ test_that("linear_pred predictions", {
 test_that("api errors", {
   expect_error(
     proportional_hazards() %>% set_engine("lda"),
-    regexp = "Engine 'lda' is not available"
+    regexp = "Available engines are:"
   )
 })
 
@@ -68,8 +68,13 @@ test_that("primary arguments", {
                )
   )
 
+  expect_error(
+    translate(proportional_hazards() %>% set_engine("glmnet")),
+    "For the glmnet engine, `penalty` must be a single"
+  )
+
   # mixture -----------------------------------------------------------
-  mixture <- proportional_hazards(mixture = 0.34) %>%
+  mixture <- proportional_hazards(mixture = 0.34, penalty = 0.123) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -82,7 +87,7 @@ test_that("primary arguments", {
                )
   )
 
-  mixture_v <- proportional_hazards(mixture = varying()) %>%
+  mixture_v <- proportional_hazards(mixture = varying(), penalty = 0.123) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -128,8 +133,7 @@ test_that("survival probabilities - non-stratified model", {
   # remove row with missing value
   lung2 <- lung[-14, ]
 
-  # penalty specification: in predict()
-  cox_spec <- proportional_hazards() %>%
+  cox_spec <- proportional_hazards(penalty = 0.123) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -141,12 +145,12 @@ test_that("survival probabilities - non-stratified model", {
 
   expect_error(
     pred_1 <- predict(f_fit, new_data = lung2[1, ], type = "survival",
-                      .time = c(100, 200), penalty = 0.123),
+                      time = c(100, 200)),
     NA
   )
 
   pred_2 <- predict(f_fit, new_data = lung2[1:2, ], type = "survival",
-                    .time = c(100, 200), penalty = 0.123)
+                    time = c(100, 200), penalty = 0.1)
 
   expect_s3_class(pred_2, "tbl_df")
   expect_equal(names(pred_2), ".pred")
@@ -159,34 +163,7 @@ test_that("survival probabilities - non-stratified model", {
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
 
-
-  # penalty specification: in model spec
-  cox_spec_penalty <- proportional_hazards(penalty = 0.123) %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-
-  set.seed(14)
-  expect_error(
-    f_fit_penalty <- fit(cox_spec_penalty,
-                         Surv(time, status) ~ age + ph.ecog, data = lung2),
-    NA
-  )
-
-  # use penalty from model spec
-  expect_error(
-    predict(f_fit_penalty, new_data = lung2[1, ], type = "survival",
-            .time = c(100, 200)),
-    NA
-  )
-  # use penalty along the path
-  expect_error(
-    predict(f_fit_penalty, new_data = lung2[1, ], type = "survival",
-            .time = c(100, 200), penalty = 0.012),
-    NA
-  )
-
 })
-
 
 # helper functions --------------------------------------------------------
 

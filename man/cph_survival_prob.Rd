@@ -4,14 +4,14 @@
 \alias{cph_survival_prob}
 \title{A wrapper for survival probabilities with cph models}
 \usage{
-cph_survival_prob(x, new_data, .times, output = "surv", conf.int = 0.95, ...)
+cph_survival_prob(x, new_data, times, output = "surv", conf.int = 0.95, ...)
 }
 \arguments{
 \item{x}{A model from \code{coxph()}.}
 
 \item{new_data}{Data for prediction}
 
-\item{.times}{A vector of integers for prediction times.}
+\item{times}{A vector of integers for prediction times.}
 
 \item{output}{One of "surv", "conf", or "haz".}
 

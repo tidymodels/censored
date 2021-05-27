@@ -48,7 +48,7 @@ test_that("survival predictions", {
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
-  f_pred <- predict(f_fit, lung, type = "survival", .time = 100:200)
+  f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
 
   expect_s3_class(f_pred, "tbl_df")
@@ -72,7 +72,7 @@ test_that("survival predictions", {
   )
 
   # Out of domain prediction
-  f_pred <- predict(f_fit, lung, type = "survival", .time = 10000)
+  f_pred <- predict(f_fit, lung, type = "survival", time = 10000)
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = c(1, max(lung$time)))
 
   expect_equal(

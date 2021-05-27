@@ -103,6 +103,7 @@ translate.proportional_hazards <- function(x, engine = x$engine, ...) {
     # Since the `fit` information is gone for the penalty, we need to have an
     # evaluated value for the parameter.
     x$args$penalty <- rlang::eval_tidy(x$args$penalty)
+    check_glmnet_penalty(x)
   }
 
   x
@@ -163,6 +164,17 @@ check_penalty <- function(penalty = NULL, object, multi = FALSE) {
   penalty
 }
 
+# copy of the unexported parsnip:::check_glmnet_penalty():
+check_glmnet_penalty <- function(x) {
+  if (length(x$args$penalty) != 1) {
+    rlang::abort(c(
+      "For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).",
+      glue::glue("There are {length(x$args$penalty)} values for `penalty`."),
+      "To try multiple values for total regularization, use the tune package.",
+      "To predict multiple penalties, use `multi_predict()`"
+    ))
+  }
+}
 # ------------------------------------------------------------------------------
 
 # notes adapted from parsnip:
