@@ -157,11 +157,11 @@ make_proportional_hazards_glmnet <- function() {
     value = list(
       pre = NULL,
       post = organize_glmnet_pred,
-      func = c(fun = "predict"),
+      func = c(fun = "linear_pred_coxnet"),
       args =
         list(
-          object = expr(object$fit),
-          newx = expr(as.matrix(new_data)),
+          object = expr(object),
+          new_data = expr(new_data),
           type = "link",
           s = expr(object$spec$args$penalty)
         )
@@ -346,4 +346,13 @@ check_dots_coxnet <- function(x) {
     )
   }
   invisible(NULL)
+}
+
+linear_pred_coxnet <- function(object, new_data, ...) {
+
+  # TODO: discuss exporting the function from parsnip
+  new_x <- parsnip:::convert_form_to_xy_new(object$preproc$coxnet, new_data,
+                                            composition = "matrix")$x
+
+  predict(object$fit, newx = new_x, ...)
 }
