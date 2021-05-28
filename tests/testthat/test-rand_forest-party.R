@@ -1,6 +1,5 @@
 library(testthat)
 library(survival)
-library(pec)
 
 # ------------------------------------------------------------------------------
 
@@ -10,15 +9,15 @@ context("Random forest - party")
 
 mod_spec <- rand_forest() %>% set_mode("censored regression") %>% set_engine("party")
 
-set.seed(1234)
-suppressWarnings({
-  exp_f_fit <- pecCforest(Surv(time, status) ~ age + ph.ecog, data = lung)
-})
-
-
 # ------------------------------------------------------------------------------
 
 test_that("model object", {
+  skip_if_not_installed("party")
+
+  set.seed(1234)
+  suppressWarnings({
+    exp_f_fit <- party::cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+  })
 
   # formula method
   set.seed(1234)
@@ -30,12 +29,19 @@ test_that("model object", {
   )
 
   # Removing x element from f_fit and call from both
-  expect_equal(f_fit$fit$forest, exp_f_fit$forest)
+  expect_equal(f_fit$fit, exp_f_fit)
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("time predictions", {
+  skip_if_not_installed("party")
+
+  set.seed(1234)
+  suppressWarnings({
+    exp_f_fit <- party::cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+  })
+
   # formula method
   set.seed(1234)
   expect_error(
@@ -45,7 +51,7 @@ test_that("time predictions", {
     NA
   )
   f_pred <- predict(f_fit, lung, type = "time")
-  exp_f_pred <- predict(exp_f_fit$forest, newdata = lung)
+  exp_f_pred <- predict(exp_f_fit, newdata = lung)
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
@@ -56,6 +62,13 @@ test_that("time predictions", {
 # ------------------------------------------------------------------------------
 
 test_that("survival predictions", {
+  skip_if_not_installed("party")
+
+  set.seed(1234)
+  suppressWarnings({
+    exp_f_fit <- party::cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+  })
+
   # formula method
   set.seed(1234)
   expect_error(
@@ -67,35 +80,33 @@ test_that("survival predictions", {
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
-  exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred_survival")
+  expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(dim(.x) == c(101, 2))))
-  )
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(names(.x) == c(".time", ".pred_survival"))))
-  )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-    as.numeric(t(exp_f_pred))
+    unique(purrr::map_int(f_pred$.pred, nrow)),
+    101
+  )
+  cf_names <-
+    c(".time", ".pred_survival", ".pred_survival_lower", ".pred_survival_upper")
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ identical(names(.x), cf_names)))
   )
 
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.time,
+    tidyr::unnest(f_pred, cols = c(.pred))$.time,
     rep(100:200, nrow(lung))
   )
 
-  # Out of domain prediction
-  f_pred <- predict(f_fit, lung, type = "survival", time = 10000)
-  exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = c(1, max(lung$time)))
+  f_pred <- predict(f_fit, lung[1,], type = "survival", time = 306)
+  new_km <- party::treeresponse(exp_f_fit, lung[1,])[[1]]
+  # Prediction should be fairly near the actual value
 
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
-    exp_f_pred[, -1]
+    f_pred$.pred[[1]]$.pred_survival,
+    new_km$surv[new_km$time == 306],
+    tolerance = .1
   )
 })

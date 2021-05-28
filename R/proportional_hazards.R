@@ -188,7 +188,7 @@ check_glmnet_penalty <- function(x) {
 #     predict_survival()
 #      predict_survival._coxnet()
 #       predict_survival.model_fit()
-#        coxnet_survival_prob()
+#        survival_prob_coxnet()
 
 #' @export
 predict._coxnet <-

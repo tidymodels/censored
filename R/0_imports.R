@@ -20,7 +20,8 @@
 
 utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred",
-    ".cuts", ".id", ".pred_hazard_cumulative", ".tmp", "engine",
+    ".cuts", ".id", ".pred_hazard_cumulative", ".tmp", ".pred_survival",
+    ".pred_survival_lower", ".pred_survival_upper", "engine",
     "predictor_indicators")
 )
 
@@ -38,13 +39,12 @@ utils::globalVariables(
   make_boost_tree_mboost()
 
   make_decision_tree_rpart()
-  make_decision_tree_party()
 
   make_bag_tree_ipred()
-
-  make_rand_forest_party()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()
 
+  make_decision_tree_party()
+  make_rand_forest_party()
 }
