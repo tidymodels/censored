@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/EmilHvitfeldt/censored/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/censored?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) 
 
+[![R-CMD-check](https://github.com/tidymodels/censored/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/censored/actions)
 <!-- badges: end -->
 
 `censored` is a “`parsnip`-adjacent” packages with
