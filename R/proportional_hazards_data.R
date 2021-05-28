@@ -348,6 +348,13 @@ check_dots_coxnet <- function(x) {
   invisible(NULL)
 }
 
+#' A wrapper for predict() with coxnet models
+#' @param object A fitted `_coxnet` object.
+#' @param new_data Data for prediction.
+#' @param ... Options to pass to [glmnet::predict.coxnet()].
+#' @return A matrix.
+#' @keywords internal
+#' @export
 linear_pred_coxnet <- function(object, new_data, ...) {
 
   # TODO: discuss exporting the function from parsnip
