@@ -106,6 +106,6 @@ test_that("linear_pred predictions", {
 test_that("api errors", {
   expect_error(
     proportional_hazards() %>% set_engine("lda"),
-    regexp = "Engine 'lda' is not available"
+    regexp = "Available engines are:"
   )
 })

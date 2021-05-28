@@ -37,13 +37,12 @@ utils::globalVariables(
   make_boost_tree_mboost()
 
   make_decision_tree_rpart()
-  make_decision_tree_party()
 
   make_bag_tree_ipred()
-
-  make_rand_forest_party()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()
 
+  make_decision_tree_party()
+  make_rand_forest_party()
 }
