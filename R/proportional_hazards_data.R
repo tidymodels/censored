@@ -263,7 +263,7 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
 }
 
 check_number_of_strata_terms <- function(mod_terms) {
-  strata_terms <- attr(trms, "specials")$strata
+  strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
     rlang::abort(
       paste(
@@ -327,7 +327,7 @@ check_for_incorrect_strata_usage <- function(expr) {
   if (is_call(expr, "strata")) {
     abort("Stratification needs to be specified via `+ strata()`.")
   } else if (is_call(expr)) {
-    expr[-1] <- map(as.list(expr[-1]), check_strata_usage)
+    expr[-1] <- map(as.list(expr[-1]), check_for_incorrect_strata_usage)
     expr
   } else {
     expr
