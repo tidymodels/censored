@@ -214,7 +214,7 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
 
   # declare specials
-  trms <- terms(formula, specials = "strata")
+  trms <- stats::terms(formula, specials = "strata")
   has_strata <- !is.null(attr(trms, "specials")$strata)
 
   # Stratification: we require it to be specified on the right-hand side of the
@@ -233,7 +233,7 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
 
     strata <- convert_form_to_strata(formula = trms, data = data)
     formula_without_strata <- remove_strata(formula)
-    trms <- terms(formula_without_strata, specials = "strata")
+    trms <- stats::terms(formula_without_strata, specials = "strata")
   }
 
   # TODO: discuss exporting the function from parsnip
@@ -276,9 +276,9 @@ check_number_of_strata_terms <- function(mod_terms) {
 
 convert_form_to_strata <- function(formula,
                                    data,
-                                   na.action = na.omit) {
+                                   na.action = stats::na.omit) {
 
-  mod_frame <- model.frame(formula, data, na.action = na.action)
+  mod_frame <- stats::model.frame(formula, data, na.action = na.action)
   mod_terms <- attr(mod_frame, "terms")
 
   strata_ind <- attr(mod_terms,"specials")$strata
