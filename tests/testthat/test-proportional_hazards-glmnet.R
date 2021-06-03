@@ -165,8 +165,38 @@ test_that("survival probabilities - non-stratified model", {
 
 })
 
-# helper functions --------------------------------------------------------
 
+test_that("survival probabilities - stratified model", {
+
+  cox_spec <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  set.seed(14)
+  expect_error(
+    f_fit <- fit(cox_spec,
+                 Surv(stop, event) ~ rx + size + number + strata(enum),
+                 data = bladder),
+    NA
+  )
+
+  pred_2 <- predict(f_fit, new_data = bladder[1:2, ], type = "survival",
+                    time = c(5, 10), penalty = 0.1)
+
+  expect_s3_class(pred_2, "tbl_df")
+  expect_equal(names(pred_2), ".pred")
+  expect_equal(nrow(pred_2), 2)
+  expect_true(
+    all(purrr::map_lgl(pred_2$.pred, ~ all(dim(.x) == c(2, 2))))
+  )
+  expect_true(
+    all(purrr::map_lgl(pred_2$.pred,
+                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+  )
+
+})
+
+# helper functions --------------------------------------------------------
 
 test_that("formula modifications", {
   # base case
