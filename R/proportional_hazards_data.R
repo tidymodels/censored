@@ -272,6 +272,7 @@ check_number_of_strata_terms <- function(mod_terms) {
       )
     )
   }
+  mod_terms
 }
 
 convert_form_to_strata <- function(formula,
