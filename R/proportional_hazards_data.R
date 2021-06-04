@@ -213,40 +213,20 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
   remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
 
-  # declare specials
-  trms <- stats::terms(formula, specials = "strata")
-  has_strata <- !is.null(attr(trms, "specials")$strata)
-
-  # Stratification: we require it to be specified on the right-hand side of the
-  # formula, e.g., `Surv(time, event) ~ x + strata(s1, s2)`,
-  # whereas glmnet requires strata to be specified in the response via its own
-  # stratification function, e.g., `stratifySurv(Surv(time, event), s)`.
-  # We extract the strata column from the model frame (as it can be a
-  # combination of several variables) before removing the strata term from the
-  # right-hand side of the formula for regular processing through parsnip.
-  # Before passing the response to the fitting function, we stratify it with
-  # column extracted prior to the formula tweaking.
-  if (has_strata) {
-
-    # glmnet only allows one strata column so we require that there is only one term
-    trms <- check_number_of_strata_terms(trms)
-
-    strata <- convert_form_to_strata(formula = trms, data = data)
-    formula_without_strata <- remove_strata(formula)
-    trms <- stats::terms(formula_without_strata, specials = "strata")
-  }
+  formula_without_strata <- remove_strata(formula)
 
   # TODO: discuss exporting the function from parsnip
   data_obj <- parsnip:::convert_form_to_xy_fit(
-    formula = trms,
+    formula = formula_without_strata,
     data = data,
     composition = "matrix",
     indicators = indicators,
     remove_intercept = remove_intercept
   )
 
-  # stratify the response Surv object
-  if (has_strata) {
+  if (has_strata(formula)) {
+    check_strata_nterms(formula)
+    strata <- get_strata(formula, data)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
 
@@ -262,12 +242,14 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   res
 }
 
-check_number_of_strata_terms <- function(mod_terms) {
 has_strata <- function(formula) {
   mod_terms <- stats::terms(formula, specials = "strata")
   !is.null(attr(mod_terms, "specials")$strata)
 }
 
+# glmnet only allows one strata column so we require that there's only one term
+check_strata_nterms <- function(formula) {
+  mod_terms <- stats::terms(formula, specials = "strata")
   strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
     rlang::abort(
@@ -277,15 +259,12 @@ has_strata <- function(formula) {
       )
     )
   }
-  mod_terms
+  invisible(formula)
 }
 
-convert_form_to_strata <- function(formula,
-                                   data,
-                                   na.action = stats::na.omit) {
-
-  mod_frame <- stats::model.frame(formula, data, na.action = na.action)
-  mod_terms <- attr(mod_frame, "terms")
+get_strata <- function(formula, data, na.action = stats::na.omit) {
+  mod_terms <- stats::terms(formula, specials = "strata")
+  mod_frame <- stats::model.frame(mod_terms, data, na.action = na.action)
 
   strata_ind <- attr(mod_terms,"specials")$strata
   strata <- purrr::pluck(mod_frame, strata_ind)

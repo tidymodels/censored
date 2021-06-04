@@ -146,11 +146,8 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", ...) 
   new_x <- parsnip:::convert_form_to_xy_new(object$preproc$coxnet, new_data,
                                             composition = "matrix")$x
 
-  mod_terms <- stats::terms(object$formula, specials = "strata")
-  has_strata <- !is.null(attr(mod_terms, "specials")$strata)
-
-  if (has_strata) {
-    new_strata <- convert_form_to_strata(formula = mod_terms, data = new_data)
+  if (has_strata(object$formula)) {
+    new_strata <- get_strata(object$formula, data = new_data)
   } else {
     new_strata <- NULL
   }
