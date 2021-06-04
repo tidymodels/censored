@@ -293,13 +293,17 @@ convert_form_to_strata <- function(formula,
   strata
 }
 
-remove_strata <- function(f) {
-  rhs <- f[[3]]
-  f[[3]] <- rhs %>%
+remove_strata <- function(formula) {
+  if (!has_strata(formula)) {
+    return(formula)
+  }
+
+  rhs <- formula[[3]]
+  formula[[3]] <- rhs %>%
     drop_strata() %>%
-  f
     check_intercept_model() %>%
     check_strata_remaining()
+  formula
 }
 
 # strata() must be part of a sequence of `+` calls
