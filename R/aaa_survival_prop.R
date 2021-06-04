@@ -142,9 +142,10 @@ cph_survival_pre <- function(new_data, object) {
 survival_prob_coxnet <- function(object, new_data, times, output = "surv", ...) {
   output <- match.arg(output, c("surv", "haz"))
 
-  # TODO: discuss exporting the function from parsnip
-  new_x <- parsnip:::convert_form_to_xy_new(object$preproc$coxnet, new_data,
-                                            composition = "matrix")$x
+  new_x <- parsnip::.convert_form_to_xy_new(
+    object$preproc$coxnet,
+    new_data,
+    composition = "matrix")$x
 
   if (has_strata(object$formula)) {
     new_strata <- get_strata(object$formula, data = new_data)
@@ -152,10 +153,16 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", ...) 
     new_strata <- NULL
   }
 
-  y <- survival::survfit(object$fit,
-                         newx = new_x, newstrata = new_strata,
-                         x = object$training_data$x, y = object$training_data$y,
-                         na.action = na.exclude, ...)
+  y <- survival::survfit(
+    object$fit,
+    newx = new_x,
+    newstrata = new_strata,
+    x = object$training_data$x,
+    y = object$training_data$y,
+    na.action = na.exclude,
+    ...
+  )
+
   res <-
     stack_survfit(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%

@@ -215,8 +215,7 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
 
   formula_without_strata <- remove_strata(formula)
 
-  # TODO: discuss exporting the function from parsnip
-  data_obj <- parsnip:::convert_form_to_xy_fit(
+  data_obj <- parsnip::.convert_form_to_xy_fit(
     formula = formula_without_strata,
     data = data,
     composition = "matrix",
@@ -347,10 +346,10 @@ check_dots_coxnet <- function(x) {
 #' @keywords internal
 #' @export
 linear_pred_coxnet <- function(object, new_data, ...) {
-
-  # TODO: discuss exporting the function from parsnip
-  new_x <- parsnip:::convert_form_to_xy_new(object$preproc$coxnet, new_data,
-                                            composition = "matrix")$x
+  new_x <- parsnip::.convert_form_to_xy_new(
+    object$preproc$coxnet,
+    new_data,
+    composition = "matrix")$x
 
   predict(object$fit, newx = new_x, ...)
 }
