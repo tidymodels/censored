@@ -215,6 +215,6 @@ test_that("formula modifications", {
   )
 
   expect_error(
-    check_for_incorrect_strata_usage(expr(x * (y + strata(s)) + z))
+    check_strata_remaining(expr(x * (y + strata(s)) + z))
   )
 })

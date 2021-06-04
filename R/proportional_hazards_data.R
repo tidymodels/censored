@@ -292,9 +292,9 @@ remove_strata <- function(f) {
   rhs <- f[[3]]
   f[[3]] <- rhs %>%
     drop_strata() %>%
-    check_for_intercept_model() %>%
-    check_for_incorrect_strata_usage()
   f
+    check_intercept_model() %>%
+    check_strata_remaining()
 }
 
 # strata() must be part of a sequence of `+` calls
@@ -318,17 +318,19 @@ drop_strata <- function(expr, in_plus = TRUE) {
     expr
   }
 }
-check_for_intercept_model <- function(expr) {
+
+check_intercept_model <- function(expr) {
   if (expr == rlang::sym("1") | is_call(expr, "strata")) {
     abort("The Cox model does not contain an intercept, please add a predictor.")
   }
   expr
 }
-check_for_incorrect_strata_usage <- function(expr) {
+
+check_strata_remaining <- function(expr) {
   if (is_call(expr, "strata")) {
     abort("Stratification needs to be specified via `+ strata()`.")
   } else if (is_call(expr)) {
-    expr[-1] <- map(as.list(expr[-1]), check_for_incorrect_strata_usage)
+    expr[-1] <- map(as.list(expr[-1]), check_strata_remaining)
     expr
   } else {
     expr
