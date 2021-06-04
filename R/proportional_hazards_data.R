@@ -263,6 +263,11 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
 }
 
 check_number_of_strata_terms <- function(mod_terms) {
+has_strata <- function(formula) {
+  mod_terms <- stats::terms(formula, specials = "strata")
+  !is.null(attr(mod_terms, "specials")$strata)
+}
+
   strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
     rlang::abort(
