@@ -62,8 +62,6 @@ fit.proportional_hazards <- function(object,
                                      control = parsnip::control_parsnip(),
                                      ...) {
 
-  # TODO declare specials here? (only for glmnet or for all?)
-
   # call parsnip::fit.model_spec()
   res <- NextMethod()
 
