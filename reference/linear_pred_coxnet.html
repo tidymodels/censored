@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wrapper for glmnet for censored — glmnet_fit_wrapper • censored</title>
+<title>A wrapper for predict() with coxnet models — linear_pred_coxnet • censored</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Wrapper for glmnet for censored — glmnet_fit_wrapper" />
-<meta property="og:description" content="Not to be used directly by users." />
+<meta property="og:title" content="A wrapper for predict() with coxnet models — linear_pred_coxnet" />
+<meta property="og:description" content="A wrapper for predict() with coxnet models" />
 
 
 
@@ -108,63 +108,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Wrapper for glmnet for censored</h1>
+    <h1>A wrapper for predict() with coxnet models</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidymodels/censored/blob/master/R/proportional_hazards_data.R'><code>R/proportional_hazards_data.R</code></a></small>
-    <div class="hidden name"><code>glmnet_fit_wrapper.Rd</code></div>
+    <div class="hidden name"><code>linear_pred_coxnet.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Not to be used directly by users.</p>
+    <p>A wrapper for predict() with coxnet models</p>
     </div>
 
-    <pre class="usage"><span class='fu'>glmnet_fit_wrapper</span><span class='op'>(</span><span class='va'>formula</span>, <span class='va'>data</span>, alpha <span class='op'>=</span> <span class='fl'>1</span>, lambda <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>linear_pred_coxnet</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>new_data</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>formula</th>
-      <td><p>The model formula.</p></td>
+      <th>object</th>
+      <td><p>A fitted <code>_coxnet</code> object.</p></td>
     </tr>
     <tr>
-      <th>data</th>
-      <td><p>The data.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>The elasticnet mixing parameter, with \(0\le\alpha\le 1\).
-The penalty is defined as
-$$(1-\alpha)/2||\beta||_2^2+\alpha||\beta||_1.$$ <code>alpha=1</code> is the
-lasso penalty, and <code>alpha=0</code> the ridge penalty.</p></td>
-    </tr>
-    <tr>
-      <th>lambda</th>
-      <td><p>A user supplied <code>lambda</code> sequence. Typical usage is to
-have the program compute its own <code>lambda</code> sequence based on
-<code>nlambda</code> and <code>lambda.min.ratio</code>. Supplying a value of
-<code>lambda</code> overrides this. WARNING: use with care. Avoid supplying a
-single value for <code>lambda</code> (for predictions after CV use
-<code><a href='https://rdrr.io/r/stats/predict.html'>predict()</a></code> instead).  Supply instead a decreasing sequence of
-<code>lambda</code> values. <code>glmnet</code> relies on its warms starts for speed,
-and its often faster to fit a whole path than compute a single fit.</p></td>
+      <th>new_data</th>
+      <td><p>Data for prediction.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional parameters passed to glmnet::glmnet.</p></td>
+      <td><p>Options to pass to <code><a href='https://glmnet.stanford.edu/reference/predict.glmnet.html'>glmnet::predict.coxnet()</a></code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>This wrapper translates from formula interface to glmnet's matrix due to how
-stratification can be specified. glmnet requires that the <em>response</em> is
-stratified via <code><a href='https://glmnet.stanford.edu/reference/stratifySurv.html'>glmnet::stratifySurv()</a></code>. censored allows specification via a
-<code><a href='https://rdrr.io/pkg/survival/man/strata.html'>survival::strata()</a></code> term on the right-hand side of the formula. The formula
-is used to generate the stratification information needed for stratifying the
-response. The formula without the strata term is used for generating the
-model matrix for glmnet.</p>
-<p>The wrapper retains the original formula and the pre-processing elements
-including the training data to allow for predictions from the fitted model.</p>
+    <p>A matrix.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
