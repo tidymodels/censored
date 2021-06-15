@@ -4,23 +4,21 @@
 \alias{survival_prob_coxnet}
 \title{A wrapper for survival probabilities with coxnet models}
 \usage{
-survival_prob_coxnet(x, new_data, times, training_data, output = "surv", ...)
+survival_prob_coxnet(object, new_data, times, output = "surv", ...)
 }
 \arguments{
-\item{x}{A model from \code{glmnet()}.}
+\item{object}{A fitted \verb{_coxnet} object.}
 
-\item{new_data}{Data for prediction}
+\item{new_data}{Data for prediction.}
 
 \item{times}{A vector of integers for prediction times.}
 
-\item{training_data}{A list of \code{x} and \code{y} containing the training data.}
-
 \item{output}{One of "surv" or "haz".}
 
-\item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}}
+\item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }
 \value{
-A nested tibble
+A nested tibble.
 }
 \description{
 A wrapper for survival probabilities with coxnet models

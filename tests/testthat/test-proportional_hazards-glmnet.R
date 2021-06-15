@@ -62,9 +62,9 @@ test_that("primary arguments", {
 
   expect_equal(translate(penalty)$method$fit$args,
                list(
-                 x = expr(missing_arg()),
-                 y = expr(missing_arg()),
-                 weights = expr(missing_arg())
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 family = expr(missing_arg())
                )
   )
 
@@ -80,9 +80,9 @@ test_that("primary arguments", {
 
   expect_equal(translate(mixture)$method$fit$args,
                list(
-                 x = expr(missing_arg()),
-                 y = expr(missing_arg()),
-                 weights = expr(missing_arg()),
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 family = expr(missing_arg()),
                  alpha = new_empty_quosure(0.34)
                )
   )
@@ -93,9 +93,9 @@ test_that("primary arguments", {
 
   expect_equal(translate(mixture_v)$method$fit$args,
                list(
-                 x = expr(missing_arg()),
-                 y = expr(missing_arg()),
-                 weights = expr(missing_arg()),
+                 formula = expr(missing_arg()),
+                 data = expr(missing_arg()),
+                 family = expr(missing_arg()),
                  alpha = new_empty_quosure(varying())
                )
   )
@@ -163,4 +163,58 @@ test_that("survival probabilities - non-stratified model", {
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
 
+})
+
+
+test_that("survival probabilities - stratified model", {
+
+  cox_spec <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  set.seed(14)
+  expect_error(
+    f_fit <- fit(cox_spec,
+                 Surv(stop, event) ~ rx + size + number + strata(enum),
+                 data = bladder),
+    NA
+  )
+
+  pred_2 <- predict(f_fit, new_data = bladder[1:2, ], type = "survival",
+                    time = c(5, 10), penalty = 0.1)
+
+  expect_s3_class(pred_2, "tbl_df")
+  expect_equal(names(pred_2), ".pred")
+  expect_equal(nrow(pred_2), 2)
+  expect_true(
+    all(purrr::map_lgl(pred_2$.pred, ~ all(dim(.x) == c(2, 2))))
+  )
+  expect_true(
+    all(purrr::map_lgl(pred_2$.pred,
+                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+  )
+
+})
+
+# helper functions --------------------------------------------------------
+
+test_that("formula modifications", {
+  # base case
+  expect_equal(
+    drop_strata(expr(x + strata(s))),
+    expr(x)
+  )
+
+  expect_equal(
+    drop_strata(expr(x + x + x + strata(s))),
+    expr(x + x + x)
+  )
+  expect_equal(
+    drop_strata(expr(x * (y + strata(s)) + z)),
+    expr(x * (y + strata(s)) + z)
+  )
+
+  expect_error(
+    check_strata_remaining(expr(x * (y + strata(s)) + z))
+  )
 })

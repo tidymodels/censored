@@ -33,7 +33,8 @@ Imports:
     flexsurv,
     methods,
     prettyunits,
-    generics
+    generics,
+    stats
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Remotes: 
