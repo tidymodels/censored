@@ -13,7 +13,6 @@ make_proportional_hazards_survival <- function() {
 
   parsnip::set_model_engine("proportional_hazards", mode = "censored regression", eng = "survival")
   parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "survival")
-  parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "riskRegression")
   parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "censored")
 
   parsnip::set_fit(
