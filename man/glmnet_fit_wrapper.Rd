@@ -28,6 +28,18 @@ and its often faster to fit a whole path than compute a single fit.}
 \item{...}{additional parameters passed to glmnet::glmnet.}
 }
 \description{
-Not to be used directly by users
+Not to be used directly by users.
+}
+\details{
+This wrapper translates from formula interface to glmnet's matrix due to how
+stratification can be specified. glmnet requires that the \emph{response} is
+stratified via \code{\link[glmnet:stratifySurv]{glmnet::stratifySurv()}}. censored allows specification via a
+\code{\link[survival:strata]{survival::strata()}} term on the right-hand side of the formula. The formula
+is used to generate the stratification information needed for stratifying the
+response. The formula without the strata term is used for generating the
+model matrix for glmnet.
+
+The wrapper retains the original formula and the pre-processing elements
+including the training data to allow for predictions from the fitted model.
 }
 \keyword{internal}

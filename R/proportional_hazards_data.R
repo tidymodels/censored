@@ -193,7 +193,19 @@ make_proportional_hazards_glmnet <- function() {
 
 #' Wrapper for glmnet for censored
 #'
-#' Not to be used directly by users
+#' Not to be used directly by users.
+#'
+#' @details
+#' This wrapper translates from formula interface to glmnet's matrix due to how
+#' stratification can be specified. glmnet requires that the _response_ is
+#' stratified via [glmnet::stratifySurv()]. censored allows specification via a
+#' [survival::strata()] term on the right-hand side of the formula. The formula
+#' is used to generate the stratification information needed for stratifying the
+#' response. The formula without the strata term is used for generating the
+#' model matrix for glmnet.
+#'
+#' The wrapper retains the original formula and the pre-processing elements
+#' including the training data to allow for predictions from the fitted model.
 #'
 #' @param formula The model formula.
 #' @param data The data.
