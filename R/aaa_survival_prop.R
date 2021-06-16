@@ -12,6 +12,14 @@ survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .9
   output <- match.arg(output, c("surv", "conf", "haz"))
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
+
+  if (has_strata(x$terms)) {
+    new_strata <- compute_strata(x, new_data) %>%
+      dplyr::pull(.strata)
+  } else {
+    new_strata <- NULL
+  }
+
   res <-
     stack_survfit(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
@@ -19,7 +27,7 @@ survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .9
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x))
     ) %>%
     tidyr::unnest(cols = c(.pred)) %>%
-    interpolate_km_values(times) %>%
+    interpolate_km_values(times, new_strata) %>%
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
@@ -82,10 +90,30 @@ prob_template <- tibble::tibble(
   .pred_hazard_cumulative = 0
 )
 
+interpolate_km_values <- function(x, times, group = NULL){
+
+  if (is.null(group)) {
+    return(interpolate_km_values_ungrouped(x, times))
+  }
+
+  group_tbl <- tibble::tibble(
+    .row = seq_along(group),
+    group = group
+  )
+
+  ret <- dplyr::left_join(x, group_tbl, by = ".row") %>%
+    dplyr::group_nest(group, .key = ".pred") %>%
+    dplyr::mutate(
+      .pred = purrr::map(.pred, interpolate_km_values_ungrouped, times)
+    ) %>%
+    tidyr::unnest(cols = c(.pred)) %>%
+    dplyr::select(-group)
+}
+
 # We want to maintain the step-function aspect of the predictions so, rather
 # than use `approx()`, we cut the times and match the new times based on these
 # intervals.
-interpolate_km_values <- function(x, times) {
+interpolate_km_values_ungrouped <- function(x, times) {
   x <- km_with_cuts(x)
   pred_times <-
     tibble::tibble(.time = times) %>%
@@ -163,15 +191,15 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", ...) 
     ...
   )
 
-  res <-
-    stack_survfit(y, nrow(new_data)) %>%
+  res <- stack_survfit(y, nrow(new_data)) %>%
     dplyr::group_nest(.row, .key = ".pred") %>%
     mutate(
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x))
     ) %>%
     tidyr::unnest(cols = c(.pred)) %>%
-    interpolate_km_values(times) %>%
+    interpolate_km_values(times, new_strata) %>%
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
+
 }

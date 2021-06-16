@@ -22,7 +22,7 @@ utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred",
     ".cuts", ".id", ".pred_hazard_cumulative", ".tmp", ".pred_survival",
     ".pred_survival_lower", ".pred_survival_upper", "engine",
-    "predictor_indicators")
+    "predictor_indicators", ".strata")
 )
 
 # ------------------------------------------------------------------------------

@@ -180,17 +180,19 @@ test_that("survival probabilities - stratified model", {
     NA
   )
 
-  pred_2 <- predict(f_fit, new_data = bladder[1:2, ], type = "survival",
-                    time = c(5, 10), penalty = 0.1)
+  new_data_3 <- bladder[1:3, ]
+  f_pred <- predict(f_fit, new_data = new_data_3,
+                    type = "survival", time = c(10, 20))
 
-  expect_s3_class(pred_2, "tbl_df")
-  expect_equal(names(pred_2), ".pred")
-  expect_equal(nrow(pred_2), 2)
+  expect_s3_class(f_pred, "tbl_df")
+  expect_equal(names(f_pred), ".pred")
+  expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(
-    all(purrr::map_lgl(pred_2$.pred, ~ all(dim(.x) == c(2, 2))))
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ all(dim(.x) == c(2, 2))))
   )
   expect_true(
-    all(purrr::map_lgl(pred_2$.pred,
+    all(purrr::map_lgl(f_pred$.pred,
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
 
