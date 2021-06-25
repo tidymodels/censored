@@ -207,6 +207,42 @@ predict_survival._coxnet <- function(object, new_data, ...) {
 }
 
 #' @export
+multi_predict._coxnet <- function(object,
+                                  new_data,
+                                  type = NULL,
+                                  penalty = NULL,
+                                  ...) {
+    if (any(names(enquos(...)) == "newdata"))
+      rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+    dots <- list(...)
+
+    object$spec <- eval_args(object$spec)
+
+    if (is.null(penalty)) {
+      # See discussion in https://github.com/tidymodels/parsnip/issues/195
+      if (!is.null(object$spec$args$penalty)) {
+        penalty <- object$spec$args$penalty
+      } else {
+        penalty <- object$fit$lambda
+      }
+    }
+
+    if (type != "linear_pred"){
+      pred <- predict(object, new_data = new_data, type = type,
+                      #opts = dots,
+                      ...,
+                      penalty = penalty, multi = TRUE)
+    } else {
+      pred <- predict(object, new_data = new_data, type = "raw",
+                      opts = dots, penalty = penalty, multi = TRUE)
+      # TODO do post-processing
+    }
+
+    pred
+}
+
+#' @export
 print._coxnet <- function(x, ...) {
   cat("parsnip model object\n\n")
   cat("Fit time: ", prettyunits::pretty_sec(x$elapsed[["elapsed"]]), "\n")

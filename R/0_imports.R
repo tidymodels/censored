@@ -8,6 +8,7 @@
 #' @importFrom parsnip translate model_printer translate.default
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
+#' @importFrom parsnip multi_predict
 #' @importFrom withr with_options
 #' @importFrom stats predict approx quantile na.pass na.exclude
 #' @importFrom survival strata untangle.specials
