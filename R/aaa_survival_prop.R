@@ -25,16 +25,18 @@ survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .9
     dplyr::select(-.row)
 }
 
-keep_cols <- function(x, output) {
-  if (output == "surv") {
-    x <- dplyr::select(x, .time, .pred_survival, .row)
-  } else if (output == "conf") {
-    x <- dplyr::select(x, .time, .pred_survival_lower, .pred_survival_upper,
-                       .row)
+keep_cols <- function(x, output, keep_penalty = FALSE) {
+  if (keep_penalty) {
+    cols_to_keep <- c(".row", "penalty", ".time")
   } else {
-    x <- dplyr::select(x, .time, .pred_hazard_cumulative, .row)
+    cols_to_keep <- c(".row", ".time")
   }
-  x
+  output_cols <- switch(output,
+                        surv = ".pred_survival",
+                        conf = c("pred_survival_lower", ".pred_survival_upper"),
+                        haz = ".pred_hazard_cumulative")
+  cols_to_keep <- c(cols_to_keep, output_cols)
+  dplyr::select(x, cols_to_keep)
 }
 
 stack_survfit <- function(x, n) {
