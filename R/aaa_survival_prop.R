@@ -141,8 +141,10 @@ cph_survival_pre <- function(new_data, object) {
 #' @return A nested tibble.
 #' @keywords internal
 #' @export
-survival_prob_coxnet <- function(object, new_data, times, output = "surv", ...) {
+survival_prob_coxnet <- function(object, new_data, times, output = "surv", penalty = NULL, ...) {
+
   output <- match.arg(output, c("surv", "haz"))
+  multi <- length(penalty) > 1
 
   new_x <- parsnip::.convert_form_to_xy_new(
     object$preproc$coxnet,
@@ -159,21 +161,37 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", ...) 
     object$fit,
     newx = new_x,
     newstrata = new_strata,
+    s = penalty,
     x = object$training_data$x,
     y = object$training_data$y,
     na.action = na.exclude,
     ...
   )
 
+  if (multi) {
+    names(y) <- penalty
+    keep_penalty <- TRUE
+    stacked_survfit <-
+      purrr::map_dfr(y, stack_survfit, n = nrow(new_data), .id = "penalty") %>%
+      dplyr::mutate(penalty = as.numeric(penalty)) %>%
+      dplyr::group_nest(.row, penalty, .key = ".pred")
+  } else {
+    keep_penalty <- FALSE
+    stacked_survfit <-
+      stack_survfit(y, nrow(new_data)) %>%
+      dplyr::group_nest(.row, .key = ".pred")
+  }
   res <-
-    stack_survfit(y, nrow(new_data)) %>%
-    dplyr::group_nest(.row, .key = ".pred") %>%
+    stacked_survfit %>%
     mutate(
       .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x))
     ) %>%
     tidyr::unnest(cols = c(.pred)) %>%
-    interpolate_km_values(times) %>%
-    keep_cols(output) %>%
+    interpolate_km_values(times) %>% # , new_strata
+    keep_cols(output, keep_penalty) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
+
+  res
+
 }
