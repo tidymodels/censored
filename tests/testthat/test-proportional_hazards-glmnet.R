@@ -47,7 +47,23 @@ test_that("linear_pred predictions", {
   expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
-  # TODO tests for multi_predict()
+  # multi_predict
+  new_data_3 <- lung2[1:3, ]
+  pred_multi <- multi_predict(f_fit, new_data_3, type = "linear_pred",
+                              penalty = c(0.05, 0.1))
+  expect_s3_class(pred_multi, "tbl_df")
+  expect_equal(names(pred_multi), ".pred")
+  expect_equal(nrow(pred_multi), nrow(new_data_3))
+  expect_true(
+    all(purrr::map_lgl(pred_multi$.pred,
+                       ~ all(dim(.x) == c(2, 2))))
+  )
+  expect_true(
+    all(purrr::map_lgl(pred_multi$.pred,
+                       ~ all(names(.x) == c("penalty", ".pred_linear_pred"))))
+  )
+
+
 })
 
 # ------------------------------------------------------------------------------
