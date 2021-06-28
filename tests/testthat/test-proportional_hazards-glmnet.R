@@ -31,8 +31,14 @@ test_that("model object", {
 # ------------------------------------------------------------------------------
 
 test_that("linear_pred predictions", {
-  # formula method
+  lung2 <- lung[-14, ]
+  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
+  exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
+                      y = Surv(lung2$time, lung2$status),
+                      family = "cox")
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
+
+  # predict
   f_pred <- predict(f_fit, lung2, type = "linear_pred", penalty = 0.01)
   exp_f_pred <- unname(predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]), s = 0.01))
 
