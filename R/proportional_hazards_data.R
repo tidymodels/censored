@@ -185,6 +185,23 @@ make_proportional_hazards_glmnet <- function() {
         )
     )
   )
+
+  set_pred(
+    model = "proportional_hazards",
+    eng = "glmnet",
+    mode = "censored regression",
+    type = "raw",
+    value = list(
+      pre = coxnet_predict_pre,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(object = expr(object$fit),
+             newx = expr(new_data)
+        )
+    )
+  )
+
 }
 
 
