@@ -92,7 +92,10 @@ test_that("survival predictions - stratified", {
   new_data_3 <- bladder[1:3, ]
   f_pred <- predict(f_fit, new_data = new_data_3,
                     type = "survival", time = c(10, 20))
-  exp_f_pred <- pec::predictSurvProb(exp_f_fit, new_data_3, times = c(10, 20))
+  # reference value from pec::predictSurvProb()
+  exp_f_pred <- structure(c(0.635719137259774, 0.933929695867806, 0.967237940301564,
+                            0.534997251349036, 0.725922785669273, 0.904152770723571),
+                          .Dim = 3:2)
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
