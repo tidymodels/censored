@@ -86,10 +86,16 @@ test_that("survival predictions - stratified", {
   f_fit <- fit(cox_spec,
                Surv(stop, event) ~ rx + size + number + strata(enum),
                data = bladder)
+  exp_f_fit <- coxph(Surv(stop, event) ~ rx + size + number + strata(enum),
+                     data = bladder, x = TRUE)
 
   new_data_3 <- bladder[1:3, ]
   f_pred <- predict(f_fit, new_data = new_data_3,
                     type = "survival", time = c(10, 20))
+  # reference value from pec::predictSurvProb()
+  exp_f_pred <- structure(c(0.635719137259774, 0.933929695867806, 0.967237940301564,
+                            0.534997251349036, 0.725922785669273, 0.904152770723571),
+                          .Dim = 3:2)
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
@@ -101,6 +107,10 @@ test_that("survival predictions - stratified", {
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
+  )
+  expect_equal(
+    tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
+    as.numeric(t(exp_f_pred))
   )
 
   # prediction without strata info should fail

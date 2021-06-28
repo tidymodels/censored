@@ -131,7 +131,7 @@ km_with_cuts <- function(x, times = NULL) {
   }
   times <- c(-Inf, times, Inf)
   times <- unique(times)
-  x$.cuts <- cut(x$.time, times)
+  x$.cuts <- cut(x$.time, times, right = FALSE)
   x
 }
 
