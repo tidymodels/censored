@@ -8,7 +8,7 @@
 #' @importFrom parsnip translate model_printer translate.default
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
-#' @importFrom parsnip multi_predict
+#' @importFrom parsnip multi_predict predict_raw predict_raw.model_fit
 #' @importFrom withr with_options
 #' @importFrom stats predict approx quantile na.pass na.exclude
 #' @importFrom survival strata untangle.specials
@@ -21,7 +21,7 @@
 
 utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred",
-    ".cuts", ".id", ".tmp", "engine", "predictor_indicators")
+    ".cuts", ".id", ".tmp", "engine", "predictor_indicators", "group")
 )
 
 # ------------------------------------------------------------------------------

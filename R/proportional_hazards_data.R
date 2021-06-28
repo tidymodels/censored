@@ -186,7 +186,7 @@ make_proportional_hazards_glmnet <- function() {
     )
   )
 
-  set_pred(
+  parsnip::set_pred(
     model = "proportional_hazards",
     eng = "glmnet",
     mode = "censored regression",
