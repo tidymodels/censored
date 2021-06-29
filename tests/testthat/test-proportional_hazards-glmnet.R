@@ -240,8 +240,8 @@ test_that("survival probabilities - stratified model", {
   )
 
   new_data_3 <- bladder[1:3, ]
-  f_pred <- predict(f_fit, new_data = new_data_3, type = "survival",
-                    time = c(5, 10), penalty = 0.1)
+  f_pred <- predict(f_fit, new_data = new_data_3,
+                    type = "survival", time = c(10, 20), penalty = 0.1)
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
@@ -256,7 +256,7 @@ test_that("survival probabilities - stratified model", {
 
   exp_pred_multi <-
     predict(f_fit, new_data = new_data_3, type = "survival",
-            time = c(5, 10), penalty = 0.05) %>% ## change the time at the end
+            time = c(10, 20), penalty = 0.05) %>%
     tidyr::unnest(cols = .pred) %>%
     dplyr::mutate(penalty = 0.05,
                   .row = rep(1:3, each = 2)) %>%
@@ -269,7 +269,7 @@ test_that("survival probabilities - stratified model", {
     dplyr::select(penalty, .time, .pred_survival)
 
   pred_multi <- multi_predict(f_fit, new_data = new_data_3,
-                              type = "survival", time = c(5, 10), ## change the time at the end
+                              type = "survival", time = c(10, 20),
                               penalty = c(0.05, 0.1))
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")

@@ -82,7 +82,7 @@ cond_inference_surv_ctree <-
 
 approx_surv_fit <- function(x, .time = 0) {
   dat <- stack_survfit(x, n = 1)
-  interpolate_km_values(dat, .time)
+  interpolate_km_values_ungrouped(dat, .time)
 }
 
 #' @export
