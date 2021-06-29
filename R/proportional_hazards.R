@@ -180,6 +180,30 @@ check_glmnet_penalty <- function(x) {
 #       predict_survival.model_fit()
 #        survival_prob_coxnet()
 
+# glmnet call stack for censored regression using `multi_predict(type = "linear_pred")` when object has
+# classes "_coxnet" and "model_fit":
+#
+# 	multi_predict()
+#    multi_predict._coxnet(penalty = NULL)
+#      predict._coxnet(multi = TRUE)          <-- checks and sets penalty
+#       predict.model_fit()                   <-- checks for extra vars in ...
+#        predict_raw()
+#         predict_raw._coxnet()
+#          predict_raw.model_fit(opts = list(s = penalty))
+#           predict.coxnet()
+
+# glmnet call stack for censored regression using `multi_predict(type = "survival")` when object has
+# classes "_coxnet" and "model_fit":
+#
+# 	multi_predict()
+#    multi_predict._coxnet(penalty = NULL)
+#      predict._coxnet(multi = TRUE)          <-- checks and sets penalty
+#       predict.model_fit()                  <-- checks for extra vars in ...
+#        predict_survival()
+#         predict_survival._coxnet()
+#          predict_survival.model_fit()
+#           survival_prob_coxnet()
+
 #' @export
 predict._coxnet <-
   function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
