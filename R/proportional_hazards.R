@@ -262,31 +262,36 @@ multi_predict._coxnet <- function(object,
       }
     }
 
-    if (type != "linear_pred"){
+    if (type == "linear_pred"){
+      pred <- multi_predict_coxnet_linear_pred(object, new_data = new_data,
+                                               opts = dots, penalty = penalty)
+    } else {
       pred <- predict(object, new_data = new_data, type = type, ...,
                       penalty = penalty, multi = TRUE)
-    } else {
-      pred <- predict(object, new_data = new_data, type = "raw",
-                      opts = dots, penalty = penalty, multi = TRUE)
-
-      # post-processing into nested tibble
-      param_key <- tibble(group = colnames(pred), penalty = penalty)
-      pred <- pred %>%
-        as_tibble() %>%
-        dplyr::mutate(.row = seq_len(nrow(pred))) %>%
-        tidyr::pivot_longer(
-          - .row,
-          names_to = "group",
-          values_to = ".pred_linear_pred"
-        )
-      pred <- dplyr::full_join(param_key, pred, by = "group") %>%
-        dplyr::select(-group) %>%
-        dplyr::arrange(.row, penalty) %>%
-        tidyr::nest(.pred = c(-.row)) %>%
-        dplyr::select(-.row)
     }
 
     pred
+}
+
+multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
+  pred <- predict(object, new_data = new_data, type = "raw",
+                  opts = opts, penalty = penalty, multi = TRUE)
+
+  # post-processing into nested tibble
+  param_key <- tibble(group = colnames(pred), penalty = penalty)
+  pred <- pred %>%
+    as_tibble() %>%
+    dplyr::mutate(.row = seq_len(nrow(pred))) %>%
+    tidyr::pivot_longer(
+      - .row,
+      names_to = "group",
+      values_to = ".pred_linear_pred"
+    )
+  pred <- dplyr::inner_join(param_key, pred, by = "group") %>%
+    dplyr::select(-group) %>%
+    dplyr::arrange(.row, penalty) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
 }
 
 #' @export
