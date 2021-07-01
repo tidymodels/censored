@@ -227,7 +227,7 @@ predict_survival._coxnet <- function(object, new_data, ...) {
     rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
 
   object$spec <- eval_args(object$spec)
-  predict_survival.model_fit(object, new_data = new_data, ...)
+  NextMethod()
 }
 
 #' @export
@@ -237,7 +237,7 @@ predict_raw._coxnet <- function(object, new_data, opts = list(), ...)  {
 
   object$spec <- eval_args(object$spec)
   opts$s <- object$spec$args$penalty
-  predict_raw.model_fit(object, new_data = new_data, opts = opts, ...)
+  NextMethod()
 }
 
 #' @export

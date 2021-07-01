@@ -4,11 +4,11 @@
 #' @importFrom tibble is_tibble as_tibble tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
 #' @importFrom parsnip set_encoding set_model_arg eval_args
-#' @importFrom parsnip predict.model_fit predict_survival predict_survival.model_fit
+#' @importFrom parsnip predict.model_fit predict_survival
 #' @importFrom parsnip translate model_printer translate.default
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
-#' @importFrom parsnip multi_predict predict_raw predict_raw.model_fit
+#' @importFrom parsnip multi_predict predict_raw
 #' @importFrom withr with_options
 #' @importFrom stats predict approx quantile na.pass na.exclude
 #' @importFrom survival strata untangle.specials
