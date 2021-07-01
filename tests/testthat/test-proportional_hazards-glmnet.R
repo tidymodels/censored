@@ -156,6 +156,7 @@ test_that("survival probabilities - non-stratified model", {
   data(cancer, package = "survival")
   # remove row with missing value
   lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
 
   cox_spec <- proportional_hazards(penalty = 0.123) %>%
     set_mode("censored regression") %>%
@@ -167,13 +168,13 @@ test_that("survival probabilities - non-stratified model", {
     NA
   )
 
+  # predict
   expect_error(
     pred_1 <- predict(f_fit, new_data = lung2[1, ], type = "survival",
                       time = c(100, 200)),
     NA
   )
 
-  new_data_3 <- lung2[1:3, ]
   f_pred <- predict(f_fit, new_data = new_data_3, type = "survival",
                     time = c(100, 200), penalty = 0.1)
 
@@ -188,18 +189,19 @@ test_that("survival probabilities - non-stratified model", {
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
 
-  exp_pred_multi <-
+  # multi_predict
+  f_pred_unnested_01 <- f_pred %>%
+    tidyr::unnest(cols = .pred) %>%
+    dplyr::mutate(penalty = 0.1, .row = rep(1:3, each = 2))
+  f_pred_unnested_005 <-
     predict(f_fit, new_data = new_data_3, type = "survival",
             time = c(100, 200), penalty = 0.05) %>%
     tidyr::unnest(cols = .pred) %>%
     dplyr::mutate(penalty = 0.05,
-                  .row = rep(1:3, each = 2)) %>%
-    dplyr::bind_rows(
-      f_pred %>%
-        tidyr::unnest(cols = .pred) %>%
-        dplyr::mutate(penalty = 0.1, .row = rep(1:3, each = 2))
-    ) %>%
-    dplyr::arrange(.row, .time) %>%
+                  .row = rep(1:3, each = 2))
+  exp_pred_multi_unnested <-
+    dplyr::bind_rows(f_pred_unnested_005, f_pred_unnested_01) %>%
+    dplyr::arrange(.row, .time, penalty) %>%
     dplyr::select(penalty, .time, .pred_survival)
 
 
@@ -219,7 +221,7 @@ test_that("survival probabilities - non-stratified model", {
   )
   expect_equal(
     pred_multi %>% tidyr::unnest(cols = .pred),
-    exp_pred_multi
+    exp_pred_multi_unnested
   )
 
 })
@@ -238,8 +240,9 @@ test_that("survival probabilities - stratified model", {
                  data = bladder),
     NA
   )
-
   new_data_3 <- bladder[1:3, ]
+
+  # predict
   f_pred <- predict(f_fit, new_data = new_data_3,
                     type = "survival", time = c(10, 20), penalty = 0.1)
 
@@ -254,18 +257,19 @@ test_that("survival probabilities - stratified model", {
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
 
-  exp_pred_multi <-
+  # multi_predict
+  f_pred_unnested_01 <- f_pred %>%
+    tidyr::unnest(cols = .pred) %>%
+    dplyr::mutate(penalty = 0.1, .row = rep(1:3, each = 2))
+  f_pred_unnested_005 <-
     predict(f_fit, new_data = new_data_3, type = "survival",
             time = c(10, 20), penalty = 0.05) %>%
     tidyr::unnest(cols = .pred) %>%
     dplyr::mutate(penalty = 0.05,
-                  .row = rep(1:3, each = 2)) %>%
-    dplyr::bind_rows(
-      f_pred %>%
-        tidyr::unnest(cols = .pred) %>%
-        dplyr::mutate(penalty = 0.1, .row = rep(1:3, each = 2))
-      ) %>%
-    dplyr::arrange(.row, .time) %>%
+                  .row = rep(1:3, each = 2))
+  exp_pred_multi_unnested <-
+    dplyr::bind_rows(f_pred_unnested_005, f_pred_unnested_01) %>%
+    dplyr::arrange(.row, .time, penalty) %>%
     dplyr::select(penalty, .time, .pred_survival)
 
   pred_multi <- multi_predict(f_fit, new_data = new_data_3,
@@ -284,7 +288,7 @@ test_that("survival probabilities - stratified model", {
   )
   expect_equal(
     pred_multi %>% tidyr::unnest(cols = .pred),
-    exp_pred_multi
+    exp_pred_multi_unnested
   )
 
 })
