@@ -4,10 +4,11 @@
 #' @importFrom tibble is_tibble as_tibble tibble
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
 #' @importFrom parsnip set_encoding set_model_arg eval_args
-#' @importFrom parsnip predict.model_fit predict_survival predict_survival.model_fit
+#' @importFrom parsnip predict.model_fit predict_survival
 #' @importFrom parsnip translate model_printer translate.default
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
+#' @importFrom parsnip multi_predict predict_raw
 #' @importFrom withr with_options
 #' @importFrom stats predict approx quantile na.pass na.exclude
 #' @importFrom survival strata untangle.specials
@@ -19,10 +20,8 @@
 #' @importFrom generics fit
 
 utils::globalVariables(
-  c("time", ".time", "object", "new_data", ".label", ".pred",
-    ".cuts", ".id", ".pred_hazard_cumulative", ".tmp", ".pred_survival",
-    ".pred_survival_lower", ".pred_survival_upper", "engine",
-    "predictor_indicators", ".strata")
+  c("time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
+    ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group")
 )
 
 # ------------------------------------------------------------------------------

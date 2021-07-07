@@ -4,7 +4,14 @@
 \alias{survival_prob_coxnet}
 \title{A wrapper for survival probabilities with coxnet models}
 \usage{
-survival_prob_coxnet(object, new_data, times, output = "surv", ...)
+survival_prob_coxnet(
+  object,
+  new_data,
+  times,
+  output = "surv",
+  penalty = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted \verb{_coxnet} object.}

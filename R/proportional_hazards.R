@@ -180,6 +180,30 @@ check_glmnet_penalty <- function(x) {
 #       predict_survival.model_fit()
 #        survival_prob_coxnet()
 
+# glmnet call stack for censored regression using `multi_predict(type = "linear_pred")` when object has
+# classes "_coxnet" and "model_fit":
+#
+# 	multi_predict()
+#    multi_predict._coxnet(penalty = NULL)
+#      predict._coxnet(multi = TRUE)          <-- checks and sets penalty
+#       predict.model_fit()                   <-- checks for extra vars in ...
+#        predict_raw()
+#         predict_raw._coxnet()
+#          predict_raw.model_fit(opts = list(s = penalty))
+#           predict.coxnet()
+
+# glmnet call stack for censored regression using `multi_predict(type = "survival")` when object has
+# classes "_coxnet" and "model_fit":
+#
+# 	multi_predict()
+#    multi_predict._coxnet(penalty = NULL)
+#      predict._coxnet(multi = TRUE)          <-- checks and sets penalty
+#       predict.model_fit()                  <-- checks for extra vars in ...
+#        predict_survival()
+#         predict_survival._coxnet()
+#          predict_survival.model_fit()
+#           survival_prob_coxnet()
+
 #' @export
 predict._coxnet <-
   function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
@@ -203,7 +227,71 @@ predict_survival._coxnet <- function(object, new_data, ...) {
     rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
 
   object$spec <- eval_args(object$spec)
-  predict_survival.model_fit(object, new_data = new_data, ...)
+  NextMethod()
+}
+
+#' @export
+predict_raw._coxnet <- function(object, new_data, opts = list(), ...)  {
+  if (any(names(enquos(...)) == "newdata"))
+    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+  object$spec <- eval_args(object$spec)
+  opts$s <- object$spec$args$penalty
+  NextMethod()
+}
+
+#' @export
+multi_predict._coxnet <- function(object,
+                                  new_data,
+                                  type = NULL,
+                                  penalty = NULL,
+                                  ...) {
+    if (any(names(enquos(...)) == "newdata"))
+      rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+
+    dots <- list(...)
+
+    object$spec <- eval_args(object$spec)
+
+    if (is.null(penalty)) {
+      # See discussion in https://github.com/tidymodels/parsnip/issues/195
+      if (!is.null(object$spec$args$penalty)) {
+        penalty <- object$spec$args$penalty
+      } else {
+        penalty <- object$fit$lambda
+      }
+    }
+
+    if (type == "linear_pred"){
+      pred <- multi_predict_coxnet_linear_pred(object, new_data = new_data,
+                                               opts = dots, penalty = penalty)
+    } else {
+      pred <- predict(object, new_data = new_data, type = type, ...,
+                      penalty = penalty, multi = TRUE)
+    }
+
+    pred
+}
+
+multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
+  pred <- predict(object, new_data = new_data, type = "raw",
+                  opts = opts, penalty = penalty, multi = TRUE)
+
+  # post-processing into nested tibble
+  param_key <- tibble(group = colnames(pred), penalty = penalty)
+  pred <- pred %>%
+    as_tibble() %>%
+    dplyr::mutate(.row = seq_len(nrow(pred))) %>%
+    tidyr::pivot_longer(
+      - .row,
+      names_to = "group",
+      values_to = ".pred_linear_pred"
+    )
+  pred <- dplyr::inner_join(param_key, pred, by = "group") %>%
+    dplyr::select(-group) %>%
+    dplyr::arrange(.row, penalty) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
 }
 
 #' @export

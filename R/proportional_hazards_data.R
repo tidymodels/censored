@@ -154,13 +154,13 @@ make_proportional_hazards_glmnet <- function() {
     mode = "censored regression",
     type = "linear_pred",
     value = list(
-      pre = NULL,
+      pre = coxnet_predict_pre,
       post = organize_glmnet_pred,
-      func = c(fun = "linear_pred_coxnet"),
+      func = c(fun = "predict"),
       args =
         list(
-          object = expr(object),
-          new_data = expr(new_data),
+          object = expr(object$fit),
+          newx = expr(new_data),
           type = "link",
           s = expr(object$spec$args$penalty)
         )
@@ -181,10 +181,27 @@ make_proportional_hazards_glmnet <- function() {
           object = expr(object),
           new_data = expr(new_data),
           times = expr(time),
-          s = expr(object$spec$args$penalty)
+          penalty = expr(object$spec$args$penalty)
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "proportional_hazards",
+    eng = "glmnet",
+    mode = "censored regression",
+    type = "raw",
+    value = list(
+      pre = coxnet_predict_pre,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(object = expr(object$fit),
+             newx = expr(new_data)
+        )
+    )
+  )
+
 }
 
 
@@ -349,18 +366,9 @@ check_dots_coxnet <- function(x) {
   invisible(NULL)
 }
 
-#' A wrapper for predict() with coxnet models
-#' @param object A fitted `_coxnet` object.
-#' @param new_data Data for prediction.
-#' @param ... Options to pass to [glmnet::predict.coxnet()].
-#' @return A matrix.
-#' @keywords internal
-#' @export
-linear_pred_coxnet <- function(object, new_data, ...) {
-  new_x <- parsnip::.convert_form_to_xy_new(
+coxnet_predict_pre <- function(new_data, object) {
+  parsnip::.convert_form_to_xy_new(
     object$preproc$coxnet,
     new_data,
     composition = "matrix")$x
-
-  predict(object$fit, newx = new_x, ...)
 }
