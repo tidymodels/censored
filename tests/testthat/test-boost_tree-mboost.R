@@ -11,7 +11,9 @@ context("Boosted Tree - mboost")
 
 lung2 <- lung[-14, ]
 
-cox_spec <- boost_tree() %>% set_mode("censored regression") %>% set_engine("mboost")
+cox_spec <- boost_tree() %>%
+  set_engine("mboost") %>%
+  set_mode("censored regression")
 
 exp_f_fit <- blackboost(Surv(time, status) ~ age + ph.ecog,
                         data = lung2,
@@ -81,8 +83,8 @@ test_that("primary arguments", {
 
   # mtry ------------------------------------------------------
   mtry <- boost_tree(mtry = 5) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(mtry)$method$fit$args,
                list(
@@ -94,8 +96,8 @@ test_that("primary arguments", {
   )
 
   mtry_v <- boost_tree(mtry = varying()) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(mtry_v)$method$fit$args,
                list(
@@ -108,8 +110,8 @@ test_that("primary arguments", {
 
   # trees -----------------------------------------------------------
   trees <- boost_tree(trees = 1000) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(trees)$method$fit$args,
                list(
@@ -121,8 +123,8 @@ test_that("primary arguments", {
   )
 
   trees_v <- boost_tree(trees = varying()) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(trees_v)$method$fit$args,
                list(
@@ -135,8 +137,8 @@ test_that("primary arguments", {
 
   # tree_depth ------------------------------------------------------
   tree_depth <- boost_tree(tree_depth = 3) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(tree_depth)$method$fit$args,
                list(
@@ -148,8 +150,8 @@ test_that("primary arguments", {
   )
 
   tree_depth_v <- boost_tree(tree_depth = varying()) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(tree_depth_v)$method$fit$args,
                list(
@@ -162,8 +164,8 @@ test_that("primary arguments", {
 
   # min_n ------------------------------------------------------
   min_n <- boost_tree(min_n = 10) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(min_n)$method$fit$args,
                list(
@@ -175,8 +177,8 @@ test_that("primary arguments", {
   )
 
   min_n_v <- boost_tree(min_n = varying()) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(min_n_v)$method$fit$args,
                list(
@@ -189,8 +191,8 @@ test_that("primary arguments", {
 
   # loss_reduction ------------------------------------------------------
   loss_reduction <- boost_tree(loss_reduction = 0.2) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(loss_reduction)$method$fit$args,
                list(
@@ -202,8 +204,8 @@ test_that("primary arguments", {
   )
 
   loss_reduction_v <- boost_tree(loss_reduction = varying()) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(translate(loss_reduction_v)$method$fit$args,
                list(
@@ -220,39 +222,39 @@ test_that("primary arguments", {
 
 test_that("updating", {
   expr1 <- boost_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
   expr1_exp <- boost_tree(tree_depth = 10) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expr2 <- boost_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
   expr2_exp <- boost_tree(trees = 10) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expr3 <- boost_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
   expr3_exp <- boost_tree(mtry = 10) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expr4 <- boost_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
   expr4_exp <- boost_tree(min_n = 10) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expr5 <- boost_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
   expr5_exp <- boost_tree(loss_reduction = 10) %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost")
+    set_engine("mboost") %>%
+    set_mode("censored regression")
 
   expect_equal(update(expr1, tree_depth = 10), expr1_exp)
   expect_equal(update(expr2, trees = 10), expr2_exp)

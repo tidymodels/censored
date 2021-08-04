@@ -7,7 +7,9 @@ context("Random forest - party")
 
 # ------------------------------------------------------------------------------
 
-mod_spec <- rand_forest() %>% set_mode("censored regression") %>% set_engine("party")
+mod_spec <- rand_forest() %>%
+  set_engine("party") %>%
+  set_mode("censored regression")
 
 # ------------------------------------------------------------------------------
 
