@@ -31,7 +31,7 @@ test_that("time predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "time")
-  exp_f_pred <- unname(summary(survfit(exp_f_fit, lung, na.action = na.pass))$table[, "*rmean"])
+  exp_f_pred <- unname(summary(survfit(exp_f_fit, lung, na.action = na.pass))$table[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
