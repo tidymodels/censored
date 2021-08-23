@@ -47,7 +47,7 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
   dplyr::select(x, cols_to_keep)
 }
 
-stack_survfit <- function(x, n) {
+stack_survfit <- function(x, n, penalty = NULL) {
   # glmnet does not calculate confidence intervals
   if (is.null(x$lower)) x$lower <- NA_real_
   if (is.null(x$upper)) x$upper <- NA_real_
@@ -57,6 +57,7 @@ stack_survfit <- function(x, n) {
   if (has_strata) {
     # All components are vectors of length {t_i x n}
     res <- tibble::tibble(
+      penalty = penalty,
       .time = x$time,
       .pred_survival = x$surv,
       .pred_survival_lower = x$lower,
@@ -72,6 +73,7 @@ stack_survfit <- function(x, n) {
       times <- 1
     }
     res <- tibble::tibble(
+      penalty = penalty,
       .time = rep(x$time, n),
       .pred_survival = as.vector(x$surv),
       .pred_survival_lower = as.vector(x$lower),
@@ -197,11 +199,9 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
   )
 
   if (multi) {
-    names(y) <- penalty
     keep_penalty <- TRUE
     stacked_survfit <-
-      purrr::map_dfr(y, stack_survfit, n = nrow(new_data), .id = "penalty") %>%
-      dplyr::mutate(penalty = as.numeric(penalty)) %>%
+      purrr::map2_dfr(y, penalty, ~stack_survfit(.x, n = nrow(new_data), penalty =.y)) %>%
       dplyr::group_nest(.row, penalty, .key = ".pred")
   } else {
     keep_penalty <- FALSE

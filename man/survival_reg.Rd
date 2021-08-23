@@ -36,7 +36,7 @@ following \emph{engines}:
 \section{Engine Details}{
 Engines may have pre-set default arguments when executing the model fit
 call. For this type of model, the template of the fit calls are below.
-\subsection{flexsurv}{\if{html}{\out{<div class="r">}}\preformatted{survival_reg() \%>\% 
+\subsection{flexsurv}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg() \%>\% 
   set_engine("flexsurv") \%>\% 
   set_mode("censored regression") \%>\% 
   translate()
@@ -50,7 +50,7 @@ call. For this type of model, the template of the fit calls are below.
 }
 }
 
-\subsection{survival}{\if{html}{\out{<div class="r">}}\preformatted{survival_reg() \%>\% 
+\subsection{survival}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg() \%>\% 
   set_engine("survival") \%>\% 
   set_mode("censored regression") \%>\% 
   translate()
