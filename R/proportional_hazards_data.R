@@ -47,7 +47,7 @@ make_proportional_hazards_survival <- function() {
     value = list(
       pre = cph_survival_pre,
       post = function(x, object) {
-        unname(summary(x)$table[, "*rmean"])
+        unname(summary(x)$table[, "rmean"])
       },
       func = c(fun = "survfit"),
       args =
