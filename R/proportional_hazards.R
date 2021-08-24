@@ -93,78 +93,13 @@ translate.proportional_hazards <- function(x, engine = x$engine, ...) {
     # Since the `fit` information is gone for the penalty, we need to have an
     # evaluated value for the parameter.
     x$args$penalty <- rlang::eval_tidy(x$args$penalty)
-    check_glmnet_penalty(x)
+    parsnip::.check_glmnet_penalty_fit(x)
   }
 
   x
 }
 
 
-# ------------------------------------------------------------------------------
-
-# copy of the unexported parsnip:::organize_glmnet_pred():
-organize_glmnet_pred <- function(x, object) {
-  if (ncol(x) == 1) {
-    res <- x[, 1]
-    res <- unname(res)
-  } else {
-    n <- nrow(x)
-    res <- utils::stack(as.data.frame(x))
-    if (!is.null(object$spec$args$penalty))
-      res$lambda <- rep(object$spec$args$penalty, each = n) else
-        res$lambda <- rep(object$fit$lambda, each = n)
-    res <- res[, colnames(res) %in% c("values", "lambda")]
-  }
-  res
-}
-
-# ------------------------------------------------------------------------------
-
-# copy of the unexported parsnip:::check_penalty():
-
-# For `predict` methods that use `glmnet`, we have specific methods.
-# Only one value of the penalty should be allowed when called by `predict()`:
-
-check_penalty <- function(penalty = NULL, object, multi = FALSE) {
-
-  if (is.null(penalty)) {
-    penalty <- object$fit$lambda
-  }
-
-  # when using `predict()`, allow for a single lambda
-  if (!multi) {
-    if (length(penalty) != 1)
-      rlang::abort(
-        glue::glue(
-          "`penalty` should be a single numeric value. `multi_predict()` ",
-          "can be used to get multiple predictions per row of data.",
-        )
-      )
-  }
-
-  if (length(object$fit$lambda) == 1 && penalty != object$fit$lambda)
-    rlang::abort(
-      glue::glue(
-        "The glmnet model was fit with a single penalty value of ",
-        "{object$fit$lambda}. Predicting with a value of {penalty} ",
-        "will give incorrect results from `glmnet()`."
-      )
-    )
-
-  penalty
-}
-
-# copy of the unexported parsnip:::check_glmnet_penalty():
-check_glmnet_penalty <- function(x) {
-  if (length(x$args$penalty) != 1) {
-    rlang::abort(c(
-      "For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).",
-      glue::glue("There are {length(x$args$penalty)} values for `penalty`."),
-      "To try multiple values for total regularization, use the tune package.",
-      "To predict multiple penalties, use `multi_predict()`"
-    ))
-  }
-}
 # ------------------------------------------------------------------------------
 
 # notes adapted from parsnip:
@@ -215,7 +150,7 @@ predict._coxnet <-
       penalty <- object$spec$args$penalty
     }
 
-    object$spec$args$penalty <- check_penalty(penalty, object, multi)
+    object$spec$args$penalty <- parsnip::.check_glmnet_penalty_predict(penalty, object, multi)
 
     object$spec <- eval_args(object$spec)
     predict.model_fit(object, new_data = new_data, type = type, opts = opts, ...)
