@@ -40,7 +40,7 @@ test_that("linear_pred predictions", {
 
   # predict
   f_pred <- predict(f_fit, lung2, type = "linear_pred", penalty = 0.01)
-  exp_f_pred <- unname(predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]), s = 0.01))
+  exp_f_pred <- -unname(predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]), s = 0.01))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
@@ -61,7 +61,8 @@ test_that("linear_pred predictions", {
       f_pred_unnested_01
     ) %>%
     dplyr::arrange(.row, penalty) %>%
-    dplyr::select(penalty, .pred_linear_pred)
+    dplyr::select(penalty, .pred_linear_pred) %>%
+    dplyr::mutate(.pred_linear_pred = -.pred_linear_pred)
 
   pred_multi <- multi_predict(f_fit, new_data_3, type = "linear_pred",
                               penalty = c(0.05, 0.1))
