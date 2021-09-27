@@ -94,7 +94,8 @@ make_proportional_hazards_survival <- function() {
         list(
           object = quote(object$fit),
           newdata = quote(new_data),
-          na.action = quote(stats::na.exclude)
+          na.action = quote(stats::na.exclude),
+          reference = "zero"
         )
     )
   )
