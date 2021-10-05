@@ -155,7 +155,11 @@ make_proportional_hazards_glmnet <- function() {
     type = "linear_pred",
     value = list(
       pre = coxnet_predict_pre,
-      post = parsnip::.organize_glmnet_pred,
+      post = function(x, object) {
+        res <- parsnip::.organize_glmnet_pred(x, object)
+        # flip sign for consistency with other models
+        -res
+        },
       func = c(fun = "predict"),
       args =
         list(

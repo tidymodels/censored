@@ -69,7 +69,7 @@ test_that("linear_pred predictions", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
   f_pred <- predict(f_fit, lung2, type = "linear_pred")
-  exp_f_pred <- unname(predict(exp_f_fit, newdata = lung2))
+  exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung2))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
