@@ -1,6 +1,5 @@
 library(testthat)
 library(survival)
-library(baguette)
 library(ipred)
 library(pec)
 library(purrr)
@@ -11,7 +10,7 @@ context("Bagged Tree - ipred")
 
 # ------------------------------------------------------------------------------
 
-mod_spec <- bag_tree() %>% set_mode("censored regression") %>% set_engine("ipred")
+mod_spec <- bag_tree(engine = "ipred") %>% set_mode("censored regression")
 
 set.seed(1234)
 exp_f_fit <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
