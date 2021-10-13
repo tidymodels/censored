@@ -15,7 +15,7 @@
 #' @importFrom dials new_quant_param
 #' @importFrom tidyr pivot_longer gather
 #' @importFrom dplyr group_nest %>% arrange
-#' @importFrom baguette bag_tree
+#' @importFrom parsnip bag_tree
 #' @importFrom utils getFromNamespace
 #' @importFrom generics fit
 

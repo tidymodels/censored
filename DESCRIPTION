@@ -10,7 +10,7 @@ Authors@R:
 Description: Bindings for additional models for use with the 'parsnip' package. 
 License: MIT + file LICENSE
 Depends:
-    parsnip (>= 0.1.5.9003),
+    parsnip (>= 0.1.7.9000),
     R (>= 2.10)
 Encoding: UTF-8
 LazyData: true
@@ -27,7 +27,6 @@ Imports:
     survival,
     pec,
     glue,
-    baguette,
     mboost,
     ipred,
     flexsurv,
