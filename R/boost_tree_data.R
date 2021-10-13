@@ -113,10 +113,7 @@ make_boost_tree_mboost <- function() {
     type = "linear_pred",
     value = list(
       pre = NULL,
-      post = function(x, object) {
-        # flip sign for consistency with other models
-        -as.numeric(x)
-        },
+      post = as.numeric,
       func = c(fun = "predict"),
       args =
         list(

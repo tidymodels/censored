@@ -85,9 +85,7 @@ make_proportional_hazards_survival <- function() {
     value = list(
       pre = NULL,
       post = function(x, object) {
-        # For consistency with other models, we want the lp to increase with
-        # time. For this, we change the sign
-        -unname(x)
+        unname(x)
       },
       func = c(fun = "predict"),
       args =
@@ -156,11 +154,7 @@ make_proportional_hazards_glmnet <- function() {
     type = "linear_pred",
     value = list(
       pre = coxnet_predict_pre,
-      post = function(x, object) {
-        res <- parsnip::.organize_glmnet_pred(x, object)
-        # flip sign for consistency with other models
-        -res
-        },
+      post = parsnip::.organize_glmnet_pred,
       func = c(fun = "predict"),
       args =
         list(
