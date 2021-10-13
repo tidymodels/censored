@@ -7,41 +7,42 @@ Authors@R:
            role = c("aut", "cre"),
            email = "emilhhvitfeldt@gmail.com",
            comment = c(ORCID = "0000-0002-0679-1945"))
-Description: Bindings for additional models for use with the 'parsnip' package. 
+Description: Bindings for additional models for use with the 'parsnip'
+    package.
 License: MIT + file LICENSE
+URL: https://github.com/tidymodels/censored
+BugReports: https://github.com/tidymodels/censored/issues
 Depends:
     parsnip (>= 0.1.7.9000),
     R (>= 2.10)
+Imports: 
+    dials,
+    dplyr (>= 0.8.0.1),
+    flexsurv,
+    generics,
+    glue,
+    ipred,
+    mboost,
+    methods,
+    pec,
+    prettyunits,
+    purrr,
+    rlang,
+    stats,
+    survival,
+    tibble (>= 3.1.3),
+    tidyr (>= 1.0.0),
+    withr
+Suggests: 
+    covr,
+    glmnet,
+    party,
+    riskRegression,
+    rpart,
+    testthat
+Remotes: 
+    tidymodels/parsnip
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Imports: 
-    dials,
-    dplyr (>= 0.8.0.1),
-    purrr,
-    rlang,
-    tibble (>= 3.1.3),
-    tidyr (>= 1.0.0),
-    withr,
-    survival,
-    pec,
-    glue,
-    mboost,
-    ipred,
-    flexsurv,
-    methods,
-    prettyunits,
-    generics,
-    stats
-URL: https://github.com/tidymodels/censored
-BugReports: https://github.com/tidymodels/censored/issues
-Remotes: 
-    tidymodels/parsnip
-Suggests: 
-    testthat,
-    glmnet,
-    rpart,
-    riskRegression,
-    party,
-    covr
