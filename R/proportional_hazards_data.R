@@ -48,7 +48,9 @@ make_proportional_hazards_survival <- function() {
       pre = cph_survival_pre,
       post = function(x, object) {
         tabs <- summary(x)$table
-        unname(tabs[, grepl("rmean", colnames(tabs))])
+        # sometimes the column name is "*rmean"
+        colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+        unname(tabs[, "rmean"])
       },
       func = c(fun = "survfit"),
       args =
