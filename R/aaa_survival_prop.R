@@ -181,8 +181,8 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     new_data,
     composition = "matrix")$x
 
-  if (has_strata(object$formula)) {
-    new_strata <- get_strata(object$formula, data = new_data)
+  if (has_strata(object$formula, object$training_data)) {
+    new_strata <- get_strata_glmnet(object$formula, data = new_data)
   } else {
     new_strata <- NULL
   }
