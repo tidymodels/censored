@@ -333,3 +333,26 @@ test_that("formula modifications", {
     check_strata_remaining(expr(x * (y + strata(s)) + z))
   )
 })
+
+
+# ------------------------------------------------------------------------------
+
+test_that("predictions with strata and dot in formula", {
+  cox_spec <- proportional_hazards(penalty = 0.001) %>% set_engine("glmnet")
+  lung2 <- lung[, c("time", "status", "age", "sex")]
+  lung2$sex <- factor(lung2$sex)
+  # formula method
+  expect_warning(
+    expect_error(
+      f_fit <- fit(cox_spec, Surv(time, status) ~ . + strata(sex), data = lung2),
+      NA
+    )
+  )
+  expect_error({
+    predict(f_fit, lung2, type = "linear_pred")
+    predict(f_fit, lung2, type = "survival", time = c(100, 300))
+  },
+  NA)
+
+})
+
