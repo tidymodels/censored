@@ -208,9 +208,9 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
       stack_survfit(y, nrow(new_data))
   }
   res <- stacked_survfit %>%
-    distinct(.row, penalty) %>%
-    bind_cols(prob_template) %>%
-    bind_rows(stacked_survfit) %>%
+    dplyr::distinct(.row, penalty) %>%
+    dplyr::bind_cols(prob_template) %>%
+    dplyr::bind_rows(stacked_survfit) %>%
     interpolate_km_values(times, new_strata) %>%
     keep_cols(output, keep_penalty) %>%
     tidyr::nest(.pred = c(-.row)) %>%
