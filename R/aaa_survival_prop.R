@@ -20,13 +20,11 @@ survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .9
     new_strata <- NULL
   }
 
-  res <-
-    stack_survfit(y, nrow(new_data)) %>%
-    dplyr::group_nest(.row, .key = ".pred") %>%
-    mutate(
-      .pred = purrr::map(.pred, ~ dplyr::bind_rows(prob_template, .x))
-    ) %>%
-    tidyr::unnest(cols = c(.pred)) %>%
+  stacked_survfit <- stack_survfit(y, nrow(new_data))
+  res <- stacked_survfit %>%
+    dplyr::distinct(.row) %>%
+    dplyr::bind_cols(prob_template) %>%
+    dplyr::bind_rows(stacked_survfit)%>%
     interpolate_km_values(times, new_strata) %>%
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
@@ -202,12 +200,14 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     keep_penalty <- TRUE
     stacked_survfit <-
       purrr::map2_dfr(y, penalty, ~stack_survfit(.x, n = nrow(new_data), penalty =.y))
+
     stacked_distinct <- stacked_survfit %>%
       dplyr::distinct(.row, penalty)
   } else {
     keep_penalty <- FALSE
     stacked_survfit <-
       stack_survfit(y, nrow(new_data))
+
     stacked_distinct <- stacked_survfit %>%
       dplyr::distinct(.row)
   }
