@@ -208,9 +208,9 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     keep_penalty <- FALSE
     stacked_survfit <-
       stack_survfit(y, nrow(new_data))
-
-    stacked_distinct <- stacked_survfit %>%
-      dplyr::distinct(.row)
+    starting_rows <- stacked_survfit %>%
+      dplyr::distinct(.row) %>%
+      dplyr::bind_cols(prob_template)
   }
   res <- stacked_distinct %>%
     dplyr::bind_cols(prob_template) %>%
