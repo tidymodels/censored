@@ -200,10 +200,11 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
   if (multi) {
     keep_penalty <- TRUE
     stacked_survfit <-
-      purrr::map2_dfr(y, penalty, ~stack_survfit(.x, n = nrow(new_data), penalty =.y))
-
-    stacked_distinct <- stacked_survfit %>%
-      dplyr::distinct(.row, penalty)
+      purrr::map2_dfr(y, penalty,
+                      ~stack_survfit(.x, n = nrow(new_data), penalty = .y))
+    starting_rows <- stacked_survfit %>%
+      dplyr::distinct(.row, penalty) %>%
+      dplyr::bind_cols(prob_template)
   } else {
     keep_penalty <- FALSE
     stacked_survfit <-
