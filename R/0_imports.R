@@ -5,7 +5,7 @@
 #' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
 #' @importFrom parsnip set_encoding set_model_arg eval_args
 #' @importFrom parsnip predict.model_fit predict_survival
-#' @importFrom parsnip translate model_printer translate.default
+#' @importFrom parsnip translate model_printer
 #' @importFrom parsnip update_engine_parameters check_final_param
 #' @importFrom parsnip update_main_parameters show_call
 #' @importFrom parsnip multi_predict predict_raw
