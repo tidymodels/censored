@@ -21,10 +21,11 @@ survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .9
   }
 
   stacked_survfit <- stack_survfit(y, nrow(new_data))
-  res <- stacked_survfit %>%
+  starting_rows <- stacked_survfit %>%
     dplyr::distinct(.row) %>%
-    dplyr::bind_cols(prob_template) %>%
-    dplyr::bind_rows(stacked_survfit)%>%
+    dplyr::bind_cols(prob_template)
+
+  res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
     interpolate_km_values(times, new_strata) %>%
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
