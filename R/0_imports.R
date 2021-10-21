@@ -1,21 +1,15 @@
-#' @importFrom dials new_quant_param
-#' @importFrom dplyr %>% arrange bind_rows group_nest mutate
+#' @importFrom dplyr %>%
 #' @importFrom generics fit
-#' @importFrom parsnip bag_tree check_final_param eval_args model_printer
-#' @importFrom parsnip multi_predict new_model_spec null_value
-#' @importFrom parsnip predict_raw predict_survival predict.model_fit
-#' @importFrom parsnip set_encoding set_model_arg set_new_model show_call
-#' @importFrom parsnip translate translate.default update_dot_check
-#' @importFrom parsnip update_engine_parameters update_main_parameters
-#' @importFrom purrr map map_dbl map_lgl
-#' @importFrom rlang abort call2 empty_env enquo enquos eval_tidy expr is_call
+#' @importFrom parsnip eval_args multi_predict predict_raw predict_survival
+#' @importFrom parsnip predict.model_fit translate translate.default
+#' @importFrom purrr map map_dbl
+#' @importFrom rlang abort call2 empty_env enquos eval_tidy expr is_call
 #' @importFrom rlang new_quosure
-#' @importFrom stats approx na.exclude na.pass predict quantile setNames
-#' @importFrom survival strata untangle.specials
-#' @importFrom tibble as_tibble is_tibble tibble
+#' @importFrom stats na.exclude na.pass predict quantile setNames
+#' @importFrom survival strata
+#' @importFrom tibble as_tibble tibble
 #' @importFrom tidyr gather pivot_longer
 #' @importFrom utils getFromNamespace
-#' @importFrom withr with_options
 NULL
 
 utils::globalVariables(
