@@ -1,7 +1,7 @@
 #' @importFrom dplyr %>%
 #' @importFrom generics fit
 #' @importFrom parsnip eval_args multi_predict predict_raw predict_survival
-#' @importFrom parsnip predict.model_fit translate translate.default
+#' @importFrom parsnip predict.model_fit translate
 #' @importFrom purrr map map_dbl
 #' @importFrom rlang abort call2 empty_env enquos eval_tidy expr is_call
 #' @importFrom rlang new_quosure
