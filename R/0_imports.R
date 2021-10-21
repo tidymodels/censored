@@ -1,23 +1,22 @@
-#' @importFrom rlang enquo expr enquos call2 eval_tidy new_quosure empty_env
-#' @importFrom rlang is_call expr abort
-#' @importFrom purrr map_lgl map_dbl map
-#' @importFrom tibble is_tibble as_tibble tibble
-#' @importFrom parsnip set_new_model new_model_spec update_dot_check null_value
-#' @importFrom parsnip set_encoding set_model_arg eval_args
-#' @importFrom parsnip predict.model_fit predict_survival
-#' @importFrom parsnip translate model_printer translate.default
-#' @importFrom parsnip update_engine_parameters check_final_param
-#' @importFrom parsnip update_main_parameters show_call
-#' @importFrom parsnip multi_predict predict_raw
-#' @importFrom withr with_options
-#' @importFrom stats predict approx quantile na.pass na.exclude
-#' @importFrom survival strata untangle.specials
 #' @importFrom dials new_quant_param
-#' @importFrom tidyr pivot_longer gather
-#' @importFrom dplyr group_nest %>% arrange
-#' @importFrom parsnip bag_tree
-#' @importFrom utils getFromNamespace
+#' @importFrom dplyr %>% arrange bind_rows group_nest mutate
 #' @importFrom generics fit
+#' @importFrom parsnip bag_tree check_final_param eval_args model_printer
+#' @importFrom parsnip multi_predict new_model_spec null_value
+#' @importFrom parsnip predict_raw predict_survival predict.model_fit
+#' @importFrom parsnip set_encoding set_model_arg set_new_model show_call
+#' @importFrom parsnip translate translate.default update_dot_check
+#' @importFrom parsnip update_engine_parameters update_main_parameters
+#' @importFrom purrr map map_dbl map_lgl
+#' @importFrom rlang abort call2 empty_env enquo enquos eval_tidy expr is_call
+#' @importFrom rlang new_quosure
+#' @importFrom stats approx na.exclude na.pass predict quantile setNames
+#' @importFrom survival strata untangle.specials
+#' @importFrom tibble as_tibble is_tibble tibble
+#' @importFrom tidyr gather pivot_longer
+#' @importFrom utils getFromNamespace
+#' @importFrom withr with_options
+NULL
 
 utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred", ".cuts",

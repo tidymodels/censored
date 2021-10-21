@@ -71,8 +71,6 @@ check_args.survival_reg <- function(object) {
 
 # ------------------------------------------------------------------------------
 
-#' @importFrom stats setNames
-#' @importFrom dplyr mutate
 survreg_quant <- function(results, object) {
   pctl <- object$spec$method$pred$quantile$args$p
   n <- nrow(results)
@@ -97,14 +95,12 @@ survreg_quant <- function(results, object) {
 
 # ------------------------------------------------------------------------------
 
-#' @importFrom dplyr bind_rows
 flexsurv_mean <- function(results, object) {
   results <- unclass(results)
   results <- dplyr::bind_rows(results)
   results$est
 }
 
-#' @importFrom stats setNames
 flexsurv_quant <- function(results, object) {
   results <- purrr::map(results, as_tibble)
   names(results) <- NULL
