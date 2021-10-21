@@ -16,7 +16,7 @@ make_boost_tree_mboost <- function() {
   parsnip::set_dependency("boost_tree", eng = "mboost", pkg = "mboost")
   parsnip::set_dependency("boost_tree", eng = "mboost", pkg = "censored")
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "boost_tree",
     eng = "mboost",
     parsnip = "mtry",
@@ -25,7 +25,7 @@ make_boost_tree_mboost <- function() {
     has_submodel = FALSE
   )
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "boost_tree",
     eng = "mboost",
     parsnip = "trees",
@@ -34,7 +34,7 @@ make_boost_tree_mboost <- function() {
     has_submodel = FALSE
   )
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "boost_tree",
     eng = "mboost",
     parsnip = "tree_depth",
@@ -43,7 +43,7 @@ make_boost_tree_mboost <- function() {
     has_submodel = FALSE
   )
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "boost_tree",
     eng = "mboost",
     parsnip = "min_n",
@@ -52,7 +52,7 @@ make_boost_tree_mboost <- function() {
     has_submodel = FALSE
   )
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "boost_tree",
     eng = "mboost",
     parsnip = "loss_reduction",

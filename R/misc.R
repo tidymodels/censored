@@ -8,7 +8,7 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
     .pred_survival = as.numeric(t(x))
   )
 
-  group_nest(res, .row, .key = ".pred")$.pred
+  dplyr::group_nest(res, .row, .key = ".pred")$.pred
 }
 
 # ------------------------------------------------------------------------------
