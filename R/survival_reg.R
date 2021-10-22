@@ -1,3 +1,6 @@
+# The model specification is in parsnip.
+
+# ------------------------------------------------------------------------------
 
 survreg_quant <- function(results, object) {
   pctl <- object$spec$method$pred$quantile$args$p
