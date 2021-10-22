@@ -1,0 +1,36 @@
+```{r, child = "setup.Rmd", include = FALSE}
+```
+
+`r descr_models("survival_reg", "survival")`
+
+## Tuning Parameters
+
+This model has no tuning parameters.
+
+## Translation from parsnip to the original package
+
+```{r flexsurv-creg}
+survival_reg() %>% 
+  set_engine("flexsurv") %>% 
+  set_mode("censored regression") %>% 
+  translate()
+```
+
+## Preprocessing requirements
+
+FIXME
+
+## Other details
+
+Note that `model = TRUE` is needed to produce quantile predictions when there 
+is a stratification variable and can be overridden in other cases.
+
+FIXME: smooth out the next bit
+
+Also, for the `flexsurv::flexsurvfit` engine, the typical `strata` function 
+cannot be used. To achieve the same effect, the extra parameter roles can be 
+used (as described above).
+
+## References
+
+- Jackson, C. 2016. `flexsurv`: A Platform for Parametric Survival  Modeling in R. _Journal of Statistical Software_, 70(8), 1 - 33.
