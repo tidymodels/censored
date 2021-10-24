@@ -1,0 +1,29 @@
+```{r, child = "setup.Rmd", include = FALSE}
+```
+
+`r descr_models("boost_tree", "mboost")`
+
+## Tuning Parameters
+
+This model has no tuning parameters.
+
+## Translation from parsnip to the original package (censored regression)
+
+```{r mboost-creg}
+boost_tree() %>% 
+  set_engine("mboost") %>% 
+  set_mode("censored regression") %>% 
+  translate()
+```
+
+[blackboost_train()] is a wrapper around [mboost::blackboost()] (and other functions) that makes it easier to run this model. 
+
+## Preprocessing requirements
+
+FIXME
+
+## References
+
+ - Buehlmann P, Hothorn T. 2007. Boosting algorithms: regularization, prediction and model fitting. _Statistical Science_, 22(4), 477–505.
+
+ - Kuhn, M, and K Johnson. 2013. _Applied Predictive Modeling_. Springer.
