@@ -1,0 +1,29 @@
+```{r, child = "setup.Rmd", include = FALSE}
+```
+
+`r descr_models("rand_forest", "party")`
+
+## Tuning Parameters
+
+This model has no tuning parameters.
+
+## Translation from parsnip to the original package (censored regression)
+
+```{r party-creg}
+rand_forest() %>% 
+  set_engine("party") %>% 
+  set_mode("censored regression") %>% 
+  translate()
+```
+
+[cond_inference_surv_cforest()] is a wrapper around [party::cforest()] (and other functions) that makes it easier to run this model. 
+
+## Preprocessing requirements
+
+FIXME
+
+## References
+
+ - Hothorn T, Buhlmann P, Dudoit S, Molinaro A, Van der Laan MJ. 2006. Survival Ensembles. _Biostatistics_, 7(3), 355–373.
+
+ - Kuhn, M, and K Johnson. 2013. _Applied Predictive Modeling_. Springer.
