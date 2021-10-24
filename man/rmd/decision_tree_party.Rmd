@@ -1,0 +1,29 @@
+```{r, child = "setup.Rmd", include = FALSE}
+```
+
+`r descr_models("decision_tree", "party")`
+
+## Tuning Parameters
+
+This model has no tuning parameters.
+
+## Translation from parsnip to the original package (censored regression)
+
+```{r party-creg}
+decision_tree() %>% 
+  set_engine("party") %>% 
+  set_mode("censored regression") %>% 
+  translate()
+```
+
+[cond_inference_surv_ctree()] is a wrapper around [party::ctree()] (and other functions) that makes it easier to run this model. 
+
+## Preprocessing requirements
+
+FIXME
+
+## References
+
+ - Hothorn T, Hornik K, Zeileis A. 2006. Unbiased Recursive Partitioning: A Conditional Inference Framework. _Journal of Computational and Graphical Statistics_, 15(3), 651–674.
+
+ - Kuhn, M, and K Johnson. 2013. _Applied Predictive Modeling_. Springer.
