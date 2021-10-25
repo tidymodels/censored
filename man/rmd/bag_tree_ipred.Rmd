@@ -17,7 +17,8 @@ bag_tree(engine = "ipred") %>%
 
 ## Preprocessing requirements
 
-FIXME
+```{r child = "template-tree-split-factors.Rmd"}
+```
 
 ## References
 

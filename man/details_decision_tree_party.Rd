@@ -33,7 +33,10 @@ that makes it easier to run this model.
 
 \subsection{Preprocessing requirements}{
 
-FIXME
+This engine does not require any special encoding of the predictors.
+Categorical predictors can be partitioned into groups of factor levels
+(e.g. \verb{\{a, c\}} vs \verb{\{b, d\}}) when splitting at a node. Dummy variables
+are not required for this model.
 }
 
 \subsection{References}{
