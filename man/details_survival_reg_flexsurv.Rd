@@ -27,21 +27,11 @@ This model has no tuning parameters.
 }
 }
 
-\subsection{Preprocessing requirements}{
-
-FIXME
-}
-
 \subsection{Other details}{
 
-Note that \code{model = TRUE} is needed to produce quantile predictions when
-there is a stratification variable and can be overridden in other cases.
-
-FIXME: smooth out the next bit
-
-Also, for the \code{flexsurv::flexsurvfit} engine, the typical \code{strata}
-function cannot be used. To achieve the same effect, the extra parameter
-roles can be used (as described above).
+For this engine, stratification cannot be specified via
+\code{\link[=strata]{strata()}}, please see the documentation of the
+\code{\link{flexsurv}} package for alternative specifications.
 }
 
 \subsection{References}{

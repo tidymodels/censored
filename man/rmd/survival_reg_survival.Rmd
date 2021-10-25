@@ -16,10 +16,6 @@ survival_reg() %>%
   translate()
 ```
 
-## Preprocessing requirements
-
-FIXME
-
 ## Other details
 
 Note that `model = TRUE` is needed to produce quantile predictions when there 

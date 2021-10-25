@@ -27,11 +27,6 @@ This model has no tuning parameters.
 }
 }
 
-\subsection{Preprocessing requirements}{
-
-FIXME
-}
-
 \subsection{Other details}{
 
 Note that \code{model = TRUE} is needed to produce quantile predictions when

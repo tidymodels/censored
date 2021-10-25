@@ -16,20 +16,11 @@ survival_reg() %>%
   translate()
 ```
 
-## Preprocessing requirements
-
-FIXME
-
 ## Other details
 
-Note that `model = TRUE` is needed to produce quantile predictions when there 
-is a stratification variable and can be overridden in other cases.
-
-FIXME: smooth out the next bit
-
-Also, for the `flexsurv::flexsurvfit` engine, the typical `strata` function 
-cannot be used. To achieve the same effect, the extra parameter roles can be 
-used (as described above).
+For this engine, stratification cannot be specified via [`strata()`], please 
+see the documentation of the [`flexsurv`] package for alternative 
+specifications.
 
 ## References
 
