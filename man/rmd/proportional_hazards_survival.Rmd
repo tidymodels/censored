@@ -16,10 +16,6 @@ proportional_hazards() %>%
   translate()
 ```
 
-## Preprocessing requirements
-
-FIXME
-
 ## References
 
 - Andersen P, Gill R. 1982. Cox's regression model for counting processes, a large sample study. _Annals of Statistics_ 10, 1100-1120.

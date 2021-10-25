@@ -27,11 +27,6 @@ This model has no tuning parameters.
 }
 }
 
-\subsection{Preprocessing requirements}{
-
-FIXME
-}
-
 \subsection{References}{
 \itemize{
 \item Andersen P, Gill R. 1982. Cox’s regression model for counting
