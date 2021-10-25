@@ -10,7 +10,37 @@
 For this engine, there is a single mode: censored regression
 \subsection{Tuning Parameters}{
 
-This model has no tuning parameters.
+This model has 3 tuning parameters:
+\itemize{
+\item \code{tree_depth}: Tree Depth (type: integer, default: see below)
+\item \code{min_n}: Minimal Node Size (type: integer, default: 20L)
+\item \code{mtry}: # Randomly Selected Predictors (type: integer, default: see
+below)
+}
+
+The \code{tree_depth} parameter defaults to \code{0} which means no restrictions
+are applied to tree depth. The \code{mtry} parameter is related to the number
+of predictors. The default is to use all predictors.
+}
+
+\subsection{Translation from parsnip to the original package (classification)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{decision_tree(tree_depth = integer(1), min_n = integer(1), cost_complexity = double(1)) \%>\% 
+  set_engine("rpart") \%>\% 
+  set_mode("classification") \%>\% 
+  translate()
+}\if{html}{\out{</div>}}\preformatted{## Decision Tree Model Specification (classification)
+## 
+## Main Arguments:
+##   cost_complexity = double(1)
+##   tree_depth = integer(1)
+##   min_n = integer(1)
+## 
+## Computational engine: rpart 
+## 
+## Model fit template:
+## rpart::rpart(formula = missing_arg(), data = missing_arg(), weights = missing_arg(), 
+##     cp = double(1), maxdepth = integer(1), minsplit = min_rows(0L, 
+##         data))
+}
 }
 
 \subsection{Translation from parsnip to the original package (censored regression)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{decision_tree() \%>\% 

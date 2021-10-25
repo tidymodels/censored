@@ -5,7 +5,34 @@
 
 ## Tuning Parameters
 
-This model has no tuning parameters.
+```{r party-param-info, echo = FALSE}
+defaults <- 
+  tibble::tibble(parsnip = c("trees", "min_n", "mtry"),
+                 default = c("500L", "20L", "5L"))
+
+param <-
+  rand_forest() %>% 
+  set_engine("party") %>% 
+  set_mode("censored regression") %>%  
+  tunable() %>% 
+  dplyr::select(-source, -component, -component_id, parsnip = name) %>% 
+  dplyr::mutate(
+    dials = purrr::map(call_info, get_dials),
+    label = purrr::map_chr(dials, ~ .x$label),
+    type = purrr::map_chr(dials, ~ .x$type)
+  ) %>% 
+  dplyr::full_join(defaults, by = "parsnip") %>% 
+  dplyr::mutate(
+    item = 
+      glue::glue("- `{parsnip}`: {label} (type: {type}, default: {default})\n\n")
+  )
+```
+
+This model has `r nrow(param)` tuning parameters:
+
+```{r party-param-list, echo = FALSE, results = "asis"}
+param$item
+```
 
 ## Translation from parsnip to the original package (censored regression)
 

@@ -5,7 +5,47 @@
 
 ## Tuning Parameters
 
-This model has no tuning parameters.
+```{r party-param-info, echo = FALSE}
+defaults <- 
+  tibble::tibble(parsnip = c("tree_depth", "min_n", "mtry"),
+                 default = c("see below", "20L", "see below"))
+
+param <-
+ decision_tree() %>% 
+  set_engine("party") %>% 
+  set_mode("censored regression") %>% 
+  tunable() %>% 
+  dplyr::select(-source, -component, -component_id, parsnip = name) %>% 
+  dplyr::mutate(
+    dials = purrr::map(call_info, get_dials),
+    label = purrr::map_chr(dials, ~ .x$label),
+    type = purrr::map_chr(dials, ~ .x$type)
+  ) %>% 
+  dplyr::full_join(defaults, by = "parsnip") %>% 
+  dplyr::mutate(
+    item = 
+      glue::glue("- `{parsnip}`: {label} (type: {type}, default: {default})\n\n")
+  )
+```
+
+This model has `r nrow(param)` tuning parameters:
+
+```{r party-param-list, echo = FALSE, results = "asis"}
+param$item
+```
+
+The `tree_depth` parameter defaults to `0` which means no restrictions are applied to tree depth.
+The `mtry` parameter is related to the number of predictors. The default is to use all predictors.
+
+## Translation from parsnip to the original package (classification)
+
+```{r rpart-cls}
+decision_tree(tree_depth = integer(1), min_n = integer(1), cost_complexity = double(1)) %>% 
+  set_engine("rpart") %>% 
+  set_mode("classification") %>% 
+  translate()
+```
+
 
 ## Translation from parsnip to the original package (censored regression)
 

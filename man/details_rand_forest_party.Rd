@@ -12,7 +12,12 @@ predictions from the individual trees and combines them.
 For this engine, there is a single mode: censored regression
 \subsection{Tuning Parameters}{
 
-This model has no tuning parameters.
+This model has 3 tuning parameters:
+\itemize{
+\item \code{trees}: # Trees (type: integer, default: 500L)
+\item \code{min_n}: Minimal Node Size (type: integer, default: 20L)
+\item \code{mtry}: # Randomly Selected Predictors (type: integer, default: 5L)
+}
 }
 
 \subsection{Translation from parsnip to the original package (censored regression)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{rand_forest() \%>\% 

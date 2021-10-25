@@ -12,7 +12,18 @@ ensemble are combined to produce a final prediction.
 For this engine, there is a single mode: censored regression
 \subsection{Tuning Parameters}{
 
-This model has no tuning parameters.
+This model has 5 tuning parameters:
+\itemize{
+\item \code{mtry}: # Randomly Selected Predictors (type: integer, default: see
+below)
+\item \code{trees}: # Trees (type: integer, default: 100L)
+\item \code{tree_depth}: Tree Depth (type: integer, default: 2L)
+\item \code{min_n}: Minimal Node Size (type: integer, default: 10L)
+\item \code{loss_reduction}: Minimum Loss Reduction (type: double, default: 0)
+}
+
+The \code{mtry} parameter is related to the number of predictors. The default
+is to use all predictors.
 }
 
 \subsection{Translation from parsnip to the original package (censored regression)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{boost_tree() \%>\% 
