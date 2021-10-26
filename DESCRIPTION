@@ -45,7 +45,7 @@ Suggests:
     rpart,
     testthat
 Remotes: 
-    tidymodels/parsnip@linear-pred-increasing
+    tidymodels/parsnip
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
