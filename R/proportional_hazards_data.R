@@ -129,7 +129,7 @@ make_proportional_hazards_glmnet <- function() {
     )
   )
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "proportional_hazards",
     eng = "glmnet",
     parsnip = "penalty",
@@ -138,7 +138,7 @@ make_proportional_hazards_glmnet <- function() {
     has_submodel = TRUE
   )
 
-  set_model_arg(
+  parsnip::set_model_arg(
     model = "proportional_hazards",
     eng = "glmnet",
     parsnip = "mixture",

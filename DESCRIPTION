@@ -2,11 +2,15 @@ Package: censored
 Title: Parsnip Wrappers for Survival Models
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Emil",
-           family = "Hvitfeldt",
-           role = c("aut", "cre"),
-           email = "emilhhvitfeldt@gmail.com",
-           comment = c(ORCID = "0000-0002-0679-1945"))
+    c(person(given = "Emil",
+             family = "Hvitfeldt",
+             role = c("aut", "cre"),
+             email = "emilhhvitfeldt@gmail.com",
+             comment = c(ORCID = "0000-0002-0679-1945")),
+      person(given = "Hannah",
+             family = "Frick",
+             role = "aut",
+             email = "hannah@rstudio.com"))
 Description: Bindings for additional models for use with the 'parsnip'
     package.
 License: MIT + file LICENSE
