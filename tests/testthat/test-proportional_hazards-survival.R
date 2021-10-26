@@ -155,6 +155,10 @@ test_that("predictions with strata and dot in formula", {
     f_fit <- fit(cox_spec, Surv(time, status) ~ . + strata(sex), data = lung2),
     NA
   )
+  expect_error(
+    f_fit_2 <- fit(cox_spec, Surv(time, status) ~ age + strata(sex), data = lung2),
+    NA
+  )
   expect_error({
     predict(f_fit, lung2, type = "time")
     predict(f_fit, lung2, type = "linear_pred")
@@ -162,6 +166,17 @@ test_that("predictions with strata and dot in formula", {
 
   },
   NA)
-
+  expect_equal(
+    predict(f_fit, lung2, type = "time"),
+    predict(f_fit_2, lung2, type = "time")
+  )
+  expect_equal(
+    predict(f_fit, lung2, type = "linear_pred"),
+    predict(f_fit_2, lung2, type = "linear_pred")
+  )
+  expect_equal(
+    predict(f_fit, lung2, type = "survival", time = c(100, 300)),
+    predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
+  )
 })
 

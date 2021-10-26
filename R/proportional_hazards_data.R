@@ -48,7 +48,6 @@ make_proportional_hazards_survival <- function() {
       pre = cph_survival_pre,
       post = function(x, object) {
         tabs <- summary(x)$table
-        # sometimes the column name is "*rmean"
         colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
         unname(tabs[, "rmean"])
       },
@@ -277,7 +276,7 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   res
 }
 
-has_strata <- function(formula, data = NULL) {
+has_strata <- function(formula, data) {
   mod_terms <- stats::terms(formula, specials = "strata", data = data)
   !is.null(attr(mod_terms, "specials")$strata)
 }
