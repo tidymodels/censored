@@ -6,11 +6,11 @@ library(purrr)
 
 # ------------------------------------------------------------------------------
 
-context("Bagged Tree - ipred")
+context("Bagged Tree - rpart")
 
 # ------------------------------------------------------------------------------
 
-mod_spec <- bag_tree(engine = "ipred") %>% set_mode("censored regression")
+mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
 
 set.seed(1234)
 exp_f_fit <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
