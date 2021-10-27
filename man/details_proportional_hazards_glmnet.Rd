@@ -75,6 +75,8 @@ recommended here.
 For example, in this model, the numeric column \code{rx} is used to estimate
 two different baseline hazards for each value of the column:\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(survival)
 library(censored)
+library(dplyr)
+library(tidyr)
 
 mod <- 
   proportional_hazards(penalty = 0.01) \%>\% 
@@ -82,8 +84,17 @@ mod <-
   fit(Surv(futime, fustat) ~ age + ecog.ps + strata(rx), data = ovarian)
 
 pred_data <- data.frame(age = c(50, 50), ecog.ps = c(1, 1), rx = c(1, 2))
-# predict(mod, pred_data, type = "survival", time = 500)
-}\if{html}{\out{</div>}}
+
+# Different survival probabilities for different values of 'rx'
+predict(mod, pred_data, type = "survival", time = 500) \%>\% 
+  bind_cols(pred_data) \%>\% 
+  unnest(.pred)
+}\if{html}{\out{</div>}}\preformatted{## # A tibble: 2 × 5
+##   .time .pred_survival   age ecog.ps    rx
+##   <dbl>          <dbl> <dbl>   <dbl> <dbl>
+## 1   500          0.666    50       1     1
+## 2   500          0.769    50       1     2
+}
 
 Note that columns used in the \code{strata()} function \emph{will} also be
 estimated in the regular portion of the model (i.e., within the linear
