@@ -46,6 +46,13 @@ Categorical predictors can be partitioned into groups of factor levels
 are not required for this model.
 }
 
+\subsection{Other notes}{
+
+The main interface for this model uses the formula method since the
+model specification typically involved the use of
+\code{\link[survival:Surv]{survival::Surv()}}.
+}
+
 \subsection{References}{
 \itemize{
 \item Hothorn T, Buhlmann P, Dudoit S, Molinaro A, Van der Laan MJ. 2006.

@@ -31,6 +31,38 @@ This model has no tuning parameters.
 
 Note that \code{model = TRUE} is needed to produce quantile predictions when
 there is a stratification variable and can be overridden in other cases.
+
+The main interface for this model uses the formula method since the
+model specification typically involved the use of
+\code{\link[survival:Surv]{survival::Surv()}}.
+
+The model formula can include \emph{special} terms, such as
+\code{\link[survival:strata]{survival::strata()}}. The allows the model scale
+parameter to differ between groups contained in the function. The column
+used inside \code{strata()} is treated as qualitative no matter its type.
+
+For example, in this model, the numeric column \code{rx} is used to estimate
+two different scale parameters for each value of the column:\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(survival)
+
+survival_reg() \%>\% 
+  fit(Surv(futime, fustat) ~ age + strata(rx), data = ovarian) \%>\% 
+  extract_fit_engine()
+}\if{html}{\out{</div>}}\preformatted{## Call:
+## survival::survreg(formula = Surv(futime, fustat) ~ age + strata(rx), 
+##     data = data, model = TRUE)
+## 
+## Coefficients:
+## (Intercept)         age 
+##  12.8734120  -0.1033569 
+## 
+## Scale:
+##      rx=1      rx=2 
+## 0.7695509 0.4703602 
+## 
+## Loglik(model)= -89.4   Loglik(intercept only)= -97.1
+##  Chisq= 15.36 on 1 degrees of freedom, p= 8.88e-05 
+## n= 26
+}
 }
 
 \subsection{References}{

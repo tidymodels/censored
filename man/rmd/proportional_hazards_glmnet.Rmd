@@ -55,7 +55,7 @@ proportional_hazards(penalty = double(1), mixture = double(1)) %>%
 By default, [glmnet::glmnet()] uses the argument `standardize = TRUE` to center and scale the data. 
 
 
-## Other notes
+## Other details
 
 The model does not fit an intercept. 
 

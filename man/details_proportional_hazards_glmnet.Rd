@@ -56,7 +56,7 @@ variance of one. By default, \code{\link[glmnet:glmnet]{glmnet::glmnet()}} uses
 the argument \code{standardize = TRUE} to center and scale the data.
 }
 
-\subsection{Other notes}{
+\subsection{Other details}{
 
 The model does not fit an intercept.
 

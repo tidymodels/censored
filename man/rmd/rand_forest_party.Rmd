@@ -50,6 +50,11 @@ rand_forest() %>%
 ```{r child = "template-tree-split-factors.Rmd"}
 ```
 
+## Other notes
+
+The main interface for this model uses the formula method since the model specification typically involved the use of [survival::Surv()]. 
+
+
 ## References
 
  - Hothorn T, Buhlmann P, Dudoit S, Molinaro A, Van der Laan MJ. 2006. Survival Ensembles. _Biostatistics_, 7(3), 355–373.

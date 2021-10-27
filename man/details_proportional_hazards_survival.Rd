@@ -27,7 +27,7 @@ This model has no tuning parameters.
 }
 }
 
-\subsection{Other notes}{
+\subsection{Other details}{
 
 The model does not fit an intercept.
 

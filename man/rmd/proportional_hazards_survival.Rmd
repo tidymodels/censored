@@ -16,7 +16,7 @@ proportional_hazards() %>%
   translate()
 ```
 
-## Other notes
+## Other details
 
 The model does not fit an intercept. 
 
