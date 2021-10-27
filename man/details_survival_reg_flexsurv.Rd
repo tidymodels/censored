@@ -10,7 +10,10 @@
 For this engine, there is a single mode: censored regression
 \subsection{Tuning Parameters}{
 
-This model has no tuning parameters.
+This model has 1 tuning parameters:
+\itemize{
+\item \code{dist}: Distribution (type: character, default: ‘weibull’)
+}
 }
 
 \subsection{Translation from parsnip to the original package}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg() \%>\% 
@@ -28,6 +31,10 @@ This model has no tuning parameters.
 }
 
 \subsection{Other details}{
+
+The main interface for this model uses the formula method since the
+model specification typically involved the use of
+\code{\link[survival:Surv]{survival::Surv()}}.
 
 For this engine, stratification cannot be specified via
 \code{\link[=strata]{strata()}}, please see the documentation of the
