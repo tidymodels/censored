@@ -339,7 +339,8 @@ test_that("formula modifications", {
 
 test_that("predictions with strata and dot in formula", {
   # For R <= 3.6 only , glmnet models below give a warning for lack of convergence.
-  skip_if(compareVersion(as.character(packageVersion("stats")), "3.6") < 1)
+  skip_if(R.version$major == "3")
+
   cox_spec <- proportional_hazards(penalty = 0.001) %>% set_engine("glmnet")
   lung2 <- lung[, c("time", "status", "ph.ecog", "age", "sex")]
   lung2$sex <- factor(lung2$sex)
