@@ -46,7 +46,7 @@ Categorical predictors can be partitioned into groups of factor levels
 are not required for this model.
 }
 
-\subsection{Other notes}{
+\subsection{Other details}{
 
 The main interface for this model uses the formula method since the
 model specification typically involved the use of

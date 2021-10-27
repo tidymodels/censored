@@ -5,8 +5,7 @@
 
 ## Tuning Parameters
 
-
-```{r party-param-info, echo = FALSE}
+```{r survival-param-info, echo = FALSE}
 defaults <- 
   tibble::tibble(parsnip = c("dist"),
                  default = c("'weibull'"))
@@ -29,10 +28,9 @@ param <-
   )
 ```
 
-
 This model has `r nrow(param)` tuning parameters:
 
-```{r party-param-list, echo = FALSE, results = "asis"}
+```{r survival-param-list, echo = FALSE, results = "asis"}
 param$item
 ```
 
@@ -63,8 +61,6 @@ survival_reg() %>%
   extract_fit_engine()
 ```
 
-
 ## References
 
 -  Kalbfleisch, J. D. and Prentice, R. L. 2002 _The statistical analysis of failure time data_, Wiley.
-
