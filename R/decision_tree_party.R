@@ -1,6 +1,7 @@
 #' Decision trees via party
 #'
-#' [party::ctree()] fits a conditional inference decision tree.
+#' [party::ctree()] fits a model as a set of if/then statements that creates a
+#' tree-based structure using hypothesis testing methods.
 #'
 #' @includeRmd man/rmd/decision_tree_party.Rmd details
 #'

@@ -4,56 +4,45 @@
 \alias{details_decision_tree_party}
 \title{Decision trees via party}
 \description{
-\code{\link[party:ctree]{party::ctree()}} fits a conditional inference decision tree.
+\code{\link[party:ctree]{party::ctree()}} fits a model as a set of if/then statements that creates a
+tree-based structure using hypothesis testing methods.
 }
 \details{
 For this engine, there is a single mode: censored regression
 \subsection{Tuning Parameters}{
 
-This model has 3 tuning parameters:
+This model has 2 tuning parameters:
 \itemize{
 \item \code{tree_depth}: Tree Depth (type: integer, default: see below)
 \item \code{min_n}: Minimal Node Size (type: integer, default: 20L)
-\item \code{mtry}: # Randomly Selected Predictors (type: integer, default: see
-below)
 }
 
 The \code{tree_depth} parameter defaults to \code{0} which means no restrictions
-are applied to tree depth. The \code{mtry} parameter is related to the number
-of predictors. The default is to use all predictors.
-}
+are applied to tree depth.
 
-\subsection{Translation from parsnip to the original package (classification)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{decision_tree(tree_depth = integer(1), min_n = integer(1), cost_complexity = double(1)) \%>\% 
-  set_engine("rpart") \%>\% 
-  set_mode("classification") \%>\% 
-  translate()
-}\if{html}{\out{</div>}}\preformatted{## Decision Tree Model Specification (classification)
-## 
-## Main Arguments:
-##   cost_complexity = double(1)
-##   tree_depth = integer(1)
-##   min_n = integer(1)
-## 
-## Computational engine: rpart 
-## 
-## Model fit template:
-## rpart::rpart(formula = missing_arg(), data = missing_arg(), weights = missing_arg(), 
-##     cp = double(1), maxdepth = integer(1), minsplit = min_rows(0L, 
-##         data))
+An engine specific parameter for this model is:
+\itemize{
+\item \code{mtry}: the number of predictors, selected at random, that are
+evaluated for splitting. The default is to use all predictors.
 }
 }
 
-\subsection{Translation from parsnip to the original package (censored regression)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{decision_tree() \%>\% 
+\subsection{Translation from parsnip to the original package (censored regression)}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{decision_tree(tree_depth = integer(1), min_n = integer(1)) \%>\% 
   set_engine("party") \%>\% 
   set_mode("censored regression") \%>\% 
   translate()
 }\if{html}{\out{</div>}}\preformatted{## Decision Tree Model Specification (censored regression)
 ## 
+## Main Arguments:
+##   tree_depth = integer(1)
+##   min_n = integer(1)
+## 
 ## Computational engine: party 
 ## 
 ## Model fit template:
 ## censored::cond_inference_surv_ctree(formula = missing_arg(), 
-##     data = missing_arg())
+##     data = missing_arg(), maxdepth = integer(1), minsplit = min_rows(0L, 
+##         data))
 }
 
 \code{\link[=cond_inference_surv_ctree]{cond_inference_surv_ctree()}} is a

@@ -7,8 +7,8 @@
 
 ```{r party-param-info, echo = FALSE}
 defaults <- 
-  tibble::tibble(parsnip = c("tree_depth", "min_n", "mtry"),
-                 default = c("see below", "20L", "see below"))
+  tibble::tibble(parsnip = c("tree_depth", "min_n"),
+                 default = c("see below", "20L"))
 
 param <-
  decision_tree() %>% 
@@ -21,7 +21,7 @@ param <-
     label = purrr::map_chr(dials, ~ .x$label),
     type = purrr::map_chr(dials, ~ .x$type)
   ) %>% 
-  dplyr::full_join(defaults, by = "parsnip") %>% 
+  dplyr::inner_join(defaults, by = "parsnip") %>% 
   dplyr::mutate(
     item = 
       glue::glue("- `{parsnip}`: {label} (type: {type}, default: {default})\n\n")
@@ -35,22 +35,15 @@ param$item
 ```
 
 The `tree_depth` parameter defaults to `0` which means no restrictions are applied to tree depth.
-The `mtry` parameter is related to the number of predictors. The default is to use all predictors.
 
-## Translation from parsnip to the original package (classification)
+An engine specific parameter for this model is: 
 
-```{r rpart-cls}
-decision_tree(tree_depth = integer(1), min_n = integer(1), cost_complexity = double(1)) %>% 
-  set_engine("rpart") %>% 
-  set_mode("classification") %>% 
-  translate()
-```
-
+ * `mtry`: the number of predictors, selected at random, that are evaluated for splitting. The default is to use all predictors.
 
 ## Translation from parsnip to the original package (censored regression)
 
 ```{r party-creg}
-decision_tree() %>% 
+decision_tree(tree_depth = integer(1), min_n = integer(1)) %>% 
   set_engine("party") %>% 
   set_mode("censored regression") %>% 
   translate()
