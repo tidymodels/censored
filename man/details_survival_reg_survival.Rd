@@ -10,20 +10,26 @@
 For this engine, there is a single mode: censored regression
 \subsection{Tuning Parameters}{
 
-This model has no tuning parameters.
+This model has 1 tuning parameters:
+\itemize{
+\item \code{dist}: Distribution (type: character, default: ‘weibull’)
+}
 }
 
-\subsection{Translation from parsnip to the original package}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg() \%>\% 
+\subsection{Translation from parsnip to the original package}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg(dist = character(1)) \%>\% 
   set_engine("survival") \%>\% 
   set_mode("censored regression") \%>\% 
   translate()
 }\if{html}{\out{</div>}}\preformatted{## Parametric Survival Regression Model Specification (censored regression)
 ## 
+## Main Arguments:
+##   dist = character(1)
+## 
 ## Computational engine: survival 
 ## 
 ## Model fit template:
 ## survival::survreg(formula = missing_arg(), data = missing_arg(), 
-##     weights = missing_arg(), model = TRUE)
+##     weights = missing_arg(), dist = character(1), model = TRUE)
 }
 }
 
