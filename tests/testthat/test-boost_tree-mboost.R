@@ -100,7 +100,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  mtry = new_empty_quosure(5),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -113,7 +113,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  mtry = new_empty_quosure(varying()),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -127,7 +127,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  mstop = new_empty_quosure(1000),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -140,7 +140,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  mstop = new_empty_quosure(varying()),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -154,7 +154,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  maxdepth = new_empty_quosure(3),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -167,7 +167,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  maxdepth = new_empty_quosure(varying()),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -181,7 +181,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  minsplit = new_empty_quosure(10),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -194,7 +194,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  minsplit = new_empty_quosure(varying()),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -208,7 +208,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  mincriterion = new_empty_quosure(0.2),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
@@ -221,7 +221,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  mincriterion = new_empty_quosure(varying()),
-                 family = mboost::CoxPH()
+                 family = expr(mboost::CoxPH())
                )
   )
 
