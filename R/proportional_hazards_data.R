@@ -47,7 +47,9 @@ make_proportional_hazards_survival <- function() {
     value = list(
       pre = cph_survival_pre,
       post = function(x, object) {
-        unname(summary(x)$table[, "rmean"])
+        tabs <- summary(x)$table
+        colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+        unname(tabs[, "rmean"])
       },
       func = c(fun = "survfit"),
       args =
@@ -240,7 +242,7 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
   remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
 
-  formula_without_strata <- remove_strata(formula)
+  formula_without_strata <- remove_strata(formula, data)
 
   data_obj <- parsnip::.convert_form_to_xy_fit(
     formula = formula_without_strata,
@@ -250,9 +252,9 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
     remove_intercept = remove_intercept
   )
 
-  if (has_strata(formula)) {
-    check_strata_nterms(formula)
-    strata <- get_strata(formula, data)
+  if (has_strata(formula, data)) {
+    check_strata_nterms(formula, data)
+    strata <- get_strata_glmnet(formula, data)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
 
@@ -268,14 +270,14 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   res
 }
 
-has_strata <- function(formula) {
-  mod_terms <- stats::terms(formula, specials = "strata")
+has_strata <- function(formula, data) {
+  mod_terms <- stats::terms(formula, specials = "strata", data = data)
   !is.null(attr(mod_terms, "specials")$strata)
 }
 
 # glmnet only allows one strata column so we require that there's only one term
-check_strata_nterms <- function(formula) {
-  mod_terms <- stats::terms(formula, specials = "strata")
+check_strata_nterms <- function(formula, data) {
+  mod_terms <- stats::terms(formula, specials = "strata", data = data)
   strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
     rlang::abort(
@@ -288,8 +290,9 @@ check_strata_nterms <- function(formula) {
   invisible(formula)
 }
 
-get_strata <- function(formula, data, na.action = stats::na.omit) {
-  mod_terms <- stats::terms(formula, specials = "strata")
+get_strata_glmnet <- function(formula, data, na.action = stats::na.omit) {
+  mod_terms <- stats::terms(formula, specials = "strata", data = data)
+  mod_terms <- stats::delete.response(mod_terms)
   mod_frame <- stats::model.frame(mod_terms, data, na.action = na.action)
 
   strata_ind <- attr(mod_terms,"specials")$strata
@@ -298,8 +301,8 @@ get_strata <- function(formula, data, na.action = stats::na.omit) {
   strata
 }
 
-remove_strata <- function(formula) {
-  if (!has_strata(formula)) {
+remove_strata <- function(formula, data) {
+  if (!has_strata(formula, data)) {
     return(formula)
   }
 
