@@ -47,6 +47,16 @@ test_that("linear_pred predictions", {
   expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
+  # predict without the sign flip
+  f_pred <- predict(f_fit, lung2, type = "linear_pred", penalty = 0.01, increasing = FALSE)
+  exp_f_pred <- unname(predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]), s = 0.01))
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(nrow(f_pred), nrow(lung2))
+
+
   # multi_predict
   new_data_3 <- lung2[1:3, ]
   f_pred_unnested_01 <-
