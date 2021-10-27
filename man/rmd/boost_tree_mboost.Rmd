@@ -21,7 +21,7 @@ param <-
     label = purrr::map_chr(dials, ~ .x$label),
     type = purrr::map_chr(dials, ~ .x$type)
   ) %>% 
-  dplyr::full_join(defaults, by = "parsnip") %>% 
+  dplyr::inner_join(defaults, by = "parsnip") %>% 
   dplyr::mutate(
     item = 
       glue::glue("- `{parsnip}`: {label} (type: {type}, default: {default})\n\n")

@@ -69,7 +69,7 @@ make_boost_tree_mboost <- function() {
       interface = "formula",
       protect = c("formula", "data"),
       func = c(pkg = "censored", fun = "blackboost_train"),
-      defaults = list(family = mboost::CoxPH())
+      defaults = list(family = expr(mboost::CoxPH()))
     )
   )
 

@@ -36,41 +36,7 @@ is to use all predictors.
 ## 
 ## Model fit template:
 ## censored::blackboost_train(formula = missing_arg(), data = missing_arg(), 
-##     family = new("boost_family", ngradient = function (y, f, 
-##         w) 
-##     \{
-##         time <- y[, 1]
-##         storage.mode(time) <- "double"
-##         event <- y[, 2]
-##         storage.mode(event) <- "integer"
-##         if (length(w) == 1) 
-##             w <- rep(w, length(time))
-##         storage.mode(w) <- "double"
-##         if (length(f) == 1) 
-##             f <- rep(f, length(time))
-##         storage.mode(f) <- "double"
-##         w[is.na(f)] <- 0
-##         f[is.na(f)] <- 0
-##         .Call("ngradientCoxPLik", time, event, f, w, PACKAGE = "mboost")
-##     \}, risk = function (y, f, w = 1) 
-##     -sum(plloss(y, f, w), na.rm = TRUE), offset = function (y, 
-##         w = 1) 
-##     0, check_y = function (y) 
-##     \{
-##         if (!inherits(y, "Surv")) 
-##             stop("response is not an object of class ", sQuote("Surv"), 
-##                 " but ", sQuote("family = CoxPH()"))
-##         y
-##     \}, weights = function (w) 
-##     \{
-##         switch(weights, any = TRUE, none = isTRUE(all.equal(unique(w), 
-##             1)), zeroone = isTRUE(all.equal(unique(w + abs(w - 
-##             1)), 1)), case = isTRUE(all.equal(unique(w - floor(w)), 
-##             0)))
-##     \}, nuisance = function () 
-##     return(NA), response = function (f) 
-##     NA, rclass = function (f) 
-##     NA, name = "Cox Partial Likelihood", charloss = ""))
+##     family = mboost::CoxPH())
 }
 
 \code{\link[=blackboost_train]{blackboost_train()}} is a wrapper around
