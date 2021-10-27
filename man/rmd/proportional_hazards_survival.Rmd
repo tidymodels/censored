@@ -16,6 +16,29 @@ proportional_hazards() %>%
   translate()
 ```
 
+## Other notes
+
+The model does not fit an intercept. 
+
+The main interface for this model uses the formula method since the model specification typically involved the use of [survival::Surv()]. 
+
+The model formula can include _special_ terms, such as [survival::strata()]. The allows the baseline hazard to differ between groups contained in the function. The column used inside `strata()` is treated as qualitative no matter its type. 
+
+For example, in this model, the numeric column `rx` is used to estimate two different baseline hazards for each value of the column:
+
+```{r}
+library(survival)
+
+proportional_hazards() %>% 
+  fit(Surv(futime, fustat) ~ age + strata(rx), data = ovarian) %>% 
+  extract_fit_engine() %>% 
+  # Two different hazards for each value of 'rx'
+  basehaz()
+```
+
+Note that columns used in the `strata()` function will not be estimated in the regular portion of the model (i.e., within the linear predictor).
+
+
 ## References
 
 - Andersen P, Gill R. 1982. Cox's regression model for counting processes, a large sample study. _Annals of Statistics_ 10, 1100-1120.

@@ -55,6 +55,40 @@ center and scale each so that each predictor has mean zero and a
 variance of one. By default, \code{\link[glmnet:glmnet]{glmnet::glmnet()}} uses
 the argument \code{standardize = TRUE} to center and scale the data.
 }
+
+\subsection{Other notes}{
+
+The model does not fit an intercept.
+
+\code{\link[glmnet:glmnet]{glmnet::glmnet()}} does not use the formula
+interface but, for consistency, this package requires a model formula.
+
+The model formula can include \emph{special} terms, such as
+\code{\link[survival:strata]{survival::strata()}}. The allows the baseline
+hazard to differ between groups contained in the function. The column
+used inside \code{strata()} is treated as qualitative no matter its type.
+This is different than the syntax offered by the
+\code{\link[glmnet:glmnet]{glmnet::glmnet()}} package (i.e.,
+\code{\link[glmnet:stratifySurv]{glmnet::stratifySurv()}}) which is mot
+recommended here.
+
+For example, in this model, the numeric column \code{rx} is used to estimate
+two different baseline hazards for each value of the column:\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(survival)
+library(censored)
+
+mod <- 
+  proportional_hazards(penalty = 0.01) \%>\% 
+  set_engine("glmnet", nlambda = 5) \%>\% 
+  fit(Surv(futime, fustat) ~ age + ecog.ps + strata(rx), data = ovarian)
+
+pred_data <- data.frame(age = c(50, 50), ecog.ps = c(1, 1), rx = c(1, 2))
+# predict(mod, pred_data, type = "survival", time = 500)
+}\if{html}{\out{</div>}}
+
+Note that columns used in the \code{strata()} function \emph{will} also be
+estimated in the regular portion of the model (i.e., within the linear
+predictor).
+}
 }
 \section{References}{
 \itemize{

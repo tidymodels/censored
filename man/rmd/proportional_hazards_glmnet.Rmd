@@ -20,7 +20,7 @@ proportional_hazards() %>%
     label = purrr::map_chr(dials, ~ .x$label),
     type = purrr::map_chr(dials, ~ .x$type)
   ) %>% 
-  dplyr::full_join(defaults, by = "parsnip") %>% 
+  dplyr::inner_join(defaults, by = "parsnip") %>% 
   dplyr::mutate(
     item = 
       glue::glue("- `{parsnip}`: {label} (type: {type}, default: {default})\n\n")
@@ -53,6 +53,32 @@ proportional_hazards(penalty = double(1), mixture = double(1)) %>%
 ```{r child = "template-same-scale.Rmd"}
 ```
 By default, [glmnet::glmnet()] uses the argument `standardize = TRUE` to center and scale the data. 
+
+
+## Other notes
+
+The model does not fit an intercept. 
+
+[glmnet::glmnet()] does not use the formula interface but, for consistency, this package requires a model formula. 
+
+The model formula can include _special_ terms, such as [survival::strata()]. The allows the baseline hazard to differ between groups contained in the function. The column used inside `strata()` is treated as qualitative no matter its type. This is different than the syntax offered by the [glmnet::glmnet()] package (i.e., [glmnet::stratifySurv()]) which is mot recommended here. 
+
+For example, in this model, the numeric column `rx` is used to estimate two different baseline hazards for each value of the column:
+
+```{r, warning = FALSE}
+library(survival)
+library(censored)
+
+mod <- 
+  proportional_hazards(penalty = 0.01) %>% 
+  set_engine("glmnet", nlambda = 5) %>% 
+  fit(Surv(futime, fustat) ~ age + ecog.ps + strata(rx), data = ovarian)
+
+pred_data <- data.frame(age = c(50, 50), ecog.ps = c(1, 1), rx = c(1, 2))
+# predict(mod, pred_data, type = "survival", time = 500)
+```
+
+Note that columns used in the `strata()` function _will_ also be estimated in the regular portion of the model (i.e., within the linear predictor).
 
 # References
 
