@@ -5,7 +5,7 @@
 
 ## Tuning Parameters
 
-```{r party-param-info, echo = FALSE}
+```{r flexsurv-param-info, echo = FALSE}
 defaults <- 
   tibble::tibble(parsnip = c("dist"),
                  default = c("'weibull'"))
@@ -28,18 +28,16 @@ param <-
   )
 ```
 
-
 This model has `r nrow(param)` tuning parameters:
 
-```{r party-param-list, echo = FALSE, results = "asis"}
+```{r flexsurv-param-list, echo = FALSE, results = "asis"}
 param$item
 ```
-
 
 ## Translation from parsnip to the original package
 
 ```{r flexsurv-creg}
-survival_reg() %>% 
+survival_reg(dist = character(1)) %>% 
   set_engine("flexsurv") %>% 
   set_mode("censored regression") %>% 
   translate()

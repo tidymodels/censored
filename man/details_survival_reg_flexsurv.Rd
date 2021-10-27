@@ -16,17 +16,20 @@ This model has 1 tuning parameters:
 }
 }
 
-\subsection{Translation from parsnip to the original package}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg() \%>\% 
+\subsection{Translation from parsnip to the original package}{\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival_reg(dist = character(1)) \%>\% 
   set_engine("flexsurv") \%>\% 
   set_mode("censored regression") \%>\% 
   translate()
 }\if{html}{\out{</div>}}\preformatted{## Parametric Survival Regression Model Specification (censored regression)
 ## 
+## Main Arguments:
+##   dist = character(1)
+## 
 ## Computational engine: flexsurv 
 ## 
 ## Model fit template:
 ## flexsurv::flexsurvreg(formula = missing_arg(), data = missing_arg(), 
-##     weights = missing_arg())
+##     weights = missing_arg(), dist = character(1))
 }
 }
 
