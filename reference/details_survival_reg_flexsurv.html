@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • censored</title>
+<title>Parametric survival regression — details_survival_reg_flexsurv • censored</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Parametric survival regression — details_survival_reg_flexsurv" />
+<meta property="og:description" content="flexsurv::flexsurvreg() fits a parametric survival model." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,54 +106,67 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Parametric survival regression</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/censored/blob/master/R/survival_reg_flexsurv.R'><code>R/survival_reg_flexsurv.R</code></a></small>
+    <div class="hidden name"><code>details_survival_reg_flexsurv.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p><code><a href='https://rdrr.io/pkg/flexsurv/man/flexsurvreg.html'>flexsurv::flexsurvreg()</a></code> fits a parametric survival model.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="cond_inference_surv_cforest.html">cond_inference_surv_cforest()</a></code> </p>
-        </td>
-        <td><p>A wrapper function for conditional inference forests</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cond_inference_surv_ctree.html">cond_inference_surv_ctree()</a></code> </p>
-        </td>
-        <td><p>A wrapper function for conditional inference trees</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="time_to_million.html">time_to_million</a></code> </p>
-        </td>
-        <td><p>Number of days before a movie grosses $1M USD</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For this engine, there is a single mode: censored regression</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Tuning Parameters</h3>
+
+
+<p>This model has 1 tuning parameters:</p><ul>
+<li><p><code>dist</code>: Distribution (type: character, default: ‘weibull’)</p></li>
+</ul>
+
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Translation from parsnip to the original package</h3>
+<p><div class="sourceCode r"></p><pre><span class='fu'>survival_reg</span><span class='op'>(</span>dist <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"flexsurv"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"censored regression"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>translate</span><span class='op'>(</span><span class='op'>)</span>
+</pre><p></div></p><pre><span class='co'>## Parametric Survival Regression Model Specification (censored regression)</span>
+<span class='co'>## </span>
+<span class='co'>## Main Arguments:</span>
+<span class='co'>##   dist = character(1)</span>
+<span class='co'>## </span>
+<span class='co'>## Computational engine: flexsurv </span>
+<span class='co'>## </span>
+<span class='co'>## Model fit template:</span>
+<span class='co'>## flexsurv::flexsurvreg(formula = missing_arg(), data = missing_arg(), </span>
+<span class='co'>##     weights = missing_arg(), dist = character(1))</span>
+</pre>
+
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Other details</h3>
+
+
+<p>The main interface for this model uses the formula method since the
+model specification typically involved the use of
+<code><a href='https://rdrr.io/pkg/survival/man/Surv.html'>survival::Surv()</a></code>.</p>
+<p>For this engine, stratification cannot be specified via
+<code><a href='https://rdrr.io/pkg/survival/man/strata.html'>strata()</a></code>, please see the documentation of the
+<code>flexsurv</code> package for alternative specifications.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>References</h3>
+
+<ul>
+<li><p>Jackson, C. 2016. <code>flexsurv</code>: A Platform for Parametric Survival
+Modeling in R. <em>Journal of Statistical Software</em>, 70(8), 1 - 33.</p></li>
+</ul>
+
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • censored</title>
+<title>Boosted trees — details_boost_tree_mboost • censored</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Boosted trees — details_boost_tree_mboost" />
+<meta property="og:description" content="mboost::blackboost() fits a series of decision trees forming an ensemble.
+Each tree depends on the results of previous trees. All trees in the
+ensemble are combined to produce a final prediction." />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,54 +108,76 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Boosted trees</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/censored/blob/master/R/boost_tree_mboost.R'><code>R/boost_tree_mboost.R</code></a></small>
+    <div class="hidden name"><code>details_boost_tree_mboost.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p><code><a href='https://rdrr.io/pkg/mboost/man/blackboost.html'>mboost::blackboost()</a></code> fits a series of decision trees forming an ensemble.
+Each tree depends on the results of previous trees. All trees in the
+ensemble are combined to produce a final prediction.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="cond_inference_surv_cforest.html">cond_inference_surv_cforest()</a></code> </p>
-        </td>
-        <td><p>A wrapper function for conditional inference forests</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cond_inference_surv_ctree.html">cond_inference_surv_ctree()</a></code> </p>
-        </td>
-        <td><p>A wrapper function for conditional inference trees</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="time_to_million.html">time_to_million</a></code> </p>
-        </td>
-        <td><p>Number of days before a movie grosses $1M USD</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For this engine, there is a single mode: censored regression</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Tuning Parameters</h3>
+
+
+<p>This model has 5 tuning parameters:</p><ul>
+<li><p><code>mtry</code>: # Randomly Selected Predictors (type: integer, default: see
+below)</p></li>
+<li><p><code>trees</code>: # Trees (type: integer, default: 100L)</p></li>
+<li><p><code>tree_depth</code>: Tree Depth (type: integer, default: 2L)</p></li>
+<li><p><code>min_n</code>: Minimal Node Size (type: integer, default: 10L)</p></li>
+<li><p><code>loss_reduction</code>: Minimum Loss Reduction (type: double, default: 0)</p></li>
+</ul>
+
+<p>The <code>mtry</code> parameter is related to the number of predictors. The default
+is to use all predictors.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Translation from parsnip to the original package (censored regression)</h3>
+<p><div class="sourceCode r"></p><pre><span class='fu'>boost_tree</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"mboost"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"censored regression"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>translate</span><span class='op'>(</span><span class='op'>)</span>
+</pre><p></div></p><pre><span class='co'>## Boosted Tree Model Specification (censored regression)</span>
+<span class='co'>## </span>
+<span class='co'>## Computational engine: mboost </span>
+<span class='co'>## </span>
+<span class='co'>## Model fit template:</span>
+<span class='co'>## censored::blackboost_train(formula = missing_arg(), data = missing_arg(), </span>
+<span class='co'>##     family = mboost::CoxPH())</span>
+</pre>
+
+<p><code><a href='blackboost_train.html'>blackboost_train()</a></code> is a wrapper around
+<code><a href='https://rdrr.io/pkg/mboost/man/blackboost.html'>mboost::blackboost()</a></code> (and other functions)
+that makes it easier to run this model.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Preprocessing requirements</h3>
+
+
+<p>This engine does not require any special encoding of the predictors.
+Categorical predictors can be partitioned into groups of factor levels
+(e.g. <code>{a, c}</code> vs <code>{b, d}</code>) when splitting at a node. Dummy variables
+are not required for this model.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>References</h3>
+
+<ul>
+<li><p>Buehlmann P, Hothorn T. 2007. Boosting algorithms: regularization,
+prediction and model fitting. <em>Statistical Science</em>, 22(4), 477–505.</p></li>
+<li><p>Kuhn, M, and K Johnson. 2013. <em>Applied Predictive Modeling</em>.
+Springer.</p></li>
+</ul>
+
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

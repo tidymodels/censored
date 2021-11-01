@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • censored</title>
+<title>Ensembles of decision trees — details_bag_tree_ipred • censored</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Ensembles of decision trees — details_bag_tree_ipred" />
+<meta property="og:description" content="ipred::bagging() fits an ensemble of decision trees." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -105,54 +106,65 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Ensembles of decision trees</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/censored/blob/master/R/bag_tree_ipred.R'><code>R/bag_tree_ipred.R</code></a></small>
+    <div class="hidden name"><code>details_bag_tree_ipred.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p><code><a href='https://rdrr.io/pkg/ipred/man/bagging.html'>ipred::bagging()</a></code> fits an ensemble of decision trees.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="cond_inference_surv_cforest.html">cond_inference_surv_cforest()</a></code> </p>
-        </td>
-        <td><p>A wrapper function for conditional inference forests</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cond_inference_surv_ctree.html">cond_inference_surv_ctree()</a></code> </p>
-        </td>
-        <td><p>A wrapper function for conditional inference trees</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="time_to_million.html">time_to_million</a></code> </p>
-        </td>
-        <td><p>Number of days before a movie grosses $1M USD</p></td>
-      </tr>
-    </tbody>
-    </table>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For this engine, there is a single mode: censored regression</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Tuning Parameters</h3>
+
+
+<p>This model has no tuning parameters.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Translation from parsnip to the original package (censored regression)</h3>
+<p><div class="sourceCode r"></p><pre><span class='fu'>bag_tree</span><span class='op'>(</span>engine <span class='op'>=</span> <span class='st'>"ipred"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"censored regression"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>translate</span><span class='op'>(</span><span class='op'>)</span>
+</pre><p></div></p><pre><span class='co'>## Bagged Decision Tree Model Specification (censored regression)</span>
+<span class='co'>## </span>
+<span class='co'>## Main Arguments:</span>
+<span class='co'>##   cost_complexity = 0</span>
+<span class='co'>##   min_n = 2</span>
+<span class='co'>## </span>
+<span class='co'>## Computational engine: ipred </span>
+<span class='co'>## </span>
+<span class='co'>## Model fit template:</span>
+<span class='co'>## ipred::bagging(formula = missing_arg(), data = missing_arg())</span>
+</pre>
+
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Preprocessing requirements</h3>
+
+
+<p>This engine does not require any special encoding of the predictors.
+Categorical predictors can be partitioned into groups of factor levels
+(e.g. <code>{a, c}</code> vs <code>{b, d}</code>) when splitting at a node. Dummy variables
+are not required for this model.</p>
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>References</h3>
+
+<ul>
+<li><p>Breiman L. 1996. “Bagging predictors”. Machine Learning. 24 (2):
+123-140</p></li>
+<li><p>Hothorn T, Lausen B, Benner A, Radespiel-Troeger M. 2004. Bagging
+Survival Trees. <em>Statistics in Medicine</em>, 23(1), 77–91.</p></li>
+<li><p>Kuhn, M, and K Johnson. 2013. <em>Applied Predictive Modeling</em>.
+Springer.</p></li>
+</ul>
+
+
+
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
