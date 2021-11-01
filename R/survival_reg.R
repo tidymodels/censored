@@ -1,47 +1,5 @@
 # The model specification is in parsnip.
 
-#' @name survival_reg
-#'
-#' @title Parsnip Engines for Parametric Survival Models
-#'
-#' @description These are engines for the [parsnip::survival_reg()] model specification.
-#'
-#' `survival_reg()` is a way to generate a _specification_ of a model
-#'  before fitting and allows the model to be created using
-#'  R. The main argument for the
-#'  model is:
-#' \itemize{
-#'   \item \code{dist}: The probability distribution of the outcome.
-#' }
-#' This argument is converted to its specific names at the
-#' time that the model is fit. Other options and argument can be
-#' set using `set_engine()`. If left to its default
-#' here (`NULL`), the value is taken from the underlying model
-#' functions.
-#'
-#' Since survival models typically involve censoring (and require the use of
-#' [survival::Surv()] objects), the [fit()] function will require that the
-#' survival model be specified via the formula interface.
-#'
-#' Also, for the `flexsurv::flexsurvfit` engine, the typical
-#'  `strata` function cannot be used. To achieve the same effect,
-#'  the extra parameter roles can be used (as described above).
-#'
-#' The model can be created using the `fit()` function using the
-#'  following _engines_:
-#' \itemize{
-#' \item \pkg{R}:  `"flexsurv"`, `"survival"` (the default)
-#' }
-#'
-#' @includeRmd man/rmd/survival_reg.Rmd details
-#'
-#' @seealso [parsnip::survival_reg()], [parsnip::fit()], [survival::Surv()]
-#' @references Jackson, C. (2016). `flexsurv`: A Platform for Parametric Survival
-#'  Modeling in R. _Journal of Statistical Software_, 70(8), 1 - 33.
-#'
-NULL
-
-
 # ------------------------------------------------------------------------------
 
 survreg_quant <- function(results, object) {

@@ -1,0 +1,29 @@
+```{r, child = "setup.Rmd", include = FALSE}
+```
+
+`r descr_models("bag_tree", "ipred")`
+
+## Tuning Parameters
+
+This model has no tuning parameters.
+
+## Translation from parsnip to the original package (censored regression)
+
+```{r ipred-creg}
+bag_tree(engine = "ipred") %>% 
+  set_mode("censored regression") %>% 
+  translate()
+```
+
+## Preprocessing requirements
+
+```{r child = "template-tree-split-factors.Rmd"}
+```
+
+## References
+
+ - Breiman L. 1996. "Bagging predictors". Machine Learning. 24 (2): 123-140
+ 
+ - Hothorn T, Lausen B, Benner A, Radespiel-Troeger M. 2004. Bagging Survival Trees. _Statistics in Medicine_, 23(1), 77–91.
+ 
+ - Kuhn, M, and K Johnson. 2013. *Applied Predictive Modeling*. Springer.
