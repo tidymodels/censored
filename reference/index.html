@@ -145,6 +145,34 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="proportional_hazards.html">proportional_hazards</a></code> </p>
+        </td>
+        <td><p>Parsnip engines for Proportional Hazards Models
+
+<code>proportional_hazards()</code> is a way to generate a <em>specification</em> of a model before
+fitting and allows the model to be created using different packages in R.
+The main arguments for the model are:
+<ul>
+<li><p><code>penalty</code>: The total amount of regularization
+in the model. Note that this must be zero for some engines.</p></li>
+<li><p><code>mixture</code>: The mixture amounts of different types of
+regularization (see below). Note that this will be ignored for some engines.</p></li>
+</ul>
+These arguments are converted to their specific names at the
+time that the model is fit. Other options and arguments can be
+set using <code>set_engine()</code>. If left to their defaults
+here (<code>NULL</code>), the values are taken from the underlying model
+functions. If parameters need to be modified, <code>update()</code> can be used
+in lieu of recreating the object from scratch.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="survival_reg.html">survival_reg</a></code> </p>
+        </td>
+        <td><p>Parsnip Engines for Parametric Survival Models</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="time_to_million.html">time_to_million</a></code> </p>
         </td>
         <td><p>Number of days before a movie grosses $1M USD</p></td>
