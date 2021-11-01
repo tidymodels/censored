@@ -2,5 +2,8 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-11-01T15:31Z
+last_built: 2021-11-01T22:05Z
+urls:
+  reference: https://censored.tidymodels.org/reference
+  article: https://censored.tidymodels.org/articles
 
