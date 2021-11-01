@@ -104,12 +104,12 @@ predictor).
 \section{Linear predictor values}{
 Since risk regression and parametric survival models are modeling
 different characteristics (e.g. relative hazard versus event time),
-their linear predictors will be going in different directions.
+their linear predictors will be going in opposite directions.
 
 For example, for parametric models, the linear predictor \emph{increases with
 time}. For proportional hazards models the linear predictor \emph{decreases
-with time} (since hazard is increasing). As such, the linear predictor
-will have opposite signs.
+with time} (since hazard is increasing). As such, the linear predictors
+for these two quantities will have opposite signs.
 
 tidymodels does not treat different models differently when computing
 performance metrics. To standardize across model types, the default for

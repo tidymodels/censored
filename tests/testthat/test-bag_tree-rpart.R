@@ -58,22 +58,20 @@ test_that("survival predictions", {
                     ~ summary(.x, times = c(100:200))$surv)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred_survival")
+  expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(dim(.x) == c(101, 2))))
+    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(101, 2))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
+    tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     unlist(exp_f_pred)
   )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.time,
+    tidyr::unnest(f_pred, cols = c(.pred))$.time,
     rep(100:200, nrow(lung))
   )
 
@@ -83,7 +81,7 @@ test_that("survival predictions", {
                     ~ summary(.x, times = c(max(.x$time)))$surv)
 
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
+    tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     unlist(exp_f_pred)
   )
 })
