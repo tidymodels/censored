@@ -20,7 +20,7 @@ make_survival_reg_survival <- function() {
     eng = "survival",
     parsnip = "dist",
     original = "dist",
-    func = list(pkg = "dials", fun = "dist"),
+    func = list(pkg = "dials", fun = "surv_dist"),
     has_submodel = FALSE
   )
 
@@ -133,7 +133,7 @@ make_survival_reg_flexsurv <- function() {
     eng = "flexsurv",
     parsnip = "dist",
     original = "dist",
-    func = list(pkg = "dials", fun = "dist"),
+    func = list(pkg = "dials", fun = "surv_dist"),
     has_submodel = FALSE
   )
 

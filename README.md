@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/tidymodels/censored/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/censored/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/EmilHvitfeldt/censored/branch/master/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/censored?branch=master)
+coverage](https://codecov.io/gh/EmilHvitfeldt/censored/branch/main/graph/badge.svg)](https://codecov.io/gh/EmilHvitfeldt/censored?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
@@ -49,7 +49,7 @@ cox_mod <-
 cox_mod
 #> parsnip model object
 #> 
-#> Fit time:  11ms 
+#> Fit time:  12ms 
 #> Call:
 #> survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, 
 #>     data = data, model = TRUE, x = TRUE)
