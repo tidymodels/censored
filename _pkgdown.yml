@@ -1,0 +1,18 @@
+url: https://censored.tidymodels.org
+
+template:
+  package: tidytemplate
+  params:
+    theme: tidymodels
+    part_of: <a href="https://tidymodels.org">tidymodels</a>
+    footer: censored is a part of the <strong>tidymodels</strong> ecosystem, a collection of modeling packages designed with common APIs and a shared philosophy.
+
+development:
+  mode: auto
+
+home:
+  strip_header: true
+
+figures:
+  fig.width: 8
+  fig.height: 5.75
