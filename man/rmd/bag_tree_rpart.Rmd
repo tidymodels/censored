@@ -9,7 +9,7 @@ This model has no tuning parameters.
 
 ## Translation from parsnip to the original package (censored regression)
 
-```{r ipred-creg}
+```{r rpart-creg}
 bag_tree(engine = "rpart") %>% 
   set_mode("censored regression") %>% 
   translate()
