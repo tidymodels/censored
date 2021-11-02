@@ -37,11 +37,12 @@ Suggests:
     glmnet,
     party,
     riskRegression,
+    rmarkdown,
     rpart,
     testthat
 Remotes: 
     tidymodels/parsnip
-Config/Needs/website: 
+Config/Needs/website:
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true
