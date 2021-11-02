@@ -33,7 +33,7 @@ utils::globalVariables(
 
   make_decision_tree_rpart()
 
-  make_bag_tree_ipred()
+  make_bag_tree_rpart()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()

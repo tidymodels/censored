@@ -9,16 +9,16 @@
 
 # nocov
 
-make_bag_tree_ipred <- function() {
+make_bag_tree_rpart <- function() {
   parsnip::set_model_mode("bag_tree", "censored regression")
 
-  parsnip::set_model_engine("bag_tree", mode = "censored regression", eng = "ipred")
-  parsnip::set_dependency("bag_tree", eng = "ipred", pkg =  "ipred")
-  parsnip::set_dependency("bag_tree", eng = "ipred", pkg = "censored")
+  parsnip::set_model_engine("bag_tree", mode = "censored regression", eng = "rpart")
+  parsnip::set_dependency("bag_tree", eng = "rpart", pkg =  "ipred")
+  parsnip::set_dependency("bag_tree", eng = "rpart", pkg = "censored")
 
   parsnip::set_fit(
     model = "bag_tree",
-    eng = "ipred",
+    eng = "rpart",
     mode = "censored regression",
     value = list(
       interface = "formula",
@@ -30,7 +30,7 @@ make_bag_tree_ipred <- function() {
 
   parsnip::set_encoding(
     model = "bag_tree",
-    eng = "ipred",
+    eng = "rpart",
     mode = "censored regression",
     options = list(
       predictor_indicators = "traditional",
@@ -42,7 +42,7 @@ make_bag_tree_ipred <- function() {
 
   parsnip::set_pred(
     model = "bag_tree",
-    eng = "ipred",
+    eng = "rpart",
     mode = "censored regression",
     type = "time",
     value = list(
@@ -61,7 +61,7 @@ make_bag_tree_ipred <- function() {
 
   parsnip::set_pred(
     model = "bag_tree",
-    eng = "ipred",
+    eng = "rpart",
     mode = "censored regression",
     type = "survival",
     value = list(

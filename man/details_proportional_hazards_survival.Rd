@@ -80,7 +80,25 @@ proportional_hazards() \%>\%
 Note that columns used in the \code{strata()} function will not be estimated
 in the regular portion of the model (i.e., within the linear predictor).
 }
+}
+\section{Linear predictor values}{
+Since risk regression and parametric survival models are modeling
+different characteristics (e.g. relative hazard versus event time),
+their linear predictors will be going in opposite directions.
 
+For example, for parametric models, the linear predictor \emph{increases with
+time}. For proportional hazards models the linear predictor \emph{decreases
+with time} (since hazard is increasing). As such, the linear predictors
+for these two quantities will have opposite signs.
+
+tidymodels does not treat different models differently when computing
+performance metrics. To standardize across model types, the default for
+proportional hazards models is to have \emph{increasing values with time}. As
+a result, the sign of the linear predictor will be the opposite of the
+value produced by the \code{predict()} method in the package.
+
+This behavior can be changed by using the \code{increasing} argument when
+calling \code{predict()} on a model object.
 \subsection{References}{
 \itemize{
 \item Andersen P, Gill R. 1982. Cox’s regression model for counting
@@ -89,4 +107,5 @@ processes, a large sample study. \emph{Annals of Statistics} 10,
 }
 }
 }
+
 \keyword{internal}

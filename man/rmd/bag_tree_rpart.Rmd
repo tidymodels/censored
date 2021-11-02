@@ -1,7 +1,7 @@
 ```{r, child = "setup.Rmd", include = FALSE}
 ```
 
-`r descr_models("bag_tree", "ipred")`
+`r descr_models("bag_tree", "rpart")`
 
 ## Tuning Parameters
 
@@ -9,8 +9,8 @@ This model has no tuning parameters.
 
 ## Translation from parsnip to the original package (censored regression)
 
-```{r ipred-creg}
-bag_tree(engine = "ipred") %>% 
+```{r rpart-creg}
+bag_tree(engine = "rpart") %>% 
   set_mode("censored regression") %>% 
   translate()
 ```

@@ -43,22 +43,21 @@ test_that("survival predictions", {
   exp_f_pred <- mboost::survFit(exp_f_fit, lung2)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred_survival")
+  expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung2))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
-                       ~ all(dim(.x) == c(4, 2))))
+    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(4, 2))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred_survival,
+    all(purrr::map_lgl(f_pred$.pred,
                        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.time,
+    tidyr::unnest(f_pred, cols = c(.pred))$.time,
     rep(pred_time, nrow(lung2))
   )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred_survival))$.pred_survival,
+    tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     as.numeric(t(floor_surv_mboost(exp_f_pred, pred_time)))
   )
 })
