@@ -87,8 +87,9 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>This package is still in early development. You need to install the development version of parsnip as well.</p>
-<pre class="{.r}"><code># install.packages("pak")
-pak::pak("tidymodels/censored")</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("pak")</span>
+<span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"tidymodels/censored"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="prediction-types" class="section level2">
 <h2 class="hasAnchor">
@@ -108,7 +109,7 @@ pak::pak("tidymodels/censored")</code></pre>
 <span class="va">cox_mod</span>
 <span class="co">#&gt; parsnip model object</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Fit time:  10ms </span>
+<span class="co">#&gt; Fit time:  12ms </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; survival::coxph(formula = Surv(time, status) ~ age + ph.ecog, </span>
 <span class="co">#&gt;     data = data, model = TRUE, x = TRUE)</span>
@@ -126,7 +127,7 @@ pak::pak("tidymodels/censored")</code></pre>
 <p>When we specify <code>type = "time"</code> then we get back the predicted survival time of an observation based on its predictors. The survival time is the time it takes for the observation to observe an event.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"time"</span>, new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 1</span>
+<span class="co">#&gt; # A tibble: 6 × 1</span>
 <span class="co">#&gt;   .pred_time</span>
 <span class="co">#&gt;        &lt;dbl&gt;</span>
 <span class="co">#&gt; 1       342.</span>
@@ -148,7 +149,7 @@ pak::pak("tidymodels/censored")</code></pre>
                               time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">pred_vals_survival</span>
-<span class="co">#&gt; # A tibble: 6 x 1</span>
+<span class="co">#&gt; # A tibble: 6 × 1</span>
 <span class="co">#&gt;   .pred           </span>
 <span class="co">#&gt;   &lt;list&gt;          </span>
 <span class="co">#&gt; 1 &lt;tibble [2 × 2]&gt;</span>
@@ -159,12 +160,12 @@ pak::pak("tidymodels/censored")</code></pre>
 <span class="co">#&gt; 6 &lt;tibble [2 × 2]&gt;</span>
 
 <span class="va">pred_vals_survival</span><span class="op">$</span><span class="va">.pred</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
-<span class="co">#&gt; # A tibble: 2 x 2</span>
+<span class="co">#&gt; # A tibble: 2 × 2</span>
 <span class="co">#&gt;   .time .pred_survival</span>
 <span class="co">#&gt;   &lt;dbl&gt;          &lt;dbl&gt;</span>
-<span class="co">#&gt; 1   100          0.850</span>
-<span class="co">#&gt; 2   200          0.639</span></code></pre></div>
-<p>here we see that the first patient has a 85% probability of survival up to 100 days and 63.9% probability of survival up to 200 days.</p>
+<span class="co">#&gt; 1   100          0.855</span>
+<span class="co">#&gt; 2   200          0.649</span></code></pre></div>
+<p>here we see that the first patient has a 85.5% probability of survival up to 100 days and 64.9% probability of survival up to 200 days.</p>
 </div>
 <div id="linear_pred" class="section level3">
 <h3 class="hasAnchor">
@@ -172,16 +173,16 @@ pak::pak("tidymodels/censored")</code></pre>
 <p>when we specify <code>type = "linear_pred"</code> then we get back the linear predictor for the observation according to the model.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">cox_mod</span>, type <span class="op">=</span> <span class="st">"linear_pred"</span>, new_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 1</span>
+<span class="co">#&gt; # A tibble: 6 × 1</span>
 <span class="co">#&gt;   .pred_linear_pred</span>
 <span class="co">#&gt;               &lt;dbl&gt;</span>
-<span class="co">#&gt; 1           -0.152 </span>
-<span class="co">#&gt; 2            0.359 </span>
-<span class="co">#&gt; 3            0.495 </span>
-<span class="co">#&gt; 4            0.0401</span>
-<span class="co">#&gt; 5            0.450 </span>
-<span class="co">#&gt; 6           -0.152</span></code></pre></div>
-<p>here we see that the linear predictor of the first observation is -0.1517.</p>
+<span class="co">#&gt; 1            -1.28 </span>
+<span class="co">#&gt; 2            -0.767</span>
+<span class="co">#&gt; 3            -0.632</span>
+<span class="co">#&gt; 4            -1.09 </span>
+<span class="co">#&gt; 5            -0.677</span>
+<span class="co">#&gt; 6            -1.28</span></code></pre></div>
+<p>here we see that the linear predictor of the first observation is -1.2783.</p>
 <p>Note that, for linear predictor prediction types, the results are formatted for all models such that the prediction <em>increases</em> with time. For the proportional hazards model, the sign is reversed.</p>
 </div>
 </div>
@@ -192,41 +193,55 @@ pak::pak("tidymodels/censored")</code></pre>
 <thead><tr class="header">
 <th align="left">alias</th>
 <th align="left">engine</th>
+<th align="left">time</th>
 <th align="left">survival</th>
 <th align="left">linear_pred</th>
-<th align="left">time</th>
+<th align="left">raw</th>
 <th align="left">quantile</th>
 <th align="left">hazard</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="left">bag_tree</td>
+<td align="left">rpart</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
 <td align="left">boost_tree</td>
 <td align="left">mboost</td>
+<td align="left">FALSE</td>
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">decision_tree</td>
 <td align="left">rpart</td>
 <td align="left">TRUE</td>
-<td align="left">FALSE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">decision_tree</td>
 <td align="left">party</td>
 <td align="left">TRUE</td>
-<td align="left">FALSE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">proportional_hazards</td>
 <td align="left">survival</td>
 <td align="left">TRUE</td>
@@ -234,51 +249,47 @@ pak::pak("tidymodels/censored")</code></pre>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="left">proportional_hazards</td>
-<td align="left">glmnet</td>
-<td align="left">TRUE</td>
-<td align="left">TRUE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
+<td align="left">proportional_hazards</td>
+<td align="left">glmnet</td>
+<td align="left">FALSE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">TRUE</td>
+<td align="left">FALSE</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
 <td align="left">rand_forest</td>
 <td align="left">party</td>
 <td align="left">TRUE</td>
-<td align="left">FALSE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
 <td align="left">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="left">survival_reg</td>
-<td align="left">survival</td>
-<td align="left">TRUE</td>
 <td align="left">FALSE</td>
-<td align="left">TRUE</td>
-<td align="left">TRUE</td>
-<td align="left">TRUE</td>
+<td align="left">FALSE</td>
 </tr>
 <tr class="even">
 <td align="left">survival_reg</td>
-<td align="left">flexsurv</td>
+<td align="left">survival</td>
+<td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
-<td align="left">TRUE</td>
+<td align="left">FALSE</td>
 <td align="left">TRUE</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">bag_tree</td>
-<td align="left">ipred</td>
+<td align="left">survival_reg</td>
+<td align="left">flexsurv</td>
+<td align="left">TRUE</td>
 <td align="left">TRUE</td>
 <td align="left">FALSE</td>
+<td align="left">FALSE</td>
 <td align="left">TRUE</td>
-<td align="left">FALSE</td>
-<td align="left">FALSE</td>
+<td align="left">TRUE</td>
 </tr>
 </tbody>
 </table>

@@ -222,6 +222,22 @@ two different baseline hazards for each value of the column:<div class="sourceCo
 estimated in the regular portion of the model (i.e., within the linear
 predictor).</p>
 
+    <h2 class="hasAnchor" id="linear-predictor-values"><a class="anchor" href="#linear-predictor-values"></a>Linear predictor values</h2>
+
+    <p>Since risk regression and parametric survival models are modeling
+different characteristics (e.g. relative hazard versus event time),
+their linear predictors will be going in opposite directions.</p>
+<p>For example, for parametric models, the linear predictor <em>increases with
+time</em>. For proportional hazards models the linear predictor <em>decreases
+with time</em> (since hazard is increasing). As such, the linear predictors
+for these two quantities will have opposite signs.</p>
+<p>tidymodels does not treat different models differently when computing
+performance metrics. To standardize across model types, the default for
+proportional hazards models is to have <em>increasing values with time</em>. As
+a result, the sign of the linear predictor will be the opposite of the
+value produced by the <code><a href='https://rdrr.io/r/stats/predict.html'>predict()</a></code> method in the package.</p>
+<p>This behavior can be changed by using the <code>increasing</code> argument when
+calling <code><a href='https://rdrr.io/r/stats/predict.html'>predict()</a></code> on a model object.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     
