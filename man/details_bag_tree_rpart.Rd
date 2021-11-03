@@ -4,7 +4,7 @@
 \alias{details_bag_tree_rpart}
 \title{Ensembles of CART decision trees}
 \description{
-\code{\link[ipred:bagging]{ipred::bagging()}} fits an ensemble of decision trees.
+\code{\link[ipred:bagging]{ipred::bagging()}} fits an ensemble of decision trees, using the \code{rpart} package.
 }
 \details{
 For this engine, there is a single mode: censored regression
