@@ -370,17 +370,19 @@ The following examples use the same data set throughout.
   sr_fit
   ```
 
-  The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard. We will bind these last three together in one tibble.
+  The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard. 
   
   ```{r}
   predict(sr_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
-  bind_cols(
-    predict(sr_fit, lung_test, type = "time"),
-    #predict(sr_fit, lung_test, type = "quantile"),
-    predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000))
-  )
+  predict(sr_fit, lung_test, type = "time")
+  predict(sr_fit, lung_test, type = "quantile") %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
   ```
   
   </details>
