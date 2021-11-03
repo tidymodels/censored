@@ -35,7 +35,12 @@ flexsurv_mean <- function(results, object) {
 flexsurv_quant <- function(results, object) {
   results <- purrr::map(results, as_tibble)
   names(results) <- NULL
-  results <- purrr::map(results, setNames, c(".quantile", ".pred", ".pred_lower", ".pred_upper"))
+  results <- purrr::map(
+    results,
+    setNames,
+    c(".quantile", ".pred_quantile", ".pred_quantile_lower", ".pred_quantile_upper")
+    )
+  tibble(.pred = results)
 }
 
 #' Internal function helps for parametric survival models
