@@ -49,11 +49,11 @@ nope <- cli::symbol$cross
 
 mod_names <- get_from_env("models")
 model_info <-
-  map_dfr(mod_names, ~ get_from_env(paste0(.x, "_predict")) %>% mutate(alias = .x))
+  map_dfr(mod_names, ~ get_from_env(paste0(.x, "_predict")) %>% mutate(model = .x))
 
 model_info %>%
   filter(mode == "censored regression") %>%
-  select(model = alias, engine, mode, type, -value) %>%
+  select(model, engine, mode, type) %>%
   pivot_wider(names_from = type, 
               values_from = mode, 
               values_fill = nope, 
