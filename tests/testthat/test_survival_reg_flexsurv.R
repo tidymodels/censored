@@ -118,3 +118,45 @@ test_that("survival hazard prediction", {
   # using rms for expected results
   expect_equal(exp_pred$.pred[[1]]$.pred_hazard, rms_haz, tol = 0.001)
 })
+
+test_that("quantile predictions", {
+  set.seed(1)
+  fit_s <- survival_reg() %>%
+    set_engine("flexsurv") %>%
+    set_mode("censored regression") %>%
+    fit(Surv(stop, event) ~ rx + size + enum, data = bladder)
+  pred <- predict(fit_s, new_data = bladder[1:3,], type = "quantile")
+
+  set.seed(1)
+  exp_fit <- flexsurv::flexsurvreg(
+    Surv(stop, event) ~ rx + size + enum,
+    data = bladder,
+    dist = "weibull")
+  exp_pred <- summary(
+    exp_fit,
+    newdata = bladder[1:3, ],
+    type = "quantile",
+    quantiles = (1:9)/10
+    )
+
+  expect_s3_class(pred, "tbl_df")
+  expect_equal(names(pred), ".pred")
+  expect_equal(nrow(pred), 3)
+  expect_true(
+    all(purrr::map_lgl(pred$.pred,
+                       ~ all(dim(.x) == c(9, 4))))
+  )
+  expect_true(
+    all(purrr::map_lgl(pred$.pred,
+                       ~ all(names(.x) == c(".quantile",
+                                            ".pred_quantile",
+                                            ".pred_quantile_lower",
+                                            ".pred_quantile_upper"))))
+  )
+
+  expect_equal(
+    tidyr::unnest(pred, cols = .pred),
+    do.call(rbind, exp_pred) %>% as_tibble(),
+    check.attributes = FALSE
+  )
+})
