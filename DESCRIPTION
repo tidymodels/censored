@@ -43,6 +43,7 @@ Suggests:
 Remotes: 
     tidymodels/parsnip
 Config/Needs/website:
+    tidymodels,
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true
