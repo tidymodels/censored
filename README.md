@@ -27,7 +27,9 @@ devtools::install_github("tidymodels/censored")
 
 ## Available models, engines, and prediction types
 
-censored provides engines for the models in the following table.
+censored provides engines for the models in the following table. For
+examples, please see [Fitting and Predicting with
+censored](https://censored.tidymodels.org/articles/articles/examples.html).
 
 The time to event can be predicted with `type = "time"`, the survival
 probability with `type = "survival"`, the linear predictor with
