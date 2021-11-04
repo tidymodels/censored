@@ -1,0 +1,388 @@
+---
+title: "Fitting and Predicting with censored"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Fitting and Predicting with censored}
+output:
+  knitr:::html_vignette
+---
+
+```{r startup, include = FALSE}
+library(utils)
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+These examples illustrate which models, engines, and prediction types are available in censored. As a reminder, in parsnip, 
+
+- the **model type** differentiates basic modeling approaches, such as random forests, proportional hazards models, etc.,
+
+- the **mode** denotes in what kind of modeling context it will be used (here, censored regression), and
+
+- the computational **engine** indicates how the model is fit, such as with a specific R package implementation or even methods outside of R like Keras or Stan.
+
+The following examples use the same data set throughout.
+
+
+## `bag_tree()` models
+  
+  <details id="bag-tree-rpart"> 
+  
+  <summary>With the `"rpart"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  bt_spec <- 
+    bag_tree(cost_complexity = 0) %>%
+    set_engine("rpart") %>% 
+    set_mode("censored regression") 
+  bt_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  bt_fit <- bt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  bt_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time.
+  
+  ```{r}
+  predict(bt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(bt_fit, lung_test, type = "time")
+  ```
+  
+  </details>
+
+
+## `boost_tree()` models
+  
+  <details id="boost-tree-mboost"> 
+  
+  <summary>With the `"mboost"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  bt_spec <- 
+    boost_tree(trees = 15) %>%
+    set_engine("mboost") %>% 
+    set_mode("censored regression") 
+  bt_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  bt_fit <- bt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  bt_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as the linear predictor.
+  
+  ```{r}
+  predict(bt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(bt_fit, lung_test, type = "linear_pred")
+  ```
+  
+  </details>
+
+
+## `decision_tree()` models
+  
+  <details id="decision-tree-rpart"> 
+  
+  <summary>With the `"rpart"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  dt_spec <- 
+    decision_tree(cost_complexity = 0) %>%
+    set_engine("rpart") %>% 
+    set_mode("censored regression") 
+  dt_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  dt_fit <- dt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  dt_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time.
+  
+  ```{r}
+  predict(dt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(dt_fit, lung_test, type = "time")
+  ```
+  
+  </details>
+  
+  <details id="decision-tree-party"> 
+  
+  <summary>With the `"party"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  dt_spec <- 
+    decision_tree() %>%
+    set_engine("party") %>% 
+    set_mode("censored regression") 
+  dt_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  dt_fit <- dt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  dt_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time.
+  
+  ```{r}
+  predict(dt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(dt_fit, lung_test, type = "time")
+  ```
+  
+  </details>
+
+
+## `proportional_hazards()` models
+  
+  <details id="proportional-hazards-survival"> 
+  
+  <summary>With the `"survival"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  ph_spec <- 
+    proportional_hazards() %>%
+    set_engine("survival") %>% 
+    set_mode("censored regression") 
+  ph_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  ph_fit <- ph_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  ph_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as the linear predictor and event time.
+  
+  ```{r}
+  predict(ph_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(ph_fit, lung_test, type = "linear_pred")
+  predict(ph_fit, lung_test, type = "time")
+  ```
+  
+  </details>
+  
+  <details id="proportional-hazards-glmnet"> 
+  
+  <summary>With the `"glmnet"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  ph_spec <- 
+    proportional_hazards(penalty = 0.1) %>%
+    set_engine("glmnet") %>% 
+    set_mode("censored regression") 
+  ph_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  ph_fit <- ph_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  ph_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as the linear predictor.
+  
+  ```{r}
+  predict(ph_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(ph_fit, lung_test, type = "linear_pred")
+  ```
+  
+  </details>
+
+
+## `rand_forest()` models
+  
+  <details id="rand-forest-party"> 
+  
+  <summary>With the `"party"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  rf_spec <- 
+    rand_forest(trees = 200) %>%
+    set_engine("party") %>% 
+    set_mode("censored regression") 
+  rf_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  rf_fit <- rf_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  rf_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time.
+  
+  ```{r}
+  predict(rf_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(rf_fit, lung_test, type = "time")
+  ```
+  
+  </details>
+  
+  
+## `survival_reg()` models
+  
+  <details id="survival-reg-survival"> 
+  
+  <summary>With the `"survival"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  sr_spec <- 
+    survival_reg(dist = "weibull") %>%
+    set_engine("survival") %>% 
+    set_mode("censored regression") 
+  sr_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  sr_fit <- sr_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  sr_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard.
+  
+  ```{r}
+  predict(sr_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "time")
+  predict(sr_fit, lung_test, type = "quantile") %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  ```
+  
+  </details>
+
+  <details id="survival-reg-flexsurv"> 
+  
+  <summary>With the `"flexsurv"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  sr_spec <- 
+    survival_reg(dist = "weibull") %>%
+    set_engine("flexsurv") %>% 
+    set_mode("censored regression") 
+  sr_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  sr_fit <- sr_spec %>% fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
+  sr_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard. 
+  
+  ```{r}
+  predict(sr_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "time")
+  predict(sr_fit, lung_test, type = "quantile") %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  ```
+  
+  </details>
