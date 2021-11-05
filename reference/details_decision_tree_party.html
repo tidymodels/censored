@@ -165,10 +165,10 @@ evaluated for splitting. The default is to use all predictors.</p></li>
 
 
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Translation from parsnip to the original package (censored regression)</h3>
-<p><div class="sourceCode r"></p><pre><span class='fu'><a href='https://parsnip.tidymodels.org/reference/decision_tree.html'>decision_tree</a></span><span class='op'>(</span>tree_depth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, min_n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"party"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_args.html'>set_mode</a></span><span class='op'>(</span><span class='st'>"censored regression"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/translate.html'>translate</a></span><span class='op'>(</span><span class='op'>)</span>
+<p><div class="sourceCode r"></p><pre><span class='fu'>decision_tree</span><span class='op'>(</span>tree_depth <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, min_n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"party"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_mode</span><span class='op'>(</span><span class='st'>"censored regression"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>translate</span><span class='op'>(</span><span class='op'>)</span>
 </pre><p></div></p><pre><span class='co'>## Decision Tree Model Specification (censored regression)</span>
 <span class='co'>## </span>
 <span class='co'>## Main Arguments:</span>

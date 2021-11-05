@@ -162,9 +162,9 @@ value. For more details about this, and the <code>glmnet</code> model in general
 see <a href='https://parsnip.tidymodels.org/reference/glmnet-details.html'>parsnip::glmnet-details</a>.</p>
 
 <h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Translation from parsnip to the original package</h3>
-<p><div class="sourceCode r"></p><pre><span class='fu'><a href='https://parsnip.tidymodels.org/reference/proportional_hazards.html'>proportional_hazards</a></span><span class='op'>(</span>penalty <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, mixture <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"glmnet"</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> 
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/translate.html'>translate</a></span><span class='op'>(</span><span class='op'>)</span>
+<p><div class="sourceCode r"></p><pre><span class='fu'>proportional_hazards</span><span class='op'>(</span>penalty <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>, mixture <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>set_engine</span><span class='op'>(</span><span class='st'>"glmnet"</span><span class='op'>)</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>translate</span><span class='op'>(</span><span class='op'>)</span>
 </pre><p></div></p><pre><span class='co'>## Proportional Hazards Model Specification (censored regression)</span>
 <span class='co'>## </span>
 <span class='co'>## Main Arguments:</span>
@@ -185,7 +185,7 @@ see <a href='https://parsnip.tidymodels.org/reference/glmnet-details.html'>parsn
 <p>Factor/categorical predictors need to be converted to numeric values
 (e.g., dummy or indicator variables) for this engine. When using the
 formula method via
-<code><a href='https://parsnip.tidymodels.org/reference/fit.html'>fit.model_spec()</a></code>, parsnip will
+<code>fit.model_spec()</code>, parsnip will
 convert factor columns to indicators.</p>
 <p>Predictors should have the same scale. One way to achieve this is to
 center and scale each so that each predictor has mean zero and a
@@ -201,7 +201,7 @@ interface but, for consistency, this package requires a model formula.</p>
 <p>The model formula can include <em>special</em> terms, such as
 <code><a href='https://rdrr.io/pkg/survival/man/strata.html'>survival::strata()</a></code>. The allows the baseline
 hazard to differ between groups contained in the function. The column
-used inside <code><a href='https://rdrr.io/pkg/survival/man/strata.html'>strata()</a></code> is treated as qualitative no matter its type.
+used inside <code>strata()</code> is treated as qualitative no matter its type.
 This is different than the syntax offered by the
 <code><a href='https://glmnet.stanford.edu/reference/glmnet.html'>glmnet::glmnet()</a></code> package (i.e.,
 <code><a href='https://glmnet.stanford.edu/reference/stratifySurv.html'>glmnet::stratifySurv()</a></code>) which is mot
