@@ -1,9 +1,9 @@
 #' We'll model the survival of lung cancer patients.
 
-#+ results = "hide", message = FALSE
-library(survival)
+#+ results = "hide", messages = FALSE
 library(tidymodels)
 library(censored)
+library(survival)
 tidymodels_prefer()
 
 data(cancer)

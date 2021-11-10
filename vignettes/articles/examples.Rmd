@@ -55,7 +55,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as event time.
   
   ```{r}
-  predict(bt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    bt_fit, 
+    lung_test, 
+    type = "survival", 
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(bt_fit, lung_test, type = "time")
@@ -95,7 +100,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as the linear predictor.
   
   ```{r}
-  predict(bt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    bt_fit, 
+    lung_test,
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(bt_fit, lung_test, type = "linear_pred")
@@ -135,7 +145,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as event time.
   
   ```{r}
-  predict(dt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    dt_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(dt_fit, lung_test, type = "time")
@@ -172,7 +187,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as event time.
   
   ```{r}
-  predict(dt_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    dt_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(dt_fit, lung_test, type = "time")
@@ -212,7 +232,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as the linear predictor and event time.
   
   ```{r}
-  predict(ph_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    ph_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(ph_fit, lung_test, type = "linear_pred")
@@ -250,7 +275,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as the linear predictor.
   
   ```{r}
-  predict(ph_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    ph_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(ph_fit, lung_test, type = "linear_pred")
@@ -290,7 +320,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as event time.
   
   ```{r}
-  predict(rf_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    rf_fit, 
+    lung_test, 
+    type = "survival", 
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(rf_fit, lung_test, type = "time")
@@ -330,7 +365,12 @@ The following examples use the same data set throughout.
   The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard.
   
   ```{r}
-  predict(sr_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    sr_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
@@ -366,14 +406,20 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  sr_fit <- sr_spec %>% fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
+  sr_fit <- sr_spec %>% 
+    fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
   sr_fit
   ```
 
   The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard. 
   
   ```{r}
-  predict(sr_fit, lung_test, type = "survival", time = c(100, 500, 1000)) %>% 
+  predict(
+    sr_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
