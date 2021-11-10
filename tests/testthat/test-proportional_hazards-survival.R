@@ -38,6 +38,9 @@ test_that("time predictions", {
   expect_equivalent(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 
+  # single observation
+  expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"), NA)
+
   # stratified model but no strata info
   cox_model <- proportional_hazards() %>% set_engine("survival")
   cox_fit_strata <- cox_model %>%

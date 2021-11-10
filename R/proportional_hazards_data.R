@@ -48,8 +48,14 @@ make_proportional_hazards_survival <- function() {
       pre = cph_survival_pre,
       post = function(x, object) {
         tabs <- summary(x)$table
-        colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
-        unname(tabs[, "rmean"])
+        if (is.matrix(tabs)) {
+          colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+          res <- unname(tabs[, "rmean"])
+        } else {
+          names(tabs) <- gsub("[[:punct:]]", "", names(tabs))
+          res <- unname(tabs["rmean"])
+        }
+        res
       },
       func = c(fun = "survfit"),
       args =
