@@ -34,7 +34,7 @@ Imports:
     withr
 Suggests: 
     covr,
-    glmnet,
+    glmnet (>= 4.1),
     party,
     riskRegression,
     rmarkdown,
