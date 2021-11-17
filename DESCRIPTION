@@ -12,7 +12,7 @@ License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 0.1.7.9001),
+    parsnip (>= 0.1.7.9002),
     R (>= 2.10)
 Imports: 
     dials,
@@ -44,7 +44,7 @@ Remotes:
     tidymodels/parsnip
 Config/Needs/website:
     tidymodels,
-    tidymodels/parsnip,
+    tidymodels/parsnip@set-mode-censored,
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true
