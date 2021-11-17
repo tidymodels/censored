@@ -41,7 +41,7 @@ Suggests:
     rpart,
     testthat
 Remotes: 
-    tidymodels/parsnip
+    tidymodels/parsnip@set-mode-censored
 Config/Needs/website:
     tidymodels,
     tidymodels/parsnip@set-mode-censored,
