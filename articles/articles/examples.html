@@ -96,7 +96,7 @@
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.0.7          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.1.4     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.0          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 0.1.6     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">modeldata   </span> 0.1.1          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflows   </span> 0.2.4     </span>
-  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 0.1.7.<span style="color: #BB0000;">9001</span>     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 0.1.0     </span>
+  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 0.1.7.<span style="color: #BB0000;">9002</span>     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 0.1.0     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr       </span> 0.3.4          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">yardstick   </span> 0.0.8     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">recipes     </span> 0.1.17</span></code></pre>
 <pre><code><span class="co">## ── <span style="font-weight: bold;">Conflicts</span> ─────────────────────────────────── tidymodels_conflicts() ──</span>
@@ -136,7 +136,7 @@
   <span class="va">bt_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  225ms </span>
+  <span class="co">## Fit time:  124ms </span>
   <span class="co">## </span>
   <span class="co">## Bagging survival trees with 25 bootstrap replications </span>
   <span class="co">## </span>
@@ -206,7 +206,7 @@
   <span class="va">bt_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  206ms </span>
+  <span class="co">## Fit time:  177ms </span>
   <span class="co">## </span>
   <span class="co">##     Model-based Boosting</span>
   <span class="co">## </span>
@@ -391,7 +391,7 @@
   <span class="va">dt_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  230ms </span>
+  <span class="co">## Fit time:  532ms </span>
   <span class="co">## </span>
   <span class="co">##     Conditional inference tree with 4 terminal nodes</span>
   <span class="co">## </span>
@@ -557,7 +557,7 @@
   <span class="va">ph_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  21ms </span>
+  <span class="co">## Fit time:  20ms </span>
   <span class="co">## </span>
   <span class="co">## Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      alpha = alpha, lambda = lambda) </span>
   <span class="co">## </span>
@@ -678,7 +678,7 @@
   <span class="va">rf_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  114ms </span>
+  <span class="co">## Fit time:  92ms </span>
   <span class="co">## </span>
   <span class="co">##     Random Forest using Conditional Inference Trees</span>
   <span class="co">## </span>
@@ -752,7 +752,7 @@
   <span class="va">sr_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  10ms </span>
+  <span class="co">## Fit time:  7ms </span>
   <span class="co">## Call:</span>
   <span class="co">## survival::survreg(formula = Surv(time, status) ~ ., data = data, </span>
   <span class="co">##     dist = ~"weibull", model = TRUE)</span>
@@ -854,7 +854,7 @@
   <span class="va">sr_fit</span></code></pre></div>
 <pre><code><span class="co">## parsnip model object</span>
   <span class="co">## </span>
-  <span class="co">## Fit time:  49ms </span>
+  <span class="co">## Fit time:  121ms </span>
   <span class="co">## Call:</span>
   <span class="co">## flexsurv::flexsurvreg(formula = Surv(time, status) ~ age + sex + </span>
   <span class="co">##     ph.ecog, data = data, dist = ~"weibull")</span>
