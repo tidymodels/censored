@@ -10,8 +10,6 @@
 # nocov
 
 make_boost_tree_mboost <- function() {
-  parsnip::set_model_mode("boost_tree", "censored regression")
-
   parsnip::set_model_engine("boost_tree", mode = "censored regression", eng = "mboost")
   parsnip::set_dependency("boost_tree", eng = "mboost", pkg = "mboost")
   parsnip::set_dependency("boost_tree", eng = "mboost", pkg = "censored")

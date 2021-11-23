@@ -10,8 +10,6 @@
 # nocov
 
 make_bag_tree_rpart <- function() {
-  parsnip::set_model_mode("bag_tree", "censored regression")
-
   parsnip::set_model_engine("bag_tree", mode = "censored regression", eng = "rpart")
   parsnip::set_dependency("bag_tree", eng = "rpart", pkg =  "ipred")
   parsnip::set_dependency("bag_tree", eng = "rpart", pkg = "censored")
