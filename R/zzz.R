@@ -4,18 +4,19 @@
 
 .onLoad <- function(libname, pkgname) {
 
-  make_proportional_hazards_survival()
-  make_proportional_hazards_glmnet()
+  make_bag_tree_rpart()
 
   make_boost_tree_mboost()
 
   make_decision_tree_rpart()
+  make_decision_tree_party()
 
-  make_bag_tree_rpart()
+  make_proportional_hazards_survival()
+  make_proportional_hazards_glmnet()
+
+  make_rand_forest_party()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()
 
-  make_decision_tree_party()
-  make_rand_forest_party()
 }
