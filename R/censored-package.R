@@ -1,6 +1,11 @@
 #' censored: Parsnip Engines for Survival Models
 #'
 #' `censored` provides engines for survival models from the `parsnip` package.
+#' The models include parametric survival models, proportional hazards models,
+#' decision trees, boosted trees, bagged trees, and random forests. See the
+#' "Fitting and Predicting with censored" article for various examples. See
+#' below for examples of classic survival models and how to fit them with
+#' censored.
 #'
 #' @examples
 #' library(survival)
@@ -26,7 +31,6 @@
 #'   fit(Surv(tstart, tstop, status) ~ treat + inherit + age, data = cgd)
 #' predict(fit_ag, cgd[1:3, ], type = "time")
 #'
-#' @keywords internal
 "_PACKAGE"
 
 ## usethis namespace: start

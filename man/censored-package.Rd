@@ -7,6 +7,11 @@
 \title{censored: Parsnip Engines for Survival Models}
 \description{
 \code{censored} provides engines for survival models from the \code{parsnip} package.
+The models include parametric survival models, proportional hazards models,
+decision trees, boosted trees, bagged trees, and random forests. See the
+"Fitting and Predicting with censored" article for various examples. See
+below for examples of classic survival models and how to fit them with
+censored.
 }
 \examples{
 library(survival)
@@ -50,4 +55,3 @@ Authors:
 }
 
 }
-\keyword{internal}
