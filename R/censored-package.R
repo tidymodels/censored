@@ -8,8 +8,6 @@
 #' censored.
 #'
 #' @examples
-#' library(survival)
-#'
 #' # Accelerated Failure Time (AFT) model
 #'
 #' fit_aft <- survival_reg(dist = "weibull") %>%

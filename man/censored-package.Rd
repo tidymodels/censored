@@ -14,8 +14,6 @@ below for examples of classic survival models and how to fit them with
 censored.
 }
 \examples{
-library(survival)
-
 # Accelerated Failure Time (AFT) model
 
 fit_aft <- survival_reg(dist = "weibull") \%>\%
