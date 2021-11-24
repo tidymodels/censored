@@ -1,12 +1,12 @@
 Package: censored
-Title: Parsnip Wrappers for Survival Models
+Title: Parsnip Engines for Survival Models
 Version: 0.0.0.9000
 Authors@R: c(
     person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0679-1945")),
     person("Hannah", "Frick", , "hannah@rstudio.com", role = "aut")
   )
-Description: Bindings for additional models for use with the 'parsnip'
+Description: Engines for survival models from the 'parsnip' 
     package.
 License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
