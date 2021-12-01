@@ -251,6 +251,28 @@ make_survival_reg_flexsurv <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurv",
+    mode = "censored regression",
+    type = "linear_pred",
+    value = list(
+      pre = NULL,
+      post = function(results, object) {
+        results %>%
+          dplyr::mutate(.pred_linear_pred = log(.pred)) %>%
+          dplyr::select(.pred_linear_pred)
+        },
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = expr(object$fit),
+          newdata = expr(new_data),
+          type = "linear"
+        )
+    )
+  )
 }
 
 # nocov end
