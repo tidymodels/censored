@@ -9,7 +9,7 @@
 #' @keywords internal
 #' @export
 survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .95, ...) {
-  output <- match.arg(output, c("surv", "conf", "haz"))
+  output <- match.arg(output, c("surv", "conf", "haz"), several.ok = TRUE)
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
 
@@ -30,6 +30,7 @@ survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .9
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
+  res
 }
 
 keep_cols <- function(x, output, keep_penalty = FALSE) {
@@ -38,10 +39,14 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
   } else {
     cols_to_keep <- c(".row", ".time")
   }
-  output_cols <- switch(output,
-                        surv = ".pred_survival",
-                        conf = c(".pred_survival_lower", ".pred_survival_upper"),
-                        haz = ".pred_hazard_cumulative")
+  output_cols <- purrr::map(
+    output,
+    switch,
+    surv = ".pred_survival",
+    conf = c(".pred_survival_lower", ".pred_survival_upper"),
+    haz = ".pred_hazard_cumulative"
+  ) %>%
+    purrr::flatten_chr()
   cols_to_keep <- c(cols_to_keep, output_cols)
   dplyr::select(x, cols_to_keep)
 }

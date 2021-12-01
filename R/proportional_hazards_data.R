@@ -80,7 +80,8 @@ make_proportional_hazards_survival <- function() {
         list(
           x = quote(object$fit),
           new_data = quote(new_data),
-          times = rlang::expr(time)
+          times = rlang::expr(time),
+          output = c("surv", "conf")
         )
     )
   )

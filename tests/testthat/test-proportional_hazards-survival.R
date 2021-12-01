@@ -68,11 +68,15 @@ test_that("survival predictions - non-stratified", {
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(2, 2))))
+                       ~ all(dim(.x) == c(2, 4))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_survival",
+                             ".pred_survival_lower",
+                             ".pred_survival_upper"))))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -105,11 +109,14 @@ test_that("survival predictions - stratified", {
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(2, 2))))
+                       ~ all(dim(.x) == c(2, 4))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_survival", ".pred_survival_lower",
+                             ".pred_survival_upper"))))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
