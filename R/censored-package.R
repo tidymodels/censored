@@ -50,5 +50,6 @@ NULL
 
 utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
-    ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group")
+    ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
+    "level")
 )
