@@ -7,21 +7,19 @@ survreg_quant <- function(results, object) {
   n <- nrow(results)
   p <- ncol(results)
   colnames(results) <- names0(p)
-  results <-
-    results %>%
+
+  res <- results %>%
     tibble::as_tibble(results) %>%
     dplyr::mutate(.row = 1:n) %>%
-    tidyr::gather(.label, .pred, -.row) %>%
+    tidyr::pivot_longer(-.row, names_to = ".label",
+                        values_to = ".pred_quantile") %>%
     dplyr::arrange(.row, .label) %>%
     dplyr::mutate(.quantile = rep(pctl, n)) %>%
-    dplyr::select(-.label)
-  .row <- results[[".row"]]
-  results <-
-    results %>%
+    dplyr::select(.row, .quantile, .pred_quantile) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
-  results <- split(results, .row)
-  names(results) <- NULL
-  tibble::tibble(.pred = results)
+
+  res
 }
 
 # ------------------------------------------------------------------------------
