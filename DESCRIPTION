@@ -41,7 +41,7 @@ Suggests:
     rpart,
     testthat
 Remotes: 
-    tidymodels/parsnip
+    tidymodels/parsnip@predict-survival-level
 Config/Needs/website:
     tidymodels,
     tidymodels/parsnip@predict-survival-level,
