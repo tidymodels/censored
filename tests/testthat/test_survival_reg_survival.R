@@ -72,7 +72,7 @@ test_that("survival time prediction", {
   exp_quant <- predict(res$fit, head(lung), p = (2:4) / 5, type = "quantile")
   exp_quant <-
     apply(exp_quant, 1, function(x)
-      tibble(.pred = x, .quantile = (2:4) / 5))
+      tibble(.quantile = (2:4) / 5, .pred_quantile = x))
   exp_quant <- tibble(.pred = exp_quant)
   obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4) / 5)
 
