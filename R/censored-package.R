@@ -15,12 +15,14 @@
 #'   fit(Surv(time, status) ~ age + sex + ph.karno, data = lung)
 #' predict(fit_aft, lung[1:3, ], type = "time")
 #'
+#'
 #' # Cox's Proportional Hazards model
 #'
 #' fit_cox <- proportional_hazards() %>%
 #'   set_engine("survival") %>%
 #'   fit(Surv(time, status) ~ age + sex + ph.karno, data = lung)
 #' predict(fit_cox, lung[1:3, ], type = "time")
+#'
 #'
 #' # Andersen-Gill model for recurring events
 #'
