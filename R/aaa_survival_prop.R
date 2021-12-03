@@ -2,14 +2,27 @@
 #' @param x A model from `coxph()`.
 #' @param new_data Data for prediction
 #' @param times A vector of integers for prediction times.
-#' @param output One of "surv", "conf", or "haz".
-#' @param conf.int The confidence level
+#' @param output One of `"surv"`, `"conf"`, or `"haz"`.
+#' @param interval Add confidence interval for survival probability? Options
+#' are `"none"` or `"confidence"`.
+#' @param conf.int The confidence level.
 #' @param ... Options to pass to [survival::survfit()]
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-survival_prob_cph <- function(x, new_data, times, output = "surv", conf.int = .95, ...) {
-  output <- match.arg(output, c("surv", "conf", "haz"), several.ok = TRUE)
+survival_prob_cph <- function(x,
+                              new_data,
+                              times,
+                              output = "surv",
+                              interval = "none",
+                              conf.int = .95,
+                              ...) {
+  interval <- rlang::arg_match(interval, c("none", "confidence"))
+  output <- rlang::arg_match(output, c("surv", "conf", "haz"))
+  if (output == "surv" & interval == "confidence") {
+    output <- "survconf"
+  }
+
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
 
@@ -39,14 +52,13 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
   } else {
     cols_to_keep <- c(".row", ".time")
   }
-  output_cols <- purrr::map(
+  output_cols <- switch(
     output,
-    switch,
     surv = ".pred_survival",
-    conf = c(".pred_survival_lower", ".pred_survival_upper"),
+    conf = c(".pred_lower", ".pred_upper"),
+    survconf =  c(".pred_survival", ".pred_lower", ".pred_upper"),
     haz = ".pred_hazard_cumulative"
-  ) %>%
-    purrr::flatten_chr()
+  )
   cols_to_keep <- c(cols_to_keep, output_cols)
   dplyr::select(x, cols_to_keep)
 }
@@ -64,8 +76,8 @@ stack_survfit <- function(x, n, penalty = NULL) {
       penalty = penalty,
       .time = x$time,
       .pred_survival = x$surv,
-      .pred_survival_lower = x$lower,
-      .pred_survival_upper = x$upper,
+      .pred_lower = x$lower,
+      .pred_upper = x$upper,
       .pred_hazard_cumulative = x$cumhaz,
       .row = rep(seq_len(n), x$strata)
     )
@@ -80,8 +92,8 @@ stack_survfit <- function(x, n, penalty = NULL) {
       penalty = penalty,
       .time = rep(x$time, n),
       .pred_survival = as.vector(x$surv),
-      .pred_survival_lower = as.vector(x$lower),
-      .pred_survival_upper = as.vector(x$upper),
+      .pred_lower = as.vector(x$lower),
+      .pred_upper = as.vector(x$upper),
       .pred_hazard_cumulative = as.vector(x$cumhaz),
       .row = rep(seq_len(n), each = times)
     )
@@ -93,8 +105,8 @@ stack_survfit <- function(x, n, penalty = NULL) {
 prob_template <- tibble::tibble(
   .time = 0,
   .pred_survival = 1,
-  .pred_survival_lower = NA_real_,
-  .pred_survival_upper = NA_real_,
+  .pred_lower = NA_real_,
+  .pred_upper = NA_real_,
   .pred_hazard_cumulative = 0
 )
 

@@ -4,7 +4,15 @@
 \alias{survival_prob_cph}
 \title{A wrapper for survival probabilities with cph models}
 \usage{
-survival_prob_cph(x, new_data, times, output = "surv", conf.int = 0.95, ...)
+survival_prob_cph(
+  x,
+  new_data,
+  times,
+  output = "surv",
+  interval = "none",
+  conf.int = 0.95,
+  ...
+)
 }
 \arguments{
 \item{x}{A model from \code{coxph()}.}
@@ -13,9 +21,12 @@ survival_prob_cph(x, new_data, times, output = "surv", conf.int = 0.95, ...)
 
 \item{times}{A vector of integers for prediction times.}
 
-\item{output}{One of "surv", "conf", or "haz".}
+\item{output}{One of \code{"surv"}, \code{"conf"}, or \code{"haz"}.}
 
-\item{conf.int}{The confidence level}
+\item{interval}{Add confidence interval for survival probability? Options
+are \code{"none"} or \code{"confidence"}.}
+
+\item{conf.int}{The confidence level.}
 
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}}
 }

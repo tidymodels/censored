@@ -68,15 +68,13 @@ test_that("survival predictions - non-stratified", {
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(2, 4))))
+                       ~ all(dim(.x) == c(2, 2))))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_survival",
-                             ".pred_survival_lower",
-                             ".pred_survival_upper"))))
+        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -109,14 +107,13 @@ test_that("survival predictions - stratified", {
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(2, 4))))
+                       ~ all(dim(.x) == c(2, 2))))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_survival", ".pred_survival_lower",
-                             ".pred_survival_upper"))))
+        ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -200,3 +197,53 @@ test_that("predictions with strata and dot in formula", {
   )
 })
 
+test_that("confidence intervals", {
+  cox_spec <- proportional_hazards() %>%
+    set_mode("censored regression") %>%
+    set_engine("survival")
+
+  # survival probabilities unstratified
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)
+  f_pred <- predict(f_fit, lung, type = "survival", time = c(306, 455),
+                    interval = "confidence")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_equal(names(f_pred), ".pred")
+  expect_equal(nrow(f_pred), nrow(lung))
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ all(dim(.x) == c(2, 4))))
+  )
+  expect_true(
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_survival",
+                             ".pred_lower",
+                             ".pred_upper"))))
+  )
+
+  # survival probabilities stratified
+  set.seed(14)
+  f_fit <- fit(cox_spec,
+               Surv(stop, event) ~ rx + size + number + strata(enum),
+               data = bladder)
+  new_data_3 <- bladder[1:3, ]
+  f_pred <- predict(f_fit, new_data = new_data_3,  type = "survival",
+                   time = c(10, 20), interval = "confidence")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_equal(names(f_pred), ".pred")
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ all(dim(.x) == c(2, 4))))
+  )
+  expect_true(
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_survival", ".pred_lower",
+                             ".pred_upper"))))
+  )
+})

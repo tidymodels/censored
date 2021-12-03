@@ -91,7 +91,7 @@ test_that("survival predictions", {
     101
   )
   cf_names <-
-    c(".time", ".pred_survival", ".pred_survival_lower", ".pred_survival_upper")
+    c(".time", ".pred_survival", ".pred_lower", ".pred_upper")
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
                        ~ identical(names(.x), cf_names)))
