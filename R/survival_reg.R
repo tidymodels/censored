@@ -30,15 +30,39 @@ flexsurv_mean <- function(results, object) {
   results$est
 }
 
-flexsurv_quant <- function(results, object) {
-  results <- purrr::map(results, as_tibble)
-  names(results) <- NULL
-  results <- purrr::map(
-    results,
-    setNames,
-    c(".quantile", ".pred_quantile", ".pred_quantile_lower", ".pred_quantile_upper")
-    )
-  tibble(.pred = results)
+#' Developer tools for flexsurv objects
+#'
+#' @param object A model object.
+#' @param new_data Data for prediction.
+#' @param ... Currently not used.
+#' @param quantile Vector of quantiles.
+#' @param interval Should the confidence interval be added? One of `"none"` or
+#' `"confidence"`.
+#' @param level Confidence level.
+#' @return A nested tibble.
+#' @export
+#' @keywords internal
+quantiles_flexsurvreg <- function(object,
+                               new_data,
+                               ...,
+                               quantile = (1:9)/10,
+                               interval = "none",
+                               level = 0.95) {
+
+  interval <- rlang::arg_match(interval, c("none", "confidence"))
+
+  results <- predict(object,
+                     newdata = new_data,
+                     type = "quantile",
+                     p = quantile,
+                     conf.int = interval == "confidence",
+                     conf.level = level)
+
+  results$.pred <- purrr::map(
+    results$.pred,
+    ~ dplyr::rename(., .pred_quantile = .pred)
+  )
+  results
 }
 
 #' Internal function helps for parametric survival models

@@ -41,10 +41,10 @@ Suggests:
     rpart,
     testthat
 Remotes: 
-    tidymodels/parsnip
+    tidymodels/parsnip@predict-survival-level
 Config/Needs/website:
     tidymodels,
-    tidymodels/parsnip,
+    tidymodels/parsnip@predict-survival-level,
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true
