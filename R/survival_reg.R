@@ -43,11 +43,11 @@ flexsurv_mean <- function(results, object) {
 #' @export
 #' @keywords internal
 quantiles_flexsurvreg <- function(object,
-                               new_data,
-                               ...,
-                               quantile = (1:9)/10,
-                               interval = "none",
-                               level = 0.95) {
+                                  new_data,
+                                  ...,
+                                  quantile = (1:9)/10,
+                                  interval = "none",
+                                  level = 0.95) {
 
   interval <- rlang::arg_match(interval, c("none", "confidence"))
 
