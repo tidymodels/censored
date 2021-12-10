@@ -90,6 +90,9 @@ model specification typically involved the use of
 <p>For this engine, stratification cannot be specified via
 <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata()</a></code>, please see the documentation of the
 <code>flexsurv</code> package for alternative specifications.</p>
+<p>For predictions of type <code>"linear_pred"</code>, the linear predictor is
+returned without it being exponentiated (which is different from what
+<code>flexsurv</code> returns).</p>
 </div>
 
 <div class="section">

@@ -3,7 +3,7 @@ pkgdown: 2.0.1.9000
 pkgdown_sha: 1c2bedc10283fe39c5e539083021cb87f208903a
 articles:
   examples: examples.html
-last_built: 2021-12-10T16:31Z
+last_built: 2021-12-10T16:41Z
 urls:
   reference: https://censored.tidymodels.org/reference
   article: https://censored.tidymodels.org/articles
