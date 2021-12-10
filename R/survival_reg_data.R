@@ -186,14 +186,15 @@ make_survival_reg_flexsurv <- function() {
     type = "quantile",
     value = list(
       pre = NULL,
-      post = flexsurv_quant,
-      func = c(fun = "summary"),
+      post = NULL,
+      func = c(pkg = "censored", fun = "quantiles_flexsurvreg"),
       args =
         list(
-          object = expr(object$fit),
-          newdata = expr(new_data),
-          type = "quantile",
-          quantiles = expr(quantile)
+          object = rlang::expr(object$fit),
+          new_data = rlang::expr(new_data),
+          quantile = rlang::expr(quantile),
+          interval = rlang::expr(interval),
+          level = rlang::expr(level)
         )
     )
   )
