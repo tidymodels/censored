@@ -127,3 +127,18 @@ test_that("survival hazard prediction", {
   # using rms for expected results
   expect_equal(exp_pred$.pred[[1]]$.pred_hazard[-1], rms_haz[-1], tol = 0.001)
 })
+
+test_that("linear predictor", {
+  f_fit <- survival_reg() %>%
+    set_engine("survival") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
+
+  exp_fit <- survreg(Surv(time, status) ~ age + sex, data = lung)
+  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_pred))
+  expect_equal(nrow(f_pred), 5)
+})

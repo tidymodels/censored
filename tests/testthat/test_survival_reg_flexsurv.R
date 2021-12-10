@@ -169,3 +169,22 @@ test_that("quantile predictions", {
   )
 
 })
+
+test_that("linear predictor", {
+  f_fit <- survival_reg() %>%
+    set_engine("flexsurv") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
+
+  exp_fit <- flexsurv::flexsurvreg(
+    Surv(time, status) ~ age + sex,
+    data = lung,
+    dist = "weibull"
+    )
+  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equivalent(f_pred$.pred_linear_pred, log(exp_pred$.pred))
+  expect_equal(nrow(f_pred), 5)
+})

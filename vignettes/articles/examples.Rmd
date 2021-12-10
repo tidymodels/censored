@@ -362,7 +362,7 @@ The following examples use the same data set throughout.
   sr_fit
   ```
 
-  The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard.
+  The holdout data can be predicted for survival probability at different time points as well as event time, linear predictor, quantile, and hazard.
   
   ```{r}
   predict(
@@ -374,6 +374,7 @@ The following examples use the same data set throughout.
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
+  predict(sr_fit, lung_test, type = "linear_pred")
   predict(sr_fit, lung_test, type = "quantile") %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -411,7 +412,7 @@ The following examples use the same data set throughout.
   sr_fit
   ```
 
-  The holdout data can be predicted for survival probability at different time points as well as event time, quantile, and hazard. 
+  The holdout data can be predicted for survival probability at different time points as well as event time, linear predictor, quantile, and hazard. 
   
   ```{r}
   predict(
@@ -423,6 +424,7 @@ The following examples use the same data set throughout.
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
+  predict(sr_fit, lung_test, type = "linear_pred")
   predict(sr_fit, lung_test, type = "quantile") %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)

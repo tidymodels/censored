@@ -42,6 +42,10 @@ model specification typically involved the use of
 For this engine, stratification cannot be specified via
 \code{\link[=strata]{strata()}}, please see the documentation of the
 \code{\link{flexsurv}} package for alternative specifications.
+
+For predictions of type \code{"linear_pred"}, the linear predictor is
+returned without it being exponentiated (which is different from what
+\code{flexsurv} returns).
 }
 
 \subsection{References}{
