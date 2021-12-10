@@ -36,17 +36,17 @@ probability with `type = "survival"`, the linear predictor with
 `type = "linear_pred"`, the quantiles of the event time distribution
 with `type = "quantile"`, and the hazard with `type = "hazard"`.
 
-| model                 | engine   | time | survival | linear\_pred | raw | quantile | hazard |
-|:----------------------|:---------|:-----|:---------|:-------------|:----|:---------|:-------|
-| bag\_tree             | rpart    | ✓    | ✓        | x            | x   | x        | x      |
-| boost\_tree           | mboost   | x    | ✓        | ✓            | x   | x        | x      |
-| decision\_tree        | rpart    | ✓    | ✓        | x            | x   | x        | x      |
-| decision\_tree        | party    | ✓    | ✓        | x            | x   | x        | x      |
-| proportional\_hazards | survival | ✓    | ✓        | ✓            | x   | x        | x      |
-| proportional\_hazards | glmnet   | x    | ✓        | ✓            | ✓   | x        | x      |
-| rand\_forest          | party    | ✓    | ✓        | x            | x   | x        | x      |
-| survival\_reg         | survival | ✓    | ✓        | x            | x   | ✓        | ✓      |
-| survival\_reg         | flexsurv | ✓    | ✓        | x            | x   | ✓        | ✓      |
+| model                | engine   | time | survival | linear_pred | raw | quantile | hazard |
+|:---------------------|:---------|:-----|:---------|:------------|:----|:---------|:-------|
+| bag_tree             | rpart    | ✓    | ✓        | x           | x   | x        | x      |
+| boost_tree           | mboost   | x    | ✓        | ✓           | x   | x        | x      |
+| decision_tree        | rpart    | ✓    | ✓        | x           | x   | x        | x      |
+| decision_tree        | party    | ✓    | ✓        | x           | x   | x        | x      |
+| proportional_hazards | survival | ✓    | ✓        | ✓           | x   | x        | x      |
+| proportional_hazards | glmnet   | x    | ✓        | ✓           | ✓   | x        | x      |
+| rand_forest          | party    | ✓    | ✓        | x           | x   | x        | x      |
+| survival_reg         | survival | ✓    | ✓        | ✓           | x   | ✓        | ✓      |
+| survival_reg         | flexsurv | ✓    | ✓        | ✓           | x   | ✓        | ✓      |
 
 ## Contributing
 
