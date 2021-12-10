@@ -2,19 +2,22 @@
 % Please edit documentation in R/party.R
 \name{survival_prob_ctree}
 \alias{survival_prob_ctree}
+\alias{party_internal}
 \alias{survival_prob_cforest}
 \title{Internal helper functions for party objects}
 \usage{
-survival_prob_ctree(object, new_data, time)
+survival_prob_ctree(object, new_data, time, output = "surv")
 
-survival_prob_cforest(object, new_data, time)
+survival_prob_cforest(object, new_data, time, output = "surv")
 }
 \arguments{
 \item{object}{A model object}
 
 \item{new_data}{A data frame to be predicted.}
 
-\item{.time}{A vector of times to predict the survival probability.}
+\item{time}{A vector of times to predict the survival probability.}
+
+\item{output}{Type of output.}
 }
 \value{
 A tibble with a list column of nested tibbles.

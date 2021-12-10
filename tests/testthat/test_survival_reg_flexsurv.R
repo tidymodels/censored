@@ -131,7 +131,8 @@ test_that("quantile predictions", {
   exp_fit <- flexsurv::flexsurvreg(
     Surv(stop, event) ~ rx + size + enum,
     data = bladder,
-    dist = "weibull")
+    dist = "weibull"
+  )
   exp_pred <- summary(
     exp_fit,
     newdata = bladder[1:3, ],
@@ -144,21 +145,29 @@ test_that("quantile predictions", {
   expect_equal(nrow(pred), 3)
   expect_true(
     all(purrr::map_lgl(pred$.pred,
-                       ~ all(dim(.x) == c(9, 4))))
+                       ~ all(dim(.x) == c(9, 2))))
   )
   expect_true(
     all(purrr::map_lgl(pred$.pred,
                        ~ all(names(.x) == c(".quantile",
-                                            ".pred_quantile",
-                                            ".pred_quantile_lower",
-                                            ".pred_quantile_upper"))))
+                                            ".pred_quantile"))))
+  )
+  expect_equal(
+    tidyr::unnest(pred, cols = .pred)$.pred_quantile,
+    do.call(rbind, exp_pred)$est
   )
 
-  expect_equal(
-    tidyr::unnest(pred, cols = .pred),
-    do.call(rbind, exp_pred) %>% as_tibble(),
-    check.attributes = FALSE
+  # add confidence interval
+  pred <- predict(fit_s, new_data = bladder[1:3,], type = "quantile",
+                  interval = "confidence", level = 0.7)
+  expect_true(
+    all(purrr::map_lgl(pred$.pred,
+                       ~ all(names(.x) == c(".quantile",
+                                            ".pred_quantile",
+                                            ".pred_lower",
+                                            ".pred_upper"))))
   )
+
 })
 
 test_that("linear predictor", {
