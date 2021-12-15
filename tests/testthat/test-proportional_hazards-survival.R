@@ -1,22 +1,15 @@
 library(testthat)
 library(survival)
 
-# ------------------------------------------------------------------------------
-
-context("Cox Regression - survival")
-
 # survival has some issues where missing predictor value get ommited despite
 # na.action = na.exclude. See https://github.com/therneau/survival/issues/137
 
 # ------------------------------------------------------------------------------
 
-cox_spec <- proportional_hazards() %>% set_engine("survival")
-
-exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
-
-# ------------------------------------------------------------------------------
-
 test_that("model object", {
+
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
@@ -82,6 +75,9 @@ test_that("time predictions with strata", {
 # ------------------------------------------------------------------------------
 
 test_that("survival predictions without strata", {
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
+
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
@@ -117,9 +113,7 @@ test_that("survival predictions without strata", {
 })
 
 test_that("survival predictions with strata", {
-  cox_spec <- proportional_hazards() %>%
-    set_mode("censored regression") %>%
-    set_engine("survival")
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
 
   set.seed(14)
   f_fit <- fit(cox_spec,
@@ -172,6 +166,9 @@ test_that("survival predictions with strata", {
 # ------------------------------------------------------------------------------
 
 test_that("linear_pred predictions without strata", {
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
+
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "linear_pred")
@@ -244,6 +241,9 @@ test_that("api errors", {
 test_that("predictions with strata and dot in formula", {
   lung2 <- lung[, c("time", "status", "age", "sex")]
   lung2$sex <- factor(lung2$sex)
+
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+
   # formula method
   expect_error(
     f_fit <- fit(cox_spec, Surv(time, status) ~ . + strata(sex), data = lung2),
@@ -275,9 +275,7 @@ test_that("predictions with strata and dot in formula", {
 })
 
 test_that("confidence intervals", {
-  cox_spec <- proportional_hazards() %>%
-    set_mode("censored regression") %>%
-    set_engine("survival")
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
 
   # survival probabilities unstratified
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)

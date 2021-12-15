@@ -5,21 +5,12 @@ library(rlang)
 
 # ------------------------------------------------------------------------------
 
-context("Cox Regression - glmnet")
-
-# ------------------------------------------------------------------------------
-
-lung2 <- lung[-14, ]
-
-cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
-
-exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
-                    y = Surv(lung2$time, lung2$status),
-                    family = "cox")
-
-# ------------------------------------------------------------------------------
-
 test_that("model object", {
+  lung2 <- lung[-14, ]
+  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
+  exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
+                      y = Surv(lung2$time, lung2$status),
+                      family = "cox")
 
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
