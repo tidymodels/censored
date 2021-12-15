@@ -27,7 +27,10 @@ test_that("model object", {
 
 # ------------------------------------------------------------------------------
 
-test_that("time predictions", {
+test_that("time predictions without strata", {
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
+
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "time")
@@ -40,21 +43,45 @@ test_that("time predictions", {
 
   # single observation
   expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"), NA)
+  expect_equal(nrow(f_pred_1), 1)
+})
 
-  # stratified model but no strata info
-  cox_model <- proportional_hazards() %>% set_engine("survival")
-  cox_fit_strata <- cox_model %>%
-    fit(Surv(time, status) ~ age + sex + wt.loss + strata(inst), data = lung)
-  new_data_0 <- data.frame(age = c(50, 60), sex = 1, wt.loss = 5)
+test_that("time predictions with strata", {
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  exp_f_fit <- coxph(Surv(time, status) ~ age + sex + strata(inst),
+                     data = lung, x = TRUE)
+
+  # formula method
+  expect_error(f_fit <- cox_spec %>%
+                 fit(Surv(time, status) ~ age + sex + strata(inst),
+                     data = lung),
+               NA)
+  new_data_3 <- lung[1:3,]
+  f_pred <- predict(f_fit, new_data_3, type = "time")
+  exp_f_pred <- unname(
+    summary(survfit(exp_f_fit, new_data_3, na.action = na.pass))$table[, "rmean"]
+    )
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_equivalent(f_pred$.pred_time, unname(exp_f_pred))
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+
+  # single observation
+  expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"), NA)
+  expect_equal(nrow(f_pred_1), 1)
+
+  # prediction without strata info should fail
+  new_data_0 <- data.frame(age = c(50, 60), sex = 1)
   expect_error(
-    predict(cox_fit_strata, new_data = new_data_0, type = "time"),
+    predict(f_fit, new_data = new_data_0, type = "time"),
     "provide the strata"
   )
 })
 
 # ------------------------------------------------------------------------------
 
-test_that("survival predictions - non-stratified", {
+test_that("survival predictions without strata", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   expect_error(predict(f_fit, lung, type = "survival"),
@@ -80,9 +107,16 @@ test_that("survival predictions - non-stratified", {
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     as.numeric(t(exp_f_pred))
   )
+
+  # single observation
+  expect_error(
+    f_pred_1 <- predict(f_fit, lung[1,], type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred_1), 1)
 })
 
-test_that("survival predictions - stratified", {
+test_that("survival predictions with strata", {
   cox_spec <- proportional_hazards() %>%
     set_mode("censored regression") %>%
     set_engine("survival")
@@ -120,6 +154,13 @@ test_that("survival predictions - stratified", {
     as.numeric(t(exp_f_pred))
   )
 
+  # single observation
+  expect_error(
+    f_pred_1 <- predict(f_fit, bladder[1, ], type = "survival", time = c(10, 20)),
+    NA
+  )
+  expect_equal(nrow(f_pred_1), 1)
+
   # prediction without strata info should fail
   new_data_s <- new_data_3 %>% dplyr::select(-enum)
   expect_error(
@@ -130,7 +171,7 @@ test_that("survival predictions - stratified", {
 
 # ------------------------------------------------------------------------------
 
-test_that("linear_pred predictions", {
+test_that("linear_pred predictions without strata", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "linear_pred")
@@ -141,6 +182,42 @@ test_that("linear_pred predictions", {
   expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 
+  # single observation
+  expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "linear_pred"), NA)
+  expect_equal(nrow(f_pred_1), 1)
+
+  # don't flip the sign
+  f_pred <- predict(f_fit, lung, type = "linear_pred", increasing = FALSE)
+  exp_f_pred <- unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(nrow(f_pred), nrow(lung))
+})
+
+test_that("linear_pred predictions with strata", {
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  exp_f_fit <- coxph(Surv(time, status) ~ age + sex + strata(inst),
+                     data = lung, x = TRUE)
+
+  # formula method
+  expect_error(
+    f_fit <- cox_spec %>%
+                 fit(Surv(time, status) ~ age + sex + strata(inst), data = lung),
+    NA
+    )
+  f_pred <- predict(f_fit, lung, type = "linear_pred")
+  exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "linear_pred"), NA)
+  expect_equal(nrow(f_pred_1), 1)
 
   # don't flip the sign
   f_pred <- predict(f_fit, lung, type = "linear_pred", increasing = FALSE)
