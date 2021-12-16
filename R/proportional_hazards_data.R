@@ -46,23 +46,12 @@ make_proportional_hazards_survival <- function() {
     type = "time",
     value = list(
       pre = cph_survival_pre,
-      post = function(x, object) {
-        tabs <- summary(x)$table
-        if (is.matrix(tabs)) {
-          colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
-          res <- unname(tabs[, "rmean"])
-        } else {
-          names(tabs) <- gsub("[[:punct:]]", "", names(tabs))
-          res <- unname(tabs["rmean"])
-        }
-        res
-      },
-      func = c(fun = "survfit"),
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_coxph"),
       args =
         list(
-          formula = quote(object$fit),
-          newdata = quote(new_data),
-          na.action = quote(stats::na.exclude)
+          object = quote(object$fit),
+          new_data = quote(new_data)
         )
     )
   )
