@@ -29,6 +29,10 @@ survival_prob_cph <- function(x,
   if (has_strata(x$terms)) {
     new_strata <- compute_strata(x, new_data) %>%
       dplyr::pull(.strata)
+    # work around https://github.com/therneau/survival/issues/130
+    if (nrow(new_data) == 1L){
+      y <- tweak_survfit_for_single_obs(y, new_strata)
+    }
   } else {
     new_strata <- NULL
   }
@@ -178,6 +182,53 @@ cph_survival_pre <- function(new_data, object) {
   new_data
 }
 
+tweak_survfit_for_single_obs <- function(object, stratum) {
+
+  all_strata <- names(object$strata)
+
+  stratum_ind <- which(stratum == all_strata)
+  time_points_in_stratum <-
+    sum(object$strata[seq_len(stratum_ind - 1)]) +
+    seq_len(object$strata[stratum_ind])
+
+  cls <- class(object)
+  ret <- unclass(object) %>%
+    purrr::map_at(c("n", "strata"), ~ .x[stratum_ind]) %>%
+    purrr::map_at(c("time", "n.risk", "n.event", "n.censor", "surv",
+                    "cumhaz", "std.err", "lower", "upper"),
+                  ~ .x[time_points_in_stratum])
+  class(ret) <- cls
+  ret
+}
+
+#' A wrapper for survival times with `coxph` models
+#' @param object A model from `coxph()`.
+#' @param new_data Data for prediction
+#' @return A tibble
+#' @keywords internal
+#' @export
+survival_time_coxph <- function(object, new_data) {
+
+  y <- survival::survfit(object, new_data, na.action = stats::na.exclude)
+
+  # work around https://github.com/therneau/survival/issues/130
+  if (has_strata(object$terms) && nrow(new_data) == 1L) {
+    new_strata <- compute_strata(object, new_data) %>%
+      dplyr::pull(.strata)
+    y <- tweak_survfit_for_single_obs(y, new_strata)
+  }
+
+  tabs <- summary(y)$table
+  if (is.matrix(tabs)) {
+    colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+    res <- unname(tabs[, "rmean"])
+  } else {
+    names(tabs) <- gsub("[[:punct:]]", "", names(tabs))
+    res <- unname(tabs["rmean"])
+  }
+  res
+}
+
 #' A wrapper for survival probabilities with coxnet models
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
@@ -213,6 +264,12 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     na.action = na.exclude,
     ...
   )
+
+  # work around https://github.com/therneau/survival/issues/130
+  if (has_strata(object$formula, object$training_data) &&
+      nrow(new_data) == 1L) {
+    y <- tweak_survfit_for_single_obs(y, new_strata)
+  }
 
   if (multi) {
     keep_penalty <- TRUE

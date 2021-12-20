@@ -105,7 +105,7 @@ get_survreg_scale <- function(object, new_data) {
 }
 
 compute_strata <- function(object, new_data) {
-  trms <- object$terms
+  trms <- stats::delete.response(object$terms)
   new_new_data <-
     stats::model.frame(trms,
                        data = new_data,
