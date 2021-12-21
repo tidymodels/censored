@@ -12,9 +12,18 @@
 make_rand_forest_party <- function() {
 
   parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "party")
-  parsnip::set_dependency("rand_forest", eng = "party", pkg = "party")
-  parsnip::set_dependency("rand_forest", eng = "party", pkg = "modeltools")
-  parsnip::set_dependency("rand_forest", eng = "party", pkg = "censored")
+  parsnip::set_dependency("rand_forest",
+                          eng = "party",
+                          pkg = "party",
+                          mode = "censored regression")
+  parsnip::set_dependency("rand_forest",
+                          eng = "party",
+                          pkg = "modeltools",
+                          mode = "censored regression")
+  parsnip::set_dependency("rand_forest",
+                          eng = "party",
+                          pkg = "censored",
+                          mode = "censored regression")
 
   parsnip::set_fit(
     model = "rand_forest",

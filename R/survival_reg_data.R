@@ -12,8 +12,14 @@
 make_survival_reg_survival <- function() {
 
   parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "survival")
-  parsnip::set_dependency("survival_reg", eng = "survival", pkg = "survival")
-  parsnip::set_dependency("survival_reg", eng = "survival", pkg = "censored")
+  parsnip::set_dependency("survival_reg",
+                          eng = "survival",
+                          pkg = "survival",
+                          mode = "censored regression")
+  parsnip::set_dependency("survival_reg",
+                          eng = "survival",
+                          pkg = "censored",
+                          mode = "censored regression")
 
   parsnip::set_model_arg(
     model = "survival_reg",
@@ -142,9 +148,18 @@ make_survival_reg_survival <- function() {
 make_survival_reg_flexsurv <- function() {
 
   parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "flexsurv")
-  parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "flexsurv")
-  parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "survival")
-  parsnip::set_dependency("survival_reg", eng = "flexsurv", pkg = "censored")
+  parsnip::set_dependency("survival_reg",
+                          eng = "flexsurv",
+                          pkg = "flexsurv",
+                          mode = "censored regression")
+  parsnip::set_dependency("survival_reg",
+                          eng = "flexsurv",
+                          pkg = "survival",
+                          mode = "censored regression")
+  parsnip::set_dependency("survival_reg",
+                          eng = "flexsurv",
+                          pkg = "censored",
+                          mode = "censored regression")
 
   parsnip::set_model_arg(
     model = "survival_reg",
