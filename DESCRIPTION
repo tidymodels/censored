@@ -41,10 +41,10 @@ Suggests:
     rpart,
     testthat
 Remotes: 
-    tidymodels/parsnip@mode-specific-dependencies
+    tidymodels/parsnip
 Config/Needs/website:
     tidymodels,
-    tidymodels/parsnip@mode-specific-dependencies,
+    tidymodels/parsnip,
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true
