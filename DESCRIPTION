@@ -12,7 +12,7 @@ License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 0.1.7.9003),
+    parsnip (>= 0.1.7.9004),
     R (>= 2.10),
     survival
 Imports: 
@@ -41,10 +41,10 @@ Suggests:
     rpart,
     testthat
 Remotes: 
-    tidymodels/parsnip
+    tidymodels/parsnip@mode-specific-dependencies
 Config/Needs/website:
     tidymodels,
-    tidymodels/parsnip,
+    tidymodels/parsnip@mode-specific-dependencies,
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true
