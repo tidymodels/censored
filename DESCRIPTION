@@ -12,7 +12,7 @@ License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 0.1.7.9002),
+    parsnip (>= 0.1.7.9004),
     R (>= 2.10),
     survival
 Imports: 
