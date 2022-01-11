@@ -68,7 +68,7 @@ test_that("linear_pred predictions", {
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
   # don't flip the sign
@@ -77,7 +77,7 @@ test_that("linear_pred predictions", {
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 })
 

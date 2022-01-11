@@ -34,7 +34,7 @@ test_that("time predictions", {
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
-  expect_equivalent(
+  expect_equal(
     f_pred$.pred_time,
     map_dbl(exp_f_pred, ~ quantile(.x, probs = .5)$quantile)
   )

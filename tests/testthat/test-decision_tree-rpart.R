@@ -32,7 +32,7 @@ test_that("time predictions", {
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
-  expect_equivalent(f_pred$.pred_time, unname(exp_f_pred))
+  expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 })
 
