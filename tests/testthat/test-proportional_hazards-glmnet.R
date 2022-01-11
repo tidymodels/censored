@@ -444,39 +444,29 @@ test_that("predictions with strata and dot in formula", {
   lung2 <- lung[, c("time", "status", "ph.ecog", "age", "sex")]
   lung2$sex <- factor(lung2$sex)
   lung2 <- lung2[complete.cases(lung2),]
+
   # formula method
-  expect_warning(
-    expect_error(
-      f_fit <- fit(cox_spec, Surv(time, status) ~ . - sex + strata(sex), data = lung2),
-      NA
-    ),
-    "algorithm did not converge"
+  # expect warnings "cox.fit: algorithm did not converge"
+  expect_snapshot(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ . - sex + strata(sex), data = lung2)
   )
-  expect_warning(
-    expect_error(
-      f_fit_2 <- fit(cox_spec, Surv(time, status) ~ ph.ecog  + age + strata(sex), data = lung2),
-      NA
-    ),
-    "algorithm did not converge"
+  # expect warnings "cox.fit: algorithm did not converge"
+  expect_snapshot(
+    f_fit_2 <- fit(cox_spec, Surv(time, status) ~ ph.ecog  + age + strata(sex), data = lung2)
   )
-  expect_warning(
-    expect_error({
-      predict(f_fit, lung2, type = "linear_pred")
-      predict(f_fit, lung2, type = "survival", time = c(100, 300))
-    },
-    NA),
-    "to new 6 after EncodeVars()"
-  )
+  # expect warnings "'to new 6 after EncodeVars()"
+  expect_snapshot({
+    predict(f_fit, lung2, type = "linear_pred")
+    predict(f_fit, lung2, type = "survival", time = c(100, 300))
+  })
   expect_equal(
     predict(f_fit, lung2, type = "linear_pred"),
     predict(f_fit_2, lung2, type = "linear_pred")
   )
-  expect_warning(
-    expect_equal(
-      predict(f_fit, lung2, type = "survival", time = c(100, 300)),
-      predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
-    ),
-    "to new 6 after EncodeVars()"
-  )
+  # expect warnings "'to new 6 after EncodeVars()"
+  expect_snapshot({
+    f_pred <- predict(f_fit, lung2, type = "survival", time = c(100, 300))
+    f_pred_2 <- predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
+  })
+  expect_equal(f_pred, f_pred_2)
 })
-
