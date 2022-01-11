@@ -97,7 +97,7 @@ test_that("survival probability prediction", {
   expect_equal(names(exp_pred_vert), c(".time", ".pred_survival", ".patient"))
 
   # using rms for expected results
-  expect_equal(exp_pred$.pred[[1]]$.pred_survival, rms_surv, tol = 0.001)
+  expect_equal(exp_pred$.pred[[1]]$.pred_survival, rms_surv, tolerance = 0.001)
 })
 
 
@@ -121,7 +121,11 @@ test_that("survival hazard prediction", {
   expect_equal(names(exp_pred_vert), c(".time", ".pred_hazard", ".patient"))
 
   # using rms for expected results
-  expect_equal(exp_pred$.pred[[1]]$.pred_hazard[-1], rms_haz[-1], tol = 0.001)
+  expect_equal(
+    exp_pred$.pred[[1]]$.pred_hazard[-1],
+    rms_haz[-1],
+    tolerance = 0.001
+  )
 })
 
 test_that("linear predictor", {
