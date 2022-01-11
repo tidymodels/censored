@@ -8,10 +8,6 @@ library(tidyr)
 
 # ------------------------------------------------------------------------------
 
-context("Survival Regresion - flexsurv")
-
-# ------------------------------------------------------------------------------
-
 source(test_path("helper-objects.R"))
 
 basic_form <- Surv(time, status) ~ age

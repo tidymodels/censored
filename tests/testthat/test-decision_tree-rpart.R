@@ -4,10 +4,6 @@ library(pec)
 
 # ------------------------------------------------------------------------------
 
-context("Decision Tree - rpart")
-
-# ------------------------------------------------------------------------------
-
 cox_spec <- decision_tree() %>% set_mode("censored regression") %>% set_engine("rpart")
 
 set.seed(1234)

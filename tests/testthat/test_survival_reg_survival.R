@@ -8,10 +8,6 @@ library(flexsurv)
 
 # ------------------------------------------------------------------------------
 
-context("Survival Regresion - survival")
-
-# ------------------------------------------------------------------------------
-
 source(test_path("helper-objects.R"))
 
 basic_form <- Surv(time, status) ~ group

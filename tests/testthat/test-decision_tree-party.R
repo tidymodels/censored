@@ -3,10 +3,6 @@ library(survival)
 
 # ------------------------------------------------------------------------------
 
-context("Decision Tree - party")
-
-# ------------------------------------------------------------------------------
-
 cox_spec <- decision_tree() %>% set_mode("censored regression") %>% set_engine("party")
 
 

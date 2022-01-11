@@ -3,10 +3,6 @@ library(survival)
 
 # ------------------------------------------------------------------------------
 
-context("Random forest - party")
-
-# ------------------------------------------------------------------------------
-
 mod_spec <- rand_forest() %>%
   set_engine("party") %>%
   set_mode("censored regression")

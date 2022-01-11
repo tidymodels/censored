@@ -6,10 +6,6 @@ library(purrr)
 
 # ------------------------------------------------------------------------------
 
-context("Bagged Tree - rpart")
-
-# ------------------------------------------------------------------------------
-
 mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
 
 set.seed(1234)
