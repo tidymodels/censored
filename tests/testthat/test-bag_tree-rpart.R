@@ -19,8 +19,8 @@ test_that("model object", {
   set.seed(1234)
   expect_error(f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
 
-  # Removing x element from f_fit and call from both
-  expect_equal(f_fit$fit[-6], exp_f_fit[-6])
+  # Removing `call` element from both, it differs in the `data` arg
+  expect_equal(f_fit$fit[-6], exp_f_fit[-6], ignore_formula_env = TRUE)
 })
 
 # ------------------------------------------------------------------------------
