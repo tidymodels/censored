@@ -211,7 +211,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  family = expr(missing_arg()),
-                 alpha = new_empty_quosure(0.34)
+                 alpha = quo(0.34)
                )
   )
 
@@ -224,7 +224,7 @@ test_that("primary arguments", {
                  formula = expr(missing_arg()),
                  data = expr(missing_arg()),
                  family = expr(missing_arg()),
-                 alpha = new_empty_quosure(varying())
+                 alpha = new_quosure(varying())
                )
   )
 })
