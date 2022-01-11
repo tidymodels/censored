@@ -39,9 +39,10 @@ Suggests:
     riskRegression,
     rmarkdown,
     rpart,
-    testthat
+    testthat (>= 3.0.0)
 Remotes: 
     tidymodels/parsnip
+Config/testthat/edition: 3
 Config/Needs/website:
     tidymodels,
     tidymodels/parsnip,
