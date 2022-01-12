@@ -1,32 +1,32 @@
 library(testthat)
-library(survival)
-library(pec)
-
-# ------------------------------------------------------------------------------
-
-cox_spec <- decision_tree() %>% set_mode("censored regression") %>% set_engine("rpart")
-
-set.seed(1234)
-exp_f_fit <- pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
-
-# ------------------------------------------------------------------------------
 
 test_that("model object", {
+  set.seed(1234)
+  exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # formula method
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
   set.seed(1234)
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung),
+    NA
+  )
 
-  # Removing x element from f_fit and call from both
   expect_equal(f_fit$fit, exp_f_fit, ignore_formula_env = TRUE)
 })
 
-# ------------------------------------------------------------------------------
-
 test_that("time predictions", {
-  # formula method
   set.seed(1234)
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
+  set.seed(1234)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
   f_pred <- predict(f_fit, lung, type = "time")
   exp_f_pred <- predict(exp_f_fit$rpart, lung)
 
@@ -36,14 +36,19 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 })
 
-# ------------------------------------------------------------------------------
-
 test_that("survival predictions", {
-  # formula method
   set.seed(1234)
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
+  set.seed(1234)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
+
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
 
