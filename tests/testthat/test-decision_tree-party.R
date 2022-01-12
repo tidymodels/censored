@@ -1,37 +1,43 @@
 library(testthat)
-library(survival)
-
-# ------------------------------------------------------------------------------
-
-cox_spec <- decision_tree() %>% set_mode("censored regression") %>% set_engine("party")
-
-
-# ------------------------------------------------------------------------------
 
 test_that("model object", {
   skip_if_not_installed("party")
   set.seed(1234)
   exp_f_fit <- party::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-
   # formula method
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("party")
   set.seed(1234)
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung),
+    NA
+  )
 
-  # Removing x element from f_fit and call from both
-  expect_equal(f_fit$fit, exp_f_fit)
+  # @data@env it not being captured by `ignore_formula_env` and `ignore_function_env`
+  f_fit$fit@data@env <- rlang::empty_env()
+  exp_f_fit@data@env <- rlang::empty_env()
+  expect_equal(
+    f_fit$fit,
+    exp_f_fit,
+    ignore_formula_env = TRUE,
+    ignore_function_env = TRUE
+  )
 })
 
-# ------------------------------------------------------------------------------
 
 test_that("time predictions", {
   skip_if_not_installed("party")
   set.seed(1234)
   exp_f_fit <- party::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  # formula method
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("party")
   set.seed(1234)
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
   f_pred <- predict(f_fit, lung, type = "time")
   exp_f_pred <- predict(exp_f_fit, lung)
 
@@ -41,16 +47,18 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 })
 
-# ------------------------------------------------------------------------------
 
 test_that("survival predictions", {
   skip_if_not_installed("party")
   set.seed(1234)
   exp_f_fit <- party::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  # formula method
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("party")
   set.seed(1234)
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung), NA)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
   expect_error(predict(f_fit, lung, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
