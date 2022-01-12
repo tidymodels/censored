@@ -1,24 +1,29 @@
 library(testthat)
-library(survival)
 
 # survival has some issues where missing predictor value get ommited despite
 # na.action = na.exclude. See https://github.com/therneau/survival/issues/137
 
-# ------------------------------------------------------------------------------
-
 test_that("model object", {
 
-  cox_spec <- proportional_hazards() %>% set_engine("survival")
   exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
   # formula method
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
 
-  # Removing x element from f_fit and call from both
-  expect_equal(coef(f_fit$fit), coef(exp_f_fit))
+  # Removing `model` element from f_fit and `call` from both
+  expect_equal(f_fit$fit[-c(16, 21)], exp_f_fit[-20])
 })
 
-# ------------------------------------------------------------------------------
+test_that("api errors", {
+  expect_snapshot(
+    error = TRUE,
+    proportional_hazards() %>% set_engine("lda")
+  )
+})
+
+
+# prediction: time --------------------------------------------------------
 
 test_that("time predictions without strata", {
   cox_spec <- proportional_hazards() %>% set_engine("survival")
@@ -72,7 +77,8 @@ test_that("time predictions with strata", {
   )
 })
 
-# ------------------------------------------------------------------------------
+
+# prediction: survival probabilities --------------------------------------
 
 test_that("survival predictions without strata", {
   cox_spec <- proportional_hazards() %>% set_engine("survival")
@@ -163,7 +169,7 @@ test_that("survival predictions with strata", {
   )
 })
 
-# ------------------------------------------------------------------------------
+# prediction: linear_pred -------------------------------------------------
 
 test_that("linear_pred predictions without strata", {
   cox_spec <- proportional_hazards() %>% set_engine("survival")
@@ -226,15 +232,6 @@ test_that("linear_pred predictions with strata", {
   expect_equal(nrow(f_pred), nrow(lung))
 })
 
-# ------------------------------------------------------------------------------
-
-test_that("api errors", {
-  expect_error(
-    proportional_hazards() %>% set_engine("lda"),
-    regexp = "Engine 'lda' is not supported"
-  )
-})
-
 
 # ------------------------------------------------------------------------------
 
@@ -257,7 +254,6 @@ test_that("predictions with strata and dot in formula", {
     predict(f_fit, lung2, type = "time")
     predict(f_fit, lung2, type = "linear_pred")
     predict(f_fit, lung2, type = "survival", time = c(100, 300))
-
   },
   NA)
   expect_equal(
@@ -277,7 +273,7 @@ test_that("predictions with strata and dot in formula", {
 test_that("confidence intervals", {
   cox_spec <- proportional_hazards() %>% set_engine("survival")
 
-  # survival probabilities unstratified
+  # without strata
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)
   f_pred <- predict(f_fit, lung, type = "survival", time = c(306, 455),
                     interval = "confidence")
@@ -298,7 +294,7 @@ test_that("confidence intervals", {
                              ".pred_upper"))))
   )
 
-  # survival probabilities stratified
+  # with strata
   set.seed(14)
   f_fit <- fit(cox_spec,
                Surv(stop, event) ~ rx + size + number + strata(enum),
