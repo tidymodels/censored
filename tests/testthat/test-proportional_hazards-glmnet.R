@@ -1,37 +1,111 @@
 library(testthat)
-library(survival)
 library(glmnet)
-library(rlang)
-
-# ------------------------------------------------------------------------------
 
 test_that("model object", {
   lung2 <- lung[-14, ]
-  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
   exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
                       y = Surv(lung2$time, lung2$status),
                       family = "cox")
 
   # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
+  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2),
+    NA
+  )
 
   # Removing call element
   expect_equal(f_fit$fit[-11], exp_f_fit[-11])
 })
 
-# ------------------------------------------------------------------------------
+test_that("api errors", {
+  expect_snapshot(error = TRUE, proportional_hazards() %>% set_engine("lda"))
+})
+
+test_that("primary arguments", {
+
+  # penalty
+  penalty <- proportional_hazards(penalty = 0.05) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expect_equal(translate(penalty)$method$fit$args,
+               list(
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 family = rlang::expr(missing_arg())
+               )
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    translate(proportional_hazards() %>% set_engine("glmnet"))
+  )
+
+  # mixture
+  mixture <- proportional_hazards(mixture = 0.34, penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expect_equal(translate(mixture)$method$fit$args,
+               list(
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 family = rlang::expr(missing_arg()),
+                 alpha = rlang::quo(0.34)
+               )
+  )
+
+  mixture_v <- proportional_hazards(mixture = varying(), penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expect_equal(translate(mixture_v)$method$fit$args,
+               list(
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 family = rlang::expr(missing_arg()),
+                 alpha = rlang::new_quosure(varying())
+               )
+  )
+})
+
+
+test_that("updating", {
+  expr1 <- proportional_hazards() %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+  expr1_exp <- proportional_hazards(mixture = 0.76) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+  expr2 <- proportional_hazards() %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+  expr2_exp <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+
+
+  expect_equal(update(expr1, mixture = 0.76), expr1_exp)
+  expect_equal(update(expr2, penalty = 0.123), expr2_exp)
+})
+
+
+# prediction: linear_pred -------------------------------------------------
 
 test_that("linear_pred predictions without strata", {
   lung2 <- lung[-14, ]
-  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
   exp_f_fit <- glmnet(x = as.matrix(lung2[, c(4, 6)]),
                       y = Surv(lung2$time, lung2$status),
                       family = "cox")
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
+  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # predict
   f_pred <- predict(f_fit, lung2, type = "linear_pred", penalty = 0.01)
-  exp_f_pred <- -unname(predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]), s = 0.01))
+  exp_f_pred <- -unname(predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]),
+                                s = 0.01))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
@@ -86,7 +160,6 @@ test_that("linear_pred predictions without strata", {
     pred_multi %>% tidyr::unnest(cols = .pred),
     exp_pred_multi_unnested
   )
-
 })
 
 test_that("linear_pred predictions with strata", {
@@ -94,12 +167,12 @@ test_that("linear_pred predictions with strata", {
   # TODO find a better example?
 
   lung2 <- lung[-14, ]
-  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
   exp_f_fit <- suppressWarnings(
     glmnet(x = as.matrix(lung2[, c(4, 6)]),
            y = stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
            family = "cox")
   )
+  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
   expect_error(
     suppressWarnings(
       f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog + strata(sex),
@@ -165,94 +238,11 @@ test_that("linear_pred predictions with strata", {
     pred_multi %>% tidyr::unnest(cols = .pred),
     exp_pred_multi_unnested
   )
-
 })
 
 
 
-# ------------------------------------------------------------------------------
-
-test_that("api errors", {
-  expect_error(
-    proportional_hazards() %>% set_engine("lda"),
-    regexp = "Engine 'lda' is not supported"
-  )
-})
-
-# ------------------------------------------------------------------------------
-
-test_that("primary arguments", {
-
-  # penalty ------------------------------------------------------
-  penalty <- proportional_hazards(penalty = 0.05) %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-
-  expect_equal(translate(penalty)$method$fit$args,
-               list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 family = expr(missing_arg())
-               )
-  )
-
-  expect_error(
-    translate(proportional_hazards() %>% set_engine("glmnet")),
-    "For the glmnet engine, `penalty` must be a single"
-  )
-
-  # mixture -----------------------------------------------------------
-  mixture <- proportional_hazards(mixture = 0.34, penalty = 0.123) %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-
-  expect_equal(translate(mixture)$method$fit$args,
-               list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 family = expr(missing_arg()),
-                 alpha = quo(0.34)
-               )
-  )
-
-  mixture_v <- proportional_hazards(mixture = varying(), penalty = 0.123) %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-
-  expect_equal(translate(mixture_v)$method$fit$args,
-               list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 family = expr(missing_arg()),
-                 alpha = new_quosure(varying())
-               )
-  )
-})
-
-# ------------------------------------------------------------------------------
-
-test_that("updating", {
-  expr1 <- proportional_hazards() %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-  expr1_exp <- proportional_hazards(mixture = 0.76) %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-
-  expr2 <- proportional_hazards() %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-  expr2_exp <- proportional_hazards(penalty = 0.123) %>%
-    set_mode("censored regression") %>%
-    set_engine("glmnet")
-
-
-  expect_equal(update(expr1, mixture = 0.76), expr1_exp)
-  expect_equal(update(expr2, penalty = 0.123), expr2_exp)
-})
-
-
-# -------------------------------------------------------------------------
+# prediction: survival probabilities -------------------------------------
 
 test_that("survival probabilities without strata", {
 
@@ -415,21 +405,21 @@ test_that("survival probabilities with strata", {
 test_that("formula modifications", {
   # base case
   expect_equal(
-    drop_strata(expr(x + strata(s))),
-    expr(x)
+    drop_strata(rlang::expr(x + strata(s))),
+    rlang::expr(x)
   )
 
   expect_equal(
-    drop_strata(expr(x + x + x + strata(s))),
-    expr(x + x + x)
+    drop_strata(rlang::expr(x + x + x + strata(s))),
+    rlang::expr(x + x + x)
   )
   expect_equal(
-    drop_strata(expr(x * (y + strata(s)) + z)),
-    expr(x * (y + strata(s)) + z)
+    drop_strata(rlang::expr(x * (y + strata(s)) + z)),
+    rlang::expr(x * (y + strata(s)) + z)
   )
 
   expect_error(
-    check_strata_remaining(expr(x * (y + strata(s)) + z))
+    check_strata_remaining(rlang::expr(x * (y + strata(s)) + z))
   )
 })
 

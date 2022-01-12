@@ -1,3 +1,20 @@
+# api errors
+
+    Code
+      proportional_hazards() %>% set_engine("lda")
+    Error <rlang_error>
+      Engine 'lda' is not supported for `proportional_hazards()`. See `show_engines('proportional_hazards')`.
+
+# primary arguments
+
+    Code
+      translate(proportional_hazards() %>% set_engine("glmnet"))
+    Error <rlang_error>
+      For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).
+      * There are 0 values for `penalty`.
+      * To try multiple values for total regularization, use the tune package.
+      * To predict multiple penalties, use `multi_predict()`
+
 # predictions with strata and dot in formula
 
     Code
