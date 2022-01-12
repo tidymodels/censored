@@ -64,7 +64,7 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
     haz = ".pred_hazard_cumulative"
   )
   cols_to_keep <- c(cols_to_keep, output_cols)
-  dplyr::select(x, cols_to_keep)
+  dplyr::select(x, dplyr::all_of(cols_to_keep))
 }
 
 stack_survfit <- function(x, n, penalty = NULL) {
