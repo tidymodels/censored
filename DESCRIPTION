@@ -40,8 +40,8 @@ Suggests:
     rmarkdown,
     rpart,
     testthat
-Remotes: 
-    tidymodels/parsnip
+Remotes:
+    tidymodels/parsnip#631
 Config/Needs/website:
     tidymodels,
     tidymodels/parsnip,
