@@ -47,7 +47,7 @@ test_that("survival probability prediction", {
     "a numeric vector 'time'"
   )
 
-  exp_pred <- predict(res, head(lung), type = "survival", time = prob_times)
+  exp_pred <- predict(res, head(lung), type = "survival", time = c(0, 500, 1000))
   exp_pred_vert <- exp_pred %>%
     dplyr::mutate(.patient = dplyr::row_number()) %>%
     tidyr::unnest(cols = .pred)
@@ -74,7 +74,7 @@ test_that("survival hazard prediction", {
     "a numeric vector 'time'"
   )
 
-  exp_pred <- predict(res, head(lung), type = "hazard", time = prob_times)
+  exp_pred <- predict(res, head(lung), type = "hazard", time = c(0, 500, 1000))
   exp_pred_vert <- exp_pred %>%
     dplyr::mutate(.patient = dplyr::row_number()) %>%
     tidyr::unnest(cols = .pred)
