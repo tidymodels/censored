@@ -1,13 +1,4 @@
 library(testthat)
-library(parsnip)
-library(rlang)
-library(survival)
-# ------------------------------------------------------------------------------
-
-context("Survival Regresion")
-source("helpers.R")
-
-# ------------------------------------------------------------------------------
 
 test_that("primary arguments", {
   basic <- survival_reg()
@@ -15,9 +6,9 @@ test_that("primary arguments", {
 
   expect_equal(basic_flexsurv$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 weights = expr(missing_arg())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg())
                )
   )
 
@@ -25,10 +16,10 @@ test_that("primary arguments", {
   normal_flexsurv <- translate(normal %>% set_engine("flexsurv"))
   expect_equal(normal_flexsurv$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 weights = expr(missing_arg()),
-                 dist = new_empty_quosure("lnorm")
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
+                 dist = rlang::quo("lnorm")
                )
   )
 
@@ -36,10 +27,10 @@ test_that("primary arguments", {
   dist_v_flexsurv <- translate(dist_v %>% set_engine("flexsurv"))
   expect_equal(dist_v_flexsurv$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 weights = expr(missing_arg()),
-                 dist = new_empty_quosure(varying())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
+                 dist = rlang::new_quosure(varying())
                )
   )
 })
@@ -48,13 +39,12 @@ test_that("engine arguments", {
   fs_cl <- survival_reg()
   expect_equal(translate(fs_cl %>% set_engine("flexsurv", cl = .99))$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 weights = expr(missing_arg()),
-                 cl = new_empty_quosure(.99)
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
+                 cl = rlang::quo(.99)
                )
   )
-
 })
 
 
