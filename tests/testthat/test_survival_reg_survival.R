@@ -1,8 +1,5 @@
 library(testthat)
 
-source(test_path("helper-objects.R"))
-
-
 test_that("survival execution", {
 
   expect_error(
@@ -53,6 +50,7 @@ test_that("prediction of survival time quantile", {
 })
 
 test_that("survival probability prediction", {
+  rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
   res <- survival_reg() %>%
     set_engine("survival") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
@@ -79,6 +77,7 @@ test_that("survival probability prediction", {
 })
 
 test_that("survival hazard prediction", {
+  rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
   res <- survival_reg() %>%
     set_engine("survival") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
