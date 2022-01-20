@@ -1,7 +1,5 @@
 library(testthat)
 
-source(test_path("helper-objects.R"))
-
 test_that("flexsurv execution", {
   expect_error(
     res <- survival_reg(dist = "lognormal") %>%
@@ -38,6 +36,7 @@ test_that("flexsurv time prediction", {
 
 
 test_that("survival probability prediction", {
+  rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
   res <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
@@ -65,6 +64,7 @@ test_that("survival probability prediction", {
 
 
 test_that("survival hazard prediction", {
+  rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
   res <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
