@@ -23,6 +23,19 @@ survival_prob_cph <- function(x,
     output <- "survconf"
   }
 
+  missings_in_new_data <- get_missings(x, new_data)
+  if (!is.null(missings_in_new_data)) {
+    n_total <- nrow(new_data)
+    n_missing <- length(missings_in_new_data)
+    all_missing <- n_missing == n_total
+    if (all_missing) {
+      ret <- predict_survival_na(times, interval)
+      ret <- tibble(.pred = rep(list(ret), n_missing))
+      return(ret)
+    }
+    new_data <- new_data[-missings_in_new_data, ]
+  }
+
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
                          na.action = na.exclude, ...)
 
@@ -47,6 +60,14 @@ survival_prob_cph <- function(x,
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
+
+  if (!is.null(missings_in_new_data)) {
+    pred_na <- predict_survival_na(times, interval)
+    pred_full <- vector(mode = "list", length = n_total)
+    pred_full[missings_in_new_data] <- list(pred_na)
+    pred_full[-missings_in_new_data] <- res$.pred
+    res <- tibble(.pred = pred_full)
+  }
   res
 }
 
@@ -174,8 +195,8 @@ cph_survival_pre <- function(new_data, object) {
     strata <- sub(pattern = "strata\\(", replacement = "", x = strata)
     strata <- sub(pattern = "\\)", replacement = "", x = strata)
 
-    if (!strata %in% names(new_data)) {
-      rlang::abort("Please provide the strata variable in `new_data`.")
+    if (!all(strata %in% names(new_data))) {
+      rlang::abort("Please provide the strata variable(s) in `new_data`.")
     }
   }
 
@@ -198,6 +219,26 @@ tweak_survfit_for_single_obs <- function(object, stratum) {
                     "cumhaz", "std.err", "lower", "upper"),
                   ~ .x[time_points_in_stratum])
   class(ret) <- cls
+  ret
+}
+
+# see https://github.com/therneau/survival/issues/137
+get_missings <- function(object, new_data) {
+  trms <- stats::terms(object)
+  trms <- stats::delete.response(trms)
+  mod_frame <- stats::model.frame(trms, data = new_data,
+                                  na.action = stats::na.exclude)
+
+  attr(mod_frame, "na.action")
+}
+
+
+predict_survival_na <- function(time, interval = "none") {
+  ret <- tibble(.time = time, .pred_survival = NA_real_)
+  if (interval == "confidence"){
+    ret <- ret %>%
+      dplyr::mutate(.pred_lower = NA_real_, .pred_upper = NA_real_)
+  }
   ret
 }
 
