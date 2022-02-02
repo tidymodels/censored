@@ -78,6 +78,7 @@ censored.</p>
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p><strong>Maintainer</strong>: Emil Hvitfeldt <a href="mailto:emilhhvitfeldt@gmail.com">emilhhvitfeldt@gmail.com</a> (<a href="https://orcid.org/0000-0002-0679-1945" class="external-link">ORCID</a>)</p>
 <p>Authors:</p><ul><li><p>Hannah Frick <a href="mailto:hannah@rstudio.com">hannah@rstudio.com</a></p></li>
+</ul><p>Other contributors:</p><ul><li><p>RStudio [copyright holder, funder]</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -114,14 +115,15 @@ censored.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">fit_ag</span> <span class="op">&lt;-</span> <span class="fu">proportional_hazards</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span class="r-in">  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"survival"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span class="r-in">  <span class="fu">fit</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">tstart</span>, <span class="va">tstop</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">+</span> <span class="va">inherit</span> <span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">cgd</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu">fit</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">tstart</span>, <span class="va">tstop</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">+</span> <span class="va">inherit</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="fu">strata</span><span class="op">(</span><span class="va">hos.cat</span><span class="op">)</span>,</span>
+<span class="r-in">      data <span class="op">=</span> <span class="va">cgd</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit_ag</span>, <span class="va">cgd</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span>, type <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .pred_time</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       332.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       332.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       332.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>       319.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>       319.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>       319.</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
