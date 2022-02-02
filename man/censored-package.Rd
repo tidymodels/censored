@@ -34,7 +34,8 @@ predict(fit_cox, lung[1:3, ], type = "time")
 
 fit_ag <- proportional_hazards() \%>\%
   set_engine("survival") \%>\%
-  fit(Surv(tstart, tstop, status) ~ treat + inherit + age, data = cgd)
+  fit(Surv(tstart, tstop, status) ~ treat + inherit + age + strata(hos.cat),
+      data = cgd)
 predict(fit_ag, cgd[1:3, ], type = "time")
 
 }
@@ -52,6 +53,11 @@ Useful links:
 Authors:
 \itemize{
   \item Hannah Frick \email{hannah@rstudio.com}
+}
+
+Other contributors:
+\itemize{
+  \item RStudio [copyright holder, funder]
 }
 
 }
