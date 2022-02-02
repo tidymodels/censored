@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/tidymodels/censored/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/censored/actions)
+[![R-CMD-check](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/tidymodels/censored/branch/main/graph/badge.svg)](https://codecov.io/gh/tidymodels/censored?branch=main)
 [![Lifecycle:
