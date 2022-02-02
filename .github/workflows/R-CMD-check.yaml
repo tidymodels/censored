@@ -32,8 +32,10 @@ jobs:
           # Use older ubuntu to maximise backward compatibility
           - {os: ubuntu-18.04,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-18.04,   r: 'release'}
-          - {os: ubuntu-18.04,   r: 'oldrel-1'}
-          - {os: ubuntu-18.04,   r: 'oldrel-2'}
+          # quantreg v5.87 needs R >= 4.1.0
+          # https://community.rstudio.com/t/github-action-r-cmd-check-failed-to-build-soruce-quantreg-on-ubuntu-oldrel-1/127654/6
+          #- {os: ubuntu-18.04,   r: 'oldrel-1'}
+          #- {os: ubuntu-18.04,   r: 'oldrel-2'}
           # glmnet needs R >= 3.6
           #- {os: ubuntu-18.04,   r: 'oldrel-3'}
           #- {os: ubuntu-18.04,   r: 'oldrel-4'}
