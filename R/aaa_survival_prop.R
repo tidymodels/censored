@@ -250,6 +250,19 @@ predict_survival_na <- function(time, interval = "none") {
 #' @export
 survival_time_coxph <- function(object, new_data) {
 
+  missings_in_new_data <- get_missings(object, new_data)
+  if (!is.null(missings_in_new_data)) {
+    n_total <- nrow(new_data)
+    n_missing <- length(missings_in_new_data)
+    all_missing <- n_missing == n_total
+    if (all_missing) {
+      ret <- rep(NA, n_missing)
+      return(ret)
+    }
+    new_data <- new_data[-missings_in_new_data, ]
+  }
+
+
   y <- survival::survfit(object, new_data, na.action = stats::na.exclude)
 
   # work around https://github.com/therneau/survival/issues/130
@@ -266,6 +279,11 @@ survival_time_coxph <- function(object, new_data) {
   } else {
     names(tabs) <- gsub("[[:punct:]]", "", names(tabs))
     res <- unname(tabs["rmean"])
+  }
+  if (!is.null(missings_in_new_data)) {
+    index_with_na <- rep(NA, n_total)
+    index_with_na[-missings_in_new_data] <- seq_along(res)
+    res <- res[index_with_na]
   }
   res
 }

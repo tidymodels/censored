@@ -77,6 +77,70 @@ test_that("time predictions with strata", {
   )
 })
 
+test_that("time predictions with NA", {
+
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + strata(ph.ecog),
+                 data = lung),
+    NA
+  )
+
+  # survfit.coxph() is not type-stable,
+  # thus test against single or multiple survival curves
+  # lung$ph.ecog[14] is NA
+  na_x_data_x <- lung[c(13:15, 14),]
+  na_x_data_1 <- lung[c(13, 14, 14),]
+  na_x_data_0 <- lung[c(14, 14),]
+  na_1_data_x <- lung[13:15,]
+  na_1_data_1 <- lung[13:14,]
+  na_1_data_0 <- lung[14,]
+
+  # survival time
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_x, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_x))
+  expect_equal(which(is.na(f_pred$.pred_time)), c(2, 4))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_1, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_1))
+  expect_equal(which(is.na(f_pred$.pred_time)), c(2, 3))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_0, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_0))
+  expect_equal(which(is.na(f_pred$.pred_time)), 1:2)
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_x, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_x))
+  expect_equal(which(is.na(f_pred$.pred_time)), 2)
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_1, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_1))
+  expect_equal(which(is.na(f_pred$.pred_time)), 2)
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_0, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_0))
+  expect_true(is.na(f_pred$.pred_time))
+
+})
+
 
 # prediction: survival probabilities --------------------------------------
 
