@@ -108,7 +108,7 @@ test_that("primary arguments", {
                )
   )
 
-  mtry_v <- boost_tree(mtry = varying()) %>%
+  mtry_v <- boost_tree(mtry = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
@@ -116,7 +116,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 mtry = rlang::new_quosure(varying()),
+                 mtry = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
   )
@@ -135,7 +135,7 @@ test_that("primary arguments", {
                )
   )
 
-  trees_v <- boost_tree(trees = varying()) %>%
+  trees_v <- boost_tree(trees = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
@@ -143,7 +143,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 mstop = rlang::new_quosure(varying()),
+                 mstop = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
   )
@@ -162,7 +162,7 @@ test_that("primary arguments", {
                )
   )
 
-  tree_depth_v <- boost_tree(tree_depth = varying()) %>%
+  tree_depth_v <- boost_tree(tree_depth = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
@@ -170,7 +170,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 maxdepth = rlang::new_quosure(varying()),
+                 maxdepth = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
   )
@@ -189,7 +189,7 @@ test_that("primary arguments", {
                )
   )
 
-  min_n_v <- boost_tree(min_n = varying()) %>%
+  min_n_v <- boost_tree(min_n = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
@@ -197,7 +197,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 minsplit = rlang::new_quosure(varying()),
+                 minsplit = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
   )
@@ -216,7 +216,7 @@ test_that("primary arguments", {
                )
   )
 
-  loss_reduction_v <- boost_tree(loss_reduction = varying()) %>%
+  loss_reduction_v <- boost_tree(loss_reduction = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
@@ -224,7 +224,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 mincriterion = rlang::new_quosure(varying()),
+                 mincriterion = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
   )

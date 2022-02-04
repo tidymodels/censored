@@ -56,7 +56,7 @@ test_that("primary arguments", {
                )
   )
 
-  mixture_v <- proportional_hazards(mixture = varying(), penalty = 0.123) %>%
+  mixture_v <- proportional_hazards(mixture = tune(), penalty = 0.123) %>%
     set_mode("censored regression") %>%
     set_engine("glmnet")
 
@@ -65,7 +65,7 @@ test_that("primary arguments", {
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
                  family = rlang::expr(missing_arg()),
-                 alpha = rlang::new_quosure(varying())
+                 alpha = rlang::new_quosure(hardhat::tune())
                )
   )
 })

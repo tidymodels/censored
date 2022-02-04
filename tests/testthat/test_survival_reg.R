@@ -23,14 +23,14 @@ test_that("primary arguments", {
                )
   )
 
-  dist_v <- survival_reg(dist = varying())
+  dist_v <- survival_reg(dist = tune())
   dist_v_flexsurv <- translate(dist_v %>% set_engine("flexsurv"))
   expect_equal(dist_v_flexsurv$method$fit$args,
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
                  weights = rlang::expr(missing_arg()),
-                 dist = rlang::new_quosure(varying())
+                 dist = rlang::new_quosure(hardhat::tune())
                )
   )
 })
@@ -49,7 +49,7 @@ test_that("engine arguments", {
 
 
 test_that("updating", {
-  expr1     <- survival_reg() %>% set_engine("flexsurv", cl = varying())
+  expr1     <- survival_reg() %>% set_engine("flexsurv", cl = tune())
   expr1_exp <- survival_reg(dist = "lnorm") %>% set_engine("flexsurv", cl = .99)
   expect_equal(update(expr1, dist = "lnorm", cl = 0.99), expr1_exp)
 
