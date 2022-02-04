@@ -2,15 +2,17 @@
 
     Code
       proportional_hazards() %>% set_engine("lda")
-    Error <rlang_error>
-      Engine 'lda' is not supported for `proportional_hazards()`. See `show_engines('proportional_hazards')`.
+    Condition
+      Error in `check_spec_mode_engine_val()`:
+      ! Engine 'lda' is not supported for `proportional_hazards()`. See `show_engines('proportional_hazards')`.
 
 # primary arguments
 
     Code
       translate(proportional_hazards() %>% set_engine("glmnet"))
-    Error <rlang_error>
-      For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).
+    Condition
+      Error in `.check_glmnet_penalty_fit()`:
+      ! For the glmnet engine, `penalty` must be a single number (or a value of `tune()`).
       * There are 0 values for `penalty`.
       * To try multiple values for total regularization, use the tune package.
       * To predict multiple penalties, use `multi_predict()`
@@ -19,16 +21,26 @@
 
     Code
       f_fit <- fit(cox_spec, Surv(time, status) ~ . - sex + strata(sex), data = lung2)
-    Warning <simpleWarning>
+    Condition
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
 
 ---
@@ -36,16 +48,26 @@
     Code
       f_fit_2 <- fit(cox_spec, Surv(time, status) ~ ph.ecog + age + strata(sex),
       data = lung2)
-    Warning <simpleWarning>
+    Condition
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
+      Warning:
       cox.fit: algorithm did not converge
 
 ---
@@ -69,8 +91,10 @@
       # ... with 217 more rows
     Code
       predict(f_fit, lung2, type = "survival", time = c(100, 300))
-    Warning <simpleWarning>
+    Condition
+      Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
+      Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
     Output
       # A tibble: 227 x 1
@@ -92,8 +116,10 @@
 
     Code
       f_pred <- predict(f_fit, lung2, type = "survival", time = c(100, 300))
-    Warning <simpleWarning>
+    Condition
+      Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
+      Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
     Code
       f_pred_2 <- predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
