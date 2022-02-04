@@ -37,6 +37,7 @@
 ## usethis namespace: start
 #' @importFrom dplyr %>%
 #' @importFrom generics fit
+#' @importFrom hardhat tune
 #' @importFrom parsnip eval_args multi_predict predict_raw predict_survival
 #' @importFrom parsnip predict_linear_pred
 #' @importFrom parsnip predict.model_fit translate

@@ -19,6 +19,7 @@ Depends:
 Imports: 
     dials,
     dplyr (>= 0.8.0.1),
+    hardhat (>= 0.2.0),
     flexsurv,
     generics,
     glue,
