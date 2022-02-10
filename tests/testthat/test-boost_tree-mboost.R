@@ -1,44 +1,44 @@
 library(testthat)
-library(survival)
-library(mboost)
-library(rlang)
-
-# ------------------------------------------------------------------------------
-
-context("Boosted Tree - mboost")
-
-# ------------------------------------------------------------------------------
-
-lung2 <- lung[-14, ]
-
-cox_spec <- boost_tree() %>%
-  set_engine("mboost") %>%
-  set_mode("censored regression")
-
-exp_f_fit <- blackboost(Surv(time, status) ~ age + ph.ecog,
-                        data = lung2,
-                        family = CoxPH())
-
-# ------------------------------------------------------------------------------
 
 test_that("model object", {
+  lung2 <- lung[-14, ]
+  exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
+                                  data = lung2,
+                                  family = mboost::CoxPH())
 
   # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
+  cox_spec <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression")
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2),
+    NA
+  )
 
-  # Removing x element from f_fit and call from both
-  # expect_equal(unclass(f_fit$fit)[-24], unclass(exp_f_fit)[-24])
+  # Removing `call` element from both
+  expect_equal(
+    unclass(f_fit$fit)[-24],
+    unclass(exp_f_fit)[-24],
+    ignore_function_env = TRUE
+  )
 })
 
-# ------------------------------------------------------------------------------
 
 test_that("survival predictions", {
   pred_time <- c(0, 100, 200, 10000)
 
-  # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
+  lung2 <- lung[-14, ]
+  exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
+                                  data = lung2,
+                                  family = mboost::CoxPH())
+  cox_spec <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
+
   expect_error(predict(f_fit, lung2, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
+
   f_pred <- predict(f_fit, lung2, type = "survival", time = pred_time)
   exp_f_pred <- mboost::survFit(exp_f_fit, lung2)
 
@@ -62,17 +62,22 @@ test_that("survival predictions", {
   )
 })
 
-# ------------------------------------------------------------------------------
-
 test_that("linear_pred predictions", {
-  # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2), NA)
+  lung2 <- lung[-14, ]
+  exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
+                                  data = lung2,
+                                  family = mboost::CoxPH())
+  cox_spec <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
+
   f_pred <- predict(f_fit, lung2, type = "linear_pred")
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung2))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
   # don't flip the sign
@@ -81,7 +86,7 @@ test_that("linear_pred predictions", {
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equivalent(f_pred$.pred_linear_pred, unname(exp_f_pred))
+  expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 })
 
@@ -89,144 +94,142 @@ test_that("linear_pred predictions", {
 
 test_that("primary arguments", {
 
-  # mtry ------------------------------------------------------
+  # mtry
   mtry <- boost_tree(mtry = 5) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(mtry)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 mtry = new_empty_quosure(5),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 mtry = rlang::quo(5),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  mtry_v <- boost_tree(mtry = varying()) %>%
+  mtry_v <- boost_tree(mtry = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(mtry_v)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 mtry = new_empty_quosure(varying()),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 mtry = rlang::new_quosure(hardhat::tune()),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  # trees -----------------------------------------------------------
+  # trees
   trees <- boost_tree(trees = 1000) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(trees)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 mstop = new_empty_quosure(1000),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 mstop = rlang::quo(1000),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  trees_v <- boost_tree(trees = varying()) %>%
+  trees_v <- boost_tree(trees = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(trees_v)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 mstop = new_empty_quosure(varying()),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 mstop = rlang::new_quosure(hardhat::tune()),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  # tree_depth ------------------------------------------------------
+  # tree_depth
   tree_depth <- boost_tree(tree_depth = 3) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(tree_depth)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 maxdepth = new_empty_quosure(3),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 maxdepth = rlang::quo(3),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  tree_depth_v <- boost_tree(tree_depth = varying()) %>%
+  tree_depth_v <- boost_tree(tree_depth = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(tree_depth_v)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 maxdepth = new_empty_quosure(varying()),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 maxdepth = rlang::new_quosure(hardhat::tune()),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  # min_n ------------------------------------------------------
+  # min_n
   min_n <- boost_tree(min_n = 10) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(min_n)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 minsplit = new_empty_quosure(10),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 minsplit = rlang::quo(10),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  min_n_v <- boost_tree(min_n = varying()) %>%
+  min_n_v <- boost_tree(min_n = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(min_n_v)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 minsplit = new_empty_quosure(varying()),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 minsplit = rlang::new_quosure(hardhat::tune()),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  # loss_reduction ------------------------------------------------------
+  # loss_reduction
   loss_reduction <- boost_tree(loss_reduction = 0.2) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(loss_reduction)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 mincriterion = new_empty_quosure(0.2),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 mincriterion = rlang::quo(0.2),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
-  loss_reduction_v <- boost_tree(loss_reduction = varying()) %>%
+  loss_reduction_v <- boost_tree(loss_reduction = tune()) %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
 
   expect_equal(translate(loss_reduction_v)$method$fit$args,
                list(
-                 formula = expr(missing_arg()),
-                 data = expr(missing_arg()),
-                 mincriterion = new_empty_quosure(varying()),
-                 family = expr(mboost::CoxPH())
+                 formula = rlang::expr(missing_arg()),
+                 data = rlang::expr(missing_arg()),
+                 mincriterion = rlang::new_quosure(hardhat::tune()),
+                 family = rlang::expr(mboost::CoxPH())
                )
   )
 
 })
-
-# ------------------------------------------------------------------------------
 
 test_that("updating", {
   expr1 <- boost_tree() %>%
@@ -269,5 +272,4 @@ test_that("updating", {
   expect_equal(update(expr3, mtry = 10), expr3_exp)
   expect_equal(update(expr4, min_n = 10), expr4_exp)
   expect_equal(update(expr5, loss_reduction = 10), expr5_exp)
-
 })

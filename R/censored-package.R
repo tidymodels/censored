@@ -28,7 +28,8 @@
 #'
 #' fit_ag <- proportional_hazards() %>%
 #'   set_engine("survival") %>%
-#'   fit(Surv(tstart, tstop, status) ~ treat + inherit + age, data = cgd)
+#'   fit(Surv(tstart, tstop, status) ~ treat + inherit + age + strata(hos.cat),
+#'       data = cgd)
 #' predict(fit_ag, cgd[1:3, ], type = "time")
 #'
 "_PACKAGE"
@@ -36,6 +37,7 @@
 ## usethis namespace: start
 #' @importFrom dplyr %>%
 #' @importFrom generics fit
+#' @importFrom hardhat tune
 #' @importFrom parsnip eval_args multi_predict predict_raw predict_survival
 #' @importFrom parsnip predict_linear_pred
 #' @importFrom parsnip predict.model_fit translate
