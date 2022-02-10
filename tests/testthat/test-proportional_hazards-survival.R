@@ -32,7 +32,9 @@ test_that("time predictions without strata", {
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   f_pred <- predict(f_fit, lung, type = "time")
-  exp_f_pred <- unname(summary(survfit(exp_f_fit, lung, na.action = na.pass))$table[, "rmean"])
+  tabs <- summary(survfit(exp_f_fit, lung, na.action = na.pass))$table
+  colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+  exp_f_pred <- unname(tabs[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
@@ -56,9 +58,9 @@ test_that("time predictions with strata", {
                NA)
   new_data_3 <- lung[1:3,]
   f_pred <- predict(f_fit, new_data_3, type = "time")
-  exp_f_pred <- unname(
-    summary(survfit(exp_f_fit, new_data_3, na.action = na.pass))$table[, "rmean"]
-    )
+  tabs <- summary(survfit(exp_f_fit, new_data_3, na.action = na.pass))$table
+  colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+  exp_f_pred <- unname(tabs[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
