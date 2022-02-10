@@ -34,30 +34,6 @@
     <loc>https://censored.tidymodels.org/reference/cond_inference_surv_ctree.html</loc>
   </url>
   <url>
-    <loc>https://censored.tidymodels.org/reference/details_bag_tree_rpart.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_boost_tree_mboost.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_decision_tree_party.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_proportional_hazards_glmnet.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_proportional_hazards_survival.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_rand_forest_party.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_survival_reg_flexsurv.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/reference/details_survival_reg_survival.html</loc>
-  </url>
-  <url>
     <loc>https://censored.tidymodels.org/reference/flexsurv_probs.html</loc>
   </url>
   <url>
