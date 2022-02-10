@@ -41,7 +41,7 @@ Suggests:
     rpart,
     testthat
 Remotes:
-    tidymodels/parsnip#631
+    tidymodels/parsnip
 Config/Needs/website:
     tidymodels,
     tidymodels/parsnip,
