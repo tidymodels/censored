@@ -35,8 +35,9 @@ get_missings_survbagg <- function(object, new_data) {
   object <- object$mtrees[[1]]$btree
   trms <- stats::terms(object)
   trms <- stats::delete.response(trms)
+  na_action <- (object$call)$na.action %||% rpart::na.rpart
   mod_frame <- stats::model.frame(trms, data = new_data,
-                                  na.action = rpart::na.rpart,
+                                  na.action = na_action,
                                   xlev = attr(object, "xlevels"))
   attr(mod_frame, "na.action")
 }

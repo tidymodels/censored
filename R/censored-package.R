@@ -44,6 +44,7 @@
 #' @importFrom purrr map map_dbl
 #' @importFrom rlang abort call2 empty_env enquos eval_tidy expr is_call
 #' @importFrom rlang new_quosure
+#' @importFrom rlang %||%
 #' @importFrom stats na.exclude na.pass predict quantile setNames
 #' @importFrom survival strata
 #' @importFrom tibble as_tibble tibble
