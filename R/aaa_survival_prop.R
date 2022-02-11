@@ -23,7 +23,7 @@ survival_prob_cph <- function(x,
     output <- "survconf"
   }
 
-  missings_in_new_data <- get_missings(x, new_data)
+  missings_in_new_data <- get_missings_coxph(x, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
@@ -223,10 +223,11 @@ tweak_survfit_for_single_obs <- function(object, stratum) {
 }
 
 # see https://github.com/therneau/survival/issues/137
-get_missings <- function(object, new_data) {
+get_missings_coxph <- function(object, new_data) {
   trms <- stats::terms(object)
   trms <- stats::delete.response(trms)
-  mod_frame <- stats::model.frame(trms, data = new_data,
+  xlevels <- object$xlevels
+  mod_frame <- stats::model.frame(trms, data = new_data, xlev = xlevels,
                                   na.action = stats::na.exclude)
 
   attr(mod_frame, "na.action")
@@ -250,7 +251,7 @@ predict_survival_na <- function(time, interval = "none") {
 #' @export
 survival_time_coxph <- function(object, new_data) {
 
-  missings_in_new_data <- get_missings(object, new_data)
+  missings_in_new_data <- get_missings_coxph(object, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
