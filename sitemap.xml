@@ -55,7 +55,13 @@
     <loc>https://censored.tidymodels.org/reference/survival_prob_cph.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/reference/survival_prob_survbagg.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/reference/survival_time_coxph.html</loc>
+  </url>
+  <url>
+    <loc>https://censored.tidymodels.org/reference/survival_time_survbagg.html</loc>
   </url>
   <url>
     <loc>https://censored.tidymodels.org/reference/time_to_million.html</loc>
