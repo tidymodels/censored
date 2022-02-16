@@ -452,7 +452,7 @@ test_that("confidence intervals", {
   )
 })
 
-test_that("can identify missings without strata", {
+test_that("get_missings_coxph() can identify missings without strata", {
 
   cox_spec <- proportional_hazards() %>% set_engine("survival")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -467,33 +467,33 @@ test_that("can identify missings without strata", {
   na_0_data_x <- lung[2:4,]
 
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
     c(2,4)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
     c(2,3)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
     c(1,2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
     c(2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
     2
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
     1
   )
-  expect_true(is.null(get_missings(f_fit$fit, na_0_data_x)))
+  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
 })
 
-test_that("can identify missings with single strata term", {
+test_that("get_missings_coxph() can identify missings with single strata term", {
 
   # missing in predictor
   cox_spec <- proportional_hazards() %>% set_engine("survival")
@@ -510,30 +510,30 @@ test_that("can identify missings with single strata term", {
   na_0_data_x <- lung[2:4,]
 
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
     c(2,4)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
     c(2,3)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
     c(1,2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
     c(2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
     2
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
     1
   )
-  expect_true(is.null(get_missings(f_fit$fit, na_0_data_x)))
+  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
 
   # missing in strata
   cox_spec <- proportional_hazards() %>% set_engine("survival")
@@ -549,34 +549,34 @@ test_that("can identify missings with single strata term", {
   na_0_data_x <- lung[2:4,]
 
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
     c(2,4)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
     c(2,3)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
     c(1,2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
     c(2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
     2
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
     1
   )
-  expect_true(is.null(get_missings(f_fit$fit, na_0_data_x)))
+  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
 
 })
 
-test_that("can identify missings with two strata terms", {
+test_that("get_missings_coxph() can identify missings with two strata terms", {
 
   # missing in strata
   cox_spec <- proportional_hazards() %>% set_engine("survival")
@@ -593,28 +593,28 @@ test_that("can identify missings with two strata terms", {
   na_0_data_x <- lung[2:4,]
 
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_x) %>% unclass() %>% unname(),
     c(2,4)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_1) %>% unclass() %>% unname(),
     c(2,3)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_x_data_0) %>% unclass() %>% unname(),
     c(1,2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_x) %>% unclass() %>% unname(),
     c(2)
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_1) %>% unclass() %>% unname(),
     2
   )
   expect_equal(
-    get_missings(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
+    get_missings_coxph(f_fit$fit, na_1_data_0) %>% unclass() %>% unname(),
     1
   )
-  expect_true(is.null(get_missings(f_fit$fit, na_0_data_x)))
+  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
 })

@@ -51,14 +51,12 @@ make_bag_tree_rpart <- function() {
     type = "time",
     value = list(
       pre = NULL,
-      post = function(x, object) {
-        map_dbl(x, ~ quantile(.x, probs = .5)$quantile)
-      },
-      func = c(fun = "predict"),
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_survbagg"),
       args =
         list(
-          object = quote(object$fit),
-          newdata = quote(new_data)
+          object = rlang::expr(object$fit),
+          new_data = rlang::expr(new_data)
         )
     )
   )
@@ -70,17 +68,13 @@ make_bag_tree_rpart <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = function(x, object) {
-        time <- object$spec$method$pred$survival$args$time
-        res <- map(x, ~ summary(.x, times = pmin(time, max(.x$time)))$surv)
-        res <- matrix(unlist(res), ncol = length(time), byrow = TRUE)
-        matrix_to_nested_tibbles_survival(res, time)
-      },
-      func = c(fun = "predict"),
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_prob_survbagg"),
       args =
         list(
-          object = quote(object$fit),
-          newdata = quote(new_data)
+          object = rlang::expr(object$fit),
+          new_data = rlang::expr(new_data),
+          time = rlang::expr(time)
         )
     )
   )

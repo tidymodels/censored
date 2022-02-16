@@ -16,6 +16,9 @@ test_that("model object", {
   expect_equal(f_fit$fit[-6], exp_f_fit[-6], ignore_formula_env = TRUE)
 })
 
+
+# prediction: time --------------------------------------------------------
+
 test_that("time predictions", {
   set.seed(1234)
   exp_f_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -35,6 +38,24 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 })
 
+test_that("time predictions without surrogate splits for NA", {
+
+  mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
+  f_fit <- fit(mod_spec, Surv(time, status) ~ ph.ecog, data = lung)
+
+  # lung$ph.ecog[14] is NA
+  new_data_3 <- lung[13:15,]
+
+  expect_error(
+    f_pred <- predict(f_fit, new_data_3, type = "time"),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+  expect_equal(which(is.na(f_pred$.pred_time)), 2)
+
+})
+
+# prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
   set.seed(1234)
@@ -78,4 +99,24 @@ test_that("survival predictions", {
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     unlist(exp_f_pred)
   )
+})
+
+test_that("survival predictions without surrogate splits for NA", {
+
+  mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
+  f_fit <- fit(mod_spec, Surv(time, status) ~ ph.ecog, data = lung)
+
+  # lung$ph.ecog[14] is NA
+  new_data_3 <- lung[13:15,]
+
+  expect_error(
+    f_pred <- predict(f_fit, new_data_3, type = "survival",
+                      time = c(100, 500, 1000)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+  expect_true(!any(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
+
 })
