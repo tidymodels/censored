@@ -7,6 +7,7 @@
   make_bag_tree_rpart()
 
   make_boost_tree_mboost()
+  make_boost_tree_xgboost()
 
   make_decision_tree_rpart()
   make_decision_tree_party()
