@@ -15,7 +15,7 @@ BugReports: https://github.com/tidymodels/censored/issues
 Depends:
     parsnip (>= 0.1.7.9004),
     R (>= 3.5.0),
-    survival
+    survival (>= 3.3-1)
 Imports: 
     dials,
     dplyr (>= 0.8.0.1),

@@ -94,8 +94,6 @@
     Condition
       Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
-      Warning in `terms.formula()`:
-      'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
     Output
       # A tibble: 227 x 1
          .pred           
@@ -117,8 +115,6 @@
     Code
       f_pred <- predict(f_fit, lung2, type = "survival", time = c(100, 300))
     Condition
-      Warning in `terms.formula()`:
-      'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
       Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
     Code
