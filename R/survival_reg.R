@@ -24,12 +24,6 @@ survreg_quant <- function(results, object) {
 
 # ------------------------------------------------------------------------------
 
-flexsurv_mean <- function(results, object) {
-  results <- unclass(results)
-  results <- dplyr::bind_rows(results)
-  results$est
-}
-
 #' Developer tools for flexsurv objects
 #'
 #' @param object A model object.

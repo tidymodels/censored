@@ -24,14 +24,16 @@ test_that("flexsurv execution", {
 })
 
 test_that("flexsurv time prediction", {
-  res <- survival_reg(dist = "lognormal") %>%
+  exp_fit <- flexsurv::flexsurvreg(Surv(time, status) ~ age, data = lung,
+                                   dist = "lognormal")
+  exp_pred <- predict(exp_fit, head(lung), type = "response")
+
+  f_fit <- survival_reg(dist = "lognormal") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age, data = lung)
+  f_pred <- predict(f_fit, head(lung), type = "time")
 
-  exp_pred <- summary(res$fit, head(lung), type = "mean")
-  exp_pred <- do.call("rbind", unclass(exp_pred))
-  exp_pred <- tibble::tibble(.pred = exp_pred$est)
-  expect_equal(exp_pred$.pred, predict(res, head(lung))$.pred_time)
+  expect_equal(f_pred, exp_pred)
 })
 
 

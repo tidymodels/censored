@@ -201,12 +201,12 @@ make_survival_reg_flexsurv <- function() {
     type = "time",
     value = list(
       pre = NULL,
-      post = flexsurv_mean,
-      func = c(fun = "summary"),
+      post = NULL,
+      func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit),
-          newdata = expr(new_data),
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
           type = "mean"
         )
     )
