@@ -260,12 +260,15 @@ make_survival_reg_flexsurv <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "flexsurv_probs"),
+      func = c(fun = "predict"),
       args =
         list(
           object = expr(object$fit),
-          new_data = expr(new_data),
-          type = "survival"
+          newdata = expr(new_data),
+          type = "survival",
+          times = expr(time),
+          conf.int = rlang::expr(interval == "confidence"),
+          conf.level = rlang::expr(level)
         )
     )
   )

@@ -39,28 +39,48 @@ test_that("flexsurv time prediction", {
 
 test_that("survival probability prediction", {
   rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
-  res <- survival_reg(dist = "weibull") %>%
+  f_fit <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   expect_error(
-    predict(res, head(lung), type = "survival"),
+    predict(f_fit, head(lung), type = "survival"),
     "a numeric vector 'time'"
   )
 
-  exp_pred <- predict(res, head(lung), type = "survival", time = c(0, 500, 1000))
-  exp_pred_vert <- exp_pred %>%
-    dplyr::mutate(.patient = dplyr::row_number()) %>%
-    tidyr::unnest(cols = .pred)
+  f_pred <- predict(f_fit, head(lung), type = "survival",
+                    time = c(500, 1000))
 
-  expect_true(all(names(exp_pred) == ".pred"))
-  expect_equal(names(exp_pred_vert), c(".time", ".pred_survival", ".patient"))
+  expect_s3_class(f_pred, "tbl_df")
+  expect_equal(names(f_pred), ".pred")
+  expect_equal(nrow(f_pred), nrow(head(lung)))
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ all(dim(.x) == c(2, 2))))
+  )
+  expect_true(
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_survival"))))
+  )
 
   # using rms for expected results
   expect_equal(
-    exp_pred$.pred[[1]]$.pred_survival,
-    rms_surv,
+    f_pred$.pred[[1]]$.pred_survival,
+    rms_surv[2:3],
     tolerance = 0.001
+  )
+
+  # add confidence interval
+  pred <- predict(f_fit, head(lung), type = "survival",
+                    time = c(500, 1000), interval = "confidence", level = 0.7)
+  expect_true(
+    all(purrr::map_lgl(pred$.pred,
+                       ~ all(names(.x) == c(".time",
+                                            ".pred_survival",
+                                            ".pred_lower",
+                                            ".pred_upper"))))
   )
 })
 
