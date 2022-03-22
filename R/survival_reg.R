@@ -24,41 +24,6 @@ survreg_quant <- function(results, object) {
 
 # ------------------------------------------------------------------------------
 
-#' Developer tools for flexsurv objects
-#'
-#' @param object A model object.
-#' @param new_data Data for prediction.
-#' @param ... Currently not used.
-#' @param quantile Vector of quantiles.
-#' @param interval Should the confidence interval be added? One of `"none"` or
-#' `"confidence"`.
-#' @param level Confidence level.
-#' @return A nested tibble.
-#' @export
-#' @keywords internal
-quantiles_flexsurvreg <- function(object,
-                                  new_data,
-                                  ...,
-                                  quantile = (1:9)/10,
-                                  interval = "none",
-                                  level = 0.95) {
-
-  interval <- rlang::arg_match(interval, c("none", "confidence"))
-
-  results <- predict(object,
-                     newdata = new_data,
-                     type = "quantile",
-                     p = quantile,
-                     conf.int = interval == "confidence",
-                     conf.level = level)
-
-  results$.pred <- purrr::map(
-    results$.pred,
-    ~ dplyr::rename(., .pred_quantile = .pred)
-  )
-  results
-}
-
 #' Internal function helps for parametric survival models
 #' @param object A `survreg` or `flexsurvreg` object.
 #' @param new_data A data frame.
