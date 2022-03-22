@@ -241,12 +241,13 @@ make_survival_reg_flexsurv <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "flexsurv_probs"),
+      func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit),
-          new_data = expr(new_data),
-          type = "hazard"
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
+          type = "hazard",
+          times = rlang::expr(time)
         )
     )
   )

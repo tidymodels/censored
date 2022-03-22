@@ -65,27 +65,40 @@ test_that("survival probability prediction", {
 })
 
 
-test_that("survival hazard prediction", {
+test_that("hazard prediction", {
   rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
-  res <- survival_reg(dist = "weibull") %>%
+  f_fit <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   expect_error(
-    predict(res, head(lung), type = "hazard"),
+    predict(f_fit, head(lung), type = "hazard"),
     "a numeric vector 'time'"
   )
 
-  exp_pred <- predict(res, head(lung), type = "hazard", time = c(0, 500, 1000))
-  exp_pred_vert <- exp_pred %>%
-    dplyr::mutate(.patient = dplyr::row_number()) %>%
-    tidyr::unnest(cols = .pred)
+  f_pred <- predict(f_fit, head(lung), type = "hazard",
+                      time = c(500, 1000))
 
-  expect_true(all(names(exp_pred) == ".pred"))
-  expect_equal(names(exp_pred_vert), c(".time", ".pred_hazard", ".patient"))
+  expect_s3_class(f_pred, "tbl_df")
+  expect_equal(names(f_pred), ".pred")
+  expect_equal(nrow(f_pred), nrow(head(lung)))
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ all(dim(.x) == c(2, 2))))
+  )
+  expect_true(
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_hazard"))))
+  )
 
   # using rms for expected results
-  expect_equal(exp_pred$.pred[[1]]$.pred_hazard, rms_haz, tolerance = 0.001)
+  expect_equal(
+    f_pred$.pred[[1]]$.pred_hazard,
+    rms_haz[2:3],
+    tolerance = 0.001
+    )
 })
 
 test_that("quantile predictions", {
