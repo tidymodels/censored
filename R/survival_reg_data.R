@@ -277,7 +277,7 @@ make_survival_reg_flexsurv <- function() {
       pre = NULL,
       post = function(results, object) {
         results %>%
-          dplyr::mutate(.pred_linear_pred = log(.pred)) %>%
+          dplyr::mutate(.pred_linear_pred = log(.pred_link)) %>%
           dplyr::select(.pred_linear_pred)
         },
       func = c(fun = "predict"),

@@ -56,5 +56,6 @@ NULL
 utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
     ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
-    ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred")
+    ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred",
+    ".pred_link")
 )
