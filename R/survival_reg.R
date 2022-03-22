@@ -23,25 +23,6 @@ survreg_quant <- function(results, object) {
 }
 
 # ------------------------------------------------------------------------------
-
-#' Internal function helps for parametric survival models
-#' @param object A `survreg` or `flexsurvreg` object.
-#' @param new_data A data frame.
-#' @param time A vector of time points
-#' @return A nested tibble with column name `.pred`
-#' @keywords internal
-#' @export
-flexsurv_probs <- function(object, new_data, time, type = "survival") {
-  type <- rlang::arg_match(type, c("survival", "hazard"))
-  res <- summary(object, newdata = new_data, type = type, t = time, ci = FALSE)
-  res <- unname(res)
-  col_name <- rlang::sym(paste0(".pred_", type))
-  res <- purrr::map(res, ~ dplyr::select(.x, time, est))
-  res <- purrr::map(res, ~ setNames(.x, c(".time", col_name)))
-  tibble::tibble(.pred = res)
-}
-
-# ------------------------------------------------------------------------------
 # helpers for survreg prediction
 
 # When strata are used with parametric models, the scale is different for each
@@ -100,8 +81,13 @@ survreg_survival <- function(location, object, scale, time, ...) {
   )
 }
 
+#' Internal function helps for parametric survival models
+#' @param object A `survreg` object.
+#' @param new_data A data frame.
+#' @param time A vector of time points.
+#' @return A nested tibble with column name `.pred`.
+#' @keywords internal
 #' @export
-#' @rdname flexsurv_probs
 survreg_survival_probs <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
@@ -126,7 +112,7 @@ survreg_hazard <- function(location, object, scale = object$scale, time, ...) {
 }
 
 #' @export
-#' @rdname flexsurv_probs
+#' @rdname survreg_survival_probs
 survreg_hazard_probs <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
