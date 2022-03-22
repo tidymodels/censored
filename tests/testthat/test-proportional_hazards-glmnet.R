@@ -1,5 +1,5 @@
 library(testthat)
-library(glmnet)
+suppressPackageStartupMessages(library(glmnet))
 
 test_that("model object", {
   lung2 <- lung[-14, ]
