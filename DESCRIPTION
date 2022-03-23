@@ -20,7 +20,7 @@ Imports:
     dials,
     dplyr (>= 0.8.0.1),
     hardhat (>= 0.2.0),
-    flexsurv,
+    flexsurv (>= 2.2),
     generics,
     glue,
     ipred,
@@ -43,6 +43,7 @@ Suggests:
     rpart,
     testthat (>= 3.0.0)
 Remotes: 
+    chjackson/flexsurv-dev,
     tidymodels/parsnip
 Config/testthat/edition: 3
 Config/Needs/website:
