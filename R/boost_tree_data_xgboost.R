@@ -94,7 +94,7 @@ make_boost_tree_xgboost <- function() {
       interface = "matrix",
       protect = c("x", "y"),
       func = c(pkg = "censored", fun = "xgb_train_censored"),
-      defaults = list(nthread = 1, verbose = 0)
+      defaults = list(nthread = 1, verbose = 0,objective = 'survival:aft')
     )
   )
 
@@ -116,7 +116,36 @@ make_boost_tree_xgboost <- function() {
     mode = "censored regression",
     type = "time",
     value = list(
-      pre = NULL,
+      pre = function(x, object) {
+        if (object$fit$params$objective != "survival:aft")
+          rlang::abort(
+            glue::glue(
+              "The objective should be survival:aft not {object$fit$params$objective}"
+            )
+          )
+        x
+      },
+      post = NULL,
+      func = c(fun = "xgb_pred"),
+      args = list(object = quote(object$fit), newdata = quote(new_data))
+    )
+  )
+
+  parsnip::set_pred(
+    model = "boost_tree",
+    eng = "xgboost",
+    mode = "censored regression",
+    type = "linear_pred",
+    value = list(
+      pre = function(x, object) {
+        if (object$fit$params$objective != "survival:cox")
+          rlang::abort(
+            glue::glue(
+              "The objective should be survival:cox not {object$fit$params$objective}"
+            )
+          )
+        x
+      },
       post = NULL,
       func = c(fun = "xgb_pred"),
       args = list(object = quote(object$fit), newdata = quote(new_data))
