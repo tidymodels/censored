@@ -21,7 +21,7 @@ make_proportional_hazards_survival <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "survival", fun = "coxph"),
       defaults = list(x = TRUE, model = TRUE)
     )
@@ -117,7 +117,7 @@ make_proportional_hazards_glmnet <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data", "family"),
+      protect = c("formula", "data", "family", "weights"),
       func = c(pkg = "censored", fun = "glmnet_fit_wrapper"),
       defaults = list()
     )
@@ -359,7 +359,7 @@ check_strata_remaining <- function(expr) {
 }
 
 check_dots_coxnet <- function(x) {
-  bad_args <- c("subset", "weights", "contrasts", "offset")
+  bad_args <- c("subset", "contrasts", "offset")
   bad_names <- names(x) %in% bad_args
   if (any(bad_names)) {
     rlang::abort(

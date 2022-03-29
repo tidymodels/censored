@@ -31,7 +31,7 @@ make_rand_forest_party <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "censored", fun = "cond_inference_surv_cforest"),
       defaults = list()
     )

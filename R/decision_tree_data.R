@@ -26,7 +26,7 @@ make_decision_tree_rpart <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "pec", fun = "pecRpart"),
       defaults = list()
     )
@@ -96,7 +96,7 @@ make_decision_tree_party <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "censored", fun = "cond_inference_surv_ctree"),
       defaults = list()
     )
