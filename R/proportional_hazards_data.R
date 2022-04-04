@@ -234,45 +234,46 @@ make_proportional_hazards_glmnet <- function() {
 #' @param ... additional parameters passed to glmnet::glmnet.
 #' @export
 #' @keywords internal
-glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
+glmnet_fit_wrapper <-
+  function(formula, data, alpha = 1, lambda = NULL, weights = NULL, ...) {
 
-  dots <- rlang::quos(...)
-  check_dots_coxnet(dots)
+    dots <- rlang::quos(...)
+    check_dots_coxnet(dots)
 
-  encoding_info <-
-    parsnip::get_encoding("proportional_hazards") %>%
-    dplyr::filter(mode == "censored regression", engine == "glmnet")
+    encoding_info <-
+      parsnip::get_encoding("proportional_hazards") %>%
+      dplyr::filter(mode == "censored regression", engine == "glmnet")
 
-  indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
-  remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
+    indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
+    remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
 
-  formula_without_strata <- remove_strata(formula, data)
+    formula_without_strata <- remove_strata(formula, data)
 
-  data_obj <- parsnip::.convert_form_to_xy_fit(
-    formula = formula_without_strata,
-    data = data,
-    composition = "matrix",
-    indicators = indicators,
-    remove_intercept = remove_intercept
-  )
+    data_obj <- parsnip::.convert_form_to_xy_fit(
+      formula = formula_without_strata,
+      data = data,
+      composition = "matrix",
+      indicators = indicators,
+      remove_intercept = remove_intercept
+    )
 
-  if (has_strata(formula, data)) {
-    check_strata_nterms(formula, data)
-    strata <- get_strata_glmnet(formula, data)
-    data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
+    if (has_strata(formula, data)) {
+      check_strata_nterms(formula, data)
+      strata <- get_strata_glmnet(formula, data)
+      data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
+    }
+
+    fit <- glmnet::glmnet(data_obj$x, data_obj$y, family = "cox",
+                          alpha = alpha, lambda = lambda, weights = weights, ...)
+
+    # TODO: remove offset from data_obj?
+    res <- list(
+      fit = fit,
+      preproc = data_obj
+    )
+    class(res) <- "coxnet"
+    res
   }
-
-  fit <- glmnet::glmnet(data_obj$x, data_obj$y, family = "cox",
-                        alpha = alpha, lambda = lambda, ...)
-
-  # TODO: remove weights and offset from data_obj?
-  res <- list(
-    fit = fit,
-    preproc = data_obj
-  )
-  class(res) <- "coxnet"
-  res
-}
 
 has_strata <- function(formula, data) {
   mod_terms <- stats::terms(formula, specials = "strata", data = data)
