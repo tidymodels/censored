@@ -117,7 +117,7 @@ make_proportional_hazards_glmnet <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data", "family", "weights"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "censored", fun = "glmnet_fit_wrapper"),
       defaults = list()
     )
