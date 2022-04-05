@@ -64,7 +64,8 @@ xgb_train_censored <- function(x, y,
     as_xgb_data(x, y,
                 validation = validation,
                 event_level = event_level,
-                weights = weights)
+                weights = weights,
+                objective = objective)
 
 
   if (!is.numeric(subsample) || subsample < 0 || subsample > 1) {
@@ -195,7 +196,7 @@ as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "fir
       watch_list <- list(training = train_data)
     }
 
-    return(list(data = dat, watchlist = wlist))
+    return(list(data = dat, watchlist = watch_list))
   } else if (objective == "survival:cox") {
     if (validation > 0) {
       m <- floor(n * (1 - validation)) + 1
@@ -225,7 +226,7 @@ as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "fir
       dat <- train_data
       watch_list <- list(training = train_data)
     }
-    return(list(data = dat, watchlist = wlist))
+    return(list(data = dat, watchlist = watch_list))
   } else {
     if (!inherits(x, "xgb.DMatrix")) {
       if (validation > 0) {
