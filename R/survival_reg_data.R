@@ -201,12 +201,12 @@ make_survival_reg_flexsurv <- function() {
     type = "time",
     value = list(
       pre = NULL,
-      post = flexsurv_mean,
-      func = c(fun = "summary"),
+      post = NULL,
+      func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit),
-          newdata = expr(new_data),
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
           type = "mean"
         )
     )
@@ -220,14 +220,15 @@ make_survival_reg_flexsurv <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "quantiles_flexsurvreg"),
+      func = c(fun = "predict"),
       args =
         list(
           object = rlang::expr(object$fit),
-          new_data = rlang::expr(new_data),
-          quantile = rlang::expr(quantile),
-          interval = rlang::expr(interval),
-          level = rlang::expr(level)
+          newdata = rlang::expr(new_data),
+          type = "quantile",
+          p = rlang::expr(quantile),
+          conf.int = rlang::expr(interval == "confidence"),
+          conf.level = rlang::expr(level)
         )
     )
   )
@@ -240,12 +241,13 @@ make_survival_reg_flexsurv <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "flexsurv_probs"),
+      func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit),
-          new_data = expr(new_data),
-          type = "hazard"
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
+          type = "hazard",
+          times = rlang::expr(time)
         )
     )
   )
@@ -258,12 +260,15 @@ make_survival_reg_flexsurv <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "flexsurv_probs"),
+      func = c(fun = "predict"),
       args =
         list(
           object = expr(object$fit),
-          new_data = expr(new_data),
-          type = "survival"
+          newdata = expr(new_data),
+          type = "survival",
+          times = expr(time),
+          conf.int = rlang::expr(interval == "confidence"),
+          conf.level = rlang::expr(level)
         )
     )
   )
@@ -277,7 +282,7 @@ make_survival_reg_flexsurv <- function() {
       pre = NULL,
       post = function(results, object) {
         results %>%
-          dplyr::mutate(.pred_linear_pred = log(.pred)) %>%
+          dplyr::mutate(.pred_linear_pred = log(.pred_link)) %>%
           dplyr::select(.pred_linear_pred)
         },
       func = c(fun = "predict"),
