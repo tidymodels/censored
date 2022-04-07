@@ -44,7 +44,7 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes: 
     flexsurv=chjackson/flexsurv-dev,
-    tidymodels/parsnip
+    tidymodels/parsnip@partykit-funcs
 Config/testthat/edition: 3
 Config/Needs/website:
     tidymodels,
