@@ -265,6 +265,9 @@ survival_prob_cforest <- function(object, new_data, time, output = "surv") {
   tibble::tibble(.pred = res)
 }
 
+#' @export
+#' @keywords internal
+#' @rdname party_internal
 survival_prob_cforest_kit <- function(object, new_data, time, output = "surv") {
   output <- rlang::arg_match(output, c("surv", "conf", "haz"))
 

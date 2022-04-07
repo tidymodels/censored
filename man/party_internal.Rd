@@ -4,11 +4,14 @@
 \alias{survival_prob_ctree}
 \alias{party_internal}
 \alias{survival_prob_cforest}
+\alias{survival_prob_cforest_kit}
 \title{Internal helper functions for party objects}
 \usage{
 survival_prob_ctree(object, new_data, time, output = "surv")
 
 survival_prob_cforest(object, new_data, time, output = "surv")
+
+survival_prob_cforest_kit(object, new_data, time, output = "surv")
 }
 \arguments{
 \item{object}{A model object}

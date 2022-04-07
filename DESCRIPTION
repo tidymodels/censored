@@ -38,6 +38,7 @@ Suggests:
     covr,
     glmnet (>= 4.1),
     party,
+    partykit,
     riskRegression,
     rmarkdown,
     rpart,
@@ -53,4 +54,4 @@ Config/Needs/website:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.1.2.9000
