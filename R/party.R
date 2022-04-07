@@ -265,6 +265,14 @@ survival_prob_cforest <- function(object, new_data, time, output = "surv") {
   tibble::tibble(.pred = res)
 }
 
+survival_prob_cforest_kit <- function(object, new_data, time, output = "surv") {
+  output <- rlang::arg_match(output, c("surv", "conf", "haz"))
+
+  res <- predict(object, newdata = new_data, type = "prob")
+  res <- purrr::map(res, approx_surv_fit, time, output)
+  tibble::tibble(.pred = res)
+}
+
 # ------------------------------------------------------------------------------
 # Enable easy tuning of engine parameters
 

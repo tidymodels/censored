@@ -105,4 +105,108 @@ make_rand_forest_party <- function() {
 
 }
 
+
+make_rand_forest_partykit <- function() {
+
+  parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "partykit")
+  parsnip::set_dependency("rand_forest",
+                          eng = "partykit",
+                          pkg = "partykit",
+                          mode = "censored regression")
+  parsnip::set_dependency("rand_forest",
+                          eng = "partykit",
+                          pkg = "modeltools",
+                          mode = "censored regression")
+  parsnip::set_dependency("rand_forest",
+                          eng = "partykit",
+                          pkg = "censored",
+                          mode = "censored regression")
+
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "trees",
+    original = "ntree",
+    func = list(pkg = "dials", fun = "trees"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "min_n",
+    original = "minsplit",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = TRUE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "mtry",
+    original = "mtry",
+    func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_fit(
+    model = "rand_forest",
+    eng = "partykit",
+    mode = "censored regression",
+    value = list(
+      interface = "formula",
+      protect = c("formula", "data"),
+      func = c(pkg = "parsnip", fun = "cforest_train"),
+      defaults = list(
+        # TODO set a different mtry?
+        #mtry = force(ceiling(sqrt(ncol(data) - 2)))
+      )
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "rand_forest",
+    mode = "censored regression",
+    eng = "partykit",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
+    )
+  )
+
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "partykit",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args = list(
+        object = rlang::expr(object$fit),
+        newdata = rlang::expr(new_data),
+        type = "response"
+      )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "partykit",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_prob_cforest_kit"),
+      args = list(
+        object = rlang::expr(object$fit),
+        new_data = rlang::expr(new_data)
+      )
+    )
+  )
+
+}
+
 # nocov end
