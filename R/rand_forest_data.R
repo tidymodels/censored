@@ -155,10 +155,7 @@ make_rand_forest_partykit <- function() {
       interface = "formula",
       protect = c("formula", "data"),
       func = c(pkg = "parsnip", fun = "cforest_train"),
-      defaults = list(
-        # TODO set a different mtry?
-        #mtry = force(ceiling(sqrt(ncol(data) - 2)))
-      )
+      defaults = list()
     )
   )
 

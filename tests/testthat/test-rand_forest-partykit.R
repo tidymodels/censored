@@ -6,10 +6,8 @@ test_that("model object", {
   set.seed(1234)
   exp_f_fit <- partykit::cforest(
     Surv(time, status) ~ age + ph.ecog,
-    data = lung,
-    control = partykit::ctree_control(teststat = "quad", testtype = "Univ",
-                                      mincriterion = 0, saveinfo = TRUE)
-    )
+    data = lung
+  )
 
   # formula method
   mod_spec <- rand_forest() %>%
@@ -38,10 +36,8 @@ test_that("time predictions", {
   set.seed(1234)
   exp_f_fit <- partykit::cforest(
     Surv(time, status) ~ age + ph.ecog,
-    data = lung,
-    control = partykit::ctree_control(teststat = "quad", testtype = "Univ",
-                                      mincriterion = 0, saveinfo = TRUE)
-    )
+    data = lung
+  )
 
   mod_spec <- rand_forest() %>%
     set_engine("partykit") %>%
@@ -66,9 +62,7 @@ test_that("survival predictions", {
   set.seed(1234)
   exp_f_fit <- partykit::cforest(
     Surv(time, status) ~ age + ph.ecog,
-    data = lung,
-    control = partykit::ctree_control(teststat = "quad", testtype = "Univ",
-                                      mincriterion = 0, saveinfo = TRUE)
+    data = lung
   )
 
   mod_spec <- rand_forest() %>%
