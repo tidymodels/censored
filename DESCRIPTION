@@ -37,7 +37,6 @@ Imports:
 Suggests: 
     covr,
     glmnet (>= 4.1),
-    party,
     partykit,
     riskRegression,
     rmarkdown,
@@ -45,11 +44,11 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes: 
     flexsurv=chjackson/flexsurv-dev,
-    tidymodels/parsnip@mtry-check
+    tidymodels/parsnip
 Config/testthat/edition: 3
 Config/Needs/website:
     tidymodels,
-    tidymodels/parsnip@mtry-check,
+    tidymodels/parsnip,
     tidyverse/tidytemplate
 Encoding: UTF-8
 LazyData: true

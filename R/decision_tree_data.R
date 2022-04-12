@@ -84,68 +84,15 @@ make_decision_tree_rpart <- function() {
 
 }
 
-make_decision_tree_party <- function() {
+make_decision_tree_partykit <- function() {
 
-  parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "party")
-  parsnip::set_dependency("decision_tree", eng = "party", pkg = "party")
-  parsnip::set_dependency("decision_tree", eng = "party", pkg = "censored")
-
-  parsnip::set_fit(
-    model = "decision_tree",
-    eng = "party",
-    mode = "censored regression",
-    value = list(
-      interface = "formula",
-      protect = c("formula", "data"),
-      func = c(pkg = "censored", fun = "cond_inference_surv_ctree"),
-      defaults = list()
-    )
-  )
-
-  parsnip::set_encoding(
-    model = "decision_tree",
-    mode = "censored regression",
-    eng = "party",
-    options = list(
-      predictor_indicators = "none",
-      compute_intercept = FALSE,
-      remove_intercept = FALSE,
-      allow_sparse_x = FALSE
-    )
-  )
-
-  parsnip::set_pred(
-    model = "decision_tree",
-    eng = "party",
-    mode = "censored regression",
-    type = "time",
-    value = list(
-      pre = NULL,
-      post = NULL,
-      func = c(pkg = "modeltools", fun = "Predict"),
-      args = list(object = quote(object$fit), newdata = quote(new_data))
-    )
-  )
-
-  parsnip::set_pred(
-    model = "decision_tree",
-    eng = "party",
-    mode = "censored regression",
-    type = "survival",
-    value = list(
-      pre = NULL,
-      post = NULL,
-      func = c(pkg = "censored", fun = "survival_prob_ctree"),
-      args = list(object = quote(object$fit),
-                  new_data = quote(new_data))
-    )
-  )
-
-  # model args ----------------------------------------------------
+  parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "partykit")
+  parsnip::set_dependency("decision_tree", eng = "partykit", pkg = "partykit")
+  parsnip::set_dependency("decision_tree", eng = "partykit", pkg = "censored")
 
   parsnip::set_model_arg(
     model = "decision_tree",
-    eng = "party",
+    eng = "partykit",
     parsnip = "tree_depth",
     original = "maxdepth",
     func = list(pkg = "dials", fun = "tree_depth"),
@@ -153,7 +100,7 @@ make_decision_tree_party <- function() {
   )
   parsnip::set_model_arg(
     model = "decision_tree",
-    eng = "party",
+    eng = "partykit",
     parsnip = "min_n",
     original = "minsplit",
     func = list(pkg = "dials", fun = "min_n"),
@@ -161,20 +108,12 @@ make_decision_tree_party <- function() {
   )
   parsnip::set_model_arg(
     model = "decision_tree",
-    eng = "party",
+    eng = "partykit",
     parsnip = "mtry",
     original = "mtry",
     func = list(pkg = "dials", fun = "mtry"),
     has_submodel = FALSE
   )
-
-}
-
-make_decision_tree_partykit <- function() {
-
-  parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "partykit")
-  parsnip::set_dependency("decision_tree", eng = "partykit", pkg = "partykit")
-  parsnip::set_dependency("decision_tree", eng = "partykit", pkg = "censored")
 
   parsnip::set_fit(
     model = "decision_tree",
@@ -225,31 +164,6 @@ make_decision_tree_partykit <- function() {
       args = list(object = quote(object$fit),
                   new_data = quote(new_data))
     )
-  )
-
-  parsnip::set_model_arg(
-    model = "decision_tree",
-    eng = "partykit",
-    parsnip = "tree_depth",
-    original = "maxdepth",
-    func = list(pkg = "dials", fun = "tree_depth"),
-    has_submodel = FALSE
-  )
-  parsnip::set_model_arg(
-    model = "decision_tree",
-    eng = "partykit",
-    parsnip = "min_n",
-    original = "minsplit",
-    func = list(pkg = "dials", fun = "min_n"),
-    has_submodel = TRUE
-  )
-  parsnip::set_model_arg(
-    model = "decision_tree",
-    eng = "partykit",
-    parsnip = "mtry",
-    original = "mtry",
-    func = list(pkg = "dials", fun = "mtry"),
-    has_submodel = FALSE
   )
 
 }
