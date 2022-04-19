@@ -26,6 +26,7 @@ Imports:
     ipred,
     mboost,
     methods,
+    partykit,
     pec,
     prettyunits,
     purrr,
@@ -37,7 +38,6 @@ Imports:
 Suggests: 
     covr,
     glmnet (>= 4.1),
-    partykit,
     riskRegression,
     rmarkdown,
     rpart,
