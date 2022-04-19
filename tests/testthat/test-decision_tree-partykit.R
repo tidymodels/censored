@@ -1,40 +1,39 @@
 library(testthat)
 
 test_that("model object", {
-  skip_if_not_installed("party")
+  skip_if_not_installed("partykit")
   set.seed(1234)
-  exp_f_fit <- party::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # formula method
   cox_spec <- decision_tree() %>%
     set_mode("censored regression") %>%
-    set_engine("party")
+    set_engine("partykit")
   set.seed(1234)
   expect_error(
     f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung),
     NA
   )
 
-  # @data@env it not being captured by `ignore_formula_env` and `ignore_function_env`
-  f_fit$fit@data@env <- rlang::empty_env()
-  exp_f_fit@data@env <- rlang::empty_env()
+  # Removing `call` element from comparison
+  f_fit$fit$info$call <- NULL
+  exp_f_fit$info$call <- NULL
   expect_equal(
     f_fit$fit,
     exp_f_fit,
-    ignore_formula_env = TRUE,
     ignore_function_env = TRUE
   )
 })
 
 
 test_that("time predictions", {
-  skip_if_not_installed("party")
+  skip_if_not_installed("partykit")
   set.seed(1234)
-  exp_f_fit <- party::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   cox_spec <- decision_tree() %>%
     set_mode("censored regression") %>%
-    set_engine("party")
+    set_engine("partykit")
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -49,13 +48,13 @@ test_that("time predictions", {
 
 
 test_that("survival predictions", {
-  skip_if_not_installed("party")
+  skip_if_not_installed("partykit")
   set.seed(1234)
-  exp_f_fit <- party::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   cox_spec <- decision_tree() %>%
     set_mode("censored regression") %>%
-    set_engine("party")
+    set_engine("partykit")
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -82,7 +81,7 @@ test_that("survival predictions", {
   )
 
   f_pred <- predict(f_fit, lung[1,], type = "survival", time = 306)
-  new_km <- party::treeresponse(exp_f_fit, lung[1,])[[1]]
+  new_km <- predict(exp_f_fit, newdata = lung[1,], type = "prob")[[1]]
   # Prediction should be fairly near the actual value
 
   expect_equal(

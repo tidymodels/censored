@@ -41,10 +41,10 @@ with `type = "quantile"`, and the hazard with `type = "hazard"`.
 | bag_tree             | rpart    | ✓    | ✓        | x           | x   | x        | x      |
 | boost_tree           | mboost   | x    | ✓        | ✓           | x   | x        | x      |
 | decision_tree        | rpart    | ✓    | ✓        | x           | x   | x        | x      |
-| decision_tree        | party    | ✓    | ✓        | x           | x   | x        | x      |
+| decision_tree        | partykit | ✓    | ✓        | x           | x   | x        | x      |
 | proportional_hazards | survival | ✓    | ✓        | ✓           | x   | x        | x      |
 | proportional_hazards | glmnet   | x    | ✓        | ✓           | ✓   | x        | x      |
-| rand_forest          | party    | ✓    | ✓        | x           | x   | x        | x      |
+| rand_forest          | partykit | ✓    | ✓        | x           | x   | x        | x      |
 | survival_reg         | survival | ✓    | ✓        | ✓           | x   | ✓        | ✓      |
 | survival_reg         | flexsurv | ✓    | ✓        | ✓           | x   | ✓        | ✓      |
 
