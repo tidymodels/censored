@@ -49,14 +49,14 @@ test_that("survival probability prediction", {
   )
 
   f_pred <- predict(f_fit, head(lung), type = "survival",
-                    time = c(500, 1000))
+                    time = c(0, 500, 1000))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(2, 2))))
+                       ~ all(dim(.x) == c(3, 2))))
   )
   expect_true(
     all(
@@ -68,7 +68,7 @@ test_that("survival probability prediction", {
   # using rms for expected results
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
-    rms_surv[2:3],
+    rms_surv,
     tolerance = 0.001
   )
 
@@ -97,14 +97,14 @@ test_that("hazard prediction", {
   )
 
   f_pred <- predict(f_fit, head(lung), type = "hazard",
-                      time = c(500, 1000))
+                      time = c(0, 500, 1000))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
   expect_true(
     all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(2, 2))))
+                       ~ all(dim(.x) == c(3, 2))))
   )
   expect_true(
     all(
@@ -116,7 +116,7 @@ test_that("hazard prediction", {
   # using rms for expected results
   expect_equal(
     f_pred$.pred[[1]]$.pred_hazard,
-    rms_haz[2:3],
+    rms_haz,
     tolerance = 0.001
     )
 })
