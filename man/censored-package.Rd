@@ -52,7 +52,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Hannah Frick \email{hannah@rstudio.com}
+  \item Hannah Frick \email{hannah@rstudio.com} (\href{https://orcid.org/0000-0002-6049-5258}{ORCID})
 }
 
 Other contributors:
