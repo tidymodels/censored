@@ -34,8 +34,9 @@ jobs:
           - {os: ubuntu-18.04,   r: 'release'}
           - {os: ubuntu-18.04,   r: 'oldrel-1'}
           - {os: ubuntu-18.04,   r: 'oldrel-2'}
-          # glmnet needs R >= 3.6
+          # flexsurv's dependency deSolve needs R >= 4.0.0
           #- {os: ubuntu-18.04,   r: 'oldrel-3'}
+          # glmnet needs R >= 3.6
           #- {os: ubuntu-18.04,   r: 'oldrel-4'}
 
     env:
