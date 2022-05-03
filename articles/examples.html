@@ -97,8 +97,8 @@ With the <code>"rpart"</code> engine
 <code class="sourceCode R">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## ── <span style="font-weight: bold;">Attaching packages</span> ──────────────────────────────── tidymodels 0.2.0 ──</span></code></pre>
 <pre><code><span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 0.8.0          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 0.1.1     </span>
-  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dials       </span> 0.1.1          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble      </span> 3.1.6     </span>
-  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.0.8          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.2.0     </span>
+  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dials       </span> 0.1.1          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble      </span> 3.1.7     </span>
+  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.0.9          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.2.0     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.0          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 0.2.0     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">modeldata   </span> 0.1.1          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflows   </span> 0.2.6     </span>
   <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 0.2.1.<span style="color: #BB0000;">9001</span>     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 0.2.1     </span>
@@ -109,7 +109,7 @@ With the <code>"rpart"</code> engine
   <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span>
   <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span>
   <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span>
-  <span class="co">## <span style="color: #0000BB;">•</span> Learn how to get started at <span style="color: #00BB00;">https://www.tidymodels.org/start/</span></span></code></pre>
+  <span class="co">## <span style="color: #0000BB;">•</span> Use <span style="color: #00BB00;">tidymodels_prefer()</span> to resolve common conflicts.</span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Loading required package: survival</span></code></pre>
@@ -6149,22 +6149,23 @@ With the <code>"partykit"</code> engine
   <span class="co">## attr(,"response")</span>
   <span class="co">## [1] 1</span>
   <span class="co">## attr(,".Environment")</span>
-  <span class="co">## &lt;environment: 0x5622ac599c90&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f61620&gt;</span>
   <span class="co">## attr(,"Formula_with_dot")</span>
   <span class="co">## Surv(time, status) ~ .</span>
-  <span class="co">## &lt;environment: 0x5622ac599c90&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f61620&gt;</span>
   <span class="co">## attr(,"Formula_without_dot")</span>
   <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span>
   <span class="co">##     pat.karno + meal.cal + wt.loss</span>
-  <span class="co">## &lt;environment: 0x5622ac599c90&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f61620&gt;</span>
   <span class="co">## attr(,"dot")</span>
   <span class="co">## [1] "sequential"</span>
   <span class="co">## </span>
   <span class="co">## $info</span>
   <span class="co">## $info$call</span>
-  <span class="co">## partykit::cforest(formula = formula, data = data, control = partykit::ctree_control(minsplit = 20L, </span>
-  <span class="co">##     maxdepth = Inf, teststat = "quadratic", testtype = "Univariate", </span>
-  <span class="co">##     mincriterion = 0, saveinfo = FALSE), ntree = 200, mtry = 3)</span>
+  <span class="co">## partykit::cforest(formula = formula, data = data, weights = weights, </span>
+  <span class="co">##     control = partykit::ctree_control(minsplit = 20L, maxdepth = Inf, </span>
+  <span class="co">##         teststat = "quadratic", testtype = "Univariate", mincriterion = 0, </span>
+  <span class="co">##         saveinfo = FALSE), ntree = 200, mtry = 3)</span>
   <span class="co">## </span>
   <span class="co">## $info$control</span>
   <span class="co">## $info$control$criterion</span>
@@ -6227,7 +6228,7 @@ With the <code>"partykit"</code> engine
   <span class="co">##         X &lt;- as.list(X)</span>
   <span class="co">##     .Internal(lapply(X, FUN))</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x56229eeaaa98&gt;</span>
+  <span class="co">## &lt;bytecode: 0x5572fde5ea98&gt;</span>
   <span class="co">## &lt;environment: namespace:base&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$saveinfo</span>
@@ -6247,8 +6248,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5622ae57d1f0&gt;</span>
-  <span class="co">## &lt;environment: 0x5622a8faf240&gt;</span>
+  <span class="co">## &lt;bytecode: 0x55730d45ab30&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f357d0&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$splitfun</span>
   <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span>
@@ -6258,8 +6259,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5622ae57b708&gt;</span>
-  <span class="co">## &lt;environment: 0x5622a8faf320&gt;</span>
+  <span class="co">## &lt;bytecode: 0x55730d45ce78&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f358b0&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$svselectfun</span>
   <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span>
@@ -6269,8 +6270,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5622ae57d1f0&gt;</span>
-  <span class="co">## &lt;environment: 0x5622a8faf400&gt;</span>
+  <span class="co">## &lt;bytecode: 0x55730d45ab30&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f35990&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$svsplitfun</span>
   <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span>
@@ -6280,8 +6281,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5622ae57b708&gt;</span>
-  <span class="co">## &lt;environment: 0x5622a8faf550&gt;</span>
+  <span class="co">## &lt;bytecode: 0x55730d45ce78&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f31cb0&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$teststat</span>
   <span class="co">## [1] "quadratic"</span>
@@ -6325,8 +6326,8 @@ With the <code>"partykit"</code> engine
   <span class="co">## $trafo</span>
   <span class="co">## function (subset, weights, info, estfun, object, ...) </span>
   <span class="co">## list(estfun = Y, unweighted = TRUE)</span>
-  <span class="co">## &lt;bytecode: 0x5622a33270b8&gt;</span>
-  <span class="co">## &lt;environment: 0x5622a8fad198&gt;</span>
+  <span class="co">## &lt;bytecode: 0x5573022f7d58&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f336f0&gt;</span>
   <span class="co">## </span>
   <span class="co">## $predictf</span>
   <span class="co">## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + </span>
@@ -6354,14 +6355,14 @@ With the <code>"partykit"</code> engine
   <span class="co">## attr(,"response")</span>
   <span class="co">## [1] 0</span>
   <span class="co">## attr(,".Environment")</span>
-  <span class="co">## &lt;environment: 0x5622ac599c90&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f61620&gt;</span>
   <span class="co">## attr(,"Formula_with_dot")</span>
   <span class="co">## Surv(time, status) ~ .</span>
-  <span class="co">## &lt;environment: 0x5622ac599c90&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f61620&gt;</span>
   <span class="co">## attr(,"Formula_without_dot")</span>
   <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span>
   <span class="co">##     pat.karno + meal.cal + wt.loss</span>
-  <span class="co">## &lt;environment: 0x5622ac599c90&gt;</span>
+  <span class="co">## &lt;environment: 0x557307f61620&gt;</span>
   <span class="co">## attr(,"dot")</span>
   <span class="co">## [1] "sequential"</span>
   <span class="co">## </span>
@@ -6646,7 +6647,7 @@ With the <code>"flexsurv"</code> engine
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
   </div></footer>
