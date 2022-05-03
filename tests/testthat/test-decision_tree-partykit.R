@@ -21,7 +21,8 @@ test_that("model object", {
   expect_equal(
     f_fit$fit,
     exp_f_fit,
-    ignore_function_env = TRUE
+    ignore_function_env = TRUE,
+    ignore_formula_env = TRUE
   )
 })
 
