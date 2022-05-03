@@ -148,7 +148,10 @@ make_decision_tree_partykit <- function() {
       pre = NULL,
       post = NULL,
       func = c(fun = "predict"),
-      args = list(object = quote(object$fit), newdata = quote(new_data))
+      args = list(
+        object = quote(object$fit),
+        newdata = quote(new_data)
+      )
     )
   )
 
@@ -161,8 +164,10 @@ make_decision_tree_partykit <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_ctree"),
-      args = list(object = quote(object$fit),
-                  new_data = quote(new_data))
+      args = list(
+        object = quote(object$fit),
+        new_data = quote(new_data)
+      )
     )
   )
 
