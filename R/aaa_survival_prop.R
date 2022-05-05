@@ -33,7 +33,7 @@ survival_prob_cph <- function(x,
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
-    new_data <- new_data[-missings_in_new_data, ]
+    new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
