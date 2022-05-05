@@ -400,6 +400,140 @@ test_that("survival probabilities with strata", {
 
 })
 
+test_that("survival prediction with NA in predictor", {
+  lung2 <- lung[-14,]
+
+  suppressWarnings(
+    f_fit <- proportional_hazards(penalty = 0.123) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
+  )
+
+  # survfit.coxph() is not type-stable,
+  # thus test against single or multiple survival curves
+  # lung$ph.ecog[14] is NA
+  na_x_data_x <- lung[c(13:15, 14),]
+  na_x_data_1 <- lung[c(13, 14, 14),]
+  na_x_data_0 <- lung[c(14, 14),]
+  na_1_data_x <- lung[13:15,]
+  na_1_data_1 <- lung[13:14,]
+  na_1_data_0 <- lung[14,]
+
+  # survival probabilities
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_x, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_x))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_1, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_1))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_0, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_0))
+  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_x, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_x))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_1, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_1))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_0, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_0))
+  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+
+})
+
+test_that("survival prediction with NA in strata", {
+  lung2 <- lung[-14,]
+
+  suppressWarnings(
+    f_fit <- proportional_hazards(penalty = 0.123) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
+  )
+
+  # survfit.coxph() is not type-stable,
+  # thus test against single or multiple survival curves
+  lung2$sex[2] <- NA
+  na_x_data_x <- lung2[c(1:3, 2),]
+  na_x_data_1 <- lung2[c(1, 2, 2),]
+  na_x_data_0 <- lung2[c(2, 2),]
+  na_1_data_x <- lung2[1:3,]
+  na_1_data_1 <- lung2[1:2,]
+  na_1_data_0 <- lung2[2,]
+
+  # survival probabilities
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_x, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_x))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_1, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_1))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_x_data_0, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_x_data_0))
+  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_x, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_x))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_1, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_1))
+  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+
+  expect_error(
+    f_pred <- predict(f_fit, na_1_data_0, type = "survival", time = c(306, 455)),
+    NA
+  )
+  expect_equal(nrow(f_pred), nrow(na_1_data_0))
+  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+
+})
+
 # helper functions --------------------------------------------------------
 
 test_that("formula modifications", {
