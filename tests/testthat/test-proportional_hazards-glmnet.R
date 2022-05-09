@@ -70,7 +70,6 @@ test_that("primary arguments", {
   )
 })
 
-
 test_that("updating", {
   expr1 <- proportional_hazards() %>%
     set_mode("censored regression") %>%
@@ -90,6 +89,7 @@ test_that("updating", {
   expect_equal(update(expr1, mixture = 0.76), expr1_exp)
   expect_equal(update(expr2, penalty = 0.123), expr2_exp)
 })
+
 
 
 # prediction: linear_pred -------------------------------------------------
@@ -327,7 +327,6 @@ test_that("survival probabilities without strata", {
 
 })
 
-
 test_that("survival probabilities with strata", {
 
   cox_spec <- proportional_hazards(penalty = 0.123) %>%
@@ -534,6 +533,194 @@ test_that("survival prediction with NA in strata", {
 
 })
 
+
+
+# prediction: time --------------------------------------------------------
+
+test_that("time predictions without strata", {
+
+  # remove row with missing value in ph.ecog
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung2$time, lung2$status)
+  new_x <- as.matrix(lung2[1:3, c("age", "ph.ecog")])
+  set.seed(14)
+  exp_f <- glmnet::glmnet(lung_x, lung_y, family = "cox")
+  exp_sf <- survfit(exp_f, newx = new_x, x = lung_x, y = lung_y, s = 0.1)
+  exp_f_pred <- summary(exp_sf)$table[, "rmean"] %>% unname()
+
+  cox_spec <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+  set.seed(14)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  # predict
+  new_data_3 <- lung2[1:3, ]
+  # should default to penalty value specified at fit time
+  expect_error(
+    f_pred <- predict(f_fit, new_data = new_data_3, type = "time"),
+    NA
+  )
+  f_pred <- predict(f_fit, new_data = new_data_3, type = "time", penalty = 0.1)
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+  expect_equal(f_pred$.pred_time, exp_f_pred)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung2[1,], type = "time")
+  expect_equal(nrow(f_pred_1), 1)
+
+})
+
+test_that("time predictions with strata", {
+
+  # remove row with missing value in ph.ecog
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung2$time, lung2$status) %>%
+    glmnet::stratifySurv(lung2$sex)
+  new_x <- as.matrix(lung2[1:3, c("age", "ph.ecog")])
+  new_strata <- lung2$sex[1:3]
+  set.seed(14)
+  suppressWarnings(
+    exp_f <- glmnet::glmnet(lung_x, lung_y, family = "cox")
+  )
+  exp_sf <- survfit(exp_f, newx = new_x, newstrata = new_strata,
+                    x = lung_x, y = lung_y, s = 0.1)
+  exp_f_pred <- summary(exp_sf)$table[, "rmean"] %>% unname()
+
+  cox_spec <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet")
+  set.seed(14)
+  suppressWarnings(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog + strata(sex),
+                 data = lung2)
+  )
+
+  # predict
+  new_data_3 <- lung2[1:3, ]
+  # should default to penalty value specified at fit time
+  expect_error(
+    f_pred <- predict(f_fit, new_data = new_data_3, type = "time"),
+    NA
+  )
+  f_pred <- predict(f_fit, new_data = new_data_3, type = "time", penalty = 0.1)
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+  expect_equal(f_pred$.pred_time, exp_f_pred)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung2[1,], type = "time")
+  expect_equal(nrow(f_pred_1), 1)
+
+})
+
+test_that("time predictions with NA in predictor", {
+
+  lung2 <- lung[-14,]
+
+  suppressWarnings(
+    f_fit <- proportional_hazards(penalty = 0.123) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
+  )
+
+  # survfit.coxph() is not type-stable,
+  # thus test against single or multiple survival curves
+  # lung$ph.ecog[14] is NA
+  na_x_data_x <- lung[c(13:15, 14),]
+  na_x_data_1 <- lung[c(13, 14, 14),]
+  na_x_data_0 <- lung[c(14, 14),]
+  na_1_data_x <- lung[13:15,]
+  na_1_data_1 <- lung[13:14,]
+  na_1_data_0 <- lung[14,]
+
+  # survival times
+  f_pred <- predict(f_fit, na_x_data_x, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_x_data_x))
+  expect_identical(which(is.na(f_pred$.pred_time)), c(2L,4L))
+
+  f_pred <- predict(f_fit, na_x_data_1, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_x_data_1))
+  expect_identical(which(is.na(f_pred$.pred_time)), c(2L,3L))
+
+  f_pred <- predict(f_fit, na_x_data_0, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_x_data_0))
+  expect_identical(which(is.na(f_pred$.pred_time)), c(1L,2L))
+
+  f_pred <- predict(f_fit, na_1_data_x, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_1_data_x))
+  expect_identical(which(is.na(f_pred$.pred_time)), 2L)
+
+  f_pred <- predict(f_fit, na_1_data_1, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_1_data_1))
+  expect_identical(which(is.na(f_pred$.pred_time)), 2L)
+
+  f_pred <- predict(f_fit, na_1_data_0, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_1_data_0))
+  expect_identical(which(is.na(f_pred$.pred_time)), 1L)
+
+})
+
+test_that("time predictions with NA in strata", {
+
+  lung2 <- lung[-14,]
+
+  suppressWarnings(
+    f_fit <- proportional_hazards(penalty = 0.123) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
+  )
+
+  # survfit.coxph() is not type-stable,
+  # thus test against single or multiple survival curves
+  lung2$sex[2] <- NA
+  na_x_data_x <- lung2[c(1:3, 2),]
+  na_x_data_1 <- lung2[c(1, 2, 2),]
+  na_x_data_0 <- lung2[c(2, 2),]
+  na_1_data_x <- lung2[1:3,]
+  na_1_data_1 <- lung2[1:2,]
+  na_1_data_0 <- lung2[2,]
+
+  # survival times
+  f_pred <- predict(f_fit, na_x_data_x, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_x_data_x))
+  expect_identical(which(is.na(f_pred$.pred_time)), c(2L,4L))
+
+  f_pred <- predict(f_fit, na_x_data_1, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_x_data_1))
+  expect_identical(which(is.na(f_pred$.pred_time)), c(2L,3L))
+
+  f_pred <- predict(f_fit, na_x_data_0, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_x_data_0))
+  expect_identical(which(is.na(f_pred$.pred_time)), c(1L,2L))
+
+  f_pred <- predict(f_fit, na_1_data_x, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_1_data_x))
+  expect_identical(which(is.na(f_pred$.pred_time)), 2L)
+
+  f_pred <- predict(f_fit, na_1_data_1, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_1_data_1))
+  expect_identical(which(is.na(f_pred$.pred_time)), 2L)
+
+  f_pred <- predict(f_fit, na_1_data_0, type = "time")
+  expect_equal(nrow(f_pred), nrow(na_1_data_0))
+  expect_identical(which(is.na(f_pred$.pred_time)), 1L)
+
+})
+
+
+
 # helper functions --------------------------------------------------------
 
 test_that("formula modifications", {
@@ -556,6 +743,7 @@ test_that("formula modifications", {
     check_strata_remaining(rlang::expr(x * (y + strata(s)) + z))
   )
 })
+
 
 
 # ------------------------------------------------------------------------------
