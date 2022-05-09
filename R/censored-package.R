@@ -35,6 +35,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom dials parameters
 #' @importFrom dplyr %>%
 #' @importFrom generics fit
 #' @importFrom hardhat tune
