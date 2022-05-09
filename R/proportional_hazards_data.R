@@ -195,6 +195,24 @@ make_proportional_hazards_glmnet <- function() {
     model = "proportional_hazards",
     eng = "glmnet",
     mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_coxnet"),
+      args =
+        list(
+          object = quote(object),
+          new_data = quote(new_data),
+          penalty = expr(object$spec$args$penalty)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "proportional_hazards",
+    eng = "glmnet",
+    mode = "censored regression",
     type = "raw",
     value = list(
       pre = coxnet_predict_pre,

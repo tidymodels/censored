@@ -275,6 +275,7 @@ survival_time_coxph <- function(object, new_data) {
 #' @param new_data Data for prediction.
 #' @param times A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
+#' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
 #' @return A nested tibble.
 #' @keywords internal
@@ -357,4 +358,67 @@ get_missings_coxnet <- function(new_x, new_strata) {
     return(NULL)
   }
   which(missings_logical)
+}
+
+
+#' A wrapper for survival probabilities with coxnet models
+#' @param object A fitted `_coxnet` object.
+#' @param new_data Data for prediction.
+#' @param penalty Penalty value(s).
+#' @param ... Options to pass to [survival::survfit()].
+#' @return A tibble.
+#' @keywords internal
+#' @export
+survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
+
+  new_x <- parsnip::.convert_form_to_xy_new(
+    object$preproc$coxnet,
+    new_data,
+    composition = "matrix")$x
+
+  if (has_strata(object$formula, object$training_data)) {
+    new_strata <- get_strata_glmnet(object$formula, data = new_data,
+                                    na.action = stats::na.pass)
+  } else {
+    new_strata <- NULL
+  }
+
+  missings_in_new_data <- get_missings_coxnet(new_x, new_strata)
+  if (!is.null(missings_in_new_data)) {
+    n_total <- nrow(new_data)
+    n_missing <- length(missings_in_new_data)
+    all_missing <- n_missing == n_total
+    if (all_missing) {
+      ret <- rep(NA, n_missing)
+      return(ret)
+    }
+    new_x <- new_x[-missings_in_new_data, , drop = FALSE]
+    new_strata <- new_strata[-missings_in_new_data]
+  }
+
+  y <- survival::survfit(
+    object$fit,
+    newx = new_x,
+    newstrata = new_strata,
+    s = penalty,
+    x = object$training_data$x,
+    y = object$training_data$y,
+    na.action = stats::na.exclude,
+    ...
+  )
+
+  tabs <- summary(y)$table
+  if (is.matrix(tabs)) {
+    colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+    res <- unname(tabs[, "rmean"])
+  } else {
+    names(tabs) <- gsub("[[:punct:]]", "", names(tabs))
+    res <- unname(tabs["rmean"])
+  }
+  if (!is.null(missings_in_new_data)) {
+    index_with_na <- rep(NA, n_total)
+    index_with_na[-missings_in_new_data] <- seq_along(res)
+    res <- res[index_with_na]
+  }
+  res
 }
