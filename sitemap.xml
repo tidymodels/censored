@@ -46,6 +46,9 @@
     <loc>https://censored.tidymodels.org/reference/survival_prob_survbagg.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/reference/survival_time_coxnet.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/reference/survival_time_coxph.html</loc>
   </url>
   <url>
