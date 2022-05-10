@@ -129,11 +129,3 @@ make_boost_tree_mboost <- function() {
 }
 
 # nocov end
-
-# the mboost::survFit isn't able to predict survival probabilities for a given
-# timepoint. This function rounds down to nearest timepoint and uses that
-# for prediction.
-floor_surv_mboost <- function(x, time) {
-  ind <- purrr::map_int(time, ~ max(which(.x > c(-Inf, unname(x$time)))))
-  t(unname(rbind(1, x$surv))[ind, ])
-}
