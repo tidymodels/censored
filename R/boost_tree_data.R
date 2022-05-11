@@ -126,6 +126,24 @@ make_boost_tree_mboost <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "boost_tree",
+    eng = "mboost",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_mboost"),
+      args =
+        list(
+          object = quote(object$fit),
+          new_data = quote(new_data)
+        )
+    )
+  )
+
 }
 
 # nocov end
