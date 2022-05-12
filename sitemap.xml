@@ -52,6 +52,9 @@
     <loc>https://censored.tidymodels.org/reference/survival_time_coxph.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/reference/survival_time_mboost.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/reference/survival_time_survbagg.html</loc>
   </url>
   <url>
