@@ -126,14 +126,24 @@ make_boost_tree_mboost <- function() {
         )
     )
   )
+
+  parsnip::set_pred(
+    model = "boost_tree",
+    eng = "mboost",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_mboost"),
+      args =
+        list(
+          object = quote(object$fit),
+          new_data = quote(new_data)
+        )
+    )
+  )
+
 }
 
 # nocov end
-
-# the mboost::survFit isn't able to predict survival probabilities for a given
-# timepoint. This function rounds down to nearest timepoint and uses that
-# for prediction.
-floor_surv_mboost <- function(x, time) {
-  ind <- purrr::map_int(time, ~ max(which(.x > c(-Inf, unname(x$time)))))
-  t(unname(rbind(1, x$surv))[ind, ])
-}
