@@ -39,7 +39,7 @@ make_rand_forest_partykit <- function() {
     parsnip = "min_n",
     original = "minsplit",
     func = list(pkg = "dials", fun = "min_n"),
-    has_submodel = TRUE
+    has_submodel = FALSE
   )
   parsnip::set_model_arg(
     model = "rand_forest",
