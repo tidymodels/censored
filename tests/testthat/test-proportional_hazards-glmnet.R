@@ -742,6 +742,13 @@ test_that("formula modifications", {
   expect_error(
     check_strata_remaining(rlang::expr(x * (y + strata(s)) + z))
   )
+
+  expect_snapshot(error = TRUE, {
+    proportional_hazards(penalty = 0.1) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + (ph.ecog + strata(sex)),
+          data = lung)
+  })
 })
 
 
