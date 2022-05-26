@@ -33,7 +33,7 @@ survival_prob_cph <- function(x,
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
-    new_data <- new_data[-missings_in_new_data, ]
+    new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
   y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
@@ -58,11 +58,8 @@ survival_prob_cph <- function(x,
     dplyr::select(-.row)
 
   if (!is.null(missings_in_new_data)) {
-    pred_na <- predict_survival_na(times, interval)
-    pred_full <- vector(mode = "list", length = n_total)
-    pred_full[missings_in_new_data] <- list(pred_na)
-    pred_full[-missings_in_new_data] <- res$.pred
-    res <- tibble(.pred = pred_full)
+    res <- pad_survival_na(res, missings_in_new_data, times,
+                           interval, n_total)
   }
   res
 }
@@ -220,6 +217,20 @@ predict_survival_na <- function(time, interval = "none") {
   ret
 }
 
+pad_survival_na <- function(pred_to_pad,
+                            missings_in_new_data,
+                            times,
+                            interval,
+                            n_total) {
+  pred_na <- predict_survival_na(times, interval)
+  pred_full <- vector(mode = "list", length = n_total)
+  pred_full[missings_in_new_data] <- list(pred_na)
+  pred_full[-missings_in_new_data] <- pred_to_pad$.pred
+  res <- tibble(.pred = pred_full)
+  res
+}
+
+
 #' A wrapper for survival times with `coxph` models
 #' @param object A model from `coxph()`.
 #' @param new_data Data for prediction
@@ -264,6 +275,7 @@ survival_time_coxph <- function(object, new_data) {
 #' @param new_data Data for prediction.
 #' @param times A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
+#' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
 #' @return A nested tibble.
 #' @keywords internal
@@ -279,9 +291,24 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     composition = "matrix")$x
 
   if (has_strata(object$formula, object$training_data)) {
-    new_strata <- get_strata_glmnet(object$formula, data = new_data)
+    new_strata <- get_strata_glmnet(object$formula, data = new_data,
+                                    na.action = stats::na.pass)
   } else {
     new_strata <- NULL
+  }
+
+  missings_in_new_data <- get_missings_coxnet(new_x, new_strata)
+  if (!is.null(missings_in_new_data)) {
+    n_total <- nrow(new_data)
+    n_missing <- length(missings_in_new_data)
+    all_missing <- n_missing == n_total
+    if (all_missing) {
+      ret <- predict_survival_na(times, interval = "none")
+      ret <- tibble(.pred = rep(list(ret), n_missing))
+      return(ret)
+    }
+    new_x <- new_x[-missings_in_new_data, , drop = FALSE]
+    new_strata <- new_strata[-missings_in_new_data]
   }
 
   y <- survival::survfit(
@@ -299,14 +326,14 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     keep_penalty <- TRUE
     stacked_survfit <-
       purrr::map2_dfr(y, penalty,
-                      ~stack_survfit(.x, n = nrow(new_data), penalty = .y))
+                      ~stack_survfit(.x, n = nrow(new_x), penalty = .y))
     starting_rows <- stacked_survfit %>%
       dplyr::distinct(.row, penalty) %>%
       dplyr::bind_cols(prob_template)
   } else {
     keep_penalty <- FALSE
     stacked_survfit <-
-      stack_survfit(y, nrow(new_data))
+      stack_survfit(y, nrow(new_x))
     starting_rows <- stacked_survfit %>%
       dplyr::distinct(.row) %>%
       dplyr::bind_cols(prob_template)
@@ -317,5 +344,81 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
 
+  if (!is.null(missings_in_new_data)) {
+    res <- pad_survival_na(res, missings_in_new_data, times,
+                           interval = "none", n_total)
+  }
+  res
+}
+
+
+get_missings_coxnet <- function(new_x, new_strata) {
+  missings_logical <- apply(cbind(new_x, new_strata), MARGIN = 1, anyNA)
+  if (!any(missings_logical)) {
+    return(NULL)
+  }
+  which(missings_logical)
+}
+
+
+#' A wrapper for survival probabilities with coxnet models
+#' @param object A fitted `_coxnet` object.
+#' @param new_data Data for prediction.
+#' @param penalty Penalty value(s).
+#' @param ... Options to pass to [survival::survfit()].
+#' @return A tibble.
+#' @keywords internal
+#' @export
+survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
+
+  new_x <- parsnip::.convert_form_to_xy_new(
+    object$preproc$coxnet,
+    new_data,
+    composition = "matrix")$x
+
+  if (has_strata(object$formula, object$training_data)) {
+    new_strata <- get_strata_glmnet(object$formula, data = new_data,
+                                    na.action = stats::na.pass)
+  } else {
+    new_strata <- NULL
+  }
+
+  missings_in_new_data <- get_missings_coxnet(new_x, new_strata)
+  if (!is.null(missings_in_new_data)) {
+    n_total <- nrow(new_data)
+    n_missing <- length(missings_in_new_data)
+    all_missing <- n_missing == n_total
+    if (all_missing) {
+      ret <- rep(NA, n_missing)
+      return(ret)
+    }
+    new_x <- new_x[-missings_in_new_data, , drop = FALSE]
+    new_strata <- new_strata[-missings_in_new_data]
+  }
+
+  y <- survival::survfit(
+    object$fit,
+    newx = new_x,
+    newstrata = new_strata,
+    s = penalty,
+    x = object$training_data$x,
+    y = object$training_data$y,
+    na.action = stats::na.exclude,
+    ...
+  )
+
+  tabs <- summary(y)$table
+  if (is.matrix(tabs)) {
+    colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+    res <- unname(tabs[, "rmean"])
+  } else {
+    names(tabs) <- gsub("[[:punct:]]", "", names(tabs))
+    res <- unname(tabs["rmean"])
+  }
+  if (!is.null(missings_in_new_data)) {
+    index_with_na <- rep(NA, n_total)
+    index_with_na[-missings_in_new_data] <- seq_along(res)
+    res <- res[index_with_na]
+  }
   res
 }

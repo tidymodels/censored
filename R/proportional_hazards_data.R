@@ -195,6 +195,24 @@ make_proportional_hazards_glmnet <- function() {
     model = "proportional_hazards",
     eng = "glmnet",
     mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_coxnet"),
+      args =
+        list(
+          object = quote(object),
+          new_data = quote(new_data),
+          penalty = expr(object$spec$args$penalty)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "proportional_hazards",
+    eng = "glmnet",
+    mode = "censored regression",
     type = "raw",
     value = list(
       pre = coxnet_predict_pre,
@@ -306,7 +324,7 @@ get_strata_glmnet <- function(formula, data, na.action = stats::na.omit) {
   strata
 }
 
-remove_strata <- function(formula, data) {
+remove_strata <- function(formula, data, call = rlang::caller_env()) {
   if (!has_strata(formula, data)) {
     return(formula)
   }
@@ -315,7 +333,7 @@ remove_strata <- function(formula, data) {
   formula[[3]] <- rhs %>%
     drop_strata() %>%
     check_intercept_model() %>%
-    check_strata_remaining()
+    check_strata_remaining(call = call)
   formula
 }
 
@@ -348,11 +366,18 @@ check_intercept_model <- function(expr) {
   expr
 }
 
-check_strata_remaining <- function(expr) {
+check_strata_remaining <- function(expr, call = rlang::caller_env()) {
   if (is_call(expr, "strata")) {
-    abort("Stratification needs to be specified via `+ strata()`.")
+    abort(
+      c(
+        "Stratification must be nested under a chain of `+` calls.",
+        i = "# Good: ~ x1 + x2 + strata(s)",
+        i = "# Bad: ~ x1 + (x2 + strata(s))"
+      ),
+      call = call
+    )
   } else if (is_call(expr)) {
-    expr[-1] <- map(as.list(expr[-1]), check_strata_remaining)
+    expr[-1] <- map(as.list(expr[-1]), check_strata_remaining, call = call)
     expr
   } else {
     expr

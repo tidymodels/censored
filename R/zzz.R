@@ -9,12 +9,12 @@
   make_boost_tree_mboost()
 
   make_decision_tree_rpart()
-  make_decision_tree_party()
+  make_decision_tree_partykit()
 
   make_proportional_hazards_survival()
   make_proportional_hazards_glmnet()
 
-  make_rand_forest_party()
+  make_rand_forest_partykit()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()

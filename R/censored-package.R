@@ -35,6 +35,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom dials parameters
 #' @importFrom dplyr %>%
 #' @importFrom generics fit
 #' @importFrom hardhat tune
@@ -57,5 +58,6 @@ utils::globalVariables(
   c("time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
     ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
     ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred",
-    ".pred_link")
+    ".pred_link", ".pred_time", ".pred_survival", "next_event_time",
+    "sum_component", "time_interval")
 )

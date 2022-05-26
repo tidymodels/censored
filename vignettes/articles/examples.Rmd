@@ -158,9 +158,9 @@ The following examples use the same data set throughout.
   
   </details>
   
-  <details id="decision-tree-party"> 
+  <details id="decision-tree-partykit"> 
   
-  <summary>With the `"party"` engine</summary>
+  <summary>With the `"partykit"` engine</summary>
   
   ```{r echo=FALSE}
   knitr::spin_child("template-lung.R")
@@ -171,7 +171,7 @@ The following examples use the same data set throughout.
   ```{r}
   dt_spec <- 
     decision_tree() %>%
-    set_engine("party") %>% 
+    set_engine("partykit") %>% 
     set_mode("censored regression") 
   dt_spec
   ```
@@ -291,9 +291,9 @@ The following examples use the same data set throughout.
 
 ## `rand_forest()` models
   
-  <details id="rand-forest-party"> 
+  <details id="rand-forest-partykit"> 
   
-  <summary>With the `"party"` engine</summary>
+  <summary>With the `"partykit"` engine</summary>
   
   ```{r echo=FALSE}
   knitr::spin_child("template-lung.R")
@@ -304,7 +304,7 @@ The following examples use the same data set throughout.
   ```{r}
   rf_spec <- 
     rand_forest(trees = 200) %>%
-    set_engine("party") %>% 
+    set_engine("partykit") %>% 
     set_mode("censored regression") 
   rf_spec
   ```

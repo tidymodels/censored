@@ -9,30 +9,55 @@
 
 # nocov
 
-make_rand_forest_party <- function() {
+make_rand_forest_partykit <- function() {
 
-  parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "party")
+  parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "partykit")
   parsnip::set_dependency("rand_forest",
-                          eng = "party",
-                          pkg = "party",
+                          eng = "partykit",
+                          pkg = "partykit",
                           mode = "censored regression")
   parsnip::set_dependency("rand_forest",
-                          eng = "party",
+                          eng = "partykit",
                           pkg = "modeltools",
                           mode = "censored regression")
   parsnip::set_dependency("rand_forest",
-                          eng = "party",
+                          eng = "partykit",
                           pkg = "censored",
                           mode = "censored regression")
 
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "trees",
+    original = "ntree",
+    func = list(pkg = "dials", fun = "trees"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "min_n",
+    original = "minsplit",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "mtry",
+    original = "mtry",
+    func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+
   parsnip::set_fit(
     model = "rand_forest",
-    eng = "party",
+    eng = "partykit",
     mode = "censored regression",
     value = list(
       interface = "formula",
       protect = c("formula", "data", "weights"),
-      func = c(pkg = "censored", fun = "cond_inference_surv_cforest"),
+      func = c(pkg = "parsnip", fun = "cforest_train"),
       defaults = list()
     )
   )
@@ -40,7 +65,7 @@ make_rand_forest_party <- function() {
   parsnip::set_encoding(
     model = "rand_forest",
     mode = "censored regression",
-    eng = "party",
+    eng = "partykit",
     options = list(
       predictor_indicators = "none",
       compute_intercept = FALSE,
@@ -51,56 +76,35 @@ make_rand_forest_party <- function() {
 
   parsnip::set_pred(
     model = "rand_forest",
-    eng = "party",
+    eng = "partykit",
     mode = "censored regression",
     type = "time",
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "modeltools", fun = "Predict"),
-      args = list(object = quote(object$fit), newdata = quote(new_data))
+      func = c(fun = "predict"),
+      args = list(
+        object = rlang::expr(object$fit),
+        newdata = rlang::expr(new_data),
+        type = "response"
+      )
     )
   )
 
   parsnip::set_pred(
     model = "rand_forest",
-    eng = "party",
+    eng = "partykit",
     mode = "censored regression",
     type = "survival",
     value = list(
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_cforest"),
-      args = list(object = quote(object$fit),
-                  new_data = quote(new_data))
+      args = list(
+        object = rlang::expr(object$fit),
+        new_data = rlang::expr(new_data)
+      )
     )
-  )
-
-  # model args ----------------------------------------------------
-
-  parsnip::set_model_arg(
-    model = "rand_forest",
-    eng = "party",
-    parsnip = "trees",
-    original = "ntree",
-    func = list(pkg = "dials", fun = "trees"),
-    has_submodel = FALSE
-  )
-  parsnip::set_model_arg(
-    model = "rand_forest",
-    eng = "party",
-    parsnip = "min_n",
-    original = "minsplit",
-    func = list(pkg = "dials", fun = "min_n"),
-    has_submodel = TRUE
-  )
-  parsnip::set_model_arg(
-    model = "rand_forest",
-    eng = "party",
-    parsnip = "mtry",
-    original = "mtry",
-    func = list(pkg = "dials", fun = "mtry"),
-    has_submodel = FALSE
   )
 
 }

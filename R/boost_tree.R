@@ -95,3 +95,40 @@ predict_linear_pred._blackboost <- function(object,
   }
   res
 }
+
+# the mboost::survFit isn't able to predict survival probabilities for a given
+# timepoint. This function rounds down to nearest timepoint and uses that
+# for prediction.
+floor_surv_mboost <- function(x, time) {
+  ind <- purrr::map_int(time, ~ max(which(.x > c(-Inf, unname(x$time)))))
+  t(unname(rbind(1, x$surv))[ind, ])
+}
+
+
+#' A wrapper for mean survival times with `mboost` models
+#' @param object A model from `blackboost()`.
+#' @param new_data Data for prediction
+#' @return A tibble
+#' @keywords internal
+#' @export
+survival_time_mboost <- function(object, new_data) {
+
+  y <- mboost::survFit(object, new_data)
+
+  stacked_survfit <- stack_survfit(y, n = nrow(new_data))
+
+  starting_rows <- stacked_survfit %>%
+    dplyr::distinct(.row) %>%
+    dplyr::bind_cols(prob_template)
+
+  res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
+    dplyr::group_by(.row) %>%
+    dplyr::mutate(next_event_time = dplyr::lead(.time),
+                  time_interval = next_event_time - .time,
+                  sum_component = time_interval * .pred_survival) %>%
+    dplyr::summarize(.pred_time = sum(sum_component, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(.pred_time)
+
+  res
+}

@@ -15,7 +15,7 @@ survival_time_survbagg <- function(object, new_data) {
       ret <- rep(NA, n_missing)
       return(ret)
     }
-    new_data <- new_data[-missings_in_new_data, ]
+    new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
   y <- predict(object, newdata = new_data)
@@ -61,7 +61,7 @@ survival_prob_survbagg <- function(object, new_data, time) {
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
-    new_data <- new_data[-missings_in_new_data, ]
+    new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
   y <- predict(object, newdata = new_data)
