@@ -360,12 +360,12 @@ check_strata_remaining <- function(expr) {
 }
 
 check_dots_coxnet <- function(x) {
-  bad_args <- c("subset", "contrasts", "offset")
+  bad_args <- c("subset", "contrasts", "offset", "family")
   bad_names <- names(x) %in% bad_args
   if (any(bad_names)) {
     rlang::abort(
       glue::glue(
-        "These argument(s) cannot be used to create the data: ",
+        "These argument(s) cannot be used to create the model: ",
         glue::glue_collapse(glue::glue("`{names(x)[bad_names]}`"), sep = ", ")
       )
     )
