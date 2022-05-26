@@ -4,7 +4,14 @@
 \alias{glmnet_fit_wrapper}
 \title{Wrapper for glmnet for censored}
 \usage{
-glmnet_fit_wrapper(formula, data, alpha = 1, lambda = NULL, ...)
+glmnet_fit_wrapper(
+  formula,
+  data,
+  alpha = 1,
+  lambda = NULL,
+  weights = NULL,
+  ...
+)
 }
 \arguments{
 \item{formula}{The model formula.}
@@ -24,6 +31,9 @@ single value for \code{lambda} (for predictions after CV use
 \code{predict()} instead).  Supply instead a decreasing sequence of
 \code{lambda} values. \code{glmnet} relies on its warms starts for speed,
 and its often faster to fit a whole path than compute a single fit.}
+
+\item{weights}{observation weights. Can be total counts if responses are
+proportion matrices. Default is 1 for each observation}
 
 \item{...}{additional parameters passed to glmnet::glmnet.}
 }

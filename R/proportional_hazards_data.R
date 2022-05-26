@@ -252,8 +252,12 @@ make_proportional_hazards_glmnet <- function() {
 #' @param ... additional parameters passed to glmnet::glmnet.
 #' @export
 #' @keywords internal
-glmnet_fit_wrapper <-
-  function(formula, data, alpha = 1, lambda = NULL, weights = NULL, ...) {
+glmnet_fit_wrapper <- function(formula,
+                               data,
+                               alpha = 1,
+                               lambda = NULL,
+                               weights = NULL,
+                               ...) {
 
     dots <- rlang::quos(...)
     check_dots_coxnet(dots)
