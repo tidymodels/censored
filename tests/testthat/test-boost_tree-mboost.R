@@ -123,6 +123,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  mtry = rlang::quo(5),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -136,6 +137,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  mtry = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -150,6 +152,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  mstop = rlang::quo(1000),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -163,6 +166,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  mstop = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -177,6 +181,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  maxdepth = rlang::quo(3),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -190,6 +195,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  maxdepth = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -204,6 +210,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  minsplit = rlang::quo(10),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -217,6 +224,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  minsplit = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -231,6 +239,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  mincriterion = rlang::quo(0.2),
                  family = rlang::expr(mboost::CoxPH())
                )
@@ -244,6 +253,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  mincriterion = rlang::new_quosure(hardhat::tune()),
                  family = rlang::expr(mboost::CoxPH())
                )

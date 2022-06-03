@@ -33,7 +33,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 family = rlang::expr(missing_arg())
+                 weights = rlang::expr(missing_arg())
                )
   )
 
@@ -51,7 +51,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 family = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  alpha = rlang::quo(0.34)
                )
   )
@@ -64,7 +64,7 @@ test_that("primary arguments", {
                list(
                  formula = rlang::expr(missing_arg()),
                  data = rlang::expr(missing_arg()),
-                 family = rlang::expr(missing_arg()),
+                 weights = rlang::expr(missing_arg()),
                  alpha = rlang::new_quosure(hardhat::tune())
                )
   )
