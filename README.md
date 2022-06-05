@@ -38,15 +38,15 @@ with `type = "quantile"`, and the hazard with `type = "hazard"`.
 
 | model                | engine   | time | survival | linear_pred | raw | quantile | hazard |
 |:---------------------|:---------|:-----|:---------|:------------|:----|:---------|:-------|
-| bag_tree             | rpart    | ✓    | ✓        | x           | x   | x        | x      |
-| boost_tree           | mboost   | x    | ✓        | ✓           | x   | x        | x      |
-| decision_tree        | rpart    | ✓    | ✓        | x           | x   | x        | x      |
-| decision_tree        | partykit | ✓    | ✓        | x           | x   | x        | x      |
-| proportional_hazards | survival | ✓    | ✓        | ✓           | x   | x        | x      |
-| proportional_hazards | glmnet   | x    | ✓        | ✓           | ✓   | x        | x      |
-| rand_forest          | partykit | ✓    | ✓        | x           | x   | x        | x      |
-| survival_reg         | survival | ✓    | ✓        | ✓           | x   | ✓        | ✓      |
-| survival_reg         | flexsurv | ✓    | ✓        | ✓           | x   | ✓        | ✓      |
+| bag_tree             | rpart    | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
+| boost_tree           | mboost   | ✔    | ✔        | ✔           | ✖   | ✖        | ✖      |
+| decision_tree        | rpart    | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
+| decision_tree        | partykit | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
+| proportional_hazards | survival | ✔    | ✔        | ✔           | ✖   | ✖        | ✖      |
+| proportional_hazards | glmnet   | ✔    | ✔        | ✔           | ✔   | ✖        | ✖      |
+| rand_forest          | partykit | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
+| survival_reg         | survival | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
+| survival_reg         | flexsurv | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
 
 ## Contributing
 
