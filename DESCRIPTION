@@ -43,10 +43,10 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes: 
     flexsurv=chjackson/flexsurv-dev,
-    tidymodels/parsnip@feature/case-weights
+    tidymodels/parsnip
 Config/Needs/website:
     tidymodels,
-    tidymodels/parsnip@feature/case-weights,
+    tidymodels/parsnip,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
