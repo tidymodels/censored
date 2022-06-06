@@ -21,7 +21,7 @@ make_proportional_hazards_survival <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "survival", fun = "coxph"),
       defaults = list(x = TRUE, model = TRUE)
     )
@@ -117,7 +117,7 @@ make_proportional_hazards_glmnet <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data", "family"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "censored", fun = "glmnet_fit_wrapper"),
       defaults = list()
     )
@@ -252,7 +252,12 @@ make_proportional_hazards_glmnet <- function() {
 #' @param ... additional parameters passed to glmnet::glmnet.
 #' @export
 #' @keywords internal
-glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
+glmnet_fit_wrapper <- function(formula,
+                               data,
+                               alpha = 1,
+                               lambda = NULL,
+                               weights = NULL,
+                               ...) {
 
   dots <- rlang::quos(...)
   check_dots_coxnet(dots)
@@ -281,9 +286,9 @@ glmnet_fit_wrapper <- function(formula, data, alpha = 1, lambda = NULL, ...) {
   }
 
   fit <- glmnet::glmnet(data_obj$x, data_obj$y, family = "cox",
-                        alpha = alpha, lambda = lambda, ...)
+                        alpha = alpha, lambda = lambda, weights = weights, ...)
 
-  # TODO: remove weights and offset from data_obj?
+  # TODO: remove offset from data_obj?
   res <- list(
     fit = fit,
     preproc = data_obj
@@ -384,12 +389,12 @@ check_strata_remaining <- function(expr, call = rlang::caller_env()) {
 }
 
 check_dots_coxnet <- function(x) {
-  bad_args <- c("subset", "weights", "contrasts", "offset")
+  bad_args <- c("subset", "contrasts", "offset", "family")
   bad_names <- names(x) %in% bad_args
   if (any(bad_names)) {
     rlang::abort(
       glue::glue(
-        "These argument(s) cannot be used to create the data: ",
+        "These argument(s) cannot be used to create the model: ",
         glue::glue_collapse(glue::glue("`{names(x)[bad_names]}`"), sep = ", ")
       )
     )

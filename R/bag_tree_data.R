@@ -26,7 +26,7 @@ make_bag_tree_rpart <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "ipred", fun = "bagging"),
       defaults = list()
     )

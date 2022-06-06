@@ -12,7 +12,7 @@ test_that("model object", {
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
 
   # Removing `model` element from f_fit and `call` from both
-  expect_equal(f_fit$fit[-c(16, 21)], exp_f_fit[-20])
+  expect_equal(f_fit$fit[-c(16, 21)], exp_f_fit[-20], ignore_formula_env = TRUE)
 })
 
 test_that("api errors", {

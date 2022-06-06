@@ -318,6 +318,7 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     s = penalty,
     x = object$training_data$x,
     y = object$training_data$y,
+    weights = object$preproc$coxnet$weights,
     na.action = na.exclude,
     ...
   )
@@ -403,6 +404,7 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
     s = penalty,
     x = object$training_data$x,
     y = object$training_data$y,
+    weights = object$preproc$coxnet$weights,
     na.action = stats::na.exclude,
     ...
   )

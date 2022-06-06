@@ -56,7 +56,7 @@ make_rand_forest_partykit <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "parsnip", fun = "cforest_train"),
       defaults = list()
     )
