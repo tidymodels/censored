@@ -282,11 +282,23 @@ coxnet_train <- function(formula,
   if (has_strata(formula, data)) {
     check_strata_nterms(formula, data)
     strata <- get_strata_glmnet(formula, data)
-    data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
+
+    stratify_surv_call <- rlang::call2("stratifySurv", .ns  = "glmnet")
+    stratify_surv_call$y <- data_obj$y
+    stratify_surv_call$strata <- strata
+    data_obj$y <- eval_tidy(stratify_surv_call)
   }
 
-  fit <- glmnet::glmnet(data_obj$x, data_obj$y, family = "cox",
-                        alpha = alpha, lambda = lambda, weights = weights, ...)
+  fit_call <- rlang::call2("glmnet", .ns = "glmnet")
+  fit_call$x <- data_obj$x
+  fit_call$y <- data_obj$y
+  fit_call$weights <- weights
+  fit_call$family <- "cox"
+  fit_call$alpha <- alpha
+  fit_call$lambda <- lambda
+  fit_call <- rlang::call_modify(fit_call, !!!dots)
+
+  fit <- eval_tidy(fit_call)
 
   # TODO: remove offset from data_obj?
   res <- list(
