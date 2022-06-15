@@ -1,6 +1,8 @@
 library(testthat)
 
 test_that("model object", {
+  skip_if_not_installed("mboost")
+
   lung2 <- lung[-14, ]
   exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
                                   data = lung2,
@@ -25,6 +27,8 @@ test_that("model object", {
 
 
 test_that("survival predictions", {
+  skip_if_not_installed("mboost")
+
   pred_time <- c(0, 100, 200, 10000)
 
   lung2 <- lung[-14, ]
@@ -63,6 +67,8 @@ test_that("survival predictions", {
 })
 
 test_that("linear_pred predictions", {
+  skip_if_not_installed("mboost")
+
   lung2 <- lung[-14, ]
   exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
                                   data = lung2,

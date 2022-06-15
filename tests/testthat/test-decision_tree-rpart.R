@@ -1,6 +1,8 @@
 library(testthat)
 
 test_that("model object", {
+  skip_if_not_installed("pec")
+
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -18,6 +20,8 @@ test_that("model object", {
 })
 
 test_that("time predictions", {
+  skip_if_not_installed("pec")
+
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -37,6 +41,8 @@ test_that("time predictions", {
 })
 
 test_that("survival predictions", {
+  skip_if_not_installed("pec")
+
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 

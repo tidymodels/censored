@@ -538,6 +538,7 @@ test_that("survival prediction with NA in strata", {
 # prediction: time --------------------------------------------------------
 
 test_that("time predictions without strata", {
+  skip_if_not_installed("glmnet")
 
   # remove row with missing value in ph.ecog
   lung2 <- lung[-14, ]
@@ -578,6 +579,7 @@ test_that("time predictions without strata", {
 })
 
 test_that("time predictions with strata", {
+  skip_if_not_installed("glmnet")
 
   # remove row with missing value in ph.ecog
   lung2 <- lung[-14, ]

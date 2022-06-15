@@ -24,6 +24,8 @@ test_that("flexsurv execution", {
 })
 
 test_that("flexsurv time prediction", {
+  skip_if_not_installed("flexsurv")
+
   exp_fit <- flexsurv::flexsurvreg(Surv(time, status) ~ age, data = lung,
                                    dist = "lognormal")
   exp_pred <- predict(exp_fit, head(lung), type = "response")
@@ -122,6 +124,8 @@ test_that("hazard prediction", {
 })
 
 test_that("quantile predictions", {
+  skip_if_not_installed("flexsurv")
+
   set.seed(1)
   fit_s <- survival_reg() %>%
     set_engine("flexsurv") %>%
@@ -173,6 +177,8 @@ test_that("quantile predictions", {
 })
 
 test_that("linear predictor", {
+  skip_if_not_installed("flexsurv")
+
   f_fit <- survival_reg() %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
