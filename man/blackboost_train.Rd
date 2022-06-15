@@ -54,7 +54,7 @@ in info slot of each partynode.}
 A fitted blackboost model.
 }
 \description{
-\code{blackboost_train} is a wrapper for the \code{blackboost()} function in the
+\code{blackboost_train()} is a wrapper for the \code{blackboost()} function in the
 \pkg{mboost} package that fits tree-based models
 where all of the model arguments are in the main function.
 }

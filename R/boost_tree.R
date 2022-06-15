@@ -2,7 +2,7 @@
 
 #' Boosted trees via mboost
 #'
-#' `blackboost_train` is a wrapper for the `blackboost()` function in the
+#' `blackboost_train()` is a wrapper for the `blackboost()` function in the
 #' \pkg{mboost} package that fits tree-based models
 #'  where all of the model arguments are in the main function.
 #'
