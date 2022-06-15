@@ -64,7 +64,7 @@ make_proportional_hazards_survival <- function() {
     value = list(
       pre = cph_survival_pre,
       post = NULL,
-      func = c(pkg = "censored", fun = "survival_prob_cph"),
+      func = c(pkg = "censored", fun = "survival_prob_coxph"),
       args =
         list(
           x = quote(object$fit),
@@ -118,7 +118,7 @@ make_proportional_hazards_glmnet <- function() {
     value = list(
       interface = "formula",
       protect = c("formula", "data", "weights"),
-      func = c(pkg = "censored", fun = "glmnet_fit_wrapper"),
+      func = c(pkg = "censored", fun = "coxnet_train"),
       defaults = list()
     )
   )
@@ -252,12 +252,12 @@ make_proportional_hazards_glmnet <- function() {
 #' @param ... additional parameters passed to glmnet::glmnet.
 #' @export
 #' @keywords internal
-glmnet_fit_wrapper <- function(formula,
-                               data,
-                               alpha = 1,
-                               lambda = NULL,
-                               weights = NULL,
-                               ...) {
+coxnet_train <- function(formula,
+                         data,
+                         alpha = 1,
+                         lambda = NULL,
+                         weights = NULL,
+                         ...) {
 
   dots <- rlang::quos(...)
   check_dots_coxnet(dots)

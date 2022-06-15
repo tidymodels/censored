@@ -88,7 +88,7 @@ survreg_survival <- function(location, object, scale, time, ...) {
 #' @return A nested tibble with column name `.pred`.
 #' @keywords internal
 #' @export
-survreg_survival_probs <- function(object, new_data, time) {
+survival_prob_survreg <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
   res <-
@@ -112,8 +112,8 @@ survreg_hazard <- function(location, object, scale = object$scale, time, ...) {
 }
 
 #' @export
-#' @rdname survreg_survival_probs
-survreg_hazard_probs <- function(object, new_data, time) {
+#' @rdname survival_prob_survreg
+hazard_survreg <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
   res <-

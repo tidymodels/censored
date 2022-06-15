@@ -23,7 +23,7 @@
       proportional_hazards(penalty = 0.1) %>% set_engine("glmnet") %>% fit(Surv(time,
         status) ~ age + (ph.ecog + strata(sex)), data = lung)
     Condition
-      Error in `censored::glmnet_fit_wrapper()`:
+      Error in `censored::coxnet_train()`:
       ! Stratification must be nested under a chain of `+` calls.
       i # Good: ~ x1 + x2 + strata(s)
       i # Bad: ~ x1 + (x2 + strata(s))

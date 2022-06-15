@@ -99,7 +99,7 @@ make_survival_reg_survival <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "survreg_hazard_probs"),
+      func = c(pkg = "censored", fun = "hazard_survreg"),
       args =
         list(
           object = expr(object$fit),
@@ -116,7 +116,7 @@ make_survival_reg_survival <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "survreg_survival_probs"),
+      func = c(pkg = "censored", fun = "survival_prob_survreg"),
       args =
         list(
           object = expr(object$fit),
