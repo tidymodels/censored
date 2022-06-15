@@ -124,3 +124,20 @@ hazard_survreg <- function(object, new_data, time) {
     )
   tibble::tibble(.pred = unname(res))
 }
+
+
+# helper for flexsurv -----------------------------------------------------
+
+require_flexsurv_version <- function(new_data, object) {
+  if (!rlang::is_installed("flexsurv", version = "2.2")) {
+    rlang::abort(
+      c(
+        "This prediction type needs the development version of the `flexsurv` package.",
+        i = "You can install it with `remotes::install_github('chjackson/flexsurv-dev')`"
+      ),
+      call = rlang::expr(predict())
+    )
+  }
+
+  new_data
+}

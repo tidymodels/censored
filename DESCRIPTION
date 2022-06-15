@@ -32,7 +32,7 @@ Imports:
 Suggests:
     coin,
     covr,
-    flexsurv (>= 2.2),
+    flexsurv,
     glmnet (>= 4.1),
     ipred,
     partykit,
@@ -42,7 +42,6 @@ Suggests:
     rpart,
     testthat (>= 3.0.0)
 Remotes: 
-    flexsurv=chjackson/flexsurv-dev,
     tidymodels/parsnip
 Config/Needs/website:
     tidymodels,

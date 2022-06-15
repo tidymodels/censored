@@ -200,7 +200,7 @@ make_survival_reg_flexsurv <- function() {
     mode = "censored regression",
     type = "time",
     value = list(
-      pre = NULL,
+      pre = require_flexsurv_version,
       post = NULL,
       func = c(fun = "predict"),
       args =
@@ -218,7 +218,7 @@ make_survival_reg_flexsurv <- function() {
     mode = "censored regression",
     type = "quantile",
     value = list(
-      pre = NULL,
+      pre = require_flexsurv_version,
       post = NULL,
       func = c(fun = "predict"),
       args =
@@ -239,7 +239,7 @@ make_survival_reg_flexsurv <- function() {
     mode = "censored regression",
     type = "hazard",
     value = list(
-      pre = NULL,
+      pre = require_flexsurv_version,
       post = NULL,
       func = c(fun = "predict"),
       args =
@@ -258,7 +258,7 @@ make_survival_reg_flexsurv <- function() {
     mode = "censored regression",
     type = "survival",
     value = list(
-      pre = NULL,
+      pre = require_flexsurv_version,
       post = NULL,
       func = c(fun = "predict"),
       args =
@@ -279,7 +279,7 @@ make_survival_reg_flexsurv <- function() {
     mode = "censored regression",
     type = "linear_pred",
     value = list(
-      pre = NULL,
+      pre = require_flexsurv_version,
       post = function(results, object) {
         results %>%
           dplyr::mutate(.pred_linear_pred = log(.pred_link)) %>%

@@ -23,7 +23,40 @@ test_that("flexsurv execution", {
   )
 })
 
+test_that("error for flexsurv non-dev version", {
+  skip_if(utils::packageVersion("flexsurv") > "2.1")
+
+  f_fit <- survival_reg(dist = "lognormal") %>%
+    set_engine("flexsurv") %>%
+    fit(Surv(time, status) ~ age, data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "time")
+  })
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "survival", time = c(0, 500, 1000))
+  })
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "hazard", time = c(0, 500, 1000))
+  })
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "linear_pred")
+  })
+
+  fit_s <- survival_reg() %>%
+    set_engine("flexsurv") %>%
+    set_mode("censored regression") %>%
+    fit(Surv(stop, event) ~ rx + size + enum, data = bladder)
+  expect_snapshot(error = TRUE, {
+    predict(fit_s, new_data = bladder[1:3,], type = "quantile")
+  })
+
+})
+
+
 test_that("flexsurv time prediction", {
+  skip_if_not_installed("flexsurv", "2.2")
+
   exp_fit <- flexsurv::flexsurvreg(Surv(time, status) ~ age, data = lung,
                                    dist = "lognormal")
   exp_pred <- predict(exp_fit, head(lung), type = "response")
@@ -38,6 +71,8 @@ test_that("flexsurv time prediction", {
 
 
 test_that("survival probability prediction", {
+  skip_if_not_installed("flexsurv", "2.2")
+
   rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
   f_fit <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
@@ -86,6 +121,8 @@ test_that("survival probability prediction", {
 
 
 test_that("hazard prediction", {
+  skip_if_not_installed("flexsurv", "2.2")
+
   rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
   f_fit <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
@@ -122,6 +159,8 @@ test_that("hazard prediction", {
 })
 
 test_that("quantile predictions", {
+  skip_if_not_installed("flexsurv", "2.2")
+
   set.seed(1)
   fit_s <- survival_reg() %>%
     set_engine("flexsurv") %>%
@@ -173,6 +212,8 @@ test_that("quantile predictions", {
 })
 
 test_that("linear predictor", {
+  skip_if_not_installed("flexsurv", "2.2")
+
   f_fit <- survival_reg() %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)

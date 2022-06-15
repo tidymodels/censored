@@ -414,7 +414,7 @@ The following examples use the same data set throughout.
 
   The holdout data can be predicted for survival probability at different time points as well as event time, linear predictor, quantile, and hazard. 
   
-  ```{r}
+  ```{r, eval = FALSE}
   predict(
     sr_fit, 
     lung_test, 
