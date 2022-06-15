@@ -113,7 +113,10 @@ floor_surv_mboost <- function(x, time) {
 #' @export
 survival_time_mboost <- function(object, new_data) {
 
-  y <- mboost::survFit(object, new_data)
+  survFit_call <- rlang::call2("survFit", .ns = "mboost")
+  survFit_call$object <- object
+  survFit_call$newdata <- new_data
+  y <- eval_tidy(survFit_call)
 
   stacked_survfit <- stack_survfit(y, n = nrow(new_data))
 
