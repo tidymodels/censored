@@ -1,4 +1,4 @@
-#' A wrapper for survival probabilities with cph models
+#' A wrapper for survival probabilities with coxph models
 #' @param x A model from `coxph()`.
 #' @param new_data Data for prediction
 #' @param times A vector of integers for prediction times.
@@ -10,13 +10,13 @@
 #' @return A nested tibble
 #' @keywords internal
 #' @export
-survival_prob_cph <- function(x,
-                              new_data,
-                              times,
-                              output = "surv",
-                              interval = "none",
-                              conf.int = .95,
-                              ...) {
+survival_prob_coxph <- function(x,
+                                new_data,
+                                times,
+                                output = "surv",
+                                interval = "none",
+                                conf.int = .95,
+                                ...) {
   interval <- rlang::arg_match(interval, c("none", "confidence"))
   output <- rlang::arg_match(output, c("surv", "conf", "haz"))
   if (output == "surv" & interval == "confidence") {

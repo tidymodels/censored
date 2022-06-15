@@ -64,7 +64,7 @@ make_proportional_hazards_survival <- function() {
     value = list(
       pre = cph_survival_pre,
       post = NULL,
-      func = c(pkg = "censored", fun = "survival_prob_cph"),
+      func = c(pkg = "censored", fun = "survival_prob_coxph"),
       args =
         list(
           x = quote(object$fit),
