@@ -113,7 +113,7 @@ survreg_hazard <- function(location, object, scale = object$scale, time, ...) {
 
 #' @export
 #' @rdname survival_prob_survreg
-survreg_hazard_probs <- function(object, new_data, time) {
+hazard_survreg <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)
   res <-

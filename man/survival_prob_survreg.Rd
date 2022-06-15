@@ -2,12 +2,12 @@
 % Please edit documentation in R/survival_reg.R
 \name{survival_prob_survreg}
 \alias{survival_prob_survreg}
-\alias{survreg_hazard_probs}
+\alias{hazard_survreg}
 \title{Internal function helps for parametric survival models}
 \usage{
 survival_prob_survreg(object, new_data, time)
 
-survreg_hazard_probs(object, new_data, time)
+hazard_survreg(object, new_data, time)
 }
 \arguments{
 \item{object}{A \code{survreg} object.}
