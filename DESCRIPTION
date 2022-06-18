@@ -13,7 +13,7 @@ License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 0.2.1.9001),
+    parsnip (>= 1.0.0),
     R (>= 3.5.0),
     survival (>= 3.3-1)
 Imports: 
@@ -40,9 +40,6 @@ Suggests:
     rmarkdown,
     rpart,
     testthat (>= 3.0.0)
-Remotes: 
-    flexsurv=chjackson/flexsurv-dev,
-    tidymodels/parsnip
 Config/Needs/website:
     tidymodels,
     tidymodels/parsnip,
