@@ -7,7 +7,7 @@
 survival_prob_coxnet(
   object,
   new_data,
-  times,
+  time,
   output = "surv",
   penalty = NULL,
   ...
@@ -18,7 +18,7 @@ survival_prob_coxnet(
 
 \item{new_data}{Data for prediction.}
 
-\item{times}{A vector of integers for prediction times.}
+\item{time}{A vector of integers for prediction times.}
 
 \item{output}{One of "surv" or "haz".}
 
@@ -36,6 +36,6 @@ A wrapper for survival probabilities with coxnet models
 cox_mod <- proportional_hazards(penalty = 0.1) \%>\%
   set_engine("glmnet") \%>\%
   fit(Surv(time, status) ~ ., data = lung)
-survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], times = 300)
+survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
 }
 \keyword{internal}
