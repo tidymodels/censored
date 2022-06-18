@@ -36,4 +36,8 @@ A tibble with a list column of nested tibbles.
 \description{
 A wrapper for survival probabilities with coxph models
 }
+\examples{
+cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+survival_prob_coxph(cox_mod, new_data = lung[1:3, ], times = 300)
+}
 \keyword{internal}

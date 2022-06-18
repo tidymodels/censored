@@ -58,4 +58,8 @@ A fitted blackboost model.
 \pkg{mboost} package that fits tree-based models
 where all of the model arguments are in the main function.
 }
+\examples{
+blackboost_train(Surv(time, status) ~ age + ph.ecog,
+  data = lung[-14, ], family = mboost::CoxPH())
+}
 \keyword{internal}

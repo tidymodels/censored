@@ -48,4 +48,7 @@ model matrix for glmnet.
 The wrapper retains the original formula and the pre-processing elements
 including the training data to allow for predictions from the fitted model.
 }
+\examples{
+coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
+}
 \keyword{internal}

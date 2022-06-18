@@ -29,6 +29,9 @@
 #' @return A fitted blackboost model.
 #' @keywords internal
 #' @export
+#' @examples
+#' blackboost_train(Surv(time, status) ~ age + ph.ecog,
+#'   data = lung[-14, ], family = mboost::CoxPH())
 blackboost_train <-
   function(formula, data, family, weights = NULL,
            teststat = "quad", testtype = "Teststatistic",
@@ -111,6 +114,11 @@ floor_surv_mboost <- function(x, time) {
 #' @return A tibble.
 #' @keywords internal
 #' @export
+#' @examples
+#' library(mboost)
+#' boosted_tree <- blackboost(Surv(time, status) ~ age + ph.ecog,
+#'   data = lung[-14, ], family = CoxPH())
+#' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 survival_time_mboost <- function(object, new_data) {
 
   y <- mboost::survFit(object, new_data)

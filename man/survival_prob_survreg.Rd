@@ -22,4 +22,9 @@ A tibble with a list column of nested tibbles.
 \description{
 Internal function helps for parametric survival models
 }
+\examples{
+surv_reg <- survreg(Surv(time, status) ~ ., data = lung)
+survival_prob_survreg(surv_reg, lung[1:3, ], time = 100)
+hazard_survreg(surv_reg, lung[1:3, ], time = 100)
+}
 \keyword{internal}

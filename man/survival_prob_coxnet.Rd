@@ -32,4 +32,10 @@ A tibble with a list column of nested tibbles.
 \description{
 A wrapper for survival probabilities with coxnet models
 }
+\examples{
+cox_mod <- proportional_hazards(penalty = 0.1) \%>\%
+  set_engine("glmnet") \%>\%
+  fit(Surv(time, status) ~ ., data = lung)
+survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], times = 300)
+}
 \keyword{internal}

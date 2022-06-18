@@ -12,9 +12,14 @@ survival_time_survbagg(object, new_data)
 \item{new_data}{Data for prediction}
 }
 \value{
-A tibble.
+A vector.
 }
 \description{
 A wrapper for survival times with \code{survbagg} models
+}
+\examples{
+library(ipred)
+bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+survival_time_survbagg(bagged_tree, lung[1:3, ])
 }
 \keyword{internal}

@@ -11,7 +11,7 @@ survival_prob_cforest(object, new_data, time, output = "surv")
 survival_prob_ctree(object, new_data, time, output = "surv")
 }
 \arguments{
-\item{object}{A model object}
+\item{object}{A model object from \code{partykit::ctree()} or \code{partykit::cforest()}.}
 
 \item{new_data}{A data frame to be predicted.}
 
@@ -24,5 +24,12 @@ A tibble with a list column of nested tibbles.
 }
 \description{
 Internal helper functions for party objects
+}
+\examples{
+library(partykit)
+c_forest <- cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+survival_prob_cforest(c_forest, lung[1:3, ], time = 100)
+c_tree <- ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
+survival_prob_ctree(c_tree, lung[1:3, ], time = 100)
 }
 \keyword{internal}

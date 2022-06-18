@@ -254,6 +254,8 @@ make_proportional_hazards_glmnet <- function() {
 #' @return A fitted `glmnet` model.
 #' @export
 #' @keywords internal
+#' @examples
+#' coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
 coxnet_train <- function(formula,
                          data,
                          alpha = 1,

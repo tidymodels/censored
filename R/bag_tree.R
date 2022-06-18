@@ -4,6 +4,10 @@
 #' @return A vector.
 #' @keywords internal
 #' @export
+#' @examples
+#' library(ipred)
+#' bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+#' survival_time_survbagg(bagged_tree, lung[1:3, ])
 survival_time_survbagg <- function(object, new_data) {
 
   missings_in_new_data <- get_missings_survbagg(object, new_data)
@@ -49,6 +53,10 @@ get_missings_survbagg <- function(object, new_data) {
 #' @return A vctrs list of tibbles.
 #' @keywords internal
 #' @export
+#' @examples
+#' library(ipred)
+#' bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+#' survival_prob_survbagg(bagged_tree, lung[1:3, ], time = 100)
 survival_prob_survbagg <- function(object, new_data, time) {
 
   missings_in_new_data <- get_missings_survbagg(object, new_data)

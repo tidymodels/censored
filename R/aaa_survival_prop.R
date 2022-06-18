@@ -10,6 +10,9 @@
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+#' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], times = 300)
 survival_prob_coxph <- function(x,
                                 new_data,
                                 times,
@@ -237,6 +240,9 @@ pad_survival_na <- function(pred_to_pad,
 #' @return A vector.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+#' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
 
   missings_in_new_data <- get_missings_coxph(object, new_data)
@@ -280,6 +286,11 @@ survival_time_coxph <- function(object, new_data) {
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- proportional_hazards(penalty = 0.1) %>%
+#'   set_engine("glmnet") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
+#' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], times = 300)
 survival_prob_coxnet <- function(object, new_data, times, output = "surv", penalty = NULL, ...) {
 
   output <- match.arg(output, c("surv", "haz"))
@@ -362,7 +373,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 }
 
 
-#' A wrapper for survival probabilities with coxnet models
+#' A wrapper for survival times with coxnet models
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
 #' @param penalty Penalty value(s).
@@ -370,6 +381,11 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @return A vector.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- proportional_hazards(penalty = 0.1) %>%
+#'   set_engine("glmnet") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
+#' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
 
   new_x <- parsnip::.convert_form_to_xy_new(

@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_survival_prop.R
 \name{survival_time_coxnet}
 \alias{survival_time_coxnet}
-\title{A wrapper for survival probabilities with coxnet models}
+\title{A wrapper for survival times with coxnet models}
 \usage{
 survival_time_coxnet(object, new_data, penalty = NULL, ...)
 }
@@ -19,6 +19,12 @@ survival_time_coxnet(object, new_data, penalty = NULL, ...)
 A vector.
 }
 \description{
-A wrapper for survival probabilities with coxnet models
+A wrapper for survival times with coxnet models
+}
+\examples{
+cox_mod <- proportional_hazards(penalty = 0.1) \%>\%
+  set_engine("glmnet") \%>\%
+  fit(Surv(time, status) ~ ., data = lung)
+survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 }
 \keyword{internal}
