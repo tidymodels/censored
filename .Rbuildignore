@@ -8,3 +8,4 @@
 ^pkgdown$
 ^codecov\.yml$
 ^vignettes/articles$
+^cran-comments\.md$
