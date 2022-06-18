@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# censored
+# censored <a href='https://censored.tidymodels.org'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml)
