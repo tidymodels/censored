@@ -7,6 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="censored">
 <title>Fitting and Predicting with censored • censored</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="../deps/_Source%20Sans%20Pro-0.4.1/font.css" rel="stylesheet">
@@ -15,6 +21,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Fitting and Predicting with censored">
 <meta property="og:description" content="censored">
+<meta property="og:image" content="https://censored.tidymodels.org/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -70,7 +77,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Fitting and Predicting with censored</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Fitting and Predicting with censored</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/tidymodels/censored/blob/HEAD/vignettes/articles/examples.Rmd" class="external-link"><code>vignettes/articles/examples.Rmd</code></a></small>
@@ -109,7 +116,7 @@ With the <code>"rpart"</code> engine
   <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span>
   <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span>
   <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span>
-  <span class="co">## <span style="color: #0000BB;">•</span> Learn how to get started at <span style="color: #00BB00;">https://www.tidymodels.org/start/</span></span></code></pre>
+  <span class="co">## <span style="color: #0000BB;">•</span> Search for functions across packages at <span style="color: #00BB00;">https://www.tidymodels.org/find/</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Loading required package: survival</span></code></pre>
@@ -6149,14 +6156,14 @@ With the <code>"partykit"</code> engine
   <span class="co">## attr(,"response")</span>
   <span class="co">## [1] 1</span>
   <span class="co">## attr(,".Environment")</span>
-  <span class="co">## &lt;environment: 0x5641c195fb10&gt;</span>
+  <span class="co">## &lt;environment: 0x556652f926e0&gt;</span>
   <span class="co">## attr(,"Formula_with_dot")</span>
   <span class="co">## Surv(time, status) ~ .</span>
-  <span class="co">## &lt;environment: 0x5641c195fb10&gt;</span>
+  <span class="co">## &lt;environment: 0x556652f926e0&gt;</span>
   <span class="co">## attr(,"Formula_without_dot")</span>
   <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span>
   <span class="co">##     pat.karno + meal.cal + wt.loss</span>
-  <span class="co">## &lt;environment: 0x5641c195fb10&gt;</span>
+  <span class="co">## &lt;environment: 0x556652f926e0&gt;</span>
   <span class="co">## attr(,"dot")</span>
   <span class="co">## [1] "sequential"</span>
   <span class="co">## </span>
@@ -6228,7 +6235,7 @@ With the <code>"partykit"</code> engine
   <span class="co">##         X &lt;- as.list(X)</span>
   <span class="co">##     .Internal(lapply(X, FUN))</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5641afee3ab8&gt;</span>
+  <span class="co">## &lt;bytecode: 0x556641520ab8&gt;</span>
   <span class="co">## &lt;environment: namespace:base&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$saveinfo</span>
@@ -6248,8 +6255,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5641c19c3a18&gt;</span>
-  <span class="co">## &lt;environment: 0x5641c1a875a0&gt;</span>
+  <span class="co">## &lt;bytecode: 0x556652ffa1e8&gt;</span>
+  <span class="co">## &lt;environment: 0x55665309fd58&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$splitfun</span>
   <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span>
@@ -6259,8 +6266,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5641c19c5cb8&gt;</span>
-  <span class="co">## &lt;environment: 0x5641c1a874c0&gt;</span>
+  <span class="co">## &lt;bytecode: 0x556652ffc530&gt;</span>
+  <span class="co">## &lt;environment: 0x55665309fc78&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$svselectfun</span>
   <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span>
@@ -6270,8 +6277,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5641c19c3a18&gt;</span>
-  <span class="co">## &lt;environment: 0x5641c1a873e0&gt;</span>
+  <span class="co">## &lt;bytecode: 0x556652ffa1e8&gt;</span>
+  <span class="co">## &lt;environment: 0x55665309fb98&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$svsplitfun</span>
   <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span>
@@ -6281,8 +6288,8 @@ With the <code>"partykit"</code> engine
   <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span>
   <span class="co">##         FUN = .ctree_test)</span>
   <span class="co">## }</span>
-  <span class="co">## &lt;bytecode: 0x5641c19c5cb8&gt;</span>
-  <span class="co">## &lt;environment: 0x5641c1a87290&gt;</span>
+  <span class="co">## &lt;bytecode: 0x556652ffc530&gt;</span>
+  <span class="co">## &lt;environment: 0x55665309fa48&gt;</span>
   <span class="co">## </span>
   <span class="co">## $info$control$teststat</span>
   <span class="co">## [1] "quadratic"</span>
@@ -6326,8 +6333,8 @@ With the <code>"partykit"</code> engine
   <span class="co">## $trafo</span>
   <span class="co">## function (subset, weights, info, estfun, object, ...) </span>
   <span class="co">## list(estfun = Y, unweighted = TRUE)</span>
-  <span class="co">## &lt;bytecode: 0x5641bfc1ccb8&gt;</span>
-  <span class="co">## &lt;environment: 0x5641c1a9a410&gt;</span>
+  <span class="co">## &lt;bytecode: 0x556651250d00&gt;</span>
+  <span class="co">## &lt;environment: 0x5566530ce428&gt;</span>
   <span class="co">## </span>
   <span class="co">## $predictf</span>
   <span class="co">## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + </span>
@@ -6355,14 +6362,14 @@ With the <code>"partykit"</code> engine
   <span class="co">## attr(,"response")</span>
   <span class="co">## [1] 0</span>
   <span class="co">## attr(,".Environment")</span>
-  <span class="co">## &lt;environment: 0x5641c195fb10&gt;</span>
+  <span class="co">## &lt;environment: 0x556652f926e0&gt;</span>
   <span class="co">## attr(,"Formula_with_dot")</span>
   <span class="co">## Surv(time, status) ~ .</span>
-  <span class="co">## &lt;environment: 0x5641c195fb10&gt;</span>
+  <span class="co">## &lt;environment: 0x556652f926e0&gt;</span>
   <span class="co">## attr(,"Formula_without_dot")</span>
   <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span>
   <span class="co">##     pat.karno + meal.cal + wt.loss</span>
-  <span class="co">## &lt;environment: 0x5641c195fb10&gt;</span>
+  <span class="co">## &lt;environment: 0x556652f926e0&gt;</span>
   <span class="co">## attr(,"dot")</span>
   <span class="co">## [1] "sequential"</span>
   <span class="co">## </span>
