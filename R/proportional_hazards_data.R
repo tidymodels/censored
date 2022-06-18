@@ -250,6 +250,8 @@ make_proportional_hazards_glmnet <- function() {
 #' @param data The data.
 #' @inheritParams glmnet::glmnet
 #' @param ... additional parameters passed to glmnet::glmnet.
+#'
+#' @return A fitted `glmnet` model.
 #' @export
 #' @keywords internal
 coxnet_train <- function(formula,

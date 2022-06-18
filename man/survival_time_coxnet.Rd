@@ -16,7 +16,7 @@ survival_time_coxnet(object, new_data, penalty = NULL, ...)
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }
 \value{
-A tibble.
+A vector.
 }
 \description{
 A wrapper for survival probabilities with coxnet models

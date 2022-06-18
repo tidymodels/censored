@@ -12,7 +12,7 @@ survival_time_coxph(object, new_data)
 \item{new_data}{Data for prediction}
 }
 \value{
-A tibble
+A vector.
 }
 \description{
 A wrapper for survival times with \code{coxph} models

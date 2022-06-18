@@ -30,6 +30,9 @@ proportion matrices. Default is 1 for each observation}
 
 \item{...}{additional parameters passed to glmnet::glmnet.}
 }
+\value{
+A fitted \code{glmnet} model.
+}
 \description{
 Not to be used directly by users.
 }

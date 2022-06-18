@@ -12,7 +12,7 @@ survival_time_mboost(object, new_data)
 \item{new_data}{Data for prediction}
 }
 \value{
-A tibble
+A tibble.
 }
 \description{
 A wrapper for mean survival times with \code{mboost} models

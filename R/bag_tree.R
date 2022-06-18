@@ -1,7 +1,7 @@
 #' A wrapper for survival times with `survbagg` models
 #' @param object A model from `ipred::bagging()`.
 #' @param new_data Data for prediction
-#' @return A tibble
+#' @return A vector.
 #' @keywords internal
 #' @export
 survival_time_survbagg <- function(object, new_data) {
@@ -46,7 +46,7 @@ get_missings_survbagg <- function(object, new_data) {
 #' @param object A model from `ipred::bagging()`.
 #' @param new_data Data for prediction.
 #' @param time A vector of prediction times.
-#' @return A nested tibble
+#' @return A vctrs list of tibbles.
 #' @keywords internal
 #' @export
 survival_prob_survbagg <- function(object, new_data, time) {

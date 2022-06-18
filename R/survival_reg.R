@@ -85,7 +85,7 @@ survreg_survival <- function(location, object, scale, time, ...) {
 #' @param object A `survreg` object.
 #' @param new_data A data frame.
 #' @param time A vector of time points.
-#' @return A nested tibble with column name `.pred`.
+#' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
 survival_prob_survreg <- function(object, new_data, time) {

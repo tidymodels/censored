@@ -108,7 +108,7 @@ floor_surv_mboost <- function(x, time) {
 #' A wrapper for mean survival times with `mboost` models
 #' @param object A model from `blackboost()`.
 #' @param new_data Data for prediction
-#' @return A tibble
+#' @return A tibble.
 #' @keywords internal
 #' @export
 survival_time_mboost <- function(object, new_data) {

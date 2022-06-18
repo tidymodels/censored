@@ -14,7 +14,7 @@ survival_prob_survbagg(object, new_data, time)
 \item{time}{A vector of prediction times.}
 }
 \value{
-A nested tibble
+A vctrs list of tibbles.
 }
 \description{
 A wrapper for survival probabilities with \code{survbagg} models

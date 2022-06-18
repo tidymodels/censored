@@ -7,7 +7,7 @@
 #' are `"none"` or `"confidence"`.
 #' @param conf.int The confidence level.
 #' @param ... Options to pass to [survival::survfit()]
-#' @return A nested tibble
+#' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
 survival_prob_coxph <- function(x,
@@ -234,7 +234,7 @@ pad_survival_na <- function(pred_to_pad,
 #' A wrapper for survival times with `coxph` models
 #' @param object A model from `coxph()`.
 #' @param new_data Data for prediction
-#' @return A tibble
+#' @return A vector.
 #' @keywords internal
 #' @export
 survival_time_coxph <- function(object, new_data) {
@@ -277,7 +277,7 @@ survival_time_coxph <- function(object, new_data) {
 #' @param output One of "surv" or "haz".
 #' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
-#' @return A nested tibble.
+#' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
 survival_prob_coxnet <- function(object, new_data, times, output = "surv", penalty = NULL, ...) {
@@ -367,7 +367,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @param new_data Data for prediction.
 #' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
-#' @return A tibble.
+#' @return A vector.
 #' @keywords internal
 #' @export
 survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {

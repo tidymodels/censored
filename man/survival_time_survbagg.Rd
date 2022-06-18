@@ -12,7 +12,7 @@ survival_time_survbagg(object, new_data)
 \item{new_data}{Data for prediction}
 }
 \value{
-A tibble
+A tibble.
 }
 \description{
 A wrapper for survival times with \code{survbagg} models

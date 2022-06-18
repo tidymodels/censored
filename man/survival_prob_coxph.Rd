@@ -31,7 +31,7 @@ are \code{"none"} or \code{"confidence"}.}
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}}
 }
 \value{
-A nested tibble
+A tibble with a list column of nested tibbles.
 }
 \description{
 A wrapper for survival probabilities with coxph models

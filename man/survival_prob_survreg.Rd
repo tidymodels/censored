@@ -17,7 +17,7 @@ hazard_survreg(object, new_data, time)
 \item{time}{A vector of time points.}
 }
 \value{
-A nested tibble with column name \code{.pred}.
+A tibble with a list column of nested tibbles.
 }
 \description{
 Internal function helps for parametric survival models

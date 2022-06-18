@@ -27,7 +27,7 @@ survival_prob_coxnet(
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }
 \value{
-A nested tibble.
+A tibble with a list column of nested tibbles.
 }
 \description{
 A wrapper for survival probabilities with coxnet models
