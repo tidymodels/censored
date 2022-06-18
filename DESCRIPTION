@@ -37,7 +37,6 @@ Suggests:
     ipred,
     partykit,
     pec,
-    riskRegression,
     rmarkdown,
     rpart,
     testthat (>= 3.0.0)
