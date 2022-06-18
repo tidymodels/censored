@@ -8,7 +8,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-6049-5258")),
     person("RStudio", role = c("cph", "fnd"))
   )
-Description: Engines for survival models from the 'parsnip' package.
+Description: Engines for survival models from the 'parsnip' package. These 
+    include parametric, semi-parametric, and tree-based models.
 License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
