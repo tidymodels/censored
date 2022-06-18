@@ -10,7 +10,7 @@
 #' @name party_internal
 #' @examples
 #' library(partykit)
-#' c_forest <- cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+#' c_forest <- cforest(Surv(time, status) ~ age + ph.ecog, data = lung, ntree = 10)
 #' survival_prob_cforest(c_forest, lung[1:3, ], time = 100)
 #' c_tree <- ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 #' survival_prob_ctree(c_tree, lung[1:3, ], time = 100)
