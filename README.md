@@ -7,9 +7,9 @@
 
 [![R-CMD-check](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/tidymodels/censored/branch/main/graph/badge.svg)](https://codecov.io/gh/tidymodels/censored?branch=main)
+coverage](https://codecov.io/gh/tidymodels/censored/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tidymodels/censored?branch=main)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 `censored` is a [parsnip](https://parsnip.tidymodels.org) extension
