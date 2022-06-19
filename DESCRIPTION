@@ -9,7 +9,9 @@ Authors@R: c(
     person("RStudio", role = c("cph", "fnd"))
   )
 Description: Engines for survival models from the 'parsnip' package. These 
-    include parametric, semi-parametric, and tree-based models.
+    include parametric models (e.g., Jackson (2016) <doi:10.18637/jss.v070.i08>),
+    semi-parametric (e.g., Simon et al (2011) <doi:10.18637/jss.v039.i05>), and
+    tree-based models (e.g., Buehlmann and Hothorn (2007) <doi:10.1214/07-STS242>).
 License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
