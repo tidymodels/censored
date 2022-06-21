@@ -1,6 +1,6 @@
-#' censored: Parsnip Engines for Survival Models
+#' censored: parsnip Engines for Survival Models
 #'
-#' `censored` provides engines for survival models from the `parsnip` package.
+#' censored provides engines for survival models from the parsnip package.
 #' The models include parametric survival models, proportional hazards models,
 #' decision trees, boosted trees, bagged trees, and random forests. See the
 #' "Fitting and Predicting with censored" article for various examples. See

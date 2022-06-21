@@ -4,9 +4,9 @@
 \name{censored-package}
 \alias{censored}
 \alias{censored-package}
-\title{censored: Parsnip Engines for Survival Models}
+\title{censored: parsnip Engines for Survival Models}
 \description{
-\code{censored} provides engines for survival models from the \code{parsnip} package.
+censored provides engines for survival models from the parsnip package.
 The models include parametric survival models, proportional hazards models,
 decision trees, boosted trees, bagged trees, and random forests. See the
 "Fitting and Predicting with censored" article for various examples. See
