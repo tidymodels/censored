@@ -1,5 +1,5 @@
 Package: censored
-Title: Parsnip Engines for Survival Models
+Title: 'parsnip' Engines for Survival Models
 Version: 0.1.0
 Authors@R: c(
     person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = "aut",
