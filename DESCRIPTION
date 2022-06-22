@@ -1,14 +1,17 @@
 Package: censored
-Title: Parsnip Engines for Survival Models
-Version: 0.0.0.9000
+Title: 'parsnip' Engines for Survival Models
+Version: 0.1.0
 Authors@R: c(
-    person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = c("aut", "cre"),
+    person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-0679-1945")),
-    person("Hannah", "Frick", , "hannah@rstudio.com", role = "aut",
+    person("Hannah", "Frick", , "hannah@rstudio.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6049-5258")),
     person("RStudio", role = c("cph", "fnd"))
   )
-Description: Engines for survival models from the 'parsnip' package.
+Description: Engines for survival models from the 'parsnip' package. These 
+    include parametric models (e.g., Jackson (2016) <doi:10.18637/jss.v070.i08>),
+    semi-parametric (e.g., Simon et al (2011) <doi:10.18637/jss.v039.i05>), and
+    tree-based models (e.g., Buehlmann and Hothorn (2007) <doi:10.1214/07-STS242>).
 License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues

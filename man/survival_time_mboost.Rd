@@ -12,9 +12,15 @@ survival_time_mboost(object, new_data)
 \item{new_data}{Data for prediction}
 }
 \value{
-A tibble
+A tibble.
 }
 \description{
 A wrapper for mean survival times with \code{mboost} models
+}
+\examples{
+library(mboost)
+boosted_tree <- blackboost(Surv(time, status) ~ age + ph.ecog,
+  data = lung[-14, ], family = CoxPH())
+survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 }
 \keyword{internal}

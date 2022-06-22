@@ -17,17 +17,24 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/tidymodels/censored/branch/main/graph/badge.svg)](https://codecov.io/gh/tidymodels/censored?branch=main)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) 
+[![Codecov test coverage](https://codecov.io/gh/tidymodels/censored/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tidymodels/censored?branch=main)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html) 
 <!-- badges: end -->
 
 `censored` is a [parsnip](https://parsnip.tidymodels.org) extension package which provides engines for various models for censored regression and survival analysis.
 
 ## Installation
 
-This package is still in development. You can install the development version with
+You can install the released version of censored from [CRAN](https://CRAN.R-project.org) with:
 
-``` {.r}
+``` r
+install.packages("censored")
+```
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
 devtools::install_github("tidymodels/censored")
 ```
 

@@ -85,9 +85,13 @@ survreg_survival <- function(location, object, scale, time, ...) {
 #' @param object A `survreg` object.
 #' @param new_data A data frame.
 #' @param time A vector of time points.
-#' @return A nested tibble with column name `.pred`.
+#' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
+#' @examples
+#' surv_reg <- survreg(Surv(time, status) ~ ., data = lung)
+#' survival_prob_survreg(surv_reg, lung[1:3, ], time = 100)
+#' hazard_survreg(surv_reg, lung[1:3, ], time = 100)
 survival_prob_survreg <- function(object, new_data, time) {
   lp_estimate <- predict(object, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object, new_data)

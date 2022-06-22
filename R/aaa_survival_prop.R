@@ -1,18 +1,21 @@
 #' A wrapper for survival probabilities with coxph models
 #' @param x A model from `coxph()`.
 #' @param new_data Data for prediction
-#' @param times A vector of integers for prediction times.
+#' @param time A vector of integers for prediction times.
 #' @param output One of `"surv"`, `"conf"`, or `"haz"`.
 #' @param interval Add confidence interval for survival probability? Options
 #' are `"none"` or `"confidence"`.
 #' @param conf.int The confidence level.
 #' @param ... Options to pass to [survival::survfit()]
-#' @return A nested tibble
+#' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+#' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], time = 300)
 survival_prob_coxph <- function(x,
                                 new_data,
-                                times,
+                                time,
                                 output = "surv",
                                 interval = "none",
                                 conf.int = .95,
@@ -29,7 +32,7 @@ survival_prob_coxph <- function(x,
     n_missing <- length(missings_in_new_data)
     all_missing <- n_missing == n_total
     if (all_missing) {
-      ret <- predict_survival_na(times, interval)
+      ret <- predict_survival_na(time, interval)
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
@@ -52,13 +55,13 @@ survival_prob_coxph <- function(x,
     dplyr::bind_cols(prob_template)
 
   res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
-    interpolate_km_values(times, new_strata) %>%
+    interpolate_km_values(time, new_strata) %>%
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
 
   if (!is.null(missings_in_new_data)) {
-    res <- pad_survival_na(res, missings_in_new_data, times,
+    res <- pad_survival_na(res, missings_in_new_data, time,
                            interval, n_total)
   }
   res
@@ -234,9 +237,12 @@ pad_survival_na <- function(pred_to_pad,
 #' A wrapper for survival times with `coxph` models
 #' @param object A model from `coxph()`.
 #' @param new_data Data for prediction
-#' @return A tibble
+#' @return A vector.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+#' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
 
   missings_in_new_data <- get_missings_coxph(object, new_data)
@@ -273,14 +279,19 @@ survival_time_coxph <- function(object, new_data) {
 #' A wrapper for survival probabilities with coxnet models
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
-#' @param times A vector of integers for prediction times.
+#' @param time A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
 #' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
-#' @return A nested tibble.
+#' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
-survival_prob_coxnet <- function(object, new_data, times, output = "surv", penalty = NULL, ...) {
+#' @examples
+#' cox_mod <- proportional_hazards(penalty = 0.1) %>%
+#'   set_engine("glmnet") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
+#' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
+survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalty = NULL, ...) {
 
   output <- match.arg(output, c("surv", "haz"))
   multi <- length(penalty) > 1
@@ -303,7 +314,7 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
     n_missing <- length(missings_in_new_data)
     all_missing <- n_missing == n_total
     if (all_missing) {
-      ret <- predict_survival_na(times, interval = "none")
+      ret <- predict_survival_na(time, interval = "none")
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
@@ -340,13 +351,13 @@ survival_prob_coxnet <- function(object, new_data, times, output = "surv", penal
       dplyr::bind_cols(prob_template)
   }
   res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
-    interpolate_km_values(times, new_strata) %>%
+    interpolate_km_values(time, new_strata) %>%
     keep_cols(output, keep_penalty) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
 
   if (!is.null(missings_in_new_data)) {
-    res <- pad_survival_na(res, missings_in_new_data, times,
+    res <- pad_survival_na(res, missings_in_new_data, time,
                            interval = "none", n_total)
   }
   res
@@ -362,14 +373,19 @@ get_missings_coxnet <- function(new_x, new_strata) {
 }
 
 
-#' A wrapper for survival probabilities with coxnet models
+#' A wrapper for survival times with coxnet models
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
 #' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
-#' @return A tibble.
+#' @return A vector.
 #' @keywords internal
 #' @export
+#' @examples
+#' cox_mod <- proportional_hazards(penalty = 0.1) %>%
+#'   set_engine("glmnet") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
+#' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
 
   new_x <- parsnip::.convert_form_to_xy_new(

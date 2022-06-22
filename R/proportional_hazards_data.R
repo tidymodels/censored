@@ -69,7 +69,7 @@ make_proportional_hazards_survival <- function() {
         list(
           x = quote(object$fit),
           new_data = quote(new_data),
-          times = rlang::expr(time),
+          time = rlang::expr(time),
           output = "surv",
           interval = expr(interval),
           conf.int = expr(level)
@@ -185,7 +185,7 @@ make_proportional_hazards_glmnet <- function() {
         list(
           object = expr(object),
           new_data = expr(new_data),
-          times = expr(time),
+          time = expr(time),
           penalty = expr(object$spec$args$penalty)
         )
     )
@@ -250,8 +250,12 @@ make_proportional_hazards_glmnet <- function() {
 #' @param data The data.
 #' @inheritParams glmnet::glmnet
 #' @param ... additional parameters passed to glmnet::glmnet.
+#'
+#' @return A fitted `glmnet` model.
 #' @export
 #' @keywords internal
+#' @examples
+#' coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
 coxnet_train <- function(formula,
                          data,
                          alpha = 1,

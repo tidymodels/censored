@@ -12,9 +12,13 @@ survival_time_coxph(object, new_data)
 \item{new_data}{Data for prediction}
 }
 \value{
-A tibble
+A vector.
 }
 \description{
 A wrapper for survival times with \code{coxph} models
+}
+\examples{
+cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 }
 \keyword{internal}
