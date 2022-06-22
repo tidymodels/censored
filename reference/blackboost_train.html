@@ -14,7 +14,7 @@ where all of the model arguments are in the main function."><meta property="og:i
     
     <a class="navbar-brand me-2" href="../index.html">censored</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -135,6 +135,28 @@ in info slot of each partynode.</p></dd>
 <p>A fitted blackboost model.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">blackboost_train</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">ph.ecog</span>,</span>
+<span class="r-in">  data <span class="op">=</span> <span class="va">lung</span><span class="op">[</span><span class="op">-</span><span class="fl">14</span>, <span class="op">]</span>, family <span class="op">=</span> <span class="fu">mboost</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mboost/man/Family.html" class="external-link">CoxPH</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	 Model-based Boosting</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mboost::blackboost(formula = formula, data = data, family = family,     control = mboost::boost_control(), tree_controls = partykit::ctree_control(teststat = "quad",         testtype = "Teststatistic", mincriterion = 0, minsplit = 10,         minbucket = 4, maxdepth = 2, saveinfo = FALSE))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	 Cox Partial Likelihood </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Loss function:  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of boosting iterations: mstop = 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Step size:  0.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Offset:  0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of baselearners:  1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
