@@ -178,7 +178,12 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
       names_to = "group",
       values_to = ".pred_linear_pred"
     )
-  pred <- dplyr::inner_join(param_key, pred, by = "group") %>%
+  if (utils::packageVersion("dplyr") >= "1.0.99.9000") {
+    pred <- dplyr::inner_join(param_key, pred, by = "group", multiple = "all")
+  } else {
+    pred <- dplyr::inner_join(param_key, pred, by = "group")
+  }
+  pred <- pred %>%
     dplyr::select(-group) %>%
     dplyr::arrange(.row, penalty) %>%
     tidyr::nest(.pred = c(-.row)) %>%
