@@ -100,6 +100,7 @@
        9            -0.906
       10            -1.43 
       # ... with 217 more rows
+      # i Use `print(n = ...)` to see more rows
     Code
       predict(f_fit, lung2, type = "survival", time = c(100, 300))
     Condition
@@ -120,6 +121,7 @@
        9 <tibble [2 x 2]>
       10 <tibble [2 x 2]>
       # ... with 217 more rows
+      # i Use `print(n = ...)` to see more rows
 
 ---
 
