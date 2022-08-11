@@ -7,7 +7,7 @@
 # they are already in the parsnip model database. We'll exclude them from
 # coverage stats for this reason.
 
-# nocov
+# nocov start
 
 make_boost_tree_mboost <- function() {
   parsnip::set_model_engine("boost_tree", mode = "censored regression", eng = "mboost")
