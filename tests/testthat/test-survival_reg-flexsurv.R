@@ -1,25 +1,28 @@
 library(testthat)
 
-test_that("flexsurv execution", {
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("flexsurv") %>%
-      fit(Surv(time, status) ~ age, data = lung),
-    regexp = NA
-  )
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("flexsurv") %>%
-      fit(Surv(time) ~ age, data = lung),
-    regexp = NA
-  )
-  expect_false(has_multi_predict(res))
-  expect_equal(multi_predict_args(res), NA_character_)
 
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("flexsurv") %>%
-      fit_xy(x = lung[, "age", drop = FALSE], y = lung$time)
+test_that("model object", {
+  set.seed(1234)
+  exp_f_fit <- flexsurv::flexsurvreg(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    dist = "weibull"
+  )
+
+  mod_spec <- survival_reg() %>%
+    set_engine("flexsurv") %>%
+    set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # remove `call` from comparison
+  f_fit$fit$call <- NULL
+  exp_f_fit$call <- NULL
+
+  expect_equal(
+    f_fit$fit,
+    exp_f_fit,
+    ignore_formula_env = TRUE
   )
 })
 

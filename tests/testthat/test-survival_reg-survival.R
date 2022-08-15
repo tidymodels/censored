@@ -1,26 +1,27 @@
 library(testthat)
 
-test_that("survival execution", {
-
-  expect_error(
-    res <- survival_reg() %>%
-      set_engine("survival") %>%
-      fit(Surv(time, status) ~ age + sex, data = lung),
-    regexp = NA
-  )
-  expect_output(print(res), "parsnip model object")
-
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("survival") %>%
-      fit(Surv(time) ~ age + sex, data = lung),
-    regexp = NA
+test_that("model object", {
+  set.seed(1234)
+  exp_f_fit <- survival::survreg(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    model = TRUE
   )
 
-  expect_error(
-    survival_reg() %>%
-      set_engine("survival") %>%
-      fit_xy(x = lung[, c("age", "sex")], y = lung$time)
+  mod_spec <- survival_reg() %>%
+    set_engine("survival") %>%
+    set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # remove `call` from comparison
+  f_fit$fit$call <- NULL
+  exp_f_fit$call <- NULL
+
+  expect_equal(
+    f_fit$fit,
+    exp_f_fit,
+    ignore_formula_env = TRUE
   )
 })
 
