@@ -25,6 +25,9 @@ test_that("model object", {
   )
 })
 
+
+# prediction: time --------------------------------------------------------
+
 test_that("survival time prediction", {
   res <- survival_reg() %>%
     set_engine("survival") %>%
@@ -35,20 +38,7 @@ test_that("survival time prediction", {
   expect_equal(exp_pred, predict(res, head(lung)))
 })
 
-test_that("prediction of survival time quantile", {
-  res <- survival_reg() %>%
-    set_engine("survival") %>%
-    fit(Surv(time, status) ~ age + sex, data = lung)
-
-  exp_quant <- predict(res$fit, head(lung), p = (2:4) / 5, type = "quantile")
-  exp_quant <- apply(exp_quant, 1, function(x) {
-    tibble::tibble(.quantile = (2:4) / 5, .pred_quantile = x)
-  })
-  exp_quant <- tibble::tibble(.pred = exp_quant)
-  obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4) / 5)
-
-  expect_equal(as.data.frame(exp_quant), as.data.frame(obs_quant))
-})
+# prediction: survival ----------------------------------------------------
 
 test_that("survival probability prediction", {
   rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
@@ -77,6 +67,45 @@ test_that("survival probability prediction", {
   )
 })
 
+
+# prediction: linear_pred -------------------------------------------------
+
+test_that("linear predictor", {
+  f_fit <- survival_reg() %>%
+    set_engine("survival") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
+
+  exp_fit <- survreg(Surv(time, status) ~ age + sex, data = lung)
+  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equal(f_pred$.pred_linear_pred, unname(exp_pred))
+  expect_equal(nrow(f_pred), 5)
+})
+
+
+# prediction: quantile ----------------------------------------------------
+
+test_that("prediction of survival time quantile", {
+  res <- survival_reg() %>%
+    set_engine("survival") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+
+  exp_quant <- predict(res$fit, head(lung), p = (2:4) / 5, type = "quantile")
+  exp_quant <- apply(exp_quant, 1, function(x) {
+    tibble::tibble(.quantile = (2:4) / 5, .pred_quantile = x)
+  })
+  exp_quant <- tibble::tibble(.pred = exp_quant)
+  obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4) / 5)
+
+  expect_equal(as.data.frame(exp_quant), as.data.frame(obs_quant))
+})
+
+
+# prediction: hazard ------------------------------------------------------
+
 test_that("survival hazard prediction", {
   rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
   res <- survival_reg() %>%
@@ -102,19 +131,4 @@ test_that("survival hazard prediction", {
     rms_haz[-1],
     tolerance = 0.001
   )
-})
-
-test_that("linear predictor", {
-  f_fit <- survival_reg() %>%
-    set_engine("survival") %>%
-    fit(Surv(time, status) ~ age + sex, data = lung)
-  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
-
-  exp_fit <- survreg(Surv(time, status) ~ age + sex, data = lung)
-  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
-
-  expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equal(f_pred$.pred_linear_pred, unname(exp_pred))
-  expect_equal(nrow(f_pred), 5)
 })

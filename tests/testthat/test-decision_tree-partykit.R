@@ -27,6 +27,8 @@ test_that("model object", {
 })
 
 
+# prediction: time --------------------------------------------------------
+
 test_that("time predictions", {
   skip_if_not_installed("partykit")
   set.seed(1234)
@@ -47,6 +49,8 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 })
 
+
+# prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
   skip_if_not_installed("partykit")
