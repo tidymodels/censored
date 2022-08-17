@@ -31,6 +31,9 @@ test_that("model object", {
   )
 })
 
+
+# prediction: time --------------------------------------------------------
+
 test_that("time predictions", {
   skip_if_not_installed("partykit")
 
@@ -56,6 +59,9 @@ test_that("time predictions", {
   expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 })
+
+
+# prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
   skip_if_not_installed("partykit")

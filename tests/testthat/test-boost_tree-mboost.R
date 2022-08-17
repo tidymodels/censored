@@ -23,6 +23,29 @@ test_that("model object", {
   )
 })
 
+# prediction: time --------------------------------------------------------
+
+test_that("time predictions", {
+  cox_spec <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  f_pred <- predict(f_fit, lung, type = "time")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  # skip until mboost::survFit() works with a single row for `newdata`
+  # fix submitted: https://github.com/boost-R/mboost/pull/118
+  # expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"), NA)
+  # expect_equal(nrow(f_pred_1), 1)
+})
+
+
+# prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
   pred_time <- c(0, 100, 200, 10000)
@@ -62,6 +85,9 @@ test_that("survival predictions", {
   )
 })
 
+
+# prediction: linear_pred -------------------------------------------------
+
 test_that("linear_pred predictions", {
   lung2 <- lung[-14, ]
   exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
@@ -91,21 +117,3 @@ test_that("linear_pred predictions", {
 })
 
 
-test_that("time predictions", {
-  cox_spec <- boost_tree() %>%
-    set_engine("mboost") %>%
-    set_mode("censored regression")
-  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-
-  f_pred <- predict(f_fit, lung, type = "time")
-
-  expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
-  expect_equal(nrow(f_pred), nrow(lung))
-
-  # single observation
-  # skip until mboost::survFit() works with a single row for `newdata`
-  # fix submitted: https://github.com/boost-R/mboost/pull/118
-  # expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"), NA)
-  # expect_equal(nrow(f_pred_1), 1)
-})
