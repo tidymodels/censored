@@ -7,63 +7,59 @@
 #' @return A tibble with a list column of nested tibbles.
 #' @export
 #' @keywords internal
-#' @name party_internal
+#' @name aorsf_internal
 #' @examples
 #' library(aorsf)
 #' lung_orsf <- na.omit(lung)
 #' lung_orsf$status <- lung_orsf$status - 1 # aorsf is picky
 #' aorsf <- orsf(Surv(time, status) ~ age + ph.ecog, data = lung_orsf, n_tree = 10)
-#' survival_prob_orsf(aorsf, lung[1:3, ], time = 100)
-survival_prob_orsf <- function(object, new_data, time) {
-  orsf_predict(object, new_data, time, output = 'surv')
+#' preds <- survival_prob_orsf(aorsf, lung[1:3, ], time = c(250, 100))
+#' preds <- orsf_hazard(aorsf, lung[1:3, ], time = c(250, 100))
+
+survival_prob_orsf <- function(object, new_data, time, ...) {
+  orsf_predict(object, new_data, time, output = 'survival')
 }
 
-orsf_hazard <- function(object, new_data, time) {
+#' @rdname aorsf_internal
+#' @export
+hazard_orsf <- function(object, new_data, time, ...) {
   orsf_predict(object, new_data, time, output = 'hazard')
 }
 
-orsf_predict <- function(object, new_data, time, output = "surv"){
+orsf_predict <- function(object, new_data, time, output){
 
-  output <- rlang::arg_match(output, c("surv", "hazard"))
+  output <- rlang::arg_match(output, c("survival", "hazard"))
 
   switch(
     output,
 
-    'surv' = {
-     .type <- 'surv'
+    'survival' = {
+     pred_type <- 'surv'
      .name <- '.pred_survival'
     },
 
     'hazard' = {
-      .type <- 'chf'
+      pred_type <- 'chf'
       .name <- '.pred_hazard'
     }
 
   )
 
-  pred_horizon <- sort(time, decreasing = FALSE) # aorsf is picky
+  time_ordered <- order(time)
+  pred_horizon <- time[time_ordered] # aorsf wants time in ascending order
 
   res <- predict(object,
                  new_data = new_data,
                  pred_horizon = pred_horizon,
-                 pred_type = .type)
+                 pred_type = pred_type)
 
-  # return a tibble
-  res_tbls <- apply(res,
-                    MARGIN = 1,
-                    FUN = function(.x){
-                      .x_tibble <- tibble::tibble(.placeholder_name = .x)
-                      names(.x_tibble) <- .name
-                      .x_tibble
-                    },
-                    simplify = FALSE) %>%
-    purrr::map(
-      tibble::add_column,
-      .time = pred_horizon,
-      .before = .name
-    )
+  # preds in the same order as time
+  res <- res[, time_ordered, drop = FALSE]
 
-  tibble::tibble(.pred = res_tbls)
+  res <- matrix_to_nested_tibbles(res, time, .name = .name)
+
+  # return a tibble?
+  tibble(.pred = res)
 
 }
 
