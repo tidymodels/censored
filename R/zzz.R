@@ -2,6 +2,8 @@
 # environment inside of parsnip so they have to be executed once parsnip has
 # been loaded.
 
+# nocov start
+
 .onLoad <- function(libname, pkgname) {
 
   make_bag_tree_rpart()
@@ -21,3 +23,5 @@
   make_survival_reg_flexsurv()
 
 }
+
+# nocov end

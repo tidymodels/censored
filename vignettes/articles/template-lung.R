@@ -3,7 +3,6 @@
 #+ results = "hide", messages = FALSE
 library(tidymodels)
 library(censored)
-library(survival)
 tidymodels_prefer()
 
 data(cancer)

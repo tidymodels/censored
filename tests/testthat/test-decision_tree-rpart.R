@@ -17,6 +17,9 @@ test_that("model object", {
   expect_equal(f_fit$fit, exp_f_fit, ignore_formula_env = TRUE)
 })
 
+
+# prediction: time --------------------------------------------------------
+
 test_that("time predictions", {
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -35,6 +38,9 @@ test_that("time predictions", {
   expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 })
+
+
+# prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
   set.seed(1234)

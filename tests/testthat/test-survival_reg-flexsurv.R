@@ -1,27 +1,32 @@
 library(testthat)
 
-test_that("flexsurv execution", {
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("flexsurv") %>%
-      fit(Surv(time, status) ~ age, data = lung),
-    regexp = NA
+test_that("model object", {
+  set.seed(1234)
+  exp_f_fit <- flexsurv::flexsurvreg(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    dist = "weibull"
   )
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("flexsurv") %>%
-      fit(Surv(time) ~ age, data = lung),
-    regexp = NA
-  )
-  expect_false(has_multi_predict(res))
-  expect_equal(multi_predict_args(res), NA_character_)
 
-  expect_error(
-    res <- survival_reg(dist = "lognormal") %>%
-      set_engine("flexsurv") %>%
-      fit_xy(x = lung[, "age", drop = FALSE], y = lung$time)
+  mod_spec <- survival_reg() %>%
+    set_engine("flexsurv") %>%
+    set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # remove `call` from comparison
+  f_fit$fit$call <- NULL
+  exp_f_fit$call <- NULL
+
+  expect_equal(
+    f_fit$fit,
+    exp_f_fit,
+    ignore_formula_env = TRUE
   )
 })
+
+
+# prediction: time --------------------------------------------------------
 
 test_that("flexsurv time prediction", {
   exp_fit <- flexsurv::flexsurvreg(Surv(time, status) ~ age, data = lung,
@@ -36,6 +41,8 @@ test_that("flexsurv time prediction", {
   expect_equal(f_pred, exp_pred)
 })
 
+
+# prediction: survival ----------------------------------------------------
 
 test_that("survival probability prediction", {
   rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
@@ -84,42 +91,29 @@ test_that("survival probability prediction", {
   )
 })
 
+# prediction: linear_pred -------------------------------------------------
 
-test_that("hazard prediction", {
-  rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
-  f_fit <- survival_reg(dist = "weibull") %>%
+test_that("linear predictor", {
+  f_fit <- survival_reg() %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
+  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
 
-  expect_error(
-    predict(f_fit, head(lung), type = "hazard"),
-    "a numeric vector 'time'"
+  exp_fit <- flexsurv::flexsurvreg(
+    Surv(time, status) ~ age + sex,
+    data = lung,
+    dist = "weibull"
   )
-
-  f_pred <- predict(f_fit, head(lung), type = "hazard",
-                      time = c(0, 500, 1000))
+  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred")
-  expect_equal(nrow(f_pred), nrow(head(lung)))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(3, 2))))
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_hazard"))))
-  )
-
-  # using rms for expected results
-  expect_equal(
-    f_pred$.pred[[1]]$.pred_hazard,
-    rms_haz,
-    tolerance = 0.001
-    )
+  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_equal(f_pred$.pred_linear_pred, log(exp_pred$.pred_link))
+  expect_equal(nrow(f_pred), 5)
 })
+
+
+# prediction: quantile ----------------------------------------------------
 
 test_that("quantile predictions", {
   set.seed(1)
@@ -172,21 +166,40 @@ test_that("quantile predictions", {
 
 })
 
-test_that("linear predictor", {
-  f_fit <- survival_reg() %>%
+# prediction: hazard ------------------------------------------------------
+
+test_that("hazard prediction", {
+  rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
+  f_fit <- survival_reg(dist = "weibull") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
-  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
 
-  exp_fit <- flexsurv::flexsurvreg(
-    Surv(time, status) ~ age + sex,
-    data = lung,
-    dist = "weibull"
-    )
-  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+  expect_error(
+    predict(f_fit, head(lung), type = "hazard"),
+    "a numeric vector 'time'"
+  )
+
+  f_pred <- predict(f_fit, head(lung), type = "hazard",
+                    time = c(0, 500, 1000))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equal(f_pred$.pred_linear_pred, log(exp_pred$.pred_link))
-  expect_equal(nrow(f_pred), 5)
+  expect_equal(names(f_pred), ".pred")
+  expect_equal(nrow(f_pred), nrow(head(lung)))
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred,
+                       ~ all(dim(.x) == c(3, 2))))
+  )
+  expect_true(
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~ all(names(.x) == c(".time", ".pred_hazard"))))
+  )
+
+  # using rms for expected results
+  expect_equal(
+    f_pred$.pred[[1]]$.pred_hazard,
+    rms_haz,
+    tolerance = 0.001
+  )
 })
