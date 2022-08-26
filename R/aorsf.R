@@ -54,7 +54,7 @@ orsf_predict <- function(object, new_data, time, output){
                  pred_type = pred_type)
 
   # preds in the same order as time
-  res <- res[, time_ordered, drop = FALSE]
+  res <- res[, order(time_ordered), drop = FALSE]
 
   res <- matrix_to_nested_tibbles(res, time, .name = .name)
 
