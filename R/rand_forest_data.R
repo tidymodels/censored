@@ -188,6 +188,23 @@ make_rand_forest_aorsf <- function() {
     )
   )
 
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "aorsf",
+    mode = "censored regression",
+    type = "hazard",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "orsf_hazard"),
+      args = list(
+        object = rlang::expr(object$fit),
+        new_data = rlang::expr(new_data),
+        type = "chf"
+      )
+    )
+  )
+
 }
 
 # nocov end

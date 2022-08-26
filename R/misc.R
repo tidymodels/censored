@@ -11,6 +11,17 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
   dplyr::group_nest(res, .row, .key = ".pred")$.pred
 }
 
+matrix_to_nested_tibbles <- function(x, time, pred_name) {
+
+  res <- tibble(
+    .row = rep(seq_len(nrow(x)), each = ncol(x)),
+    .time = rep(time, nrow(x)),
+    {{pred_name}} := as.numeric(t(x))
+  )
+
+  dplyr::group_nest(res, .row, .key = ".pred")$.pred
+}
+
 # ------------------------------------------------------------------------------
 
 # copied form recipes

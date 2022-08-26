@@ -379,6 +379,19 @@ The following examples use the same data set throughout.
     tidyr::unnest(col = .pred)
   ```
   
+  ```{r}
+  predict(
+    rf_fit, 
+    lung_test, 
+    type = "hazard", 
+    # aorsf is picky with inputs, it does not let you
+    # set a prediction horizon > max(observed follow-up time)
+    time = c(100, 500, max(lung_train_orsf$time))
+  ) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  ```
+  
   </details>
   
   

@@ -7,7 +7,7 @@
 \alias{survival_prob_ctree}
 \title{Internal helper functions for aorsf objects}
 \usage{
-survival_prob_orsf(object, new_data, time, output = "surv")
+survival_prob_orsf(object, new_data, time)
 
 survival_prob_cforest(object, new_data, time, output = "surv")
 
