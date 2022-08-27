@@ -141,7 +141,6 @@ recalc_param <- function(x, counts, denom) {
   x
 }
 
-
 as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "first",objective, ...) {
   lvls <- levels(y)
   n <- nrow(x)
@@ -165,64 +164,128 @@ as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "fir
 
   if (objective == "survival:aft") {
     if (validation > 0) {
+
       # Split data
       m <- floor(n * (1 - validation)) + 1
       trn_index <- sample(1:n, size = max(m, 2))
+
+      # Train and validation
       x_val <- x[-trn_index, ]
       y_val <- y[-trn_index]
-      val_data <- xgboost::xgb.DMatrix(x_val, missing = NA)
-      xgboost::setinfo(val_data, "label_lower_bound", y_val[, 1, drop = TRUE])
-      y_temp <- y_val
-      y_temp[y_val[, 2, drop = TRUE] == 0] <- +Inf
-      xgboost::setinfo(val_data, "label_upper_bound", y_temp[, 1, drop = TRUE])
-      watch_list <- list(validation = val_data)
       x_train <- x[trn_index, ]
       y_train <- y[trn_index]
+
+      # Validation prep
+
+      val_data <- xgboost::xgb.DMatrix(x_val, missing = NA)
+
+      xgboost::setinfo(val_data, "label_lower_bound", y_val[, 1, drop = TRUE])
+      y_val[y_val[, 2, drop = TRUE] == 0] <- +Inf
+      xgboost::setinfo(val_data, "label_upper_bound", y_val[, 1, drop = TRUE])
+
+      watch_list <- list(validation = val_data)
+
+
+
+
+      # Training prep
+
+
+
       train_data <- xgboost::xgb.DMatrix(x_train, missing = NA)
+
+      if (!is.null(weights)) {
+        xgboost::setinfo(train_data, "weight",weights)
+      }
+
       xgboost::setinfo(train_data, "label_lower_bound", y_train[, 1, drop = TRUE])
-      y_temp <- y_train
-      y_temp[y_train[, 2, drop = TRUE] == 0] <- +Inf
-      xgboost::setinfo(train_data, "label_upper_bound", y_temp[, 1, drop = TRUE])
+      y_train[y_train[, 2, drop = TRUE] == 0] <- +Inf
+      xgboost::setinfo(train_data, "label_upper_bound", y_train[, 1, drop = TRUE])
+
+      # Save training data for return
+
       dat <- train_data
+
+
     } else {
+
+      # Regular prep
+
       x_train <- x
       y_train <- y
+
       train_data <- xgboost::xgb.DMatrix(x_train, missing = NA)
+
+      if (!is.null(weights)) {
+        xgboost::setinfo(train_data, "weight",weights)
+      }
+
       xgboost::setinfo(train_data, "label_lower_bound", y_train[, 1, drop = TRUE])
-      y_temp <- y_train
-      y_temp[y_train[, 2, drop = TRUE] == 0] <- +Inf
-      xgboost::setinfo(train_data, "label_upper_bound", y_temp[, 1, drop = TRUE])
+      y_train[y_train[, 2, drop = TRUE] == 0] <- +Inf
+      xgboost::setinfo(train_data, "label_upper_bound", y_train[, 1, drop = TRUE])
+
+      # Create training data and watch list for return
+
       dat <- train_data
       watch_list <- list(training = train_data)
+
     }
 
     return(list(data = dat, watchlist = watch_list))
+
   } else if (objective == "survival:cox") {
     if (validation > 0) {
       m <- floor(n * (1 - validation)) + 1
       trn_index <- sample(1:n, size = max(m, 2))
+
+      # Train and validation
       x_val <- x[-trn_index, ]
       y_val <- y[-trn_index]
+      x_train <- x[trn_index, ]
+      y_train <- y[trn_index]
+
+      # Validation prep
+
+
       val_data <- xgboost::xgb.DMatrix(x_val, missing = NA)
-      y_temp <- y_val
-      y_temp[y_val[, 2, drop = TRUE] == 0] <- y_val[y_val[, 2, drop = TRUE] == 0][,1] * -1
+
+      y_val[y_val[, 2, drop = TRUE] == 0] <- y_val[y_val[, 2, drop = TRUE] == 0][,1] * -1
       xgboost::setinfo(val_data, "label", y_temp[, 1, drop = TRUE])
       watch_list <- list(validation = val_data)
 
-      x_train <- x[trn_index, ]
-      y_train <- y[trn_index]
-      train_data <- xgboost::xgb.DMatrix(x_train, missing = NA)
-      y_temp <- y_train
-      y_temp[y_train[, 2, drop = TRUE] == 0] <- y_train[y_train[, 2, drop = TRUE] == 0][,1] * -1
+      # Training prep
+
+      info_list <- list(label = y_train)
+      if (!is.null(weights)) {
+        info_list$weight <- weights[trn_index]
+      }
+
+      train_data <- xgboost::xgb.DMatrix(x_train, missing = NA,info = info_list)
+
+      y_train[y_train[, 2, drop = TRUE] == 0] <- y_train[y_train[, 2, drop = TRUE] == 0][,1] * -1
       xgboost::setinfo(train_data, "label", y_temp[, 1, drop = TRUE])
+
+      # Save training data for return
       dat <- train_data
+
     } else {
+
+      # Regular prep
+
       x_train <- x
       y_train <- y
-      train_data <- xgboost::xgb.DMatrix(x_train, missing = NA)
-      y_temp <- y_train
-      y_temp[y_train[, 2, drop = TRUE] == 0] <- y_train[y_train[, 2, drop = TRUE] == 0][,1] * -1
-      xgboost::setinfo(train_data, "label", y_temp[, 1, drop = TRUE])
+
+      info_list <- list(label = y_train)
+      if (!is.null(weights)) {
+        info_list$weight <- weights[trn_index]
+      }
+
+      train_data <- xgboost::xgb.DMatrix(x_train, missing = NA,info = info_list)
+
+      y_train[y_train[, 2, drop = TRUE] == 0] <- y_train[y_train[, 2, drop = TRUE] == 0][,1] * -1
+      xgboost::setinfo
+
+      # Create training data and watch list for return
       dat <- train_data
       watch_list <- list(training = train_data)
     }
@@ -235,10 +298,14 @@ as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "fir
         trn_index <- sample(1:n, size = max(m, 2))
         val_data <- xgboost::xgb.DMatrix(x[-trn_index,], label = y[-trn_index], missing = NA)
         watch_list <- list(validation = val_data)
+
+        info_list <- list(label = y[trn_index])
         if (!is.null(weights)) {
           info_list$weight <- weights[trn_index]
         }
         dat <- xgboost::xgb.DMatrix(x[trn_index,], missing = NA, info = info_list)
+
+
       } else {
         info_list <- list(label = y)
         if (!is.null(weights)) {
@@ -254,7 +321,6 @@ as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "fir
       }
       watch_list <- list(training = dat)
     }
-
     return(list(data = dat, watchlist = watch_list))
   }
 }

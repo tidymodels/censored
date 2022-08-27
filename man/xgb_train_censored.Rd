@@ -19,6 +19,7 @@ xgb_train_censored(
   early_stop = NULL,
   objective = NULL,
   counts = TRUE,
+  weights = NULL,
   ...
 )
 }
