@@ -37,6 +37,7 @@ Suggests:
     covr,
     flexsurv (>= 2.2),
     glmnet (>= 4.1),
+    aorsf,
     ipred,
     partykit,
     pec,
