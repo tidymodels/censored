@@ -296,4 +296,166 @@ make_survival_reg_flexsurv <- function() {
   )
 }
 
+make_survival_reg_flexsurvspline <- function() {
+
+  parsnip::set_model_engine("survival_reg",
+                            mode = "censored regression",
+                            eng = "flexsurvspline")
+  parsnip::set_dependency("survival_reg",
+                          eng = "flexsurvspline",
+                          pkg = "flexsurv",
+                          mode = "censored regression")
+  parsnip::set_dependency("survival_reg",
+                          eng = "flexsurvspline",
+                          pkg = "survival",
+                          mode = "censored regression")
+  parsnip::set_dependency("survival_reg",
+                          eng = "flexsurvspline",
+                          pkg = "censored",
+                          mode = "censored regression")
+
+  parsnip::set_model_arg(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    parsnip = "num_knots",
+    original = "k",
+    func = list(pkg = "dials", fun = "num_knots"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_model_arg(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    parsnip = "survival_link",
+    original = "scale",
+    func = list(pkg = "dials", fun = "survival_link"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_fit(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    value = list(
+      interface = "formula",
+      protect = c("formula", "data", "weights"),
+      func = c(pkg = "flexsurv", fun = "flexsurvspline"),
+      defaults = list()
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
+          type = "mean"
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    type = "quantile",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
+          type = "quantile",
+          p = rlang::expr(quantile),
+          conf.int = rlang::expr(interval == "confidence"),
+          conf.level = rlang::expr(level)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    type = "hazard",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = rlang::expr(object$fit),
+          newdata = rlang::expr(new_data),
+          type = "hazard",
+          times = rlang::expr(time)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = expr(object$fit),
+          newdata = expr(new_data),
+          type = "survival",
+          times = expr(time),
+          conf.int = rlang::expr(interval == "confidence"),
+          conf.level = rlang::expr(level)
+        )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "survival_reg",
+    eng = "flexsurvspline",
+    mode = "censored regression",
+    type = "linear_pred",
+    value = list(
+      pre = NULL,
+      post = function(results, object) {
+        results %>%
+          dplyr::mutate(.pred_linear_pred = log(.pred_link)) %>%
+          dplyr::select(.pred_linear_pred)
+      },
+      func = c(fun = "predict"),
+      args =
+        list(
+          object = expr(object$fit),
+          newdata = expr(new_data),
+          type = "linear"
+        )
+    )
+  )
+}
+
 # nocov end
