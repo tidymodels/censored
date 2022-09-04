@@ -355,12 +355,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  
-  # aorsf is picky with inputs, status must be 0's and 1's
-  lung_train_orsf <- lung_train
-  lung_train_orsf$status <- lung_train_orsf$status - 1
-  
-  rf_fit <- rf_spec %>% fit(Surv(time, status) ~ ., data = lung_train_orsf)
+
+  rf_fit <- rf_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
   rf_fit
   ```
 
@@ -371,27 +367,11 @@ The following examples use the same data set throughout.
     rf_fit, 
     lung_test, 
     type = "survival", 
-    # aorsf is picky with inputs, it does not let you
-    # set a prediction horizon > max(observed follow-up time)
-    time = c(100, 500, max(lung_train_orsf$time))
+    time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   ```
-  
-  ```{r}
-  predict(
-    rf_fit, 
-    lung_test, 
-    type = "hazard", 
-    # aorsf is picky with inputs, it does not let you
-    # set a prediction horizon > max(observed follow-up time)
-    time = c(100, 500, max(lung_train_orsf$time))
-  ) %>% 
-    slice(1) %>% 
-    tidyr::unnest(col = .pred)
-  ```
-  
   </details>
   
   
