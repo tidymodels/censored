@@ -118,10 +118,6 @@ make_rand_forest_aorsf <- function() {
                           eng = "aorsf",
                           pkg = "aorsf",
                           mode = "censored regression")
-  parsnip::set_dependency("rand_forest",
-                          eng = "partykit",
-                          pkg = "censored",
-                          mode = "censored regression")
 
   parsnip::set_model_arg(
     model = "rand_forest",
@@ -184,23 +180,6 @@ make_rand_forest_aorsf <- function() {
       args = list(
         object = rlang::expr(object$fit),
         new_data = rlang::expr(new_data)
-      )
-    )
-  )
-
-  parsnip::set_pred(
-    model = "rand_forest",
-    eng = "aorsf",
-    mode = "censored regression",
-    type = "hazard",
-    value = list(
-      pre = NULL,
-      post = NULL,
-      func = c(pkg = "censored", fun = "hazard_orsf"),
-      args = list(
-        object = rlang::expr(object$fit),
-        new_data = rlang::expr(new_data),
-        type = "chf"
       )
     )
   )
