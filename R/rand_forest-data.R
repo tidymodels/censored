@@ -150,7 +150,7 @@ make_rand_forest_aorsf <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data"),
+      protect = c("formula", "data", "weights"),
       func = c(pkg = "aorsf", fun = "orsf"),
       defaults = list()
     )
