@@ -79,8 +79,7 @@ test_that("survival predictions", {
 
   # comparing predictions b/t aorsf & parnsip fit
 
-
-  # equal predictions with multiple times and multiple testing observation
+  # equal predictions with multiple times and multiple testing observations
   new_km <- predict(exp_f_fit,
                     new_data = lung_orsf,
                     pred_type = "surv",
