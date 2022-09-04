@@ -1,9 +1,7 @@
 library(testthat)
 
 # aorsf is picky with inputs, status must be 0's and 1's
-lung_orsf <- lung
-lung_orsf$status <- lung_orsf$status - 1
-lung_orsf <- na.omit(lung_orsf)
+lung_orsf <- na.omit(lung)
 
 test_that("model object", {
   skip_if_not_installed("aorsf")
@@ -64,6 +62,7 @@ test_that("survival predictions", {
     unique(purrr::map_int(f_pred$.pred, nrow)),
     101
   )
+
   cf_names <-
     c(".time", ".pred_survival")
 
@@ -72,12 +71,65 @@ test_that("survival predictions", {
                        ~ identical(names(.x), cf_names)))
   )
 
+  # correct prediction times in object
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.time,
     rep(100:200, nrow(lung_orsf))
   )
 
+  # comparing predictions b/t aorsf & parnsip fit
 
+
+  # equal predictions with multiple times and multiple testing observation
+  new_km <- predict(exp_f_fit,
+                    new_data = lung_orsf,
+                    pred_type = "surv",
+                    pred_horizon = 100:200)
+
+  expect_equal(
+    matrix(
+      data = tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
+      ncol = 101,
+      byrow = TRUE
+    ),
+    new_km
+  )
+
+  # equal predictions with multiple times and one testing observation
+  f_pred <- predict(f_fit, lung_orsf[1, ], type = "survival", time = 100:200)
+
+  new_km <- predict(exp_f_fit,
+                    new_data = lung_orsf[1,],
+                    pred_type = "surv",
+                    pred_horizon = 100:200)
+
+  expect_equal(
+    matrix(
+      data = tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
+      ncol = 101,
+      byrow = TRUE
+    ),
+    new_km
+  )
+
+  # equal predictions with one time and multiple testing observation
+  f_pred <- predict(f_fit, lung_orsf, type = "survival", time = 306)
+
+  new_km <- predict(exp_f_fit,
+                    new_data = lung_orsf,
+                    pred_type = "surv",
+                    pred_horizon = 306)
+
+  expect_equal(
+    matrix(
+      data = tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
+      ncol = 1,
+      byrow = TRUE
+    ),
+    new_km
+  )
+
+  # equal predictions with one time and one testing observation
   f_pred <- predict(f_fit, lung_orsf[1,], type = "survival", time = 306)
 
   new_km <- predict(exp_f_fit,
