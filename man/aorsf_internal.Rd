@@ -3,12 +3,9 @@
 \name{aorsf_internal}
 \alias{aorsf_internal}
 \alias{survival_prob_orsf}
-\alias{hazard_orsf}
 \title{Internal helper functions for aorsf objects}
 \usage{
 survival_prob_orsf(object, new_data, time, ...)
-
-hazard_orsf(object, new_data, time, ...)
 }
 \arguments{
 \item{object}{A model object from \code{aorsf::orsf()}.}
@@ -31,6 +28,5 @@ lung_orsf <- na.omit(lung)
 lung_orsf$status <- lung_orsf$status - 1 # aorsf is picky
 aorsf <- orsf(Surv(time, status) ~ age + ph.ecog, data = lung_orsf, n_tree = 10)
 preds <- survival_prob_orsf(aorsf, lung[1:3, ], time = c(250, 100))
-preds <- hazard_orsf(aorsf, lung[1:3, ], time = c(250, 100))
 }
 \keyword{internal}
