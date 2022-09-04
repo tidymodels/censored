@@ -144,19 +144,3 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
 
   dplyr::group_nest(res, .row, .key = ".pred")$.pred
 }
-
-# this is a copy of the function above with an additional
-# input (.name) that makes this function suitable for other
-# types of prediction where time is a required input, i.e. hazard
-
-matrix_to_nested_tibbles <- function(x, time, .name) {
-
-  res <- tibble(
-    .row = rep(seq_len(nrow(x)), each = ncol(x)),
-    .time = rep(time, nrow(x)),
-    "{.name}" := as.numeric(t(x))
-  )
-
-  dplyr::group_nest(res, .row, .key = ".pred")$.pred
-}
-
