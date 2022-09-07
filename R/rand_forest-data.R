@@ -118,6 +118,10 @@ make_rand_forest_aorsf <- function() {
                           eng = "aorsf",
                           pkg = "aorsf",
                           mode = "censored regression")
+  parsnip::set_dependency("rand_forest",
+                          eng = "aorsf",
+                          pkg = "censored",
+                          mode = "censored regression")
 
   parsnip::set_model_arg(
     model = "rand_forest",
