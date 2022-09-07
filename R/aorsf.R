@@ -1,9 +1,8 @@
 
-#' Internal helper functions for aorsf objects
+#' Internal helper function for aorsf objects
 #' @param object A model object from `aorsf::orsf()`.
 #' @param new_data A data frame to be predicted.
 #' @param time A vector of times to predict the survival probability.
-#' @param output Type of output.
 #' @return A tibble with a list column of nested tibbles.
 #' @export
 #' @keywords internal
@@ -12,8 +11,11 @@
 #' library(aorsf)
 #' aorsf <- orsf(na.omit(lung), Surv(time, status) ~ age + ph.ecog, n_tree = 10)
 #' preds <- survival_prob_orsf(aorsf, lung[1:3, ], time = c(250, 100))
+survival_prob_orsf <- function(object, new_data, time) {
 
-survival_prob_orsf <- function(object, new_data, time, ...) {
+  # This is not just a `post` hook in `set_pred()` because parsnip adds the
+  # argument `time` to the prediction call and `aorsf::predict.orsf_fit()`
+  # expects empty dots, i.e. no `time` argument.
 
   res <- predict(object,
                  new_data = new_data,
@@ -26,7 +28,6 @@ survival_prob_orsf <- function(object, new_data, time, ...) {
 
   # return a tibble
   tibble(.pred = res)
-
 }
 
 # ------------------------------------------------------------------------------

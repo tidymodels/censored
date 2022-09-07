@@ -3,9 +3,9 @@
 \name{aorsf_internal}
 \alias{aorsf_internal}
 \alias{survival_prob_orsf}
-\title{Internal helper functions for aorsf objects}
+\title{Internal helper function for aorsf objects}
 \usage{
-survival_prob_orsf(object, new_data, time, ...)
+survival_prob_orsf(object, new_data, time)
 }
 \arguments{
 \item{object}{A model object from \code{aorsf::orsf()}.}
@@ -13,20 +13,16 @@ survival_prob_orsf(object, new_data, time, ...)
 \item{new_data}{A data frame to be predicted.}
 
 \item{time}{A vector of times to predict the survival probability.}
-
-\item{output}{Type of output.}
 }
 \value{
 A tibble with a list column of nested tibbles.
 }
 \description{
-Internal helper functions for aorsf objects
+Internal helper function for aorsf objects
 }
 \examples{
 library(aorsf)
-lung_orsf <- na.omit(lung)
-lung_orsf$status <- lung_orsf$status - 1 # aorsf is picky
-aorsf <- orsf(Surv(time, status) ~ age + ph.ecog, data = lung_orsf, n_tree = 10)
+aorsf <- orsf(na.omit(lung), Surv(time, status) ~ age + ph.ecog, n_tree = 10)
 preds <- survival_prob_orsf(aorsf, lung[1:3, ], time = c(250, 100))
 }
 \keyword{internal}
