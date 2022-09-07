@@ -33,11 +33,11 @@ Imports:
     tibble (>= 3.1.3),
     tidyr (>= 1.0.0)
 Suggests:
+    aorsf (>= 0.0.2.9000),
     coin,
     covr,
     flexsurv (>= 2.2),
     glmnet (>= 4.1),
-    aorsf,
     ipred,
     partykit,
     pec,
@@ -52,3 +52,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+Remotes:
+    aorsf=bcjaeger/aorsf
