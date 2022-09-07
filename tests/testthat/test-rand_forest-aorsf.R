@@ -1,10 +1,9 @@
 library(testthat)
 
-# aorsf is picky with inputs, status must be 0's and 1's
-lung_orsf <- na.omit(lung)
-
 test_that("model object", {
   skip_if_not_installed("aorsf")
+
+  lung_orsf <- na.omit(lung)
 
   set.seed(1234)
   exp_f_fit <- aorsf::orsf(
@@ -37,6 +36,8 @@ test_that("model object", {
 test_that("survival predictions", {
   skip_if_not_installed("aorsf")
 
+  lung_orsf <- na.omit(lung)
+
   set.seed(1234)
   exp_f_fit <- aorsf::orsf(
     data = lung_orsf,
@@ -53,14 +54,14 @@ test_that("survival predictions", {
   expect_error(predict(f_fit, lung_orsf, type = "survival"),
                "When using 'type' values of 'survival' or 'hazard' are given")
 
-  f_pred <- predict(f_fit, lung_orsf, type = "survival", time = 100:200)
+  f_pred <- predict(f_fit, lung, type = "survival", time = c(100, 500, 1200))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
-  expect_equal(nrow(f_pred), nrow(lung_orsf))
+  expect_equal(nrow(f_pred), nrow(lung))
   expect_equal(
     unique(purrr::map_int(f_pred$.pred, nrow)),
-    101
+    3
   )
 
   cf_names <-
@@ -74,50 +75,55 @@ test_that("survival predictions", {
   # correct prediction times in object
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.time,
-    rep(100:200, nrow(lung_orsf))
+    rep(c(100, 500, 1200), nrow(lung))
   )
 
   # comparing predictions b/t aorsf & parnsip fit
 
   # equal predictions with multiple times and multiple testing observations
   new_km <- predict(exp_f_fit,
-                    new_data = lung_orsf,
+                    new_data = lung,
                     pred_type = "surv",
-                    pred_horizon = 100:200)
+                    pred_horizon = c(100, 500, 1200),
+                    na_action = "pass",
+                    boundary_checks = FALSE)
 
   expect_equal(
     matrix(
       data = tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
-      ncol = 101,
+      ncol = 3,
       byrow = TRUE
     ),
     new_km
   )
 
   # equal predictions with multiple times and one testing observation
-  f_pred <- predict(f_fit, lung_orsf[1, ], type = "survival", time = 100:200)
+  f_pred <- predict(f_fit, lung[1, ], type = "survival", time = c(100, 500, 1200))
 
   new_km <- predict(exp_f_fit,
-                    new_data = lung_orsf[1,],
+                    new_data = lung[1,],
                     pred_type = "surv",
-                    pred_horizon = 100:200)
+                    pred_horizon = c(100, 500, 1200),
+                    na_action = "pass",
+                    boundary_checks = FALSE)
 
   expect_equal(
     matrix(
       data = tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
-      ncol = 101,
+      ncol = 3,
       byrow = TRUE
     ),
     new_km
   )
 
   # equal predictions with one time and multiple testing observation
-  f_pred <- predict(f_fit, lung_orsf, type = "survival", time = 306)
+  f_pred <- predict(f_fit, lung, type = "survival", time = 306)
 
   new_km <- predict(exp_f_fit,
-                    new_data = lung_orsf,
+                    new_data = lung,
                     pred_type = "surv",
-                    pred_horizon = 306)
+                    pred_horizon = 306,
+                    na_action = "pass")
 
   expect_equal(
     matrix(
@@ -129,12 +135,13 @@ test_that("survival predictions", {
   )
 
   # equal predictions with one time and one testing observation
-  f_pred <- predict(f_fit, lung_orsf[1,], type = "survival", time = 306)
+  f_pred <- predict(f_fit, lung[1,], type = "survival", time = 306)
 
   new_km <- predict(exp_f_fit,
-                    new_data = lung_orsf[1,],
+                    new_data = lung[1,],
                     pred_type = "surv",
-                    pred_horizon = 306)[1,1]
+                    pred_horizon = 306,
+                    na_action = "pass")[1,1]
 
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
