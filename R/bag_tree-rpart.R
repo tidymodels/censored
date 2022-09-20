@@ -59,9 +59,10 @@ get_missings_survbagg <- function(object, new_data) {
 #' survival_prob_survbagg(bagged_tree, lung[1:3, ], time = 100)
 survival_prob_survbagg <- function(object, new_data, time) {
 
+  n_total <- nrow(new_data)
+
   missings_in_new_data <- get_missings_survbagg(object, new_data)
   if (!is.null(missings_in_new_data)) {
-    n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
     all_missing <- n_missing == n_total
     if (all_missing) {
@@ -74,15 +75,50 @@ survival_prob_survbagg <- function(object, new_data, time) {
 
   y <- predict(object, newdata = new_data)
 
-  res <- purrr::map(y, ~ summary(.x, times = pmin(time, max(.x$time)))$surv)
-  res <- matrix(unlist(res), ncol = length(time), byrow = TRUE)
+  # preserve original order of `time` because `summary()` returns a result for
+  # an ordered vector of finite time
+  original_order_time <- match(time, sort(time))
 
+  res <- purrr::map(y, ~ summary(.x, times = time, extend = TRUE)$surv)
+  res <- matrix(unlist(res), nrow = sum(is.finite(time)))
+
+  # patch results for infinite times
+  time_neg_inf <- is.infinite(time) & (time < 0)
+  time_inf <- is.infinite(time) & (time > 0)
+
+  if (any(time_neg_inf)) {
+    res <- rbind(
+      matrix(1, nrow = sum(time_neg_inf), ncol = ncol(res)),
+      res
+    )
+  }
+  if (any(time_inf)) {
+    res <- rbind(
+      res,
+      matrix(0, nrow = sum(time_inf), ncol = ncol(res))
+    )
+  }
+
+  res <- res[original_order_time, ]
+
+  # patch results for missing values
   if (!is.null(missings_in_new_data)) {
-    pred_full <- matrix(NA, nrow = n_total, ncol = ncol(res))
-    pred_full[-missings_in_new_data,] <- res
+    pred_full <- matrix(NA, nrow = length(time), ncol = n_total)
+    pred_full[, -missings_in_new_data] <- res
     res <- pred_full
   }
 
-  res <- matrix_to_nested_tibbles_survival(res, time)
-  res
+  # res is length(time) x nrow(new_data) and
+  # `matrix_to_nested_tibbles_survival()` expects the transpose of that (and
+  # then does another t() inside).
+  # this version doesn't need to transpose the matrix at all
+  # TODO turn this into `matrix_to_nested_tibbles_survival()`
+  ret <- tibble::tibble(
+    .row = rep(seq_len(n_total), each = length(time)),
+    .time = rep(time, times = n_total),
+    .pred_survival = as.vector(res)
+  ) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
+  ret
 }

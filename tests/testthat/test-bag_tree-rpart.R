@@ -101,6 +101,130 @@ test_that("survival predictions", {
   )
 })
 
+
+test_that("survival_prob_survbagg() works for various time points", {
+  lung_pred <- tidyr::drop_na(lung)
+
+  # make engine object
+  set.seed(1234)
+  engine_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  surv_fit <- predict(engine_fit, newdata = lung_pred)
+
+  # general case
+  pred_time_general <- c(100, 200)
+  prob <- survival_prob_survbagg(
+    engine_fit,
+    new_data = lung_pred,
+    time = pred_time_general
+  ) %>%
+    tidyr::unnest(cols = .pred) %>%
+    dplyr::pull(.pred_survival)
+  exp_prob <- purrr::map(
+    surv_fit,
+    ~ summary(.x, times = pred_time_general)$surv
+  ) %>%
+    unlist()
+  expect_equal(prob, exp_prob)
+
+  # can handle unordered time
+  pred_time_unordered <- c(300, 100, 200)
+  prob <- survival_prob_survbagg(
+    engine_fit,
+    new_data = lung_pred,
+    time = pred_time_unordered
+  ) %>%
+    tidyr::unnest(cols = .pred)
+  exp_prob <- purrr::map(
+    surv_fit,
+    ~ summary(.x, times = pred_time_unordered)$surv
+  ) %>%
+    unlist() %>%
+    matrix(ncol = nrow(lung_pred))
+  expect_equal(
+    prob$.time,
+    rep(pred_time_unordered, nrow(lung_pred))
+  )
+  expect_equal(
+    prob$.pred_survival,
+    exp_prob[c(3,1:2),] %>% as.vector()
+  )
+
+  # can handle finite time out of range (before and after events)
+  pred_time_extend <- c(-2, 0, 3000)
+  prob <- survival_prob_survbagg(
+    engine_fit,
+    new_data = lung_pred,
+    time = pred_time_extend
+  ) %>%
+    tidyr::unnest(cols = .pred)
+  exp_prob <- purrr::map(
+    surv_fit,
+    ~ summary(.x, times = pred_time_extend, extend = TRUE)$surv
+  ) %>%
+    unlist()
+  expect_equal(prob$.pred_survival, exp_prob)
+  expect_equal(
+    prob %>% dplyr::filter(.time <= 0) %>% dplyr::pull(.pred_survival),
+    rep(1, 2*nrow(lung_pred))
+  )
+
+  # can handle infinite time
+  pred_time_inf <- c(-Inf, 0, Inf, 1022, -Inf)
+  prob <- survival_prob_survbagg(
+    engine_fit,
+    new_data = lung_pred,
+    time = pred_time_inf
+  ) %>%
+    tidyr::unnest(cols = .pred)
+  exp_prob <- purrr::map(
+    surv_fit,
+    ~ summary(.x, times = pred_time_inf, extend = TRUE)$surv
+  ) %>%
+    unlist()
+  expect_equal(
+    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    exp_prob
+  )
+  expect_equal(
+    prob %>%
+      dplyr::filter(is.infinite(.time) & .time < 0) %>%
+      dplyr::pull(.pred_survival),
+    rep(1, 2*nrow(lung_pred))
+  )
+  expect_equal(
+    prob %>%
+      dplyr::filter(is.infinite(.time) & .time > 0) %>%
+      dplyr::pull(.pred_survival),
+    rep(0, nrow(lung_pred))
+  )
+  expect_equal(
+    prob$.time,
+    rep(pred_time_inf, nrow(lung_pred))
+  )
+
+})
+
+test_that("survival_prob_survbagg() works for single observation", {
+  lung_pred_1 <- tidyr::drop_na(lung)[1, ]
+
+  # make engine object
+  set.seed(1234)
+  engine_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  surv_fit <- predict(engine_fit, newdata = lung_pred_1)
+
+  # general case
+  pred_time_general <- c(100, 200)
+  prob <- survival_prob_survbagg(
+    engine_fit,
+    new_data = lung_pred_1,
+    time = pred_time_general
+  ) %>% tidyr::unnest(cols = .pred)
+  exp_prob <- summary(surv_fit[[1]], time = pred_time_general)$surv
+
+  expect_equal(prob$.pred_survival, exp_prob)
+
+})
+
 test_that("survival predictions without surrogate splits for NA", {
 
   mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
