@@ -137,18 +137,18 @@ survival_prob_mboost <- function(object, new_data, time) {
 }
 
 survival_curve_to_prob <- function(time, event_times, survival_prob) {
-  # add survival prob of 1 at time 0 if necessary
-  if (event_times[1] > 0) {
-    event_times <- c(0, event_times)
+  # add survival prob of 1 and 0 at the start and end of time, respectively
+  if (event_times[1] != -Inf) {
+    event_times <- c(-Inf, event_times)
     survival_prob <- rbind(1, survival_prob)
+  }
+  if (event_times[length(event_times)] != Inf) {
+    event_times <- c(event_times, Inf)
+    survival_prob <- rbind(survival_prob, 0)
   }
 
   # get survival probability (intervals are closed on the left, open on the right)
   index <- findInterval(time, event_times)
-
-  # prediction times before the first event time have index 0
-  # but should be linked to the survival prob for the first event
-  index <- pmax(1, index)
 
   survival_prob[index, , drop = FALSE]
 }

@@ -95,9 +95,11 @@ test_that("survival predictions", {
 
 
 test_that("survival_curve_to_prob() works", {
+  lung_pred <- tidyr::drop_na(lung)
+
   # make a survfit object for comparisons with summary.survfit()
   mod <- coxph(Surv(time, status) ~ ., data = lung)
-  surv_fit <- survfit(mod, newdata = tidyr::drop_na(lung))
+  surv_fit <- survfit(mod, newdata = lung_pred)
 
   # general case
   pred_time_general <- c(100, 200)
@@ -130,8 +132,7 @@ test_that("survival_curve_to_prob() works", {
   expect_equal(prob, exp_prob)
 
   # can handle infinite time
-  # which fall back to first event (or time 0) and last event
-  pred_time_inf <- c(-Inf, 0, 1022, Inf)
+  pred_time_inf <- c(-Inf, 0, Inf, 1022, -Inf)
   exp_prob <- summary(surv_fit, time = pred_time_inf)$surv
   prob <- survival_curve_to_prob(
     time = pred_time_inf,
@@ -139,9 +140,16 @@ test_that("survival_curve_to_prob() works", {
     survival_prob = surv_fit$surv
   )
   expect_equal(nrow(prob), length(pred_time_inf))
-  expect_equal(prob[2:3,, drop = FALSE], exp_prob)
-  expect_equal(prob[1,], prob[2,])
-  expect_equal(prob[3,], prob[4,])
+  expect_equal(prob[c(2, 4),], exp_prob)
+  expect_equal(
+    prob[c(1, 5),],
+    matrix(1, nrow = 2, ncol = nrow(lung_pred)),
+    ignore_attr = "dimnames"
+  )
+  expect_equal(
+    prob[3,] %>% unname(),
+    rep(0, nrow(lung_pred))
+  )
 })
 
 test_that("survival_prob_mboost() works", {
