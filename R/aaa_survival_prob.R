@@ -130,6 +130,109 @@ pad_survival_na <- function(pred_to_pad,
 }
 
 
+# survival probs refactor -------------------------------------------------
+
+
+survfit_summary_typestable <- function(object){
+  # make matrix of dimension n_times x n_obs
+  sanitize_element <- function(x) {
+    if (!is.matrix(x)) {
+      x <- matrix(x, ncol = length(object$n))
+    }
+    x
+  }
+  # sanitize elements we care about
+  for (i in c("surv", "std.err", "lower", "upper", "cumhaz", "std.chaz")) {
+    object[[i]] <- sanitize_element(object[[i]])
+  }
+
+  object
+}
+
+survfit_summary_patch_infinite_time <- function(object, time) {
+
+  time_neg_inf <- is.infinite(time) & (time < 0)
+  time_inf <- is.infinite(time) & (time > 0)
+
+  patch_neg_inf <- function(x, value) {
+    rbind(
+      matrix(value, nrow = sum(time_neg_inf), ncol = ncol(x)),
+      x
+    )
+  }
+  patch_inf <- function(x, value) {
+    rbind(
+      x,
+      matrix(value, nrow = sum(time_inf), ncol = ncol(x))
+    )
+  }
+
+  if (any(time_neg_inf)) {
+    object$surv <- patch_neg_inf(object$surv, value = 1)
+    object$std.err <- patch_neg_inf(object$std.err, value = NA_real_)
+    object$lower <- patch_neg_inf(object$lower, value = NA_real_)
+    object$upper <- patch_neg_inf(object$upper, value = NA_real_)
+    object$cumhaz <- patch_neg_inf(object$cumhaz, value = 0)
+    object$std.chaz <- patch_neg_inf(object$std.chaz, value = NA_real_)
+  }
+  if (any(time_inf)) {
+    object$surv <- patch_inf(object$surv, value = 0)
+    object$std.err <- patch_inf(object$std.err, value = NA_real_)
+    object$lower <- patch_inf(object$lower, value = NA_real_)
+    object$upper <- patch_inf(object$upper, value = NA_real_)
+    object$cumhaz <- patch_inf(object$cumhaz, value = 1)
+  }
+
+  object
+}
+
+survfit_summary_restore_time_order <- function(object, time) {
+  # preserve original order of `time` because `summary()` returns a result for
+  # an ordered vector of finite time
+  # Note that this requires a survfit summary object which has already been
+  # patched for infinite time points
+  original_order_time <- match(time, sort(time))
+
+  # restore original order of prediction time points
+  for (i in c("surv", "std.err", "lower", "upper", "cumhaz", "std.chaz")) {
+    object[[i]] <- object[[i]][original_order_time, , drop = FALSE]
+  }
+
+  object
+}
+
+survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
+  if (is.null(index_missing)) {
+    return(object)
+  }
+
+  patch_element <- function(x) {
+    full_matrix <- matrix(NA, nrow = length(time), ncol = n_obs)
+    full_matrix[, -index_missing] <- x
+    full_matrix
+  }
+
+  for (i in c("surv", "std.err", "lower", "upper", "cumhaz", "std.chaz")) {
+    object[[i]] <- patch_element(object[[i]])
+  }
+
+  object
+}
+
+survfit_summary_to_tibble <- function(object, time, n_obs) {
+  ret <- tibble::tibble(
+    .row = rep(seq_len(n_obs), each = length(time)),
+    .time = rep(time, times = n_obs),
+    .pred_survival = as.vector(object$surv),
+    # TODO standard error
+    .pred_lower = as.vector(object$lower),
+    .pred_upper = as.vector(object$upper),
+    .pred_hazard_cumulative = as.vector(object$cumhaz)
+    # TODO standard error for cumulative hazard
+  )
+  ret
+}
+
 # -------------------------------------------------------------------------
 
 # This function takes a matrix and turns it into list of nested tibbles
