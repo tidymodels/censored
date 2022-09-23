@@ -139,6 +139,9 @@ test_that("time predictions with NA", {
 # prediction: survival ----------------------------------------------------
 
 test_that("survival predictions without strata", {
+  # due to pec:
+  skip_if_not_installed("Matrix", minimum_version = "1.4.2")
+
   cox_spec <- proportional_hazards() %>% set_engine("survival")
   exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
