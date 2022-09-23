@@ -181,6 +181,7 @@ survfit_summary_patch_infinite_time <- function(object, time) {
     object$lower <- patch_inf(object$lower, value = NA_real_)
     object$upper <- patch_inf(object$upper, value = NA_real_)
     object$cumhaz <- patch_inf(object$cumhaz, value = 1)
+    object$std.chaz <- patch_inf(object$std.chaz, value = NA_real_)
   }
 
   object
