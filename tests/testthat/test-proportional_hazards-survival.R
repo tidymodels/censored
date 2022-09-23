@@ -294,6 +294,112 @@ test_that("survival prediction with NA", {
 
 })
 
+
+
+test_that("survival_prob_coxph() works", {
+
+  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # time: combination of order, out-of-range, infinite
+  pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15,]
+  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
+
+  prob <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time)
+  exp_prob <- surv_fit_summary$surv
+
+  prob_na <- prob$.pred[[2]]
+  prob_non_na <- prob$.pred[[3]]
+
+  # get missings right
+  expect_true(all(is.na(prob_na$.pred_survival)))
+  # for non-missings, get probs right
+  expect_equal(prob_non_na$.time, pred_time)
+  expect_equal(
+    prob_non_na$.pred_survival[c(1, 4)],
+    c(1, 0)
+  )
+  expect_equal(
+    prob_non_na$.pred_survival[c(2,3,5,6)], # finite ordered times
+    exp_prob[,2] # observation in row 15
+  )
+
+  # single observation
+  lung_pred <- lung[13,]
+  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
+
+  prob <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time)
+  prob <- tidyr::unnest(prob, cols = .pred)
+  exp_prob <- surv_fit_summary$surv
+
+  expect_equal(prob_non_na$.time, pred_time)
+  expect_equal(
+    prob$.pred_survival[c(1, 4)],
+    c(1, 0)
+  )
+  expect_equal(
+    prob$.pred_survival[c(2,3,5,6)], # finite ordered times
+    exp_prob
+  )
+
+  # all observations with missings
+  lung_pred <- lung[c(14, 14),]
+
+  prob <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time)
+  prob <- tidyr::unnest(prob, cols = .pred)
+  expect_true(all(is.na(prob$.pred_survival)))
+
+})
+
+test_that("survival_prob_coxph() works with confidence intervals", {
+  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # time: combination of order, out-of-range, infinite
+  pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15,]
+  surv_fit <- survfit(mod, newdata = lung_pred)
+
+  pred <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time,
+                              interval = "confidence")
+  exp_pred <- summary(surv_fit, times = pred_time, extend = TRUE)
+
+  pred_na <- pred$.pred[[2]]
+  pred_non_na <- pred$.pred[[3]]
+
+  # get missings right
+  expect_true(all(is.na(pred_na$.pred_lower)))
+  expect_true(all(is.na(pred_na$.pred_upper)))
+  # for non-missings, get interval right
+  expect_equal(
+    pred_non_na$.pred_lower[c(1, 4)],
+    rep(NA_real_, 2)
+  )
+  expect_equal(
+    pred_non_na$.pred_upper[c(1, 4)],
+    rep(NA_real_, 2)
+  )
+  expect_equal(
+    pred_non_na$.pred_lower[c(2,3,5,6)], # finite ordered times
+    exp_pred$lower[,2] # observation in row 15
+  )
+  expect_equal(
+    pred_non_na$.pred_upper[c(2,3,5,6)], # finite ordered times
+    exp_pred$upper[,2] # observation in row 15
+  )
+})
+
+test_that("survival_prob_coxph() gives standard error", {
+
+  skip("not yet implemented")
+
+})
+
 # prediction: linear_pred -------------------------------------------------
 
 test_that("linear_pred predictions without strata", {
