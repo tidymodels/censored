@@ -72,7 +72,6 @@ test_that("survfit_summary_typestable() works for survival prob - stratified", {
   expect_equal(dim(prob), c(length(pred_time), 1))
 })
 
-
 test_that("survfit_summary_patch_infinite_time() works", {
   lung_pred <- tidyr::drop_na(lung)
   pred_time <- c(-Inf, 0, Inf, 1022, -Inf)
@@ -118,25 +117,25 @@ test_that("survfit_summary_restore_time_order() works", {
 
 
 test_that("survfit_summary_patch_missings() works", {
-  # expects that there are missings
-  # test "all missings" case one level up
-
-
-  skip("not yet")
   pred_time <- c(100, 200)
+  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  mod <- coxph(Surv(time, status) ~ ., data = lung)
+  lung_pred <- lung[13:14, ]
   surv_fit <- survfit(mod, newdata = lung_pred)
   surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
 
   surv_fit_summary_patched  <- surv_fit_summary %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_missings(time = pred_time)
+    survfit_summary_patch_missings(
+      time = pred_time,
+      index_missing = 2,
+      n_obs = 2
+    )
 
   prob <- surv_fit_summary_patched$surv
-  exp_prob <- surv_fit_summary$surv
 
-  expect_equal(prob, exp_prob[c(3,1:2),])
+  expect_equal(ncol(prob), nrow(lung_pred))
+  expect_equal(prob[,2], rep(NA_real_, length(pred_time)))
 })
 
 
