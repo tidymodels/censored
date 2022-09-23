@@ -43,6 +43,9 @@
     <loc>https://censored.tidymodels.org/dev/reference/survival_prob_coxph.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_mboost.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/dev/reference/survival_prob_survbagg.html</loc>
   </url>
   <url>
