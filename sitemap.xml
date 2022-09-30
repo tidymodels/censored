@@ -22,6 +22,9 @@
     <loc>https://censored.tidymodels.org/index.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/news/index.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/reference/blackboost_train.html</loc>
   </url>
   <url>
@@ -41,6 +44,9 @@
   </url>
   <url>
     <loc>https://censored.tidymodels.org/reference/survival_prob_coxph.html</loc>
+  </url>
+  <url>
+    <loc>https://censored.tidymodels.org/reference/survival_prob_mboost.html</loc>
   </url>
   <url>
     <loc>https://censored.tidymodels.org/reference/survival_prob_survbagg.html</loc>
