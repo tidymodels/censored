@@ -152,16 +152,16 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
 
 survfit_summary_typestable <- function(object){
   # make matrix of dimension n_times x n_obs
-  sanitize_element <- function(x) {
+  sanitize_element <- function(x, n_obs) {
     if (!is.matrix(x)) {
-      x <- matrix(x, ncol = length(object$n))
+      x <- matrix(x, ncol = n_obs)
     }
     x
   }
   # sanitize elements we care about
   elements <- available_survfit_summary_elements(object)
   for (i in elements) {
-    object[[i]] <- sanitize_element(object[[i]])
+    object[[i]] <- sanitize_element(object[[i]], n_obs = length(object$n))
   }
 
   object
@@ -179,16 +179,16 @@ survfit_summary_patch_infinite_time <- function(object, time) {
   time_neg_inf <- is.infinite(time) & (time < 0)
   time_inf <- is.infinite(time) & (time > 0)
 
-  patch_neg_inf <- function(x, value) {
+  patch_neg_inf <- function(x, value, n_patch) {
     rbind(
-      matrix(value, nrow = sum(time_neg_inf), ncol = ncol(x)),
+      matrix(value, nrow = n_patch, ncol = ncol(x)),
       x
     )
   }
-  patch_inf <- function(x, value) {
+  patch_inf <- function(x, value, n_patch) {
     rbind(
       x,
-      matrix(value, nrow = sum(time_inf), ncol = ncol(x))
+      matrix(value, nrow = n_patch, ncol = ncol(x))
     )
   }
 
@@ -196,23 +196,67 @@ survfit_summary_patch_infinite_time <- function(object, time) {
   has_std_error <- "std.err" %in% names(object)
 
   if (any(time_neg_inf)) {
-    object$surv <- patch_neg_inf(object$surv, value = 1)
-    object$cumhaz <- patch_neg_inf(object$cumhaz, value = 0)
+    object$surv <- patch_neg_inf(
+      object$surv,
+      value = 1,
+      n_patch = sum(time_neg_inf)
+    )
+    object$cumhaz <- patch_neg_inf(
+      object$cumhaz,
+      value = 0,
+      n_patch = sum(time_neg_inf)
+    )
     if (has_std_error) {
-      object$std.err <- patch_neg_inf(object$std.err, value = NA_real_)
-      object$lower <- patch_neg_inf(object$lower, value = NA_real_)
-      object$upper <- patch_neg_inf(object$upper, value = NA_real_)
-      object$std.chaz <- patch_neg_inf(object$std.chaz, value = NA_real_)
+      object$std.err <- patch_neg_inf(
+        object$std.err,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+      object$lower <- patch_neg_inf(
+        object$lower,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+      object$upper <- patch_neg_inf(
+        object$upper,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+      object$std.chaz <- patch_neg_inf(
+        object$std.chaz,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
     }
   }
   if (any(time_inf)) {
-    object$surv <- patch_inf(object$surv, value = 0)
-    object$cumhaz <- patch_inf(object$cumhaz, value = 1)
+    object$surv <- patch_inf(object$surv, value = 0, n_patch = sum(time_inf))
+    object$cumhaz <- patch_inf(
+      object$cumhaz,
+      value = 1,
+      n_patch = sum(time_inf)
+    )
     if (has_std_error) {
-      object$std.err <- patch_inf(object$std.err, value = NA_real_)
-      object$lower <- patch_inf(object$lower, value = NA_real_)
-      object$upper <- patch_inf(object$upper, value = NA_real_)
-      object$std.chaz <- patch_inf(object$std.chaz, value = NA_real_)
+      object$std.err <- patch_inf(
+        object$std.err,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+      object$lower <- patch_inf(
+        object$lower,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+      object$upper <- patch_inf(
+        object$upper,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+      object$std.chaz <- patch_inf(
+        object$std.chaz,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
     }
   }
 
@@ -241,7 +285,7 @@ survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
     return(object)
   }
 
-  patch_element <- function(x) {
+  patch_element <- function(x, time, n_obs, index_missing) {
     full_matrix <- matrix(NA, nrow = length(time), ncol = n_obs)
     full_matrix[, -index_missing] <- x
     full_matrix
@@ -250,7 +294,12 @@ survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
   elements <- available_survfit_summary_elements(object)
 
   for (i in elements) {
-    object[[i]] <- patch_element(object[[i]])
+    object[[i]] <- patch_element(
+      object[[i]],
+      time = time,
+      n_obs = n_obs,
+      index_missing = index_missing
+    )
   }
 
   object
