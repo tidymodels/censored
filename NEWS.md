@@ -8,4 +8,6 @@
 
 * Internal re-organisation of code (#206, 209).
 
+* Added internal `survfit_summary_*()` helper functions (#216).
+
 * Added a `NEWS.md` file to track changes to the package.

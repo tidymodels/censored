@@ -145,3 +145,191 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
   dplyr::group_nest(res, .row, .key = ".pred")$.pred
 }
 
+
+
+# summary_survfit helpers -------------------------------------------------
+
+
+survfit_summary_typestable <- function(object){
+  # make matrix of dimension n_times x n_obs
+  sanitize_element <- function(x, n_obs) {
+    if (!is.matrix(x)) {
+      x <- matrix(x, ncol = n_obs)
+    }
+    x
+  }
+  # sanitize elements we care about
+  elements <- available_survfit_summary_elements(object)
+  for (i in elements) {
+    object[[i]] <- sanitize_element(object[[i]], n_obs = length(object$n))
+  }
+
+  object
+}
+
+available_survfit_summary_elements <- function(object) {
+  intersect(
+    names(object),
+    c("surv", "std.err", "lower", "upper", "cumhaz", "std.chaz")
+  )
+}
+
+survfit_summary_patch_infinite_time <- function(object, time) {
+
+  time_neg_inf <- is.infinite(time) & (time < 0)
+  time_inf <- is.infinite(time) & (time > 0)
+
+  patch_neg_inf <- function(x, value, n_patch) {
+    rbind(
+      matrix(value, nrow = n_patch, ncol = ncol(x)),
+      x
+    )
+  }
+  patch_inf <- function(x, value, n_patch) {
+    rbind(
+      x,
+      matrix(value, nrow = n_patch, ncol = ncol(x))
+    )
+  }
+
+  # glmnet does not provide standard errors etc
+  has_std_error <- "std.err" %in% names(object)
+
+  if (any(time_neg_inf)) {
+    object$surv <- patch_neg_inf(
+      object$surv,
+      value = 1,
+      n_patch = sum(time_neg_inf)
+    )
+    object$cumhaz <- patch_neg_inf(
+      object$cumhaz,
+      value = 0,
+      n_patch = sum(time_neg_inf)
+    )
+    if (has_std_error) {
+      object$std.err <- patch_neg_inf(
+        object$std.err,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+      object$lower <- patch_neg_inf(
+        object$lower,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+      object$upper <- patch_neg_inf(
+        object$upper,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+      object$std.chaz <- patch_neg_inf(
+        object$std.chaz,
+        value = NA_real_,
+        n_patch = sum(time_neg_inf)
+      )
+    }
+  }
+  if (any(time_inf)) {
+    object$surv <- patch_inf(object$surv, value = 0, n_patch = sum(time_inf))
+    object$cumhaz <- patch_inf(
+      object$cumhaz,
+      value = 1,
+      n_patch = sum(time_inf)
+    )
+    if (has_std_error) {
+      object$std.err <- patch_inf(
+        object$std.err,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+      object$lower <- patch_inf(
+        object$lower,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+      object$upper <- patch_inf(
+        object$upper,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+      object$std.chaz <- patch_inf(
+        object$std.chaz,
+        value = NA_real_,
+        n_patch = sum(time_inf)
+      )
+    }
+  }
+
+  object
+}
+
+survfit_summary_restore_time_order <- function(object, time) {
+  # preserve original order of `time` because `summary()` returns a result for
+  # an ordered vector of finite time
+  # Note that this requires a survfit summary object which has already been
+  # patched for infinite time points
+  original_order_time <- match(time, sort(time))
+
+  elements <- available_survfit_summary_elements(object)
+
+  # restore original order of prediction time points
+  for (i in elements) {
+    object[[i]] <- object[[i]][original_order_time, , drop = FALSE]
+  }
+
+  object
+}
+
+survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
+  if (is.null(index_missing)) {
+    return(object)
+  }
+
+  patch_element <- function(x, time, n_obs, index_missing) {
+    full_matrix <- matrix(NA, nrow = length(time), ncol = n_obs)
+    full_matrix[, -index_missing] <- x
+    full_matrix
+  }
+
+  elements <- available_survfit_summary_elements(object)
+
+  for (i in elements) {
+    object[[i]] <- patch_element(
+      object[[i]],
+      time = time,
+      n_obs = n_obs,
+      index_missing = index_missing
+    )
+  }
+
+  object
+}
+
+survfit_summary_to_tibble <- function(object, time, n_obs) {
+  ret <- tibble::tibble(
+    .row = rep(seq_len(n_obs), each = length(time)),
+    .time = rep(time, times = n_obs),
+    .pred_survival = as.vector(object$surv),
+    # TODO standard error
+    .pred_lower = as.vector(object$lower),
+    .pred_upper = as.vector(object$upper),
+    .pred_hazard_cumulative = as.vector(object$cumhaz)
+    # TODO standard error for cumulative hazard
+  )
+  ret
+}
+
+survfit_summary_to_patched_tibble <- function(object, index_missing, time, n_obs) {
+  object %>%
+    summary(times = time, extend = TRUE) %>%
+    survfit_summary_typestable() %>%
+    survfit_summary_patch_infinite_time(time = time) %>%
+    survfit_summary_restore_time_order(time = time) %>%
+    survfit_summary_patch_missings(
+      index_missing = index_missing,
+      time = time,
+      n_obs = n_obs
+    ) %>%
+    survfit_summary_to_tibble(time = time, n_obs = n_obs)
+}
+
