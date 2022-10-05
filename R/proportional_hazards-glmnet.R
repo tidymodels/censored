@@ -448,6 +448,10 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
 survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalty = NULL, ...) {
 
+  if (is.null(penalty)) {
+    penalty <- object$spec$args$penalty
+  }
+
   output <- match.arg(output, c("surv", "haz"))
   multi <- length(penalty) > 1
 
@@ -463,11 +467,12 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
     new_strata <- NULL
   }
 
+  n_obs <- nrow(new_data)
   missings_in_new_data <- get_missings_coxnet(new_x, new_strata)
+
   if (!is.null(missings_in_new_data)) {
-    n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
-    all_missing <- n_missing == n_total
+    all_missing <- n_missing == n_obs
     if (all_missing) {
       ret <- predict_survival_na(time, interval = "none")
       ret <- tibble(.pred = rep(list(ret), n_missing))
@@ -490,30 +495,32 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
   )
 
   if (multi) {
-    keep_penalty <- TRUE
-    stacked_survfit <-
-      purrr::map2_dfr(y, penalty,
-                      ~stack_survfit(.x, n = nrow(new_x), penalty = .y))
-    starting_rows <- stacked_survfit %>%
-      dplyr::distinct(.row, penalty) %>%
-      dplyr::bind_cols(prob_template)
+    res_patched <- purrr::map(
+      y,
+      survfit_summary_to_patched_tibble,
+      index_missing = missings_in_new_data,
+      time = time,
+      n_obs = n_obs
+    )
+    res <- tibble::tibble(
+      penalty = penalty,
+      res_patched = res_patched
+    ) %>%
+      tidyr::unnest(cols = res_patched) %>%
+      keep_cols(output, keep_penalty = TRUE) %>%
+      tidyr::nest(.pred = c(-.row)) %>%
+      dplyr::select(-.row)
   } else {
-    keep_penalty <- FALSE
-    stacked_survfit <-
-      stack_survfit(y, nrow(new_x))
-    starting_rows <- stacked_survfit %>%
-      dplyr::distinct(.row) %>%
-      dplyr::bind_cols(prob_template)
+    res <- survfit_summary_to_patched_tibble(
+        y,
+        index_missing = missings_in_new_data,
+        time = time,
+        n_obs = n_obs
+      ) %>%
+      keep_cols(output) %>%
+      tidyr::nest(.pred = c(-.row)) %>%
+      dplyr::select(-.row)
   }
-  res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
-    interpolate_km_values(time, new_strata) %>%
-    keep_cols(output, keep_penalty) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
-    dplyr::select(-.row)
 
-  if (!is.null(missings_in_new_data)) {
-    res <- pad_survival_na(res, missings_in_new_data, time,
-                           interval = "none", n_total)
-  }
   res
 }
