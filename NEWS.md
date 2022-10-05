@@ -1,5 +1,9 @@
 # censored (development version)
 
+* Predictions of survival probabilities for proportional hazards models with 
+  the `"survival"` and `"glmnet"` engines are now calculated by 
+  `summary.survfit()` (#221).
+
 # censored 0.1.1
 
 * For boosted trees with the `"mboost"` engine, survival probabilities can now be predicted for `time = -Inf`. This is always 1. For `time = Inf` this now predicts a survival probability of 0 (#215).
