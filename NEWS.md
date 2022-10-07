@@ -1,8 +1,6 @@
 # censored (development version)
 
-* Predictions of survival probabilities for proportional hazards models with 
-  the `"survival"` and `"glmnet"` engines are now calculated by 
-  `summary.survfit()` (#221).
+* Predictions of survival probabilities for proportional hazards models with the `"survival"` and `"glmnet"` engines are now calculated by `summary.survfit()` (#221).
 
 # censored 0.1.1
 
