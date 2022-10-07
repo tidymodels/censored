@@ -125,11 +125,12 @@ survival_prob_coxph <- function(x,
     output <- "survconf"
   }
 
+  n_obs <- nrow(new_data)
   missings_in_new_data <- get_missings_coxph(x, new_data)
+
   if (!is.null(missings_in_new_data)) {
-    n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
-    all_missing <- n_missing == n_total
+    all_missing <- n_missing == n_obs
     if (all_missing) {
       ret <- predict_survival_na(time, interval)
       ret <- tibble(.pred = rep(list(ret), n_missing))
@@ -138,31 +139,19 @@ survival_prob_coxph <- function(x,
     new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
-  y <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
-                         na.action = na.exclude, ...)
+  surv_fit <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
+                                na.action = na.exclude, ...)
 
-  if (has_strata(x$terms)) {
-    new_strata <- compute_strata(x, new_data) %>%
-      dplyr::pull(.strata)
-  } else {
-    new_strata <- NULL
-  }
-
-  stacked_survfit <- stack_survfit(y, nrow(new_data))
-  starting_rows <- stacked_survfit %>%
-    dplyr::distinct(.row) %>%
-    dplyr::bind_cols(prob_template)
-
-  res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
-    interpolate_km_values(time, new_strata) %>%
+  res <- surv_fit %>%
+    survfit_summary_to_patched_tibble(
+      index_missing = missings_in_new_data,
+      time = time,
+      n_obs = n_obs
+    ) %>%
     keep_cols(output) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
 
-  if (!is.null(missings_in_new_data)) {
-    res <- pad_survival_na(res, missings_in_new_data, time,
-                           interval, n_total)
-  }
   res
 }
 
