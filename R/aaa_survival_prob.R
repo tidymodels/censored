@@ -333,3 +333,28 @@ survfit_summary_to_patched_tibble <- function(object, index_missing, time, n_obs
     survfit_summary_to_tibble(time = time, n_obs = n_obs)
 }
 
+combine_list_of_survfit_summary <- function(object, time) {
+  n_time <- sum(is.finite(time))
+  elements <- available_survfit_summary_elements(object[[1]])
+
+  ret <- list()
+  for (i in elements) {
+    ret[[i]] <- purrr::map(object, purrr::pluck, i) %>%
+      unlist() %>%
+      matrix(nrow = n_time)
+  }
+
+  ret
+}
+
+survfit_summary_patch <- function(object, index_missing, time, n_obs) {
+  object %>%
+    survfit_summary_typestable() %>%
+    survfit_summary_patch_infinite_time(time = time) %>%
+    survfit_summary_restore_time_order(time = time) %>%
+    survfit_summary_patch_missings(
+      index_missing = index_missing,
+      time = time,
+      n_obs = n_obs
+    )
+}
