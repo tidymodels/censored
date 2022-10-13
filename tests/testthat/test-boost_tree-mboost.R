@@ -210,3 +210,38 @@ test_that("linear_pred predictions", {
 })
 
 
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` works", {
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  expect_equal(
+    f_fit$fit,
+    xy_fit$fit,
+    ignore_function_env = TRUE
+  )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+
+  f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")
+  xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
+  expect_equal(f_pred_lp, xy_pred_lp)
+})

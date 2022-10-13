@@ -78,3 +78,38 @@ test_that("survival predictions", {
     as.numeric(t(exp_f_pred))
   )
 })
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` works", {
+
+  skip("until pec::pecRpart() can handle a Surv response which is created outside of the formula")
+
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  # TODO check comparison after fit_xy() works
+  # expect_equal(
+  #   f_fit$fit$fit,
+  #   xy_fit$fit$fit,
+  #   ignore_function_env = TRUE
+  # )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+})

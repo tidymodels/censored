@@ -96,3 +96,43 @@ test_that("survival predictions", {
   )
 
 })
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` works", {
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("partykit")
+  set.seed(1)
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  set.seed(1)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  # prep for model comparison
+  f_fit_fit <- unclass(f_fit$fit)
+  xy_fit_fit <- unclass(xy_fit$fit)
+  elements_to_ignore <- c("call", "data", "terms")
+  f_ignore <- which(names(f_fit_fit) %in% elements_to_ignore)
+  xy_ignore <- which(names(xy_fit_fit) %in% elements_to_ignore)
+
+  expect_equal(
+    f_fit_fit[-f_ignore],
+    xy_fit_fit[-xy_ignore],
+    ignore_function_env = TRUE
+  )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+})
