@@ -62,50 +62,6 @@ prob_template <- tibble::tibble(
   .pred_hazard_cumulative = 0
 )
 
-interpolate_km_values <- function(x, times, group = NULL){
-
-  if (is.null(group)) {
-    return(interpolate_km_values_ungrouped(x, times))
-  }
-
-  group_tbl <- tibble::tibble(
-    .row = seq_along(group),
-    group = group
-  )
-
-  ret <- dplyr::left_join(x, group_tbl, by = ".row") %>%
-    dplyr::group_nest(group, .key = ".pred") %>%
-    dplyr::mutate(
-      .pred = purrr::map(.pred, interpolate_km_values_ungrouped, times)
-    ) %>%
-    tidyr::unnest(cols = c(.pred)) %>%
-    dplyr::select(-group)
-}
-
-# We want to maintain the step-function aspect of the predictions so, rather
-# than use `approx()`, we cut the times and match the new times based on these
-# intervals.
-interpolate_km_values_ungrouped <- function(x, times) {
-  x <- km_with_cuts(x)
-  pred_times <-
-    tibble::tibble(.time = times) %>%
-    km_with_cuts(times = x$.time) %>%
-    dplyr::rename(.tmp = .time) %>%
-    dplyr::left_join(x, by = ".cuts") %>%
-    dplyr::select(-.time, .time = .tmp, -.cuts)
-  pred_times
-}
-
-km_with_cuts <- function(x, times = NULL) {
-  if (is.null(times)) {
-    # When cutting the original data in the survfit object
-    times <- unique(x$.time)
-  }
-  times <- c(-Inf, times, Inf)
-  times <- unique(times)
-  x$.cuts <- cut(x$.time, times, right = FALSE)
-  x
-}
 
 predict_survival_na <- function(time, interval = "none") {
   ret <- tibble(.time = time, .pred_survival = NA_real_)
@@ -115,20 +71,6 @@ predict_survival_na <- function(time, interval = "none") {
   }
   ret
 }
-
-pad_survival_na <- function(pred_to_pad,
-                            missings_in_new_data,
-                            times,
-                            interval,
-                            n_total) {
-  pred_na <- predict_survival_na(times, interval)
-  pred_full <- vector(mode = "list", length = n_total)
-  pred_full[missings_in_new_data] <- list(pred_na)
-  pred_full[-missings_in_new_data] <- pred_to_pad$.pred
-  res <- tibble(.pred = pred_full)
-  res
-}
-
 
 # -------------------------------------------------------------------------
 
@@ -333,3 +275,28 @@ survfit_summary_to_patched_tibble <- function(object, index_missing, time, n_obs
     survfit_summary_to_tibble(time = time, n_obs = n_obs)
 }
 
+combine_list_of_survfit_summary <- function(object, time) {
+  n_time <- sum(is.finite(time))
+  elements <- available_survfit_summary_elements(object[[1]])
+
+  ret <- list()
+  for (i in elements) {
+    ret[[i]] <- purrr::map(object, purrr::pluck, i) %>%
+      unlist() %>%
+      matrix(nrow = n_time)
+  }
+
+  ret
+}
+
+survfit_summary_patch <- function(object, index_missing, time, n_obs) {
+  object %>%
+    survfit_summary_typestable() %>%
+    survfit_summary_patch_infinite_time(time = time) %>%
+    survfit_summary_restore_time_order(time = time) %>%
+    survfit_summary_patch_missings(
+      index_missing = index_missing,
+      time = time,
+      n_obs = n_obs
+    )
+}

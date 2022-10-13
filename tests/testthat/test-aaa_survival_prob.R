@@ -73,6 +73,8 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
 })
 
 test_that("survfit_summary_typestable() works for survival prob - unstratified (coxnet)", {
+  skip_if_not_installed("glmnet")
+
   lung2 <- lung[-14, ]
   lung_x = as.matrix(lung2[, c("age", "ph.ecog")])
   lung_y = Surv(lung2$time, lung2$status)
@@ -116,6 +118,8 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
 })
 
 test_that("survfit_summary_typestable() works for survival prob - stratified (coxnet)", {
+  skip_if_not_installed("glmnet")
+
   lung2 <- lung[-14, ]
   lung_x = as.matrix(lung2[, c("age", "ph.ecog")])
   lung_y = glmnet::stratifySurv(Surv(lung2$time, lung2$status), lung2$sex)
@@ -184,6 +188,8 @@ test_that("survfit_summary_patch_infinite_time() works (coxph)", {
 })
 
 test_that("survfit_summary_patch_infinite_time() works (coxnet)", {
+  skip_if_not_installed("glmnet")
+
   pred_time <- c(-Inf, 0, Inf, 1022, -Inf)
 
   lung2 <- lung[-14, ]
@@ -254,3 +260,99 @@ test_that("survfit_summary_patch_missings() works", {
   expect_equal(prob[,2], rep(NA_real_, length(pred_time)))
 })
 
+test_that("combine_list_of_survfit_summary() works for survbagg", {
+  skip_if_not_installed("ipred")
+
+  lung_pred <- tidyr::drop_na(lung)
+
+  set.seed(1234)
+  engine_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  survfit_list <- predict(engine_fit, newdata = lung_pred)
+
+  pred_time <- c(100, 200)
+  survfit_summary_list <- purrr::map(
+    survfit_list,
+    summary,
+    times = pred_time,
+    extend = TRUE
+  )
+
+  survfit_summary <- combine_list_of_survfit_summary(
+    survfit_summary_list,
+    time = pred_time
+  )
+
+  expect_equal(
+    dim(survfit_summary$surv),
+    c(length(pred_time), nrow(lung_pred))
+  )
+  expect_equal(
+    dim(survfit_summary$cumhaz),
+    c(length(pred_time), nrow(lung_pred))
+  )
+})
+
+test_that("combine_list_of_survfit_summary() works for ctree", {
+  skip_if_not_installed("partykit")
+
+  lung_pred <- tidyr::drop_na(lung)
+
+  set.seed(1234)
+  engine_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
+  survfit_list <- predict(engine_fit, newdata = lung_pred, type = "prob")
+
+  pred_time <- c(100, 200)
+  survfit_summary_list <- purrr::map(
+    survfit_list,
+    summary,
+    times = pred_time,
+    extend = TRUE
+  )
+
+  survfit_summary <- combine_list_of_survfit_summary(
+    survfit_summary_list,
+    time = pred_time
+  )
+
+  expect_equal(
+    dim(survfit_summary$surv),
+    c(length(pred_time), nrow(lung_pred))
+  )
+  expect_equal(
+    dim(survfit_summary$cumhaz),
+    c(length(pred_time), nrow(lung_pred))
+  )
+})
+
+
+test_that("combine_list_of_survfit_summary() works for cforest", {
+  skip_if_not_installed("partykit")
+
+  lung_pred <- tidyr::drop_na(lung)
+
+  set.seed(1234)
+  engine_fit <- partykit::cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+  survfit_list <- predict(engine_fit, newdata = lung_pred, type = "prob")
+
+  pred_time <- c(100, 200)
+  survfit_summary_list <- purrr::map(
+    survfit_list,
+    summary,
+    times = pred_time,
+    extend = TRUE
+  )
+
+  survfit_summary <- combine_list_of_survfit_summary(
+    survfit_summary_list,
+    time = pred_time
+  )
+
+  expect_equal(
+    dim(survfit_summary$surv),
+    c(length(pred_time), nrow(lung_pred))
+  )
+  expect_equal(
+    dim(survfit_summary$cumhaz),
+    c(length(pred_time), nrow(lung_pred))
+  )
+})
