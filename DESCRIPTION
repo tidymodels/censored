@@ -16,7 +16,7 @@ License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 1.0.0),
+    parsnip (>= 1.0.2.9001),
     R (>= 3.5.0),
     survival (>= 3.3-1)
 Imports: 
@@ -51,3 +51,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+Remotes:
+    tidymodels/parsnip

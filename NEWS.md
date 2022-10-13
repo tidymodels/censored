@@ -1,5 +1,7 @@
 # censored (development version)
 
+* The matrix interface for fitting `fit_xy()` now works for censored regression models.
+
 * Predictions of survival probabilities for proportional hazards models with the `"survival"` and `"glmnet"` engines are now calculated by `summary.survfit()` (#221).
 
 * Added internal `survfit_summary_*()` helper functions (#216).
