@@ -1,5 +1,7 @@
 # censored (development version)
 
+* The matrix interface for fitting `fit_xy()` now works for censored regression models, with the exception of `decision_tree()` with the `"rpart"` engine and `survival_reg()` with the `"flexsurv"` engine (#225).
+
 * Predictions of survival probabilities are now calculated via `summary.survfit()` for `proportional_hazards()` models with the `"survival"` and `"glmnet"` engines, `bag_tree()` models with the `"rpart"` engine, `decision_tree()` models with the `"partykit"` engines, as well as `rand_forest()` models with the `"partykit"` engine (#221, #224). 
 
 * Added internal `survfit_summary_*()` helper functions (#216).

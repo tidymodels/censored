@@ -192,11 +192,21 @@ print._coxnet <- function(x, ...) {
 
 # prediction --------------------------------------------------------------
 
-coxnet_predict_pre <- function(new_data, object) {
-  parsnip::.convert_form_to_xy_new(
-    object$preproc$coxnet,
-    new_data,
-    composition = "matrix")$x
+coxnet_prepare_x <- function(new_data, object) {
+
+  went_through_formula_interface <- !is.null(object$preproc$coxnet)
+
+  if (went_through_formula_interface) {
+    new_x <- parsnip::.convert_form_to_xy_new(
+      object$preproc$coxnet,
+      new_data,
+      composition = "matrix")$x
+  } else {
+    new_x <- new_data[, object$preproc$x_var, drop = FALSE] %>%
+      as.matrix()
+  }
+
+  new_x
 }
 
 # notes adapted from parsnip:
@@ -366,12 +376,11 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
 
-  new_x <- parsnip::.convert_form_to_xy_new(
-    object$preproc$coxnet,
-    new_data,
-    composition = "matrix")$x
+  new_x <- coxnet_prepare_x(new_data, object)
 
-  if (has_strata(object$formula, object$training_data)) {
+  went_through_formula_interface <- !is.null(object$preproc$coxnet)
+  if (went_through_formula_interface &&
+      has_strata(object$formula, object$training_data)) {
     new_strata <- get_strata_glmnet(object$formula, data = new_data,
                                     na.action = stats::na.pass)
   } else {
@@ -392,7 +401,7 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
   }
 
   y <- survival::survfit(
-    object$fit,
+    object$fit$fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -455,12 +464,11 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
   output <- match.arg(output, c("surv", "haz"))
   multi <- length(penalty) > 1
 
-  new_x <- parsnip::.convert_form_to_xy_new(
-    object$preproc$coxnet,
-    new_data,
-    composition = "matrix")$x
+  new_x <- coxnet_prepare_x(new_data, object)
 
-  if (has_strata(object$formula, object$training_data)) {
+  went_through_formula_interface <- !is.null(object$preproc$coxnet)
+  if (went_through_formula_interface &&
+      has_strata(object$formula, object$training_data)) {
     new_strata <- get_strata_glmnet(object$formula, data = new_data,
                                     na.action = stats::na.pass)
   } else {
@@ -483,7 +491,7 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
   }
 
   y <- survival::survfit(
-    object$fit,
+    object$fit$fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,

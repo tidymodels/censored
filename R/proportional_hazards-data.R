@@ -159,12 +159,12 @@ make_proportional_hazards_glmnet <- function() {
     mode = "censored regression",
     type = "linear_pred",
     value = list(
-      pre = coxnet_predict_pre,
+      pre = coxnet_prepare_x,
       post = parsnip::.organize_glmnet_pred,
       func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit),
+          object = expr(object$fit$fit),
           newx = expr(new_data),
           type = "link",
           s = expr(object$spec$args$penalty)
@@ -215,17 +215,16 @@ make_proportional_hazards_glmnet <- function() {
     mode = "censored regression",
     type = "raw",
     value = list(
-      pre = coxnet_predict_pre,
+      pre = coxnet_prepare_x,
       post = NULL,
       func = c(fun = "predict"),
       args =
-        list(object = expr(object$fit),
+        list(object = expr(object$fit$fit),
              newx = expr(new_data)
         )
     )
   )
 
 }
-
 
 # nocov end
