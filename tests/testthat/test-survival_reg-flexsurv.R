@@ -221,7 +221,8 @@ test_that("`fix_xy()` errors", {
 })
 
 test_that("`fix_xy()` works", {
-  skip("until we can either use or avoid the . in the formula")
+  skip("until dev version of flexsurv is released")
+  # with the current CRAN version we can't use the . in the formula
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
