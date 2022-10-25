@@ -52,4 +52,4 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Remotes:
-    tidymodels/parsnip@fit_xy-censored-regression
+    tidymodels/parsnip
