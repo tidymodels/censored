@@ -6,7 +6,7 @@ fit_xy.decision_tree <- function(object,
                                  control = parsnip::control_parsnip(),
                                  ...) {
 
-  if (object$engine == "rpart") {
+  if (object$engine == "rpart" && object$mode == "censored regression") {
     # prodlim::EventHistory.frame() expects a call to `Surv()` (or `Hist()`) on
     # the left-hand side of the formula
     rlang::abort("For the `'rpart'` engine, please use the formula interface via `fit()`.")
