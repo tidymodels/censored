@@ -314,24 +314,6 @@ make_survival_reg_flexsurvspline <- function() {
                           pkg = "censored",
                           mode = "censored regression")
 
-  parsnip::set_model_arg(
-    model = "survival_reg",
-    eng = "flexsurvspline",
-    parsnip = "num_knots",
-    original = "k",
-    func = list(pkg = "dials", fun = "num_knots"),
-    has_submodel = FALSE
-  )
-
-  parsnip::set_model_arg(
-    model = "survival_reg",
-    eng = "flexsurvspline",
-    parsnip = "survival_link",
-    original = "scale",
-    func = list(pkg = "dials", fun = "survival_link"),
-    has_submodel = FALSE
-  )
-
   parsnip::set_fit(
     model = "survival_reg",
     eng = "flexsurvspline",
