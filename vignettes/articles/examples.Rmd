@@ -434,3 +434,53 @@ The following examples use the same data set throughout.
   ```
   
   </details>
+  
+  <details id="survival-reg-flexsurvspline"> 
+  
+  <summary>With the `"flexsurvspline"` engine</summary>
+  
+  ```{r echo=FALSE}
+  knitr::spin_child("template-lung.R")
+  ```
+
+  We can define the model with specific parameters:
+  
+  ```{r}
+  sr_spec <- 
+    survival_reg(dist = "weibull") %>%
+    set_engine("flexsurvspline") %>% 
+    set_mode("censored regression") 
+  sr_spec
+  ```
+
+  Now we create the model fit object:
+  
+  ```{r}
+  set.seed(1)
+  sr_fit <- sr_spec %>% 
+    fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
+  sr_fit
+  ```
+
+  The holdout data can be predicted for survival probability at different time points as well as event time, linear predictor, quantile, and hazard. 
+  
+  ```{r}
+  predict(
+    sr_fit, 
+    lung_test, 
+    type = "survival",
+    time = c(100, 500, 1000)
+  ) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "time")
+  predict(sr_fit, lung_test, type = "linear_pred")
+  predict(sr_fit, lung_test, type = "quantile") %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+    slice(1) %>% 
+    tidyr::unnest(col = .pred)
+  ```
+  
+  </details>
