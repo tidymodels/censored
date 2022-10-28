@@ -443,11 +443,11 @@ The following examples use the same data set throughout.
   knitr::spin_child("template-lung.R")
   ```
 
-  We can define the model with specific parameters:
+  We can define the model:
   
   ```{r}
   sr_spec <- 
-    survival_reg(dist = "weibull") %>%
+    survival_reg() %>%
     set_engine("flexsurvspline") %>% 
     set_mode("censored regression") 
   sr_spec
