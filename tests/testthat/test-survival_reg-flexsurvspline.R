@@ -4,8 +4,7 @@ test_that("model object", {
   set.seed(1234)
   exp_f_fit <- flexsurv::flexsurvspline(
     Surv(time, status) ~ age + ph.ecog,
-    data = lung,
-    k = 0L
+    data = lung
   )
 
   mod_spec <- survival_reg() %>%
@@ -25,7 +24,6 @@ test_that("model object", {
   )
 })
 
-
 # prediction: time --------------------------------------------------------
 
 test_that("flexsurvspline time prediction", {
@@ -40,11 +38,9 @@ test_that("flexsurvspline time prediction", {
   expect_equal(f_pred, exp_pred)
 })
 
-
 # prediction: survival ----------------------------------------------------
 
 test_that("survival probability prediction", {
-  rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
   f_fit <- survival_reg() %>%
     set_engine("flexsurvspline") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
@@ -69,13 +65,6 @@ test_that("survival probability prediction", {
       purrr::map_lgl(
         f_pred$.pred,
         ~ all(names(.x) == c(".time", ".pred_survival"))))
-  )
-
-  # using rms for expected results
-  expect_equal(
-    f_pred$.pred[[1]]$.pred_survival,
-    rms_surv,
-    tolerance = 0.001
   )
 
   # add confidence interval
@@ -165,7 +154,6 @@ test_that("quantile predictions", {
 # prediction: hazard ------------------------------------------------------
 
 test_that("hazard prediction", {
-  rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
   f_fit <- survival_reg() %>%
     set_engine("flexsurvspline") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
@@ -190,12 +178,5 @@ test_that("hazard prediction", {
       purrr::map_lgl(
         f_pred$.pred,
         ~ all(names(.x) == c(".time", ".pred_hazard"))))
-  )
-
-  # using rms for expected results
-  expect_equal(
-    f_pred$.pred[[1]]$.pred_hazard,
-    rms_haz,
-    tolerance = 0.001
   )
 })
