@@ -151,6 +151,53 @@ test_that("survival predictions", {
 })
 
 
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` errors", {
+  lung_orsf <- na.omit(lung)
+
+  lung_x <- as.matrix(lung_orsf[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung_orsf$time, lung_orsf$status)
+  lung_pred <- lung_orsf[1:5, ]
+
+  spec <- rand_forest() %>%
+    set_engine("aorsf") %>%
+    set_mode("censored regression")
+
+  expect_snapshot(error = TRUE, {
+    fit_xy(spec, x = lung_x, y = lung_y)
+  })
+})
+
+test_that("`fix_xy()` works", {
+  skip("for now")
+  lung_orsf <- na.omit(lung)
+
+  lung_x <- as.matrix(lung_orsf[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung_orsf$time, lung_orsf$status)
+  lung_pred <- lung_orsf[1:5, ]
+
+  spec <- rand_forest() %>%
+    set_engine("aorsf") %>%
+    set_mode("censored regression")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  # TODO check details of this expectation before un-skipping the test
+  expect_equal(
+    f_fit$fit,
+    xy_fit$fit,
+    ignore_function_env = TRUE
+  )
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+})
+
+
 # case weights ------------------------------------------------------------
 
 test_that('can handle case weights', {
