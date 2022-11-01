@@ -99,12 +99,58 @@ predict_linear_pred._blackboost <- function(object,
   res
 }
 
-# the mboost::survFit isn't able to predict survival probabilities for a given
-# timepoint. This function rounds down to nearest timepoint and uses that
-# for prediction.
-floor_surv_mboost <- function(x, time) {
-  ind <- purrr::map_int(time, ~ max(which(.x > c(-Inf, unname(x$time)))))
-  t(unname(rbind(1, x$surv))[ind, ])
+#' A wrapper for survival probabilities with mboost models
+#' @param x A model from `blackboost()`.
+#' @param new_data Data for prediction.
+#' @param time A vector of integers for prediction times.
+#' @return A tibble with a list column of nested tibbles.
+#' @keywords internal
+#' @export
+#' @examples
+#' library(mboost)
+#' mod <- blackboost(Surv(time, status) ~ ., data = lung, family = CoxPH())
+#' survival_prob_mboost(mod, new_data = lung[1:3, ], time = 300)
+survival_prob_mboost <- function(object, new_data, time) {
+
+  survival_curve <- mboost::survFit(object, newdata = new_data)
+
+  survival_prob <- survival_curve_to_prob(
+    time,
+    event_times = survival_curve$time,
+    survival_prob = survival_curve$surv
+  )
+
+  # survival_prob is length(time) x nrow(new_data) and
+  # `matrix_to_nested_tibbles_survival()` expects the transpose of that (and
+  # then does another t() inside).
+  # this version doesn't need to transpose the matrix at all
+  n_obs <- ncol(survival_prob)
+  ret <- tibble::tibble(
+    .row = rep(seq_len(n_obs), each = length(time)),
+    .time = rep(time, times = n_obs),
+    .pred_survival = as.vector(survival_prob)
+  ) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
+
+  ret
+}
+
+survival_curve_to_prob <- function(time, event_times, survival_prob) {
+  # add survival prob of 1 and 0 at the start and end of time, respectively
+  if (event_times[1] != -Inf) {
+    event_times <- c(-Inf, event_times)
+    survival_prob <- rbind(1, survival_prob)
+  }
+  if (event_times[length(event_times)] != Inf) {
+    event_times <- c(event_times, Inf)
+    survival_prob <- rbind(survival_prob, 0)
+  }
+
+  # get survival probability (intervals are closed on the left, open on the right)
+  index <- findInterval(time, event_times)
+
+  survival_prob[index, , drop = FALSE]
 }
 
 

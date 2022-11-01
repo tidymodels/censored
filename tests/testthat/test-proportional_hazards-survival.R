@@ -139,6 +139,9 @@ test_that("time predictions with NA", {
 # prediction: survival ----------------------------------------------------
 
 test_that("survival predictions without strata", {
+  # due to pec:
+  skip_if_not_installed("Matrix", minimum_version = "1.4.2")
+
   cox_spec <- proportional_hazards() %>% set_engine("survival")
   exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
@@ -293,6 +296,119 @@ test_that("survival prediction with NA", {
   expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
 
 })
+
+
+
+test_that("survival_prob_coxph() works", {
+
+  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # time: combination of order, out-of-range, infinite
+  pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15,]
+  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
+
+  prob <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time)
+  exp_prob <- surv_fit_summary$surv
+
+  prob_na <- prob$.pred[[2]]
+  prob_non_na <- prob$.pred[[3]]
+  exp_prob_non_na <- exp_prob[,2]
+
+  # get missings right
+  expect_true(all(is.na(prob_na$.pred_survival)))
+  # for non-missings, get probs right
+  expect_equal(prob_non_na$.time, pred_time)
+  expect_equal(
+    prob_non_na$.pred_survival[c(1, 4)],
+    c(1, 0)
+  )
+  expect_equal(
+    prob_non_na %>%
+      dplyr::filter(is.finite(.time)) %>%
+      dplyr::arrange(.time) %>%
+      dplyr::pull(.pred_survival),
+    exp_prob_non_na
+  )
+
+  # single observation
+  lung_pred <- lung[13,]
+  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
+
+  prob <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time)
+  prob <- tidyr::unnest(prob, cols = .pred)
+  exp_prob <- surv_fit_summary$surv
+
+  expect_equal(
+    prob$.pred_survival[c(1, 4)],
+    c(1, 0)
+  )
+  expect_equal(
+    prob %>%
+      dplyr::filter(is.finite(.time)) %>%
+      dplyr::arrange(.time) %>%
+      dplyr::pull(.pred_survival),
+    exp_prob
+  )
+
+  # all observations with missings
+  lung_pred <- lung[c(14, 14),]
+
+  prob <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time)
+  prob <- tidyr::unnest(prob, cols = .pred)
+  expect_true(all(is.na(prob$.pred_survival)))
+
+})
+
+test_that("survival_prob_coxph() works with confidence intervals", {
+  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  # time: combination of order, out-of-range, infinite
+  pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15,]
+  surv_fit <- survfit(mod, newdata = lung_pred)
+
+  pred <- survival_prob_coxph(mod, new_data = lung_pred, time = pred_time,
+                              interval = "confidence")
+  exp_pred <- summary(surv_fit, times = pred_time, extend = TRUE)
+
+  pred_na <- pred$.pred[[2]]
+  pred_non_na <- pred$.pred[[3]]
+
+  # get missings right
+  expect_true(all(is.na(pred_na$.pred_lower)))
+  expect_true(all(is.na(pred_na$.pred_upper)))
+  # for non-missings, get interval right
+  expect_equal(
+    pred_non_na$.pred_lower[c(1, 4)],
+    rep(NA_real_, 2)
+  )
+  expect_equal(
+    pred_non_na$.pred_upper[c(1, 4)],
+    rep(NA_real_, 2)
+  )
+  expect_equal(
+    pred_non_na %>%
+      dplyr::filter(is.finite(.time)) %>%
+      dplyr::arrange(.time) %>%
+      dplyr::pull(.pred_lower),
+    exp_pred$lower[,2] # observation in row 15
+  )
+  expect_equal(
+    pred_non_na %>%
+      dplyr::filter(is.finite(.time)) %>%
+      dplyr::arrange(.time) %>%
+      dplyr::pull(.pred_upper),
+    exp_pred$upper[,2] # observation in row 15
+  )
+})
+
 
 # prediction: linear_pred -------------------------------------------------
 
@@ -609,4 +725,40 @@ test_that("get_missings_coxph() can identify missings with two strata terms", {
     1
   )
   expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+})
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` works", {
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- proportional_hazards() %>% set_engine("survival")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  elements_to_ignore <- c("call", "formula", "terms", "model")
+  f_ignore <- which(names(f_fit$fit) %in% elements_to_ignore)
+  xy_ignore <- which(names(xy_fit$fit) %in% elements_to_ignore)
+  expect_equal(
+    f_fit$fit[-f_ignore],
+    xy_fit$fit[-xy_ignore],
+    ignore_formula_env = TRUE
+  )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+
+  f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")
+  xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
+  expect_equal(f_pred_lp, xy_pred_lp)
 })

@@ -1,6 +1,6 @@
 Package: censored
 Title: 'parsnip' Engines for Survival Models
-Version: 0.1.0.9000
+Version: 0.1.1.9001
 Authors@R: c(
     person("Emil", "Hvitfeldt", , "emilhhvitfeldt@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-0679-1945")),
@@ -16,7 +16,7 @@ License: MIT + file LICENSE
 URL: https://github.com/tidymodels/censored
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 1.0.0),
+    parsnip (>= 1.0.2.9002),
     R (>= 3.5.0),
     survival (>= 3.3-1)
 Imports: 
@@ -33,7 +33,7 @@ Imports:
     tibble (>= 3.1.3),
     tidyr (>= 1.0.0)
 Suggests:
-    aorsf (>= 0.0.2.9000),
+    aorsf (>= 0.0.3),
     coin,
     covr,
     flexsurv (>= 2.2),
@@ -53,4 +53,4 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Remotes:
-    aorsf=bcjaeger/aorsf
+    tidymodels/parsnip

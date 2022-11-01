@@ -101,6 +101,81 @@ test_that("survival predictions", {
   )
 })
 
+test_that("survival_prob_survbagg() works", {
+  set.seed(1234)
+  # use only ph.ecog to force missings by avoiding surrogate splits
+  mod <- ipred::bagging(Surv(time, status) ~ ph.ecog, data = lung)
+
+  # time: combination of order, out-of-range, infinite
+  pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15,]
+  surv_fit <- predict(mod, newdata = lung_pred[c(1,3),])
+  surv_fit_summary <- purrr::map(
+    surv_fit,
+    summary,
+    times = pred_time,
+    extend = TRUE
+  ) %>%
+    combine_list_of_survfit_summary(time = pred_time)
+
+  prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
+  exp_prob <- surv_fit_summary$surv
+
+  prob_na <- prob$.pred[[2]]
+  prob_non_na <- prob$.pred[[3]]
+  exp_prob_non_na <- exp_prob[,2]
+
+  # get missings right
+  expect_true(all(is.na(prob_na$.pred_survival)))
+  # for non-missings, get probs right
+  expect_equal(prob_non_na$.time, pred_time)
+  expect_equal(
+    prob_non_na$.pred_survival[c(1, 4)],
+    c(1, 0)
+  )
+  expect_equal(
+    prob_non_na %>%
+      dplyr::filter(is.finite(.time)) %>%
+      dplyr::arrange(.time) %>%
+      dplyr::pull(.pred_survival),
+    exp_prob_non_na
+  )
+
+  # single observation
+  lung_pred <- lung[13,]
+  surv_fit <- predict(mod, newdata = lung_pred)
+  surv_fit_summary <- purrr::map(
+    surv_fit,
+    summary,
+    times = pred_time,
+    extend = TRUE
+  ) %>%
+    combine_list_of_survfit_summary(time = pred_time)
+
+  prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
+  prob <- tidyr::unnest(prob, cols = .pred)
+  exp_prob <- surv_fit_summary$surv
+
+  expect_equal(
+    prob$.pred_survival[c(1, 4)],
+    c(1, 0)
+  )
+  expect_equal(
+    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    as.vector(exp_prob)
+  )
+
+  # all observations with missings
+  lung_pred <- lung[c(14, 14),]
+
+  prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
+  prob <- tidyr::unnest(prob, cols = .pred)
+  expect_true(all(is.na(prob$.pred_survival)))
+
+})
+
 test_that("survival predictions without surrogate splits for NA", {
 
   mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
@@ -119,4 +194,40 @@ test_that("survival predictions without surrogate splits for NA", {
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
   expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
 
+})
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` works", {
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- bag_tree() %>%
+    set_engine("rpart") %>%
+    set_mode("censored regression")
+
+  set.seed(1)
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  set.seed(1)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  f_ignore <- which(names(f_fit$fit) %in% c("call"))
+  xy_ignore <- which(names(xy_fit$fit) %in% c("call"))
+  expect_equal(
+    f_fit$fit[-f_ignore],
+    xy_fit$fit[-xy_ignore],
+    ignore_formula_env = TRUE
+  )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
 })

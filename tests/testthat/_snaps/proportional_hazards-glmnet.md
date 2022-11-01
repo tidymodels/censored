@@ -112,3 +112,11 @@
     Code
       f_pred_2 <- predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
 
+# `fix_xy()` errors with stratification
+
+    Code
+      fit_xy(spec, x = lung_x, y = lung_y_s)
+    Condition
+      Error in `fit_xy()`:
+      ! For stratification, please use the formula interface via `fit()`.
+

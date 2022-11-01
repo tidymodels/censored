@@ -78,3 +78,60 @@ test_that("survival predictions", {
     as.numeric(t(exp_f_pred))
   )
 })
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` errors", {
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- decision_tree() %>%
+    set_engine("rpart") %>%
+    set_mode("censored regression")
+
+  expect_snapshot(error = TRUE, {
+    fit_xy(spec, x = lung_x, y = lung_y)
+  })
+})
+
+test_that("`fix_xy()` works", {
+
+  skip("until dev version of prodlim is released")
+  # CRAN prodlim::EventHistory.frame() (called by pec::pecRpart())
+  # can't handle a Surv response which is created outside of the formula
+
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  elements_to_ignore_rpart <- c("call", "terms")
+  elements_to_ignore_survfit <- "formula"
+  f_fit_modified <- f_fit$fit
+  xy_fit_modified <- xy_fit$fit
+  f_fit_modified$rpart[elements_to_ignore_rpart] <- NULL
+  xy_fit_modified$rpart[elements_to_ignore_rpart] <- NULL
+  f_fit_modified$survfit[elements_to_ignore_survfit] <- NULL
+  xy_fit_modified$survfit[elements_to_ignore_survfit] <- NULL
+  expect_equal(
+    f_fit_modified$survfit,
+    xy_fit_modified$survfit
+  )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+})

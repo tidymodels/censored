@@ -99,10 +99,11 @@ make_rand_forest_partykit <- function() {
     value = list(
       pre = NULL,
       post = NULL,
-      func = c(pkg = "censored", fun = "survival_prob_cforest"),
+      func = c(pkg = "censored", fun = "survival_prob_partykit"),
       args = list(
         object = rlang::expr(object$fit),
-        new_data = rlang::expr(new_data)
+        new_data = rlang::expr(new_data),
+        time = rlang::expr(time)
       )
     )
   )
