@@ -29,20 +29,3 @@ survival_prob_orsf <- function(object, new_data, time) {
   # return a tibble
   tibble(.pred = res)
 }
-
-# ------------------------------------------------------------------------------
-# Enable easy tuning of engine parameters
-
-aorsf_engine_args <-
-  tibble::tibble(
-    name = c(
-      "split_min_stat"
-    ),
-    call_info = list(
-      list(pkg = "dials", fun = "conditional_min_criterion")
-    ),
-    source = "model_spec",
-    component = "rand_forest",
-    component_id = "engine"
-  )
-
