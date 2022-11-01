@@ -149,3 +149,24 @@ test_that("survival predictions", {
   )
 
 })
+
+
+# case weights ------------------------------------------------------------
+
+test_that('can handle case weights', {
+  dat <- make_cens_wts()
+
+  expect_error({
+    wt_fit <- rand_forest() %>%
+      set_engine("aorsf") %>%
+      set_mode("censored regression") %>%
+      fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
+  },
+  regexp = NA)
+
+  expect_equal(
+    attr(wt_fit$fit, "weights_user"),
+    as.vector(dat$wts)
+  )
+})
+
