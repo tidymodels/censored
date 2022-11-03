@@ -170,7 +170,8 @@ test_that("`fix_xy()` errors", {
 })
 
 test_that("`fix_xy()` works", {
-  skip("for now")
+  skip("until dev version of aorsf is released")
+  # see https://github.com/ropensci/aorsf/issues/11
   lung_orsf <- na.omit(lung)
 
   lung_x <- as.matrix(lung_orsf[, c("age", "ph.ecog")])
@@ -180,13 +181,21 @@ test_that("`fix_xy()` works", {
   spec <- rand_forest() %>%
     set_engine("aorsf") %>%
     set_mode("censored regression")
+  set.seed(1)
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
+  set.seed(1)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
-  # TODO check details of this expectation before un-skipping the test
+  elements_to_ignore <- "data"
+  f_fit_modified <- f_fit$fit
+  xy_fit_modified <- xy_fit$fit
+  f_fit_modified[elements_to_ignore] <- NULL
+  xy_fit_modified[elements_to_ignore] <- NULL
+
   expect_equal(
-    f_fit$fit,
-    xy_fit$fit,
+    f_fit_modified,
+    xy_fit_modified,
+    ignore_attr = "names_y",
     ignore_function_env = TRUE
   )
 
