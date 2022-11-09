@@ -2,6 +2,8 @@
 
 * Added the new `"aorsf"` engine for `rand_forest()` for accelerated oblique random survival forests with the aorsf package (@bcjaeger, #211).
 
+* Added the new `flexsurvspline` engine for `survival_reg()` (@mattwarkentin, #213).
+
 * The matrix interface for fitting `fit_xy()` now works for censored regression models, with the exception of `decision_tree(engine = "rpart")` and `survival_reg()` with engines `"flexsurv"` and `"flexsurvspline"` (#225).
 
 * Predictions of survival probabilities are now calculated via `summary.survfit()` for `proportional_hazards()` models with the `"survival"` and `"glmnet"` engines, `bag_tree()` models with the `"rpart"` engine, `decision_tree()` models with the `"partykit"` engines, as well as `rand_forest()` models with the `"partykit"` engine (#221, #224). 
@@ -16,7 +18,5 @@
 * Updated tests on model arguments and `update()` methods (#208).
 
 * Internal re-organisation of code (#206, 209).
-
-* Added the new `flexsurvspline` engine for `survival_reg()` (@mattwarkentin, #213).
 
 * Added a `NEWS.md` file to track changes to the package.
