@@ -196,3 +196,31 @@ test_that("hazard prediction", {
   )
   expect_equal(f_pred, exp_pred)
 })
+# case weights ------------------------------------------------------------
+
+test_that('can handle case weights', {
+  # flexsurv engine can only take weights > 0
+  set.seed(1)
+  wts <- runif(nrow(lung))
+  wts <- importance_weights(wts)
+
+  expect_error({
+    wt_fit <- survival_reg() %>%
+      set_engine("flexsurvspline", k = 1) %>%
+      set_mode("censored regression") %>%
+      fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) %>%
+      suppressWarnings()
+  },
+  regexp = NA)
+
+  unwt_fit <-
+    survival_reg() %>%
+    set_engine("flexsurvspline") %>%
+    set_mode("censored regression") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung) %>%
+    suppressWarnings()
+
+  expect_snapshot(wt_fit$fit$call)
+  expect_unequal(coef(unwt_fit$fit), coef(wt_fit$fit))
+})
+
