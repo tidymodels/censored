@@ -196,6 +196,78 @@ test_that("hazard prediction", {
   )
   expect_equal(f_pred, exp_pred)
 })
+
+
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fix_xy()` errors", {
+  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- survival_reg() %>%
+    set_engine("flexsurvspline") %>%
+    set_mode("censored regression")
+
+  expect_snapshot(error = TRUE, {
+    fit_xy(spec, x = lung_x, y = lung_y)
+  })
+})
+
+test_that("`fix_xy()` works", {
+  skip("until dev version of flexsurv is released")
+  # with the current CRAN version we can't use the . in the formula
+
+    lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung$time, lung$status)
+  lung_pred <- lung[1:5, ]
+
+  spec <- survival_reg() %>%
+    set_engine("flexsurvspline", k = 1) %>%
+    set_mode("censored regression")
+  set.seed(1)
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  set.seed(1)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  elements_to_ignore <- c("call", "data", "concat.formula", "all.formulae",
+                          "covdata")
+  f_ignore <- which(names(f_fit$fit) %in% elements_to_ignore)
+  xy_ignore <- which(names(xy_fit$fit) %in% elements_to_ignore)
+  expect_equal(
+    f_fit$fit[-f_ignore],
+    xy_fit$fit[-xy_ignore]
+  )
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(f_fit, new_data = lung_pred,
+                             type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
+                              type = "survival", time = c(100, 200))
+  expect_equal(f_pred_survival, xy_pred_survival)
+
+  f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")
+  xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
+  expect_equal(f_pred_lp, xy_pred_lp)
+
+  f_pred_quantile <- predict(f_fit, new_data = lung_pred,
+                             type = "quantile", quantile = c(0.2, 0.8))
+  xy_pred_quantile <- predict(xy_fit, new_data = lung_pred,
+                              type = "quantile", quantile = c(0.2, 0.8))
+  expect_equal(f_pred_quantile, xy_pred_quantile)
+
+  f_pred_hazard <- predict(f_fit, new_data = lung_pred,
+                           type = "hazard", time = c(100, 200))
+  xy_pred_hazard <- predict(xy_fit, new_data = lung_pred,
+                            type = "hazard", time = c(100, 200))
+  expect_equal(f_pred_hazard, xy_pred_hazard)
+})
+
+
 # case weights ------------------------------------------------------------
 
 test_that('can handle case weights', {
