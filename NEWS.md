@@ -10,6 +10,8 @@
 
 * Added internal `survfit_summary_*()` helper functions (#216).
 
+* Predictions of type `"linear_pred"` for the `"flexsurv"` engine to `survival_reg()` are now on the correct scale for distributions where the natural scale and the unrestricted scale of the location parameter are identical, e.g. `dist = "lnorm"` (#).
+
 
 # censored 0.1.1
 

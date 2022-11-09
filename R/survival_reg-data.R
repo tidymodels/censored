@@ -281,8 +281,14 @@ make_survival_reg_flexsurv <- function() {
     value = list(
       pre = NULL,
       post = function(results, object) {
+        # flexsurv returns on the natural scale of the location parameter
+        # thus transform to the unrestricted scale before returning
+        location_name <- object$fit$dlist$location
+        location_index <- which(object$fit$dlist$pars == location_name)
+        transformation <- object$fit$dlist$transforms[[location_index]]
+
         results %>%
-          dplyr::mutate(.pred_linear_pred = log(.pred_link)) %>%
+          dplyr::mutate(.pred_linear_pred = transformation(.pred_link)) %>%
           dplyr::select(.pred_linear_pred)
         },
       func = c(fun = "predict"),
