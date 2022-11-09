@@ -4,11 +4,12 @@ test_that("model object", {
   set.seed(1234)
   exp_f_fit <- flexsurv::flexsurvspline(
     Surv(time, status) ~ age + ph.ecog,
-    data = lung
+    data = lung,
+    k = 1
   )
 
   mod_spec <- survival_reg() %>%
-    set_engine("flexsurvspline") %>%
+    set_engine("flexsurvspline", k = 1) %>%
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -26,12 +27,12 @@ test_that("model object", {
 
 # prediction: time --------------------------------------------------------
 
-test_that("flexsurvspline time prediction", {
-  exp_fit <- flexsurv::flexsurvspline(Surv(time, status) ~ age, data = lung)
+test_that("time prediction", {
+  exp_fit <- flexsurv::flexsurvspline(Surv(time, status) ~ age, data = lung, k = 1)
   exp_pred <- predict(exp_fit, head(lung), type = "response")
 
   f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline") %>%
+    set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age, data = lung)
   f_pred <- predict(f_fit, head(lung), type = "time")
 
@@ -90,13 +91,14 @@ test_that("survival probability prediction", {
 
 test_that("linear predictor", {
   f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline") %>%
+    set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
   f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
 
   exp_fit <- flexsurv::flexsurvspline(
     Surv(time, status) ~ age + sex,
-    data = lung
+    data = lung,
+    k = 1
   )
   exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
 
@@ -111,7 +113,7 @@ test_that("linear predictor", {
 test_that("quantile predictions", {
   set.seed(1)
   fit_s <- survival_reg() %>%
-    set_engine("flexsurvspline") %>%
+    set_engine("flexsurvspline", k = 1) %>%
     set_mode("censored regression") %>%
     fit(Surv(stop, event) ~ rx + size + enum, data = bladder)
   pred <- predict(fit_s, new_data = bladder[1:3,], type = "quantile")
@@ -119,7 +121,8 @@ test_that("quantile predictions", {
   set.seed(1)
   exp_fit <- flexsurv::flexsurvspline(
     Surv(stop, event) ~ rx + size + enum,
-    data = bladder
+    data = bladder,
+    k = 1
   )
   exp_pred <- summary(
     exp_fit,
