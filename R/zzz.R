@@ -17,6 +17,7 @@
   make_proportional_hazards_glmnet()
 
   make_rand_forest_partykit()
+  make_rand_forest_aorsf()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()

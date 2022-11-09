@@ -88,9 +88,7 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
 }
 
 
-
 # summary_survfit helpers -------------------------------------------------
-
 
 survfit_summary_typestable <- function(object){
   # make matrix of dimension n_times x n_obs

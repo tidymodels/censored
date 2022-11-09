@@ -52,6 +52,7 @@ with `type = "quantile"`, and the hazard with `type = "hazard"`.
 | proportional_hazards | survival | ✔    | ✔        | ✔           | ✖   | ✖        | ✖      |
 | proportional_hazards | glmnet   | ✔    | ✔        | ✔           | ✔   | ✖        | ✖      |
 | rand_forest          | partykit | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
+| rand_forest          | aorsf    | ✖    | ✔        | ✖           | ✖   | ✖        | ✖      |
 | survival_reg         | survival | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
 | survival_reg         | flexsurv | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
 

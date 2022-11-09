@@ -110,4 +110,85 @@ make_rand_forest_partykit <- function() {
 
 }
 
+make_rand_forest_aorsf <- function() {
+
+  parsnip::set_model_engine("rand_forest",
+                            mode = "censored regression",
+                            eng = "aorsf")
+  parsnip::set_dependency("rand_forest",
+                          eng = "aorsf",
+                          pkg = "aorsf",
+                          mode = "censored regression")
+  parsnip::set_dependency("rand_forest",
+                          eng = "aorsf",
+                          pkg = "censored",
+                          mode = "censored regression")
+
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "aorsf",
+    parsnip = "trees",
+    original = "n_tree",
+    func = list(pkg = "dials", fun = "trees"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "aorsf",
+    parsnip = "min_n",
+    original = "leaf_min_obs",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "aorsf",
+    parsnip = "mtry",
+    original = "mtry",
+    func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_fit(
+    model = "rand_forest",
+    eng = "aorsf",
+    mode = "censored regression",
+    value = list(
+      interface = "formula",
+      protect = c("formula", "data", "weights"),
+      func = c(pkg = "aorsf", fun = "orsf"),
+      defaults = list()
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "rand_forest",
+    mode = "censored regression",
+    eng = "aorsf",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
+    )
+  )
+
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "aorsf",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_prob_orsf"),
+      args = list(
+        object = rlang::expr(object$fit),
+        new_data = rlang::expr(new_data)
+      )
+    )
+  )
+
+}
+
 # nocov end
