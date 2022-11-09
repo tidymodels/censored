@@ -12,6 +12,10 @@ fit_xy.survival_reg <- function(object,
     # flexsurv currently can't deal with the dot notation in the formula
     rlang::abort("For the `'flexsurv'` engine, please use the formula interface via `fit()`.")
   }
+  if (object$engine == "flexsurvspline") {
+    # flexsurv currently can't deal with the dot notation in the formula
+    rlang::abort("For the `'flexsurvspline'` engine, please use the formula interface via `fit()`.")
+  }
 
   # call parsnip::fit_xy.model_spec()
   res <- NextMethod()

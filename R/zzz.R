@@ -21,6 +21,7 @@
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()
+  make_survival_reg_flexsurvspline()
 
 }
 
