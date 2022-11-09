@@ -102,9 +102,9 @@ test_that("linear predictor", {
   )
   exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
 
+  expect_equal(f_pred$.pred_linear_pred, exp_pred$.pred_link)
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
-  expect_equal(f_pred$.pred_linear_pred, log(exp_pred$.pred_link))
   expect_equal(nrow(f_pred), 5)
 })
 
