@@ -41,8 +41,13 @@ test_that("flexsurvspline time prediction", {
 # prediction: survival ----------------------------------------------------
 
 test_that("survival probability prediction", {
+  exp_fit <- flexsurv::flexsurvspline(Surv(time, status) ~ age + sex,
+                                      data = lung, k = 1)
+  exp_pred <- predict(exp_fit, head(lung), type = "survival",
+                      times = c(0, 500, 1000))
+
   f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline") %>%
+    set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   expect_error(
@@ -66,6 +71,8 @@ test_that("survival probability prediction", {
         f_pred$.pred,
         ~ all(names(.x) == c(".time", ".pred_survival"))))
   )
+
+  expect_equal(f_pred, exp_pred)
 
   # add confidence interval
   pred <- predict(f_fit, head(lung), type = "survival",
@@ -154,8 +161,13 @@ test_that("quantile predictions", {
 # prediction: hazard ------------------------------------------------------
 
 test_that("hazard prediction", {
-  f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline") %>%
+  exp_fit <- flexsurv::flexsurvspline(Surv(time, status) ~ age + sex,
+                                      data = lung, k = 1)
+  exp_pred <- predict(exp_fit, head(lung), type = "hazard",
+                      times = c(0, 500, 1000))
+
+    f_fit <- survival_reg() %>%
+    set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   expect_error(
@@ -179,4 +191,5 @@ test_that("hazard prediction", {
         f_pred$.pred,
         ~ all(names(.x) == c(".time", ".pred_hazard"))))
   )
+  expect_equal(f_pred, exp_pred)
 })
