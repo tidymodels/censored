@@ -192,11 +192,21 @@ print._coxnet <- function(x, ...) {
 
 # prediction --------------------------------------------------------------
 
-coxnet_predict_pre <- function(new_data, object) {
-  parsnip::.convert_form_to_xy_new(
-    object$preproc$coxnet,
-    new_data,
-    composition = "matrix")$x
+coxnet_prepare_x <- function(new_data, object) {
+
+  went_through_formula_interface <- !is.null(object$preproc$coxnet)
+
+  if (went_through_formula_interface) {
+    new_x <- parsnip::.convert_form_to_xy_new(
+      object$preproc$coxnet,
+      new_data,
+      composition = "matrix")$x
+  } else {
+    new_x <- new_data[, object$preproc$x_var, drop = FALSE] %>%
+      as.matrix()
+  }
+
+  new_x
 }
 
 # notes adapted from parsnip:
@@ -366,12 +376,11 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
 
-  new_x <- parsnip::.convert_form_to_xy_new(
-    object$preproc$coxnet,
-    new_data,
-    composition = "matrix")$x
+  new_x <- coxnet_prepare_x(new_data, object)
 
-  if (has_strata(object$formula, object$training_data)) {
+  went_through_formula_interface <- !is.null(object$preproc$coxnet)
+  if (went_through_formula_interface &&
+      has_strata(object$formula, object$training_data)) {
     new_strata <- get_strata_glmnet(object$formula, data = new_data,
                                     na.action = stats::na.pass)
   } else {
@@ -392,7 +401,7 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
   }
 
   y <- survival::survfit(
-    object$fit,
+    object$fit$fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -448,26 +457,30 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
 survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalty = NULL, ...) {
 
+  if (is.null(penalty)) {
+    penalty <- object$spec$args$penalty
+  }
+
   output <- match.arg(output, c("surv", "haz"))
   multi <- length(penalty) > 1
 
-  new_x <- parsnip::.convert_form_to_xy_new(
-    object$preproc$coxnet,
-    new_data,
-    composition = "matrix")$x
+  new_x <- coxnet_prepare_x(new_data, object)
 
-  if (has_strata(object$formula, object$training_data)) {
+  went_through_formula_interface <- !is.null(object$preproc$coxnet)
+  if (went_through_formula_interface &&
+      has_strata(object$formula, object$training_data)) {
     new_strata <- get_strata_glmnet(object$formula, data = new_data,
                                     na.action = stats::na.pass)
   } else {
     new_strata <- NULL
   }
 
+  n_obs <- nrow(new_data)
   missings_in_new_data <- get_missings_coxnet(new_x, new_strata)
+
   if (!is.null(missings_in_new_data)) {
-    n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
-    all_missing <- n_missing == n_total
+    all_missing <- n_missing == n_obs
     if (all_missing) {
       ret <- predict_survival_na(time, interval = "none")
       ret <- tibble(.pred = rep(list(ret), n_missing))
@@ -478,7 +491,7 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
   }
 
   y <- survival::survfit(
-    object$fit,
+    object$fit$fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -490,30 +503,32 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
   )
 
   if (multi) {
-    keep_penalty <- TRUE
-    stacked_survfit <-
-      purrr::map2_dfr(y, penalty,
-                      ~stack_survfit(.x, n = nrow(new_x), penalty = .y))
-    starting_rows <- stacked_survfit %>%
-      dplyr::distinct(.row, penalty) %>%
-      dplyr::bind_cols(prob_template)
+    res_patched <- purrr::map(
+      y,
+      survfit_summary_to_patched_tibble,
+      index_missing = missings_in_new_data,
+      time = time,
+      n_obs = n_obs
+    )
+    res <- tibble::tibble(
+      penalty = penalty,
+      res_patched = res_patched
+    ) %>%
+      tidyr::unnest(cols = res_patched) %>%
+      keep_cols(output, keep_penalty = TRUE) %>%
+      tidyr::nest(.pred = c(-.row)) %>%
+      dplyr::select(-.row)
   } else {
-    keep_penalty <- FALSE
-    stacked_survfit <-
-      stack_survfit(y, nrow(new_x))
-    starting_rows <- stacked_survfit %>%
-      dplyr::distinct(.row) %>%
-      dplyr::bind_cols(prob_template)
+    res <- survfit_summary_to_patched_tibble(
+        y,
+        index_missing = missings_in_new_data,
+        time = time,
+        n_obs = n_obs
+      ) %>%
+      keep_cols(output) %>%
+      tidyr::nest(.pred = c(-.row)) %>%
+      dplyr::select(-.row)
   }
-  res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
-    interpolate_km_values(time, new_strata) %>%
-    keep_cols(output, keep_penalty) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
-    dplyr::select(-.row)
 
-  if (!is.null(missings_in_new_data)) {
-    res <- pad_survival_na(res, missings_in_new_data, time,
-                           interval = "none", n_total)
-  }
   res
 }
