@@ -153,25 +153,7 @@ test_that("survival predictions", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` errors", {
-  lung_orsf <- na.omit(lung)
-
-  lung_x <- as.matrix(lung_orsf[, c("age", "ph.ecog")])
-  lung_y <- Surv(lung_orsf$time, lung_orsf$status)
-  lung_pred <- lung_orsf[1:5, ]
-
-  spec <- rand_forest() %>%
-    set_engine("aorsf") %>%
-    set_mode("censored regression")
-
-  expect_snapshot(error = TRUE, {
-    fit_xy(spec, x = lung_x, y = lung_y)
-  })
-})
-
 test_that("`fix_xy()` works", {
-  skip("until dev version of aorsf is released")
-  # see https://github.com/ropensci/aorsf/issues/11
   lung_orsf <- na.omit(lung)
 
   lung_x <- as.matrix(lung_orsf[, c("age", "ph.ecog")])
@@ -195,7 +177,7 @@ test_that("`fix_xy()` works", {
   expect_equal(
     f_fit_modified,
     xy_fit_modified,
-    ignore_attr = "names_y",
+    ignore_attr = c("names_y", "max_time"),
     ignore_function_env = TRUE
   )
 
