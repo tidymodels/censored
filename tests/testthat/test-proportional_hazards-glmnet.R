@@ -827,6 +827,7 @@ test_that("formula modifications", {
     check_strata_remaining(rlang::expr(x * (y + strata(s)) + z))
   )
 
+  skip_if(R.version$major == "3")
   expect_snapshot(error = TRUE, {
     proportional_hazards(penalty = 0.1) %>%
       set_engine("glmnet") %>%
