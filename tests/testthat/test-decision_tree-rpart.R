@@ -98,7 +98,7 @@ test_that("`fix_xy()` errors", {
 
 test_that("`fix_xy()` works", {
 
-  skip("until dev version of prodlim is released")
+  skip("until dev version of prodlim is released (current CRAN version: 2019.11.13)")
   # CRAN prodlim::EventHistory.frame() (called by pec::pecRpart())
   # can't handle a Surv response which is created outside of the formula
 

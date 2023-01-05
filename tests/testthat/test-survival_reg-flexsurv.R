@@ -221,24 +221,7 @@ test_that("hazard prediction", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` errors", {
-  lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
-  lung_y <- Surv(lung$time, lung$status)
-  lung_pred <- lung[1:5, ]
-
-  spec <- survival_reg() %>%
-    set_engine("flexsurv") %>%
-    set_mode("censored regression")
-
-  expect_snapshot(error = TRUE, {
-    fit_xy(spec, x = lung_x, y = lung_y)
-  })
-})
-
 test_that("`fix_xy()` works", {
-  skip("until dev version of flexsurv is released")
-  # with the current CRAN version we can't use the . in the formula
-
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
