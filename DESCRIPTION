@@ -13,7 +13,7 @@ Description: Engines for survival models from the 'parsnip' package. These
     semi-parametric (e.g., Simon et al (2011) <doi:10.18637/jss.v039.i05>), and
     tree-based models (e.g., Buehlmann and Hothorn (2007) <doi:10.1214/07-STS242>).
 License: MIT + file LICENSE
-URL: https://github.com/tidymodels/censored
+URL: https://github.com/tidymodels/censored, https://censored.tidymodels.org
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
     parsnip (>= 1.0.3),

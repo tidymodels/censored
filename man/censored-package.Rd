@@ -43,6 +43,7 @@ predict(fit_ag, cgd[1:3, ], type = "time")
 Useful links:
 \itemize{
   \item \url{https://github.com/tidymodels/censored}
+  \item \url{https://censored.tidymodels.org}
   \item Report bugs at \url{https://github.com/tidymodels/censored/issues}
 }
 
