@@ -59,5 +59,6 @@ utils::globalVariables(
     ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
     ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred",
     ".pred_link", ".pred_time", ".pred_survival", "next_event_time",
-    "sum_component", "time_interval")
+    "sum_component", "time_interval", ".censoring_weight", "brier_data",
+    "cens_prob", "mod_fit", "surv", "weight_time")
 )
