@@ -42,21 +42,22 @@ measures of model performance when the outcome is a censored event time.
 The weights use a "reverse Kaplan-Meier" curve to compute the estimates of
 the probability that a data point is censored at a specific time. The
 calculation assumes an uninformative censoring method. These values are
-estimated with the training set data.
+estimated with the training set data when the primary survival model is
+trained.
 
-Note that there are a few reasons that the weights may be estimated as \code{NA}.
-First, is when the time of analysis is greater than the larges observed time in
-the training set. Second, for the case of Graf at al (1999), any data points
-where the censored value is prior to the time of analysis (labeled as
-"category 3") should not contribute to the analysis since their status at
-the time of analysis is unknown.
-
-Graf et al (1999) use a combination of the observed event time and the time
+Graf \emph{et al} (1999) use a combination of the observed event time and the time
 at which the analysis is conducted. That paper is focused on the Brier
 score metric. The function below encodes that logic.
 
-Uno et al (2007) show equations for estimating the area under the ROC curve
-an only use the observed event times to compute the censoring probability.
+Uno \emph{et al} (2007) show equations for estimating the area under the ROC curve
+that only use the observed event times to compute the censoring probability.
+
+Note that there are a few reasons that the weights may be estimated as \code{NA}.
+First, is when the time of analysis is greater than the larges observed time in
+the training set. Second, for the case of Graf \emph{et al} (1999), any data points
+where the censored value is prior to the time of analysis (labeled as
+"category 3") should not contribute to the analysis since their status at
+the time of analysis is unknown.
 }
 \references{
 Hajime Uno, Tianxi Cai, Lu Tian & L. J Wei (2007) Evaluating Prediction Rules
