@@ -28,8 +28,8 @@ install.packages("censored")
 And the development version from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("tidymodels/censored")
+# install.packages("pak")
+pak::pak("tidymodels/censored")
 ```
 
 ## Available models, engines, and prediction types
