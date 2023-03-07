@@ -49,11 +49,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Hannah Frick \email{hannah@rstudio.com} (\href{https://orcid.org/0000-0002-6049-5258}{ORCID})
+\strong{Maintainer}: Hannah Frick \email{hannah@posit.co} (\href{https://orcid.org/0000-0002-6049-5258}{ORCID})
 
 Authors:
 \itemize{
-  \item Emil Hvitfeldt \email{emilhhvitfeldt@gmail.com} (\href{https://orcid.org/0000-0002-0679-1945}{ORCID})
+  \item Emil Hvitfeldt \email{emil.hvitfeldt@posit.co} (\href{https://orcid.org/0000-0002-0679-1945}{ORCID})
 }
 
 Other contributors:
