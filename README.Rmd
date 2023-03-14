@@ -61,10 +61,12 @@ model_info <-
 model_info %>%
   filter(mode == "censored regression") %>%
   select(model, engine, mode, type) %>%
-  pivot_wider(names_from = type, 
-              values_from = mode, 
-              values_fill = nope, 
-              values_fn = function(x) yep) %>%
+  pivot_wider(
+    names_from = type,
+    values_from = mode,
+    values_fill = nope,
+    values_fn = function(x) yep
+  ) %>%
   knitr::kable()
 ```
 
