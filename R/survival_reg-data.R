@@ -10,16 +10,23 @@
 # nocov start
 
 make_survival_reg_survival <- function() {
-
-  parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "survival")
-  parsnip::set_dependency("survival_reg",
-                          eng = "survival",
-                          pkg = "survival",
-                          mode = "censored regression")
-  parsnip::set_dependency("survival_reg",
-                          eng = "survival",
-                          pkg = "censored",
-                          mode = "censored regression")
+  parsnip::set_model_engine(
+    "survival_reg",
+    mode = "censored regression",
+    eng = "survival"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "survival",
+    pkg = "survival",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "survival",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_model_arg(
     model = "survival_reg",
@@ -142,24 +149,32 @@ make_survival_reg_survival <- function() {
         )
     )
   )
-
 }
 
 make_survival_reg_flexsurv <- function() {
-
-  parsnip::set_model_engine("survival_reg", mode = "censored regression", eng = "flexsurv")
-  parsnip::set_dependency("survival_reg",
-                          eng = "flexsurv",
-                          pkg = "flexsurv",
-                          mode = "censored regression")
-  parsnip::set_dependency("survival_reg",
-                          eng = "flexsurv",
-                          pkg = "survival",
-                          mode = "censored regression")
-  parsnip::set_dependency("survival_reg",
-                          eng = "flexsurv",
-                          pkg = "censored",
-                          mode = "censored regression")
+  parsnip::set_model_engine(
+    "survival_reg",
+    mode = "censored regression",
+    eng = "flexsurv"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "flexsurv",
+    pkg = "flexsurv",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "flexsurv",
+    pkg = "survival",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "flexsurv",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_model_arg(
     model = "survival_reg",
@@ -290,7 +305,7 @@ make_survival_reg_flexsurv <- function() {
         results %>%
           dplyr::mutate(.pred_linear_pred = transformation(.pred_link)) %>%
           dplyr::select(.pred_linear_pred)
-        },
+      },
       func = c(fun = "predict"),
       args =
         list(
@@ -303,22 +318,29 @@ make_survival_reg_flexsurv <- function() {
 }
 
 make_survival_reg_flexsurvspline <- function() {
-
-  parsnip::set_model_engine("survival_reg",
-                            mode = "censored regression",
-                            eng = "flexsurvspline")
-  parsnip::set_dependency("survival_reg",
-                          eng = "flexsurvspline",
-                          pkg = "flexsurv",
-                          mode = "censored regression")
-  parsnip::set_dependency("survival_reg",
-                          eng = "flexsurvspline",
-                          pkg = "survival",
-                          mode = "censored regression")
-  parsnip::set_dependency("survival_reg",
-                          eng = "flexsurvspline",
-                          pkg = "censored",
-                          mode = "censored regression")
+  parsnip::set_model_engine(
+    "survival_reg",
+    mode = "censored regression",
+    eng = "flexsurvspline"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "flexsurvspline",
+    pkg = "flexsurv",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "flexsurvspline",
+    pkg = "survival",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "survival_reg",
+    eng = "flexsurvspline",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_fit(
     model = "survival_reg",

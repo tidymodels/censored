@@ -29,8 +29,11 @@ test_that("model object", {
 # prediction: time --------------------------------------------------------
 
 test_that("flexsurv time prediction", {
-  exp_fit <- flexsurv::flexsurvreg(Surv(time, status) ~ age, data = lung,
-                                   dist = "lognormal")
+  exp_fit <- flexsurv::flexsurvreg(
+    Surv(time, status) ~ age,
+    data = lung,
+    dist = "lognormal"
+  )
   exp_pred <- predict(exp_fit, head(lung), type = "response")
 
   f_fit <- survival_reg(dist = "lognormal") %>%
@@ -55,21 +58,29 @@ test_that("survival probability prediction", {
     "a numeric vector 'time'"
   )
 
-  f_pred <- predict(f_fit, head(lung), type = "survival",
-                    time = c(0, 500, 1000))
+  f_pred <- predict(
+    f_fit,
+    head(lung),
+    type = "survival",
+    time = c(0, 500, 1000)
+  )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(3, 2))))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ all(dim(.x) == c(3, 2))
+    ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_survival"))))
+        ~ all(names(.x) == c(".time", ".pred_survival"))
+      )
+    )
   )
 
   # using rms for expected results
@@ -80,14 +91,24 @@ test_that("survival probability prediction", {
   )
 
   # add confidence interval
-  pred <- predict(f_fit, head(lung), type = "survival",
-                    time = c(500, 1000), interval = "confidence", level = 0.7)
+  pred <- predict(
+    f_fit,
+    head(lung),
+    type = "survival",
+    time = c(500, 1000),
+    interval = "confidence",
+    level = 0.7
+  )
   expect_true(
-    all(purrr::map_lgl(pred$.pred,
-                       ~ all(names(.x) == c(".time",
-                                            ".pred_survival",
-                                            ".pred_lower",
-                                            ".pred_upper"))))
+    all(purrr::map_lgl(
+      pred$.pred,
+      ~ all(names(.x) == c(
+        ".time",
+        ".pred_survival",
+        ".pred_lower",
+        ".pred_upper"
+      ))
+    ))
   )
 })
 
@@ -97,14 +118,14 @@ test_that("linear predictor", {
   f_fit <- survival_reg() %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
-  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
+  f_pred <- predict(f_fit, lung[1:5, ], type = "linear_pred")
 
   exp_fit <- flexsurv::flexsurvreg(
     Surv(time, status) ~ age + sex,
     data = lung,
     dist = "weibull"
   )
-  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+  exp_pred <- predict(exp_fit, lung[1:5, ], type = "linear")
 
   expect_equal(f_pred$.pred_linear_pred, log(exp_pred$.pred_link))
   expect_s3_class(f_pred, "tbl_df")
@@ -115,14 +136,14 @@ test_that("linear predictor", {
   f_fit <- survival_reg(dist = "lnorm") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
-  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
+  f_pred <- predict(f_fit, lung[1:5, ], type = "linear_pred")
 
   exp_fit <- flexsurv::flexsurvreg(
     Surv(time, status) ~ age + sex,
     data = lung,
     dist = "lnorm"
   )
-  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+  exp_pred <- predict(exp_fit, lung[1:5, ], type = "linear")
 
   expect_equal(f_pred$.pred_linear_pred, exp_pred$.pred_link)
 })
@@ -136,7 +157,7 @@ test_that("quantile predictions", {
     set_engine("flexsurv") %>%
     set_mode("censored regression") %>%
     fit(Surv(stop, event) ~ rx + size + enum, data = bladder)
-  pred <- predict(fit_s, new_data = bladder[1:3,], type = "quantile")
+  pred <- predict(fit_s, new_data = bladder[1:3, ], type = "quantile")
 
   set.seed(1)
   exp_fit <- flexsurv::flexsurvreg(
@@ -148,20 +169,23 @@ test_that("quantile predictions", {
     exp_fit,
     newdata = bladder[1:3, ],
     type = "quantile",
-    quantiles = (1:9)/10
-    )
+    quantiles = (1:9) / 10
+  )
 
   expect_s3_class(pred, "tbl_df")
   expect_equal(names(pred), ".pred")
   expect_equal(nrow(pred), 3)
   expect_true(
-    all(purrr::map_lgl(pred$.pred,
-                       ~ all(dim(.x) == c(9, 2))))
+    all(purrr::map_lgl(
+      pred$.pred,
+      ~ all(dim(.x) == c(9, 2))
+    ))
   )
   expect_true(
-    all(purrr::map_lgl(pred$.pred,
-                       ~ all(names(.x) == c(".quantile",
-                                            ".pred_quantile"))))
+    all(purrr::map_lgl(
+      pred$.pred,
+      ~ all(names(.x) == c(".quantile", ".pred_quantile"))
+    ))
   )
   expect_equal(
     tidyr::unnest(pred, cols = .pred)$.pred_quantile,
@@ -169,16 +193,21 @@ test_that("quantile predictions", {
   )
 
   # add confidence interval
-  pred <- predict(fit_s, new_data = bladder[1:3,], type = "quantile",
-                  interval = "confidence", level = 0.7)
-  expect_true(
-    all(purrr::map_lgl(pred$.pred,
-                       ~ all(names(.x) == c(".quantile",
-                                            ".pred_quantile",
-                                            ".pred_lower",
-                                            ".pred_upper"))))
+  pred <- predict(fit_s,
+    new_data = bladder[1:3, ], type = "quantile",
+    interval = "confidence", level = 0.7
   )
-
+  expect_true(
+    all(purrr::map_lgl(
+      pred$.pred,
+      ~ all(names(.x) == c(
+        ".quantile",
+        ".pred_quantile",
+        ".pred_lower",
+        ".pred_upper"
+      ))
+    ))
+  )
 })
 
 # prediction: hazard ------------------------------------------------------
@@ -194,21 +223,29 @@ test_that("hazard prediction", {
     "a numeric vector 'time'"
   )
 
-  f_pred <- predict(f_fit, head(lung), type = "hazard",
-                    time = c(0, 500, 1000))
+  f_pred <- predict(
+    f_fit,
+    head(lung),
+    type = "hazard",
+    time = c(0, 500, 1000)
+  )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(3, 2))))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ all(dim(.x) == c(3, 2))
+    ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_hazard"))))
+        ~ all(names(.x) == c(".time", ".pred_hazard"))
+      )
+    )
   )
 
   # using rms for expected results
@@ -232,8 +269,9 @@ test_that("`fix_xy()` works", {
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
-  elements_to_ignore <- c("call", "data", "concat.formula", "all.formulae",
-                          "covdata")
+  elements_to_ignore <- c(
+    "call", "data", "concat.formula", "all.formulae", "covdata"
+  )
   f_ignore <- which(names(f_fit$fit) %in% elements_to_ignore)
   xy_ignore <- which(names(xy_fit$fit) %in% elements_to_ignore)
   expect_equal(
@@ -245,25 +283,45 @@ test_that("`fix_xy()` works", {
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
   expect_equal(f_pred_time, xy_pred_time)
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 
   f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")
   xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
   expect_equal(f_pred_lp, xy_pred_lp)
 
-  f_pred_quantile <- predict(f_fit, new_data = lung_pred,
-                             type = "quantile", quantile = c(0.2, 0.8))
-  xy_pred_quantile <- predict(xy_fit, new_data = lung_pred,
-                              type = "quantile", quantile = c(0.2, 0.8))
+  f_pred_quantile <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "quantile",
+    quantile = c(0.2, 0.8)
+  )
+  xy_pred_quantile <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "quantile",
+    quantile = c(0.2, 0.8)
+  )
   expect_equal(f_pred_quantile, xy_pred_quantile)
 
-  f_pred_hazard <- predict(f_fit, new_data = lung_pred,
-                             type = "hazard", time = c(100, 200))
-  xy_pred_hazard <- predict(xy_fit, new_data = lung_pred,
-                              type = "hazard", time = c(100, 200))
+  f_pred_hazard <- predict(f_fit,
+    new_data = lung_pred,
+    type = "hazard", time = c(100, 200)
+  )
+  xy_pred_hazard <- predict(xy_fit,
+    new_data = lung_pred,
+    type = "hazard", time = c(100, 200)
+  )
   expect_equal(f_pred_hazard, xy_pred_hazard)
 })

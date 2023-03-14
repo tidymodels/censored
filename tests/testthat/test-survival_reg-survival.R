@@ -74,10 +74,10 @@ test_that("linear predictor", {
   f_fit <- survival_reg() %>%
     set_engine("survival") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
-  f_pred <- predict(f_fit, lung[1:5,], type = "linear_pred")
+  f_pred <- predict(f_fit, lung[1:5, ], type = "linear_pred")
 
   exp_fit <- survreg(Surv(time, status) ~ age + sex, data = lung)
-  exp_pred <- predict(exp_fit, lung[1:5,], type = "linear")
+  exp_pred <- predict(exp_fit, lung[1:5, ], type = "linear")
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
@@ -155,25 +155,49 @@ test_that("`fix_xy()` works", {
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
   expect_equal(f_pred_time, xy_pred_time)
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 
   f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")
   xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
   expect_equal(f_pred_lp, xy_pred_lp)
 
-  f_pred_quantile <- predict(f_fit, new_data = lung_pred,
-                             type = "quantile", quantile = c(0.2, 0.8))
-  xy_pred_quantile <- predict(xy_fit, new_data = lung_pred,
-                              type = "quantile", quantile = c(0.2, 0.8))
+  f_pred_quantile <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "quantile",
+    quantile = c(0.2, 0.8)
+  )
+  xy_pred_quantile <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "quantile",
+    quantile = c(0.2, 0.8)
+  )
   expect_equal(f_pred_quantile, xy_pred_quantile)
 
-  f_pred_hazard <- predict(f_fit, new_data = lung_pred,
-                           type = "hazard", time = c(100, 200))
-  xy_pred_hazard <- predict(xy_fit, new_data = lung_pred,
-                            type = "hazard", time = c(100, 200))
+  f_pred_hazard <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "hazard",
+    time = c(100, 200)
+  )
+  xy_pred_hazard <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "hazard",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_hazard, xy_pred_hazard)
 })

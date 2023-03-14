@@ -1,4 +1,3 @@
-
 # prediction --------------------------------------------------------------
 
 #' @export
@@ -16,7 +15,6 @@ predict_linear_pred._coxph <- function(object,
 }
 
 cph_survival_pre <- function(new_data, object) {
-
   # Check that the stratification variable is part of `new_data`.
   # If this information is missing, survival::survfit() does not error but
   # instead returns the survival curves for _all_ strata.
@@ -50,7 +48,6 @@ cph_survival_pre <- function(new_data, object) {
 #' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
-
   missings_in_new_data <- get_missings_coxph(object, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
@@ -87,8 +84,12 @@ get_missings_coxph <- function(object, new_data) {
   trms <- stats::terms(object)
   trms <- stats::delete.response(trms)
   xlevels <- object$xlevels
-  mod_frame <- stats::model.frame(trms, data = new_data, xlev = xlevels,
-                                  na.action = stats::na.exclude)
+  mod_frame <- stats::model.frame(
+    trms,
+    data = new_data,
+    xlev = xlevels,
+    na.action = stats::na.exclude
+  )
 
   attr(mod_frame, "na.action")
 }
@@ -139,8 +140,13 @@ survival_prob_coxph <- function(x,
     new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
-  surv_fit <- survival::survfit(x, newdata = new_data, conf.int = conf.int,
-                                na.action = na.exclude, ...)
+  surv_fit <- survival::survfit(
+    x,
+    newdata = new_data,
+    conf.int = conf.int,
+    na.action = na.exclude,
+    ...
+  )
 
   res <- surv_fit %>%
     survfit_summary_to_patched_tibble(
@@ -154,4 +160,3 @@ survival_prob_coxph <- function(x,
 
   res
 }
-

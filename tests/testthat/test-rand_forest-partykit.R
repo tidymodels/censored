@@ -78,8 +78,10 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(predict(f_fit, lung, type = "survival"),
-               "When using 'type' values of 'survival' or 'hazard' are given")
+  expect_error(
+    predict(f_fit, lung, type = "survival"),
+    "When using 'type' values of 'survival' or 'hazard' are given"
+  )
 
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
 
@@ -93,8 +95,10 @@ test_that("survival predictions", {
   cf_names <-
     c(".time", ".pred_survival")
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ identical(names(.x), cf_names)))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ identical(names(.x), cf_names)
+    ))
   )
 
   expect_equal(
@@ -103,8 +107,8 @@ test_that("survival predictions", {
   )
 
 
-  f_pred <- predict(f_fit, lung[1,], type = "survival", time = 306)
-  new_km <- predict(exp_f_fit, lung[1,], type = "prob")[[1]]
+  f_pred <- predict(f_fit, lung[1, ], type = "survival", time = 306)
+  new_km <- predict(exp_f_fit, lung[1, ], type = "prob")[[1]]
 
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
@@ -113,9 +117,9 @@ test_that("survival predictions", {
 
   # with NA in one of the predictors
   set.seed(1234)
-  f_pred <- predict(f_fit, lung[14,], type = "survival", time = 71)
+  f_pred <- predict(f_fit, lung[14, ], type = "survival", time = 71)
   set.seed(1234)
-  new_km <- predict(exp_f_fit, lung[14,], type = "prob")[[1]]
+  new_km <- predict(exp_f_fit, lung[14, ], type = "prob")[[1]]
 
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
@@ -154,10 +158,18 @@ test_that("`fix_xy()` works", {
   expect_equal(f_pred_time, xy_pred_time)
 
   set.seed(1)
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   set.seed(1)
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 })

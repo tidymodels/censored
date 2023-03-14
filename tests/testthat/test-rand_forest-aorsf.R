@@ -27,7 +27,6 @@ test_that("model object", {
     exp_f_fit,
     ignore_formula_env = TRUE
   )
-
 })
 
 
@@ -51,8 +50,10 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
 
-  expect_error(predict(f_fit, lung_orsf, type = "survival"),
-               "When using 'type' values of 'survival' or 'hazard' are given")
+  expect_error(
+    predict(f_fit, lung_orsf, type = "survival"),
+    "When using 'type' values of 'survival' or 'hazard' are given"
+  )
 
   f_pred <- predict(f_fit, lung, type = "survival", time = c(100, 500, 1200))
 
@@ -68,8 +69,10 @@ test_that("survival predictions", {
     c(".time", ".pred_survival")
 
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ identical(names(.x), cf_names)))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ identical(names(.x), cf_names)
+    ))
   )
 
   # correct prediction times in object
@@ -81,12 +84,14 @@ test_that("survival predictions", {
   # comparing predictions b/t aorsf & parnsip fit
 
   # equal predictions with multiple times and multiple testing observations
-  new_km <- predict(exp_f_fit,
-                    new_data = lung,
-                    pred_type = "surv",
-                    pred_horizon = c(100, 500, 1200),
-                    na_action = "pass",
-                    boundary_checks = FALSE)
+  new_km <- predict(
+    exp_f_fit,
+    new_data = lung,
+    pred_type = "surv",
+    pred_horizon = c(100, 500, 1200),
+    na_action = "pass",
+    boundary_checks = FALSE
+  )
 
   expect_equal(
     matrix(
@@ -100,12 +105,14 @@ test_that("survival predictions", {
   # equal predictions with multiple times and one testing observation
   f_pred <- predict(f_fit, lung[1, ], type = "survival", time = c(100, 500, 1200))
 
-  new_km <- predict(exp_f_fit,
-                    new_data = lung[1,],
-                    pred_type = "surv",
-                    pred_horizon = c(100, 500, 1200),
-                    na_action = "pass",
-                    boundary_checks = FALSE)
+  new_km <- predict(
+    exp_f_fit,
+    new_data = lung[1, ],
+    pred_type = "surv",
+    pred_horizon = c(100, 500, 1200),
+    na_action = "pass",
+    boundary_checks = FALSE
+  )
 
   expect_equal(
     matrix(
@@ -119,11 +126,13 @@ test_that("survival predictions", {
   # equal predictions with one time and multiple testing observation
   f_pred <- predict(f_fit, lung, type = "survival", time = 306)
 
-  new_km <- predict(exp_f_fit,
-                    new_data = lung,
-                    pred_type = "surv",
-                    pred_horizon = 306,
-                    na_action = "pass")
+  new_km <- predict(
+    exp_f_fit,
+    new_data = lung,
+    pred_type = "surv",
+    pred_horizon = 306,
+    na_action = "pass"
+  )
 
   expect_equal(
     matrix(
@@ -135,19 +144,20 @@ test_that("survival predictions", {
   )
 
   # equal predictions with one time and one testing observation
-  f_pred <- predict(f_fit, lung[1,], type = "survival", time = 306)
+  f_pred <- predict(f_fit, lung[1, ], type = "survival", time = 306)
 
-  new_km <- predict(exp_f_fit,
-                    new_data = lung[1,],
-                    pred_type = "surv",
-                    pred_horizon = 306,
-                    na_action = "pass")[1,1]
+  new_km <- predict(
+    exp_f_fit,
+    new_data = lung[1, ],
+    pred_type = "surv",
+    pred_horizon = 306,
+    na_action = "pass"
+  )[1, 1]
 
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
     new_km
   )
-
 })
 
 
@@ -181,30 +191,39 @@ test_that("`fix_xy()` works", {
     ignore_function_env = TRUE
   )
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 })
 
 
 # case weights ------------------------------------------------------------
 
-test_that('can handle case weights', {
+test_that("can handle case weights", {
   dat <- make_cens_wts()
 
-  expect_error({
-    wt_fit <- rand_forest() %>%
-      set_engine("aorsf") %>%
-      set_mode("censored regression") %>%
-      fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
-  },
-  regexp = NA)
+  expect_error(
+    {
+      wt_fit <- rand_forest() %>%
+        set_engine("aorsf") %>%
+        set_mode("censored regression") %>%
+        fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
+    },
+    regexp = NA
+  )
 
   expect_equal(
     attr(wt_fit$fit, "weights_user"),
     as.vector(dat$wts)
   )
 })
-

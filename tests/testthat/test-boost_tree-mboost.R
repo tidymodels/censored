@@ -2,9 +2,11 @@ library(testthat)
 
 test_that("model object", {
   lung2 <- lung[-14, ]
-  exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
-                                  data = lung2,
-                                  family = mboost::CoxPH())
+  exp_f_fit <- mboost::blackboost(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung2,
+    family = mboost::CoxPH()
+  )
 
   # formula method
   cox_spec <- boost_tree() %>%
@@ -51,17 +53,21 @@ test_that("survival predictions", {
   pred_time <- c(0, 100, 200, 10000)
 
   set.seed(403)
-  exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
-                                  data = lung,
-                                  family = mboost::CoxPH())
+  exp_f_fit <- mboost::blackboost(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    family = mboost::CoxPH()
+  )
   cox_spec <- boost_tree() %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
   set.seed(403)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(predict(f_fit, lung, type = "survival"),
-               "When using 'type' values of 'survival' or 'hazard' are given")
+  expect_error(
+    predict(f_fit, lung, type = "survival"),
+    "When using 'type' values of 'survival' or 'hazard' are given"
+  )
 
   set.seed(403)
   f_pred <- predict(f_fit, lung, type = "survival", time = pred_time)
@@ -80,8 +86,10 @@ test_that("survival predictions", {
     all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(4, 2))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(names(.x) == c(".time", ".pred_survival"))))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ all(names(.x) == c(".time", ".pred_survival"))
+    ))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.time,
@@ -119,7 +127,7 @@ test_that("survival_curve_to_prob() works", {
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
-  expect_equal(prob[c(2,3,1), ], exp_prob)
+  expect_equal(prob[c(2, 3, 1), ], exp_prob)
 
   # can handle out of range time (before and after events)
   pred_time_extend <- c(-2, 0, 3000)
@@ -140,14 +148,14 @@ test_that("survival_curve_to_prob() works", {
     survival_prob = surv_fit$surv
   )
   expect_equal(nrow(prob), length(pred_time_inf))
-  expect_equal(prob[c(2, 4),], exp_prob)
+  expect_equal(prob[c(2, 4), ], exp_prob)
   expect_equal(
-    prob[c(1, 5),],
+    prob[c(1, 5), ],
     matrix(1, nrow = 2, ncol = nrow(lung_pred)),
     ignore_attr = "dimnames"
   )
   expect_equal(
-    prob[3,] %>% unname(),
+    prob[3, ] %>% unname(),
     rep(0, nrow(lung_pred))
   )
 })
@@ -163,7 +171,7 @@ test_that("survival_prob_mboost() works", {
   # can handle missings
   pred <- survival_prob_mboost(
     mboost_object,
-    new_data = lung[14:15,],
+    new_data = lung[14:15, ],
     time = c(0, 100, 200)
   )
   expect_equal(nrow(pred), 2)
@@ -183,9 +191,11 @@ test_that("survival_prob_mboost() works", {
 
 test_that("linear_pred predictions", {
   lung2 <- lung[-14, ]
-  exp_f_fit <- mboost::blackboost(Surv(time, status) ~ age + ph.ecog,
-                                  data = lung2,
-                                  family = mboost::CoxPH())
+  exp_f_fit <- mboost::blackboost(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung2,
+    family = mboost::CoxPH()
+  )
   cox_spec <- boost_tree() %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
@@ -235,10 +245,18 @@ test_that("`fix_xy()` works", {
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
   expect_equal(f_pred_time, xy_pred_time)
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 
   f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")

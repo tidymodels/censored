@@ -11,15 +11,18 @@
 
 make_bag_tree_rpart <- function() {
   parsnip::set_model_engine("bag_tree", mode = "censored regression", eng = "rpart")
-  parsnip::set_dependency("bag_tree",
-                          eng = "rpart",
-                          pkg =  "ipred",
-                          mode = "censored regression")
-  parsnip::set_dependency("bag_tree",
-                          eng = "rpart",
-                          pkg = "censored",
-                          mode = "censored regression")
-
+  parsnip::set_dependency(
+    "bag_tree",
+    eng = "rpart",
+    pkg = "ipred",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "bag_tree",
+    eng = "rpart",
+    pkg = "censored",
+    mode = "censored regression"
+  )
   parsnip::set_fit(
     model = "bag_tree",
     eng = "rpart",

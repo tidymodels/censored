@@ -10,20 +10,29 @@
 # nocov start
 
 make_rand_forest_partykit <- function() {
-
-  parsnip::set_model_engine("rand_forest", mode = "censored regression", eng = "partykit")
-  parsnip::set_dependency("rand_forest",
-                          eng = "partykit",
-                          pkg = "partykit",
-                          mode = "censored regression")
-  parsnip::set_dependency("rand_forest",
-                          eng = "partykit",
-                          pkg = "modeltools",
-                          mode = "censored regression")
-  parsnip::set_dependency("rand_forest",
-                          eng = "partykit",
-                          pkg = "censored",
-                          mode = "censored regression")
+  parsnip::set_model_engine(
+    "rand_forest",
+    mode = "censored regression",
+    eng = "partykit"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "partykit",
+    pkg = "partykit",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "partykit",
+    pkg = "modeltools",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "partykit",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_model_arg(
     model = "rand_forest",
@@ -107,22 +116,26 @@ make_rand_forest_partykit <- function() {
       )
     )
   )
-
 }
 
 make_rand_forest_aorsf <- function() {
-
-  parsnip::set_model_engine("rand_forest",
-                            mode = "censored regression",
-                            eng = "aorsf")
-  parsnip::set_dependency("rand_forest",
-                          eng = "aorsf",
-                          pkg = "aorsf",
-                          mode = "censored regression")
-  parsnip::set_dependency("rand_forest",
-                          eng = "aorsf",
-                          pkg = "censored",
-                          mode = "censored regression")
+  parsnip::set_model_engine(
+    "rand_forest",
+    mode = "censored regression",
+    eng = "aorsf"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "aorsf",
+    pkg = "aorsf",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "aorsf",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_model_arg(
     model = "rand_forest",
@@ -188,7 +201,6 @@ make_rand_forest_aorsf <- function() {
       )
     )
   )
-
 }
 
 # nocov end

@@ -63,8 +63,10 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(predict(f_fit, lung, type = "survival"),
-               "When using 'type' values of 'survival' or 'hazard' are given")
+  expect_error(
+    predict(f_fit, lung, type = "survival"),
+    "When using 'type' values of 'survival' or 'hazard' are given"
+  )
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
 
   expect_s3_class(f_pred, "tbl_df")
@@ -77,16 +79,18 @@ test_that("survival predictions", {
   cf_names <-
     c(".time", ".pred_survival")
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ identical(names(.x), cf_names)))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ identical(names(.x), cf_names)
+    ))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.time,
     rep(100:200, nrow(lung))
   )
 
-  f_pred <- predict(f_fit, lung[1,], type = "survival", time = 306)
-  new_km <- predict(exp_f_fit, newdata = lung[1,], type = "prob")[[1]]
+  f_pred <- predict(f_fit, lung[1, ], type = "survival", time = 306)
+  new_km <- predict(exp_f_fit, newdata = lung[1, ], type = "prob")[[1]]
   # Prediction should be fairly near the actual value
 
   expect_equal(
@@ -94,7 +98,6 @@ test_that("survival predictions", {
     new_km$surv[new_km$time == 306],
     tolerance = .1
   )
-
 })
 
 
@@ -130,9 +133,17 @@ test_that("`fix_xy()` works", {
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
   expect_equal(f_pred_time, xy_pred_time)
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 })
