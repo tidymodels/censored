@@ -9,7 +9,6 @@
 #' bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
 #' survival_time_survbagg(bagged_tree, lung[1:3, ])
 survival_time_survbagg <- function(object, new_data) {
-
   missings_in_new_data <- get_missings_survbagg(object, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
@@ -32,7 +31,6 @@ survival_time_survbagg <- function(object, new_data) {
     res <- res[index_with_na]
   }
   res
-
 }
 
 get_missings_survbagg <- function(object, new_data) {
@@ -40,9 +38,12 @@ get_missings_survbagg <- function(object, new_data) {
   trms <- stats::terms(object)
   trms <- stats::delete.response(trms)
   na_action <- (object$call)$na.action %||% rpart::na.rpart
-  mod_frame <- stats::model.frame(trms, data = new_data,
-                                  na.action = na_action,
-                                  xlev = attr(object, "xlevels"))
+  mod_frame <- stats::model.frame(
+    trms,
+    data = new_data,
+    na.action = na_action,
+    xlev = attr(object, "xlevels")
+  )
   attr(mod_frame, "na.action")
 }
 
@@ -98,5 +99,4 @@ survival_prob_survbagg <- function(object, new_data, time) {
     dplyr::select(-.row)
 
   res
-
 }

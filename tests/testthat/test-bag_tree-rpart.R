@@ -39,12 +39,11 @@ test_that("time predictions", {
 })
 
 test_that("time predictions without surrogate splits for NA", {
-
   mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
   f_fit <- fit(mod_spec, Surv(time, status) ~ ph.ecog, data = lung)
 
   # lung$ph.ecog[14] is NA
-  new_data_3 <- lung[13:15,]
+  new_data_3 <- lung[13:15, ]
 
   expect_error(
     f_pred <- predict(f_fit, new_data_3, type = "time"),
@@ -52,7 +51,6 @@ test_that("time predictions without surrogate splits for NA", {
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(which(is.na(f_pred$.pred_time)), 2)
-
 })
 
 # prediction: survival ----------------------------------------------------
@@ -65,12 +63,16 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(predict(f_fit, lung, type = "survival"),
-               "When using 'type' values of 'survival' or 'hazard' are given")
+  expect_error(
+    predict(f_fit, lung, type = "survival"),
+    "When using 'type' values of 'survival' or 'hazard' are given"
+  )
 
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
-  exp_f_pred <- purrr::map(predict(exp_f_fit, lung),
-                           ~ summary(.x, times = c(100:200))$surv)
+  exp_f_pred <- purrr::map(
+    predict(exp_f_fit, lung),
+    ~ summary(.x, times = c(100:200))$surv
+  )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
@@ -92,8 +94,10 @@ test_that("survival predictions", {
 
   # Out of domain prediction
   f_pred <- predict(f_fit, lung, type = "survival", time = 10000)
-  exp_f_pred <- purrr::map(predict(exp_f_fit, lung),
-                           ~ summary(.x, times = c(max(.x$time)))$surv)
+  exp_f_pred <- purrr::map(
+    predict(exp_f_fit, lung),
+    ~ summary(.x, times = c(max(.x$time)))$surv
+  )
 
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -110,8 +114,8 @@ test_that("survival_prob_survbagg() works", {
   pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
 
   # multiple observations (with 1 missing)
-  lung_pred <- lung[13:15,]
-  surv_fit <- predict(mod, newdata = lung_pred[c(1,3),])
+  lung_pred <- lung[13:15, ]
+  surv_fit <- predict(mod, newdata = lung_pred[c(1, 3), ])
   surv_fit_summary <- purrr::map(
     surv_fit,
     summary,
@@ -125,7 +129,7 @@ test_that("survival_prob_survbagg() works", {
 
   prob_na <- prob$.pred[[2]]
   prob_non_na <- prob$.pred[[3]]
-  exp_prob_non_na <- exp_prob[,2]
+  exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
   expect_true(all(is.na(prob_na$.pred_survival)))
@@ -144,7 +148,7 @@ test_that("survival_prob_survbagg() works", {
   )
 
   # single observation
-  lung_pred <- lung[13,]
+  lung_pred <- lung[13, ]
   surv_fit <- predict(mod, newdata = lung_pred)
   surv_fit_summary <- purrr::map(
     surv_fit,
@@ -168,32 +172,33 @@ test_that("survival_prob_survbagg() works", {
   )
 
   # all observations with missings
-  lung_pred <- lung[c(14, 14),]
+  lung_pred <- lung[c(14, 14), ]
 
   prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
   prob <- tidyr::unnest(prob, cols = .pred)
   expect_true(all(is.na(prob$.pred_survival)))
-
 })
 
 test_that("survival predictions without surrogate splits for NA", {
-
   mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
   f_fit <- fit(mod_spec, Surv(time, status) ~ ph.ecog, data = lung)
 
   # lung$ph.ecog[14] is NA
-  new_data_3 <- lung[13:15,]
+  new_data_3 <- lung[13:15, ]
 
   expect_error(
-    f_pred <- predict(f_fit, new_data_3, type = "survival",
-                      time = c(100, 500, 1000)),
+    f_pred <- predict(
+      f_fit,
+      new_data_3,
+      type = "survival",
+      time = c(100, 500, 1000)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(!any(is.na(f_pred$.pred[[1]]$.pred_survival)))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
   expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
-
 })
 
 
@@ -225,9 +230,17 @@ test_that("`fix_xy()` works", {
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
   expect_equal(f_pred_time, xy_pred_time)
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 })

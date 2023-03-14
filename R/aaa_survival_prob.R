@@ -4,11 +4,10 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
   } else {
     cols_to_keep <- c(".row", ".time")
   }
-  output_cols <- switch(
-    output,
+  output_cols <- switch(output,
     surv = ".pred_survival",
     conf = c(".pred_lower", ".pred_upper"),
-    survconf =  c(".pred_survival", ".pred_lower", ".pred_upper"),
+    survconf = c(".pred_survival", ".pred_lower", ".pred_upper"),
     haz = ".pred_hazard_cumulative"
   )
   cols_to_keep <- c(cols_to_keep, output_cols)
@@ -65,7 +64,7 @@ prob_template <- tibble::tibble(
 
 predict_survival_na <- function(time, interval = "none") {
   ret <- tibble(.time = time, .pred_survival = NA_real_)
-  if (interval == "confidence"){
+  if (interval == "confidence") {
     ret <- ret %>%
       dplyr::mutate(.pred_lower = NA_real_, .pred_upper = NA_real_)
   }
@@ -77,7 +76,6 @@ predict_survival_na <- function(time, interval = "none") {
 # This function takes a matrix and turns it into list of nested tibbles
 # suitable for predict_survival
 matrix_to_nested_tibbles_survival <- function(x, time) {
-
   res <- tibble(
     .row = rep(seq_len(nrow(x)), each = ncol(x)),
     .time = rep(time, nrow(x)),
@@ -90,7 +88,7 @@ matrix_to_nested_tibbles_survival <- function(x, time) {
 
 # summary_survfit helpers -------------------------------------------------
 
-survfit_summary_typestable <- function(object){
+survfit_summary_typestable <- function(object) {
   # make matrix of dimension n_times x n_obs
   sanitize_element <- function(x, n_obs) {
     if (!is.matrix(x)) {
@@ -115,7 +113,6 @@ available_survfit_summary_elements <- function(object) {
 }
 
 survfit_summary_patch_infinite_time <- function(object, time) {
-
   time_neg_inf <- is.infinite(time) & (time < 0)
   time_inf <- is.infinite(time) & (time > 0)
 

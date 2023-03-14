@@ -8,7 +8,7 @@ test_that("survival_prob_partykit() works for ctree", {
 
   # multiple observations
   # (with 1 missing but partykit takes care of that)
-  lung_pred <- lung[13:15,]
+  lung_pred <- lung[13:15, ]
   surv_fit <- predict(mod, newdata = lung_pred, type = "prob")
   surv_fit_summary <- purrr::map(
     surv_fit,
@@ -36,7 +36,7 @@ test_that("survival_prob_partykit() works for ctree", {
   )
 
   # single observation
-  lung_pred <- lung[13,]
+  lung_pred <- lung[13, ]
   surv_fit <- predict(mod, newdata = lung_pred, type = "prob")
   surv_fit_summary <- purrr::map(
     surv_fit,
@@ -60,7 +60,7 @@ test_that("survival_prob_partykit() works for ctree", {
   )
 
   # all observations with missings
-  lung_pred <- lung[c(14, 14),]
+  lung_pred <- lung[c(14, 14), ]
 
   prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
     tidyr::unnest(cols = .pred)
@@ -78,7 +78,7 @@ test_that("survival_prob_partykit() works for cforest", {
   pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
 
   # multiple observations (with 1 missing)
-  lung_pred <- lung[13:15,]
+  lung_pred <- lung[13:15, ]
   set.seed(1234)
   surv_fit <- predict(mod, newdata = lung_pred, type = "prob")
   surv_fit_summary <- purrr::map(
@@ -108,7 +108,7 @@ test_that("survival_prob_partykit() works for cforest", {
   )
 
   # single observation
-  lung_pred <- lung[13,]
+  lung_pred <- lung[13, ]
   set.seed(1234)
   surv_fit <- predict(mod, newdata = lung_pred, type = "prob")
   surv_fit_summary <- purrr::map(
@@ -134,7 +134,7 @@ test_that("survival_prob_partykit() works for cforest", {
   )
 
   # all observations with missings
-  lung_pred <- lung[c(14, 14),]
+  lung_pred <- lung[c(14, 14), ]
 
   prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
     tidyr::unnest(cols = .pred)

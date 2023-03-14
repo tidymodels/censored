@@ -52,8 +52,10 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(predict(f_fit, lung, type = "survival"),
-               "When using 'type' values of 'survival' or 'hazard' are given")
+  expect_error(
+    predict(f_fit, lung, type = "survival"),
+    "When using 'type' values of 'survival' or 'hazard' are given"
+  )
 
   f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
@@ -62,8 +64,10 @@ test_that("survival predictions", {
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred,
-                       ~ all(dim(.x) == c(101, 2))))
+    all(purrr::map_lgl(
+      f_pred$.pred,
+      ~ all(dim(.x) == c(101, 2))
+    ))
   )
   expect_true(
     all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".time", ".pred_survival"))))
@@ -97,7 +101,6 @@ test_that("`fix_xy()` errors", {
 })
 
 test_that("`fix_xy()` works", {
-
   skip("until dev version of prodlim is released (current CRAN version: 2019.11.13)")
   # CRAN prodlim::EventHistory.frame() (called by pec::pecRpart())
   # can't handle a Surv response which is created outside of the formula
@@ -129,9 +132,17 @@ test_that("`fix_xy()` works", {
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
   expect_equal(f_pred_time, xy_pred_time)
 
-  f_pred_survival <- predict(f_fit, new_data = lung_pred,
-                             type = "survival", time = c(100, 200))
-  xy_pred_survival <- predict(xy_fit, new_data = lung_pred,
-                              type = "survival", time = c(100, 200))
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    time = c(100, 200)
+  )
   expect_equal(f_pred_survival, xy_pred_survival)
 })

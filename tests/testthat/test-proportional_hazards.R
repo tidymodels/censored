@@ -9,7 +9,7 @@ test_that("arguments", {
 
   expect_snapshot(translate_args(basic))
   expect_snapshot(translate_args(penalty %>% set_engine("glmnet")))
-  expect_snapshot(translate_args(penalty  %>% set_engine("glmnet", path_values = 4:2)))
+  expect_snapshot(translate_args(penalty %>% set_engine("glmnet", path_values = 4:2)))
   expect_snapshot(translate_args(mixture %>% set_engine("glmnet")))
   expect_snapshot(translate_args(mixture_v %>% set_engine("glmnet")))
 })

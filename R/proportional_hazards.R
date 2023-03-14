@@ -6,7 +6,6 @@ fit.proportional_hazards <- function(object,
                                      data,
                                      control = parsnip::control_parsnip(),
                                      ...) {
-
   # call parsnip::fit.model_spec()
   res <- NextMethod()
 

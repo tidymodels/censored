@@ -10,10 +10,23 @@
 # nocov start
 
 make_proportional_hazards_survival <- function() {
-
-  parsnip::set_model_engine("proportional_hazards", mode = "censored regression", eng = "survival")
-  parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "survival", mode = "censored regression")
-  parsnip::set_dependency("proportional_hazards", eng = "survival", pkg = "censored", mode = "censored regression")
+  parsnip::set_model_engine(
+    "proportional_hazards",
+    mode = "censored regression",
+    eng = "survival"
+  )
+  parsnip::set_dependency(
+    "proportional_hazards",
+    eng = "survival",
+    pkg = "survival",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "proportional_hazards",
+    eng = "survival",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_fit(
     model = "proportional_hazards",
@@ -100,16 +113,23 @@ make_proportional_hazards_survival <- function() {
 }
 
 make_proportional_hazards_glmnet <- function() {
-
-  parsnip::set_model_engine("proportional_hazards", mode = "censored regression", eng = "glmnet")
-  parsnip::set_dependency("proportional_hazards",
-                          eng = "glmnet",
-                          pkg =  "glmnet",
-                          mode = "censored regression")
-  parsnip::set_dependency("proportional_hazards",
-                          eng = "glmnet",
-                          pkg = "censored",
-                          mode = "censored regression")
+  parsnip::set_model_engine(
+    "proportional_hazards",
+    mode = "censored regression",
+    eng = "glmnet"
+  )
+  parsnip::set_dependency(
+    "proportional_hazards",
+    eng = "glmnet",
+    pkg = "glmnet",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "proportional_hazards",
+    eng = "glmnet",
+    pkg = "censored",
+    mode = "censored regression"
+  )
 
   parsnip::set_fit(
     model = "proportional_hazards",
@@ -219,12 +239,12 @@ make_proportional_hazards_glmnet <- function() {
       post = NULL,
       func = c(fun = "predict"),
       args =
-        list(object = expr(object$fit$fit),
-             newx = expr(new_data)
+        list(
+          object = expr(object$fit$fit),
+          newx = expr(new_data)
         )
     )
   )
-
 }
 
 # nocov end

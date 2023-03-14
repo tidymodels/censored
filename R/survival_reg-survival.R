@@ -11,8 +11,11 @@ survreg_quant <- function(results, object) {
   res <- results %>%
     tibble::as_tibble(results) %>%
     dplyr::mutate(.row = 1:n) %>%
-    tidyr::pivot_longer(-.row, names_to = ".label",
-                        values_to = ".pred_quantile") %>%
+    tidyr::pivot_longer(
+      -.row,
+      names_to = ".label",
+      values_to = ".pred_quantile"
+    ) %>%
     dplyr::arrange(.row, .label) %>%
     dplyr::mutate(.quantile = rep(pctl, n)) %>%
     dplyr::select(.row, .quantile, .pred_quantile) %>%
@@ -24,8 +27,9 @@ survreg_quant <- function(results, object) {
 
 # copied form recipes
 names0 <- function(num, prefix = "x") {
-  if (num < 1)
+  if (num < 1) {
     rlang::abort("`num` should be > 0.")
+  }
   ind <- format(1:num)
   ind <- gsub(" ", "0", ind)
   paste0(prefix, ind)
@@ -56,10 +60,12 @@ get_survreg_scale <- function(object, new_data) {
 compute_strata <- function(object, new_data) {
   trms <- stats::delete.response(object$terms)
   new_new_data <-
-    stats::model.frame(trms,
-                       data = new_data,
-                       na.action = na.pass,
-                       xlev = object$xlevels)
+    stats::model.frame(
+      trms,
+      data = new_data,
+      na.action = na.pass,
+      xlev = object$xlevels
+    )
   strata_info <- survival::untangle.specials(trms, "strata", 1)
   new_new_data$.strata <-
     survival::strata(new_new_data[, strata_info$vars], shortlabel = TRUE)
@@ -117,7 +123,7 @@ survreg_hazard <- function(location, object, scale = object$scale, time, ...) {
   distr <- object$dist
   prob <-
     survival::dsurvreg(time, location, scale, distribution = distr, ...) /
-    (1 - survival::psurvreg(time, location, distribution = distr, scale, ...))
+      (1 - survival::psurvreg(time, location, distribution = distr, scale, ...))
   tibble::tibble(
     .time = time,
     .pred_hazard = prob

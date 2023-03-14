@@ -1,4 +1,3 @@
-
 #' Wrapper for glmnet for censored
 #'
 #' Not to be used directly by users.
@@ -31,7 +30,6 @@ coxnet_train <- function(formula,
                          lambda = NULL,
                          weights = NULL,
                          ...) {
-
   dots <- rlang::quos(...)
   check_dots_coxnet(dots)
 
@@ -58,8 +56,15 @@ coxnet_train <- function(formula,
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
 
-  fit <- glmnet::glmnet(data_obj$x, data_obj$y, family = "cox",
-                        alpha = alpha, lambda = lambda, weights = weights, ...)
+  fit <- glmnet::glmnet(
+    data_obj$x,
+    data_obj$y,
+    family = "cox",
+    alpha = alpha,
+    lambda = lambda,
+    weights = weights,
+    ...
+  )
 
   # TODO: remove offset from data_obj?
   res <- list(
@@ -95,7 +100,7 @@ get_strata_glmnet <- function(formula, data, na.action = stats::na.omit) {
   mod_terms <- stats::delete.response(mod_terms)
   mod_frame <- stats::model.frame(mod_terms, data, na.action = na.action)
 
-  strata_ind <- attr(mod_terms,"specials")$strata
+  strata_ind <- attr(mod_terms, "specials")$strata
   strata <- purrr::pluck(mod_frame, strata_ind)
 
   strata
@@ -193,14 +198,14 @@ print._coxnet <- function(x, ...) {
 # prediction --------------------------------------------------------------
 
 coxnet_prepare_x <- function(new_data, object) {
-
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
 
   if (went_through_formula_interface) {
     new_x <- parsnip::.convert_form_to_xy_new(
       object$preproc$coxnet,
       new_data,
-      composition = "matrix")$x
+      composition = "matrix"
+    )$x
   } else {
     new_x <- new_data[, object$preproc$x_var, drop = FALSE] %>%
       as.matrix()
@@ -249,8 +254,9 @@ coxnet_prepare_x <- function(new_data, object) {
 #' @export
 predict._coxnet <-
   function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
-    if (any(names(enquos(...)) == "newdata"))
+    if (any(names(enquos(...)) == "newdata")) {
       rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+    }
 
     # See discussion in https://github.com/tidymodels/parsnip/issues/195
     if (is.null(penalty) & !is.null(object$spec$args$penalty)) {
@@ -265,8 +271,9 @@ predict._coxnet <-
 
 #' @export
 predict_survival._coxnet <- function(object, new_data, ...) {
-  if (any(names(enquos(...)) == "newdata"))
+  if (any(names(enquos(...)) == "newdata")) {
     rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+  }
 
   object$spec <- eval_args(object$spec)
   NextMethod()
@@ -287,9 +294,10 @@ predict_linear_pred._coxnet <- function(object,
 }
 
 #' @export
-predict_raw._coxnet <- function(object, new_data, opts = list(), ...)  {
-  if (any(names(enquos(...)) == "newdata"))
+predict_raw._coxnet <- function(object, new_data, opts = list(), ...) {
+  if (any(names(enquos(...)) == "newdata")) {
     rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+  }
 
   object$spec <- eval_args(object$spec)
   opts$s <- object$spec$args$penalty
@@ -305,8 +313,9 @@ multi_predict._coxnet <- function(object,
                                   type = NULL,
                                   penalty = NULL,
                                   ...) {
-  if (any(names(enquos(...)) == "newdata"))
+  if (any(names(enquos(...)) == "newdata")) {
     rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
+  }
 
   dots <- list(...)
 
@@ -321,20 +330,36 @@ multi_predict._coxnet <- function(object,
     }
   }
 
-  if (type == "linear_pred"){
-    pred <- multi_predict_coxnet_linear_pred(object, new_data = new_data,
-                                             opts = dots, penalty = penalty)
+  if (type == "linear_pred") {
+    pred <- multi_predict_coxnet_linear_pred(
+      object,
+      new_data = new_data,
+      opts = dots,
+      penalty = penalty
+    )
   } else {
-    pred <- predict(object, new_data = new_data, type = type, ...,
-                    penalty = penalty, multi = TRUE)
+    pred <- predict(
+      object,
+      new_data = new_data,
+      type = type,
+      ...,
+      penalty = penalty,
+      multi = TRUE
+    )
   }
 
   pred
 }
 
 multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
-  pred <- predict(object, new_data = new_data, type = "raw",
-                  opts = opts, penalty = penalty, multi = TRUE)
+  pred <- predict(
+    object,
+    new_data = new_data,
+    type = "raw",
+    opts = opts,
+    penalty = penalty,
+    multi = TRUE
+  )
 
   # post-processing into nested tibble
   param_key <- tibble(group = colnames(pred), penalty = penalty)
@@ -342,7 +367,7 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
     as_tibble() %>%
     dplyr::mutate(.row = seq_len(nrow(pred))) %>%
     tidyr::pivot_longer(
-      - .row,
+      -.row,
       names_to = "group",
       values_to = ".pred_linear_pred"
     )
@@ -375,14 +400,16 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
-
   new_x <- coxnet_prepare_x(new_data, object)
 
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (went_through_formula_interface &&
-      has_strata(object$formula, object$training_data)) {
-    new_strata <- get_strata_glmnet(object$formula, data = new_data,
-                                    na.action = stats::na.pass)
+    has_strata(object$formula, object$training_data)) {
+    new_strata <- get_strata_glmnet(
+      object$formula,
+      data = new_data,
+      na.action = stats::na.pass
+    )
   } else {
     new_strata <- NULL
   }
@@ -456,7 +483,6 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
 survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalty = NULL, ...) {
-
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }
@@ -468,9 +494,11 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
 
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (went_through_formula_interface &&
-      has_strata(object$formula, object$training_data)) {
-    new_strata <- get_strata_glmnet(object$formula, data = new_data,
-                                    na.action = stats::na.pass)
+    has_strata(object$formula, object$training_data)) {
+    new_strata <- get_strata_glmnet(object$formula,
+      data = new_data,
+      na.action = stats::na.pass
+    )
   } else {
     new_strata <- NULL
   }
@@ -520,11 +548,11 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
       dplyr::select(-.row)
   } else {
     res <- survfit_summary_to_patched_tibble(
-        y,
-        index_missing = missings_in_new_data,
-        time = time,
-        n_obs = n_obs
-      ) %>%
+      y,
+      index_missing = missings_in_new_data,
+      time = time,
+      n_obs = n_obs
+    ) %>%
       keep_cols(output) %>%
       tidyr::nest(.pred = c(-.row)) %>%
       dplyr::select(-.row)
