@@ -352,6 +352,14 @@ multi_predict._coxnet <- function(object,
 }
 
 multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
+
+  if ("increasing" %in% names(opts)) {
+    increasing <- opts$increasing
+    opts$increasing <- NULL
+  } else {
+    increasing <- TRUE
+  }
+
   pred <- predict(
     object,
     new_data = new_data,
@@ -360,6 +368,12 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
     penalty = penalty,
     multi = TRUE
   )
+
+  if (increasing) {
+    # For consistency with other models, we want the lp to increase with
+    # time. For this, we change the sign
+    pred <- -pred
+  }
 
   # post-processing into nested tibble
   param_key <- tibble(group = colnames(pred), penalty = penalty)
