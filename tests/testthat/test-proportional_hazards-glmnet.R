@@ -206,7 +206,6 @@ test_that("time predictions with NA in strata", {
   expect_identical(which(is.na(f_pred$.pred_time)), 1L)
 })
 
-
 # prediction: survival ----------------------------------------------------
 
 test_that("survival probabilities without strata", {
@@ -714,7 +713,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
 
 test_that("linear_pred predictions without strata", {
   lung2 <- lung[-14, ]
-  exp_f_fit <- glmnet(
+  exp_f_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
     family = "cox"
@@ -728,6 +727,7 @@ test_that("linear_pred predictions without strata", {
     predict(
       exp_f_fit,
       newx = as.matrix(lung2[, c(4, 6)]),
+      type = "link",
       s = 0.01
     )
   )
@@ -765,8 +765,7 @@ test_that("linear_pred predictions without strata", {
       f_pred_unnested_01
     ) %>%
     dplyr::arrange(.row, penalty) %>%
-    dplyr::select(penalty, .pred_linear_pred) %>%
-    dplyr::mutate(.pred_linear_pred = -.pred_linear_pred)
+    dplyr::select(penalty, .pred_linear_pred)
 
   pred_multi <- multi_predict(
     f_fit,
@@ -800,7 +799,7 @@ test_that("linear_pred predictions with strata", {
 
   lung2 <- lung[-14, ]
   exp_f_fit <- suppressWarnings(
-    glmnet(
+    glmnet::glmnet(
       x = as.matrix(lung2[, c(4, 6)]),
       y = stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
       family = "cox"
@@ -855,8 +854,7 @@ test_that("linear_pred predictions with strata", {
       f_pred_unnested_01
     ) %>%
     dplyr::arrange(.row, penalty) %>%
-    dplyr::select(penalty, .pred_linear_pred) %>%
-    dplyr::mutate(.pred_linear_pred = -.pred_linear_pred)
+    dplyr::select(penalty, .pred_linear_pred)
 
   pred_multi <- multi_predict(
     f_fit,
@@ -884,7 +882,6 @@ test_that("linear_pred predictions with strata", {
     exp_pred_multi_unnested
   )
 })
-
 
 # helper functions --------------------------------------------------------
 
@@ -957,7 +954,6 @@ test_that("predictions with strata and dot in formula", {
   })
   expect_equal(f_pred, f_pred_2)
 })
-
 
 # fit via matrix interface ------------------------------------------------
 
