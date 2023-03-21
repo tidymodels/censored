@@ -55,14 +55,14 @@ test_that("survival probability prediction", {
 
   expect_error(
     predict(f_fit, head(lung), type = "survival"),
-    "a numeric vector 'time'"
+    "a numeric vector `eval_time`"
   )
 
   f_pred <- predict(
     f_fit,
     head(lung),
     type = "survival",
-    time = c(0, 500, 1000)
+    eval_time = c(0, 500, 1000)
   )
 
   expect_s3_class(f_pred, "tbl_df")
@@ -78,7 +78,7 @@ test_that("survival probability prediction", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_survival"))
+        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -95,7 +95,7 @@ test_that("survival probability prediction", {
     f_fit,
     head(lung),
     type = "survival",
-    time = c(500, 1000),
+    eval_time = c(500, 1000),
     interval = "confidence",
     level = 0.7
   )
@@ -103,7 +103,7 @@ test_that("survival probability prediction", {
     all(purrr::map_lgl(
       pred$.pred,
       ~ all(names(.x) == c(
-        ".time",
+        ".eval_time",
         ".pred_survival",
         ".pred_lower",
         ".pred_upper"
@@ -220,14 +220,14 @@ test_that("hazard prediction", {
 
   expect_error(
     predict(f_fit, head(lung), type = "hazard"),
-    "a numeric vector 'time'"
+    "a numeric vector `eval_time`"
   )
 
   f_pred <- predict(
     f_fit,
     head(lung),
     type = "hazard",
-    time = c(0, 500, 1000)
+    eval_time = c(0, 500, 1000)
   )
 
   expect_s3_class(f_pred, "tbl_df")
@@ -243,7 +243,7 @@ test_that("hazard prediction", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".time", ".pred_hazard"))
+        ~ all(names(.x) == c(".eval_time", ".pred_hazard"))
       )
     )
   )
@@ -287,13 +287,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_survival <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 
@@ -315,13 +315,17 @@ test_that("`fix_xy()` works", {
   )
   expect_equal(f_pred_quantile, xy_pred_quantile)
 
-  f_pred_hazard <- predict(f_fit,
+  f_pred_hazard <- predict(
+    f_fit,
     new_data = lung_pred,
-    type = "hazard", time = c(100, 200)
+    type = "hazard",
+    eval_time = c(100, 200)
   )
-  xy_pred_hazard <- predict(xy_fit,
+  xy_pred_hazard <- predict(
+    xy_fit,
     new_data = lung_pred,
-    type = "hazard", time = c(100, 200)
+    type = "hazard",
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_hazard, xy_pred_hazard)
 })
