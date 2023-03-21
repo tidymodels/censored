@@ -110,7 +110,8 @@ make_survival_reg_survival <- function() {
       args =
         list(
           object = expr(object$fit),
-          new_data = expr(new_data)
+          new_data = expr(new_data),
+          eval_time = expr(eval_time)
         )
     )
   )
@@ -127,7 +128,8 @@ make_survival_reg_survival <- function() {
       args =
         list(
           object = expr(object$fit),
-          new_data = expr(new_data)
+          new_data = expr(new_data),
+          eval_time = expr(eval_time)
         )
     )
   )
