@@ -27,6 +27,7 @@ Imports:
     generics,
     glue,
     hardhat (>= 1.1.0),
+    lifecycle,
     mboost,
     prettyunits,
     purrr,
