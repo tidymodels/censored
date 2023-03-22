@@ -73,15 +73,15 @@ make_decision_tree_rpart <- function() {
     value = list(
       pre = NULL,
       post = function(x, object) {
-        time <- object$spec$method$pred$survival$args$time
-        matrix_to_nested_tibbles_survival(x, time)
+        eval_time <- object$spec$method$pred$survival$args$eval_time
+        matrix_to_nested_tibbles_survival(x, eval_time)
       },
       func = c(pkg = "pec", fun = "predictSurvProb"),
       args =
         list(
           object = quote(object$fit),
           newdata = quote(new_data),
-          times = rlang::expr(time)
+          times = rlang::expr(eval_time)
         )
     )
   )
