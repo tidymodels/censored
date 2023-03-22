@@ -4,14 +4,22 @@
 \alias{survival_prob_partykit}
 \title{A wrapper for survival probabilities with partykit models}
 \usage{
-survival_prob_partykit(object, new_data, time, output = "surv")
+survival_prob_partykit(
+  object,
+  new_data,
+  eval_time,
+  time = deprecated(),
+  output = "surv"
+)
 }
 \arguments{
 \item{object}{A model object from \code{partykit::ctree()} or \code{partykit::cforest()}.}
 
 \item{new_data}{A data frame to be predicted.}
 
-\item{time}{A vector of times to predict the survival probability.}
+\item{eval_time}{A vector of times to predict the survival probability.}
+
+\item{time}{Deprecated. A vector of times to predict the survival probability.}
 
 \item{output}{Type of output. Can be either \code{"surv"} or \code{"haz"}.}
 }
@@ -24,8 +32,8 @@ A wrapper for survival probabilities with partykit models
 \examples{
 library(partykit)
 c_tree <- ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
-survival_prob_partykit(c_tree, lung[1:3, ], time = 100)
+survival_prob_partykit(c_tree, lung[1:3, ], eval_time = 100)
 c_forest <- cforest(Surv(time, status) ~ age + ph.ecog, data = lung, ntree = 10)
-survival_prob_partykit(c_forest, lung[1:3, ], time = 100)
+survival_prob_partykit(c_forest, lung[1:3, ], eval_time = 100)
 }
 \keyword{internal}
