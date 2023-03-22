@@ -7,7 +7,8 @@
 survival_prob_coxph(
   x,
   new_data,
-  time,
+  eval_time,
+  time = deprecated(),
   output = "surv",
   interval = "none",
   conf.int = 0.95,
@@ -19,7 +20,9 @@ survival_prob_coxph(
 
 \item{new_data}{Data for prediction}
 
-\item{time}{A vector of integers for prediction times.}
+\item{eval_time}{A vector of integers for prediction times.}
+
+\item{time}{Deprecated. A vector of integers for prediction times.}
 
 \item{output}{One of \code{"surv"}, \code{"conf"}, or \code{"haz"}.}
 
