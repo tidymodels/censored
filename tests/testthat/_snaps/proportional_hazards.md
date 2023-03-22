@@ -48,7 +48,7 @@
       $weights
       missing_arg()
       
-      $path_values
+      $lambda
       <quosure>
       expr: ^4:2
       env:  empty
