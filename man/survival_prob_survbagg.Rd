@@ -4,14 +4,16 @@
 \alias{survival_prob_survbagg}
 \title{A wrapper for survival probabilities with \code{survbagg} models}
 \usage{
-survival_prob_survbagg(object, new_data, time)
+survival_prob_survbagg(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
 \item{object}{A model from \code{ipred::bagging()}.}
 
 \item{new_data}{Data for prediction.}
 
-\item{time}{A vector of prediction times.}
+\item{eval_time}{A vector of prediction times.}
+
+\item{time}{Deprecated. A vector of prediction times.}
 }
 \value{
 A vctrs list of tibbles.
