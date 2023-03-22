@@ -52,10 +52,10 @@ test_that("survival predictions", {
 
   expect_error(
     predict(f_fit, lung_orsf, type = "survival"),
-    "When using 'type' values of 'survival' or 'hazard' are given"
+    "When using `type` values of 'survival' or 'hazard', a numeric vector"
   )
 
-  f_pred <- predict(f_fit, lung, type = "survival", time = c(100, 500, 1200))
+  f_pred <- predict(f_fit, lung, type = "survival", eval_time = c(100, 500, 1200))
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
@@ -66,7 +66,7 @@ test_that("survival predictions", {
   )
 
   cf_names <-
-    c(".time", ".pred_survival")
+    c(".eval_time", ".pred_survival")
 
   expect_true(
     all(purrr::map_lgl(
@@ -77,7 +77,7 @@ test_that("survival predictions", {
 
   # correct prediction times in object
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred))$.time,
+    tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
     rep(c(100, 500, 1200), nrow(lung))
   )
 
@@ -103,7 +103,7 @@ test_that("survival predictions", {
   )
 
   # equal predictions with multiple times and one testing observation
-  f_pred <- predict(f_fit, lung[1, ], type = "survival", time = c(100, 500, 1200))
+  f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = c(100, 500, 1200))
 
   new_km <- predict(
     exp_f_fit,
@@ -124,7 +124,7 @@ test_that("survival predictions", {
   )
 
   # equal predictions with one time and multiple testing observation
-  f_pred <- predict(f_fit, lung, type = "survival", time = 306)
+  f_pred <- predict(f_fit, lung, type = "survival", eval_time = 306)
 
   new_km <- predict(
     exp_f_fit,
@@ -144,7 +144,7 @@ test_that("survival predictions", {
   )
 
   # equal predictions with one time and one testing observation
-  f_pred <- predict(f_fit, lung[1, ], type = "survival", time = 306)
+  f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = 306)
 
   new_km <- predict(
     exp_f_fit,
@@ -195,13 +195,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_survival <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 })
