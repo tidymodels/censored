@@ -205,7 +205,7 @@ make_proportional_hazards_glmnet <- function() {
         list(
           object = expr(object),
           new_data = expr(new_data),
-          time = expr(time),
+          eval_time = expr(eval_time),
           penalty = expr(object$spec$args$penalty)
         )
     )

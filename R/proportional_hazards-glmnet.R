@@ -484,7 +484,8 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' A wrapper for survival probabilities with coxnet models
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
-#' @param time A vector of integers for prediction times.
+#' @param eval_time A vector of integers for prediction times.
+#' @param time Deprecated. A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
 #' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].
@@ -496,7 +497,22 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #'   set_engine("glmnet") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
-survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalty = NULL, ...) {
+survival_prob_coxnet <- function(object,
+                                 new_data,
+                                 eval_time,
+                                 time = deprecated(),
+                                 output = "surv",
+                                 penalty = NULL,
+                                 ...) {
+  if (lifecycle::is_present(time)) {
+    lifecycle::deprecate_warn(
+      "0.1.1.9002",
+      "survival_prob_coxnet(time)",
+      "survival_prob_coxnet(eval_time)"
+    )
+    eval_time <- time
+  }
+
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }
@@ -509,7 +525,8 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (went_through_formula_interface &&
     has_strata(object$formula, object$training_data)) {
-    new_strata <- get_strata_glmnet(object$formula,
+    new_strata <- get_strata_glmnet(
+      object$formula,
       data = new_data,
       na.action = stats::na.pass
     )
@@ -524,7 +541,7 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
     n_missing <- length(missings_in_new_data)
     all_missing <- n_missing == n_obs
     if (all_missing) {
-      ret <- predict_survival_na(time, interval = "none")
+      ret <- predict_survival_na(eval_time, interval = "none")
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
@@ -549,7 +566,7 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
       y,
       survfit_summary_to_patched_tibble,
       index_missing = missings_in_new_data,
-      time = time,
+      eval_time = eval_time,
       n_obs = n_obs
     )
     res <- tibble::tibble(
@@ -564,7 +581,7 @@ survival_prob_coxnet <- function(object, new_data, time, output = "surv", penalt
     res <- survfit_summary_to_patched_tibble(
       y,
       index_missing = missings_in_new_data,
-      time = time,
+      eval_time = eval_time,
       n_obs = n_obs
     ) %>%
       keep_cols(output) %>%

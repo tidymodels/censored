@@ -88,7 +88,7 @@
       10            -1.43 
       # ... with 217 more rows
     Code
-      predict(f_fit, lung2, type = "survival", time = c(100, 300))
+      predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
     Condition
       Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
@@ -111,12 +111,12 @@
 ---
 
     Code
-      f_pred <- predict(f_fit, lung2, type = "survival", time = c(100, 300))
+      f_pred <- predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
     Condition
       Warning in `terms.formula()`:
       'varlist' has changed (from nvar=5) to new 6 after EncodeVars() -- should no longer happen!
     Code
-      f_pred_2 <- predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
+      f_pred_2 <- predict(f_fit_2, lung2, type = "survival", eval_time = c(100, 300))
 
 # `fix_xy()` errors with stratification
 

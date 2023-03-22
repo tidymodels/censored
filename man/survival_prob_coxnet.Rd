@@ -7,7 +7,8 @@
 survival_prob_coxnet(
   object,
   new_data,
-  time,
+  eval_time,
+  time = deprecated(),
   output = "surv",
   penalty = NULL,
   ...
@@ -18,7 +19,9 @@ survival_prob_coxnet(
 
 \item{new_data}{Data for prediction.}
 
-\item{time}{A vector of integers for prediction times.}
+\item{eval_time}{A vector of integers for prediction times.}
+
+\item{time}{Deprecated. A vector of integers for prediction times.}
 
 \item{output}{One of "surv" or "haz".}
 
