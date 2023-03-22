@@ -291,7 +291,7 @@ test_that("combine_list_of_survfit_summary() works for survbagg", {
 
   survfit_summary <- combine_list_of_survfit_summary(
     survfit_summary_list,
-    time = pred_time
+    eval_time = pred_time
   )
 
   expect_equal(
@@ -323,7 +323,7 @@ test_that("combine_list_of_survfit_summary() works for ctree", {
 
   survfit_summary <- combine_list_of_survfit_summary(
     survfit_summary_list,
-    time = pred_time
+    eval_time = pred_time
   )
 
   expect_equal(
@@ -335,7 +335,6 @@ test_that("combine_list_of_survfit_summary() works for ctree", {
     c(length(pred_time), nrow(lung_pred))
   )
 })
-
 
 test_that("combine_list_of_survfit_summary() works for cforest", {
   skip_if_not_installed("partykit")
@@ -356,7 +355,7 @@ test_that("combine_list_of_survfit_summary() works for cforest", {
 
   survfit_summary <- combine_list_of_survfit_summary(
     survfit_summary_list,
-    time = pred_time
+    eval_time = pred_time
   )
 
   expect_equal(
