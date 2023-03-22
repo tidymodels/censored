@@ -185,7 +185,7 @@ test_that("survfit_summary_patch_infinite_time() works (coxph)", {
 
   surv_fit_summary_patched <- surv_fit_summary %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(time = pred_time)
+    survfit_summary_patch_infinite_time(eval_time = pred_time)
 
   prob <- surv_fit_summary_patched$surv
   exp_prob <- surv_fit_summary$surv
@@ -217,7 +217,7 @@ test_that("survfit_summary_patch_infinite_time() works (coxnet)", {
 
   surv_fit_summary_patched <- surv_fit_summary %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(time = pred_time)
+    survfit_summary_patch_infinite_time(eval_time = pred_time)
 
   prob <- surv_fit_summary_patched$surv
   exp_prob <- surv_fit_summary$surv
@@ -241,8 +241,8 @@ test_that("survfit_summary_restore_time_order() works", {
 
   surv_fit_summary_patched <- surv_fit_summary %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(time = pred_time) %>%
-    survfit_summary_restore_time_order(time = pred_time)
+    survfit_summary_patch_infinite_time(eval_time = pred_time) %>%
+    survfit_summary_restore_time_order(eval_time = pred_time)
 
   prob <- surv_fit_summary_patched$surv
   exp_prob <- surv_fit_summary$surv
@@ -261,7 +261,7 @@ test_that("survfit_summary_patch_missings() works", {
   surv_fit_summary_patched <- surv_fit_summary %>%
     survfit_summary_typestable() %>%
     survfit_summary_patch_missings(
-      time = pred_time,
+      eval_time = pred_time,
       index_missing = 2,
       n_obs = 2
     )
