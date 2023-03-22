@@ -66,15 +66,15 @@ test_that("survival predictions", {
 
   expect_error(
     predict(f_fit, lung, type = "survival"),
-    "When using 'type' values of 'survival' or 'hazard' are given"
+    "When using `type` values of 'survival' or 'hazard', a numeric vector"
   )
 
   set.seed(403)
-  f_pred <- predict(f_fit, lung, type = "survival", time = pred_time)
+  f_pred <- predict(f_fit, lung, type = "survival", eval_time = pred_time)
   set.seed(403)
   exp_survFit <- mboost::survFit(exp_f_fit, lung)
   exp_f_pred <- survival_curve_to_prob(
-    time = pred_time,
+    eval_time = pred_time,
     event_times = exp_survFit$time,
     survival_prob = exp_survFit$surv
   )
@@ -88,11 +88,11 @@ test_that("survival predictions", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(names(.x) == c(".time", ".pred_survival"))
+      ~ all(names(.x) == c(".eval_time", ".pred_survival"))
     ))
   )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred))$.time,
+    tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
     rep(pred_time, nrow(lung))
   )
   expect_equal(
@@ -113,7 +113,7 @@ test_that("survival_curve_to_prob() works", {
   pred_time_general <- c(100, 200)
   exp_prob <- summary(surv_fit, time = pred_time_general)$surv
   prob <- survival_curve_to_prob(
-    time = pred_time_general,
+    eval_time = pred_time_general,
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
@@ -123,7 +123,7 @@ test_that("survival_curve_to_prob() works", {
   pred_time_unordered <- c(300, 100, 200)
   exp_prob <- summary(surv_fit, time = pred_time_unordered)$surv
   prob <- survival_curve_to_prob(
-    time = pred_time_unordered,
+    eval_time = pred_time_unordered,
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
@@ -133,7 +133,7 @@ test_that("survival_curve_to_prob() works", {
   pred_time_extend <- c(-2, 0, 3000)
   exp_prob <- summary(surv_fit, time = pred_time_extend, extend = TRUE)$surv
   prob <- survival_curve_to_prob(
-    time = pred_time_extend,
+    eval_time = pred_time_extend,
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
@@ -143,7 +143,7 @@ test_that("survival_curve_to_prob() works", {
   pred_time_inf <- c(-Inf, 0, Inf, 1022, -Inf)
   exp_prob <- summary(surv_fit, time = pred_time_inf)$surv
   prob <- survival_curve_to_prob(
-    time = pred_time_inf,
+    eval_time = pred_time_inf,
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
@@ -172,7 +172,7 @@ test_that("survival_prob_mboost() works", {
   pred <- survival_prob_mboost(
     mboost_object,
     new_data = lung[14:15, ],
-    time = c(0, 100, 200)
+    eval_time = c(0, 100, 200)
   )
   expect_equal(nrow(pred), 2)
 
@@ -182,7 +182,7 @@ test_that("survival_prob_mboost() works", {
   # pred <- survival_prob_mboost(
   #   mboost_object,
   #   new_data = lung[1,],
-  #   time = c(0, 100, 200)
+  #   eval_time = c(0, 100, 200)
   # )
   # expect_equal(nrow(pred), 1)
 })
@@ -249,13 +249,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_survival <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 

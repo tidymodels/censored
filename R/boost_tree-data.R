@@ -105,7 +105,7 @@ make_boost_tree_mboost <- function() {
       args = list(
         object = rlang::expr(object$fit),
         new_data = rlang::expr(new_data),
-        time = rlang::expr(time)
+        eval_time = rlang::expr(eval_time)
       )
     )
   )
