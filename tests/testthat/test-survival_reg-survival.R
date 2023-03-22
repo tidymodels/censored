@@ -191,7 +191,7 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "hazard",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_hazard <- predict(
     xy_fit,

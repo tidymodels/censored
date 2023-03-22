@@ -16,22 +16,22 @@ test_that("survival_prob_partykit() works for ctree", {
     times = pred_time,
     extend = TRUE
   ) %>%
-    combine_list_of_survfit_summary(time = pred_time)
+    combine_list_of_survfit_summary(eval_time = pred_time)
 
-  prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
+  prob <- survival_prob_partykit(mod, new_data = lung_pred, eval_time = pred_time) %>%
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
   expect_equal(
-    prob$.time,
+    prob$.eval_time,
     rep(pred_time, nrow(lung_pred))
   )
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
     rep(c(1, 0), nrow(lung_pred))
   )
   expect_equal(
-    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
     as.vector(exp_prob)
   )
 
@@ -44,25 +44,25 @@ test_that("survival_prob_partykit() works for ctree", {
     times = pred_time,
     extend = TRUE
   ) %>%
-    combine_list_of_survfit_summary(time = pred_time)
+    combine_list_of_survfit_summary(eval_time = pred_time)
 
-  prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
+  prob <- survival_prob_partykit(mod, new_data = lung_pred, eval_time = pred_time) %>%
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
     c(1, 0)
   )
   expect_equal(
-    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
     as.vector(exp_prob)
   )
 
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
 
-  prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
+  prob <- survival_prob_partykit(mod, new_data = lung_pred, eval_time = pred_time) %>%
     tidyr::unnest(cols = .pred)
 
   expect_true(all(!is.na(prob$.pred_survival)))
@@ -87,23 +87,23 @@ test_that("survival_prob_partykit() works for cforest", {
     times = pred_time,
     extend = TRUE
   ) %>%
-    combine_list_of_survfit_summary(time = pred_time)
+    combine_list_of_survfit_summary(eval_time = pred_time)
 
   set.seed(1234)
-  prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
+  prob <- survival_prob_partykit(mod, new_data = lung_pred, eval_time = pred_time) %>%
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
   expect_equal(
-    prob$.time,
+    prob$.eval_time,
     rep(pred_time, nrow(lung_pred))
   )
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
     rep(c(1, 0), nrow(lung_pred))
   )
   expect_equal(
-    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
     as.vector(exp_prob)
   )
 
@@ -117,26 +117,26 @@ test_that("survival_prob_partykit() works for cforest", {
     times = pred_time,
     extend = TRUE
   ) %>%
-    combine_list_of_survfit_summary(time = pred_time)
+    combine_list_of_survfit_summary(eval_time = pred_time)
 
   set.seed(1234)
-  prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
+  prob <- survival_prob_partykit(mod, new_data = lung_pred, eval_time = pred_time) %>%
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
     c(1, 0)
   )
   expect_equal(
-    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
     as.vector(exp_prob)
   )
 
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
 
-  prob <- survival_prob_partykit(mod, new_data = lung_pred, time = pred_time) %>%
+  prob <- survival_prob_partykit(mod, new_data = lung_pred, eval_time = pred_time) %>%
     tidyr::unnest(cols = .pred)
 
   expect_true(all(!is.na(prob$.pred_survival)))

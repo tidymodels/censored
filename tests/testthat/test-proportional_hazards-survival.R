@@ -529,7 +529,7 @@ test_that("predictions with strata and dot in formula", {
     {
       predict(f_fit, lung2, type = "time")
       predict(f_fit, lung2, type = "linear_pred")
-      predict(f_fit, lung2, type = "survival", time = c(100, 300))
+      predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
     },
     NA
   )
@@ -542,8 +542,8 @@ test_that("predictions with strata and dot in formula", {
     predict(f_fit_2, lung2, type = "linear_pred")
   )
   expect_equal(
-    predict(f_fit, lung2, type = "survival", time = c(100, 300)),
-    predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
+    predict(f_fit, lung2, type = "survival", eval_time = c(100, 300)),
+    predict(f_fit_2, lung2, type = "survival", eval_time = c(100, 300))
   )
 })
 
