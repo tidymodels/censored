@@ -39,6 +39,6 @@ A wrapper for survival probabilities with coxnet models
 cox_mod <- proportional_hazards(penalty = 0.1) \%>\%
   set_engine("glmnet") \%>\%
   fit(Surv(time, status) ~ ., data = lung)
-survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], time = 300)
+survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 }
 \keyword{internal}

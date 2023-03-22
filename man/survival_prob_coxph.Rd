@@ -41,6 +41,6 @@ A wrapper for survival probabilities with coxph models
 }
 \examples{
 cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
-survival_prob_coxph(cox_mod, new_data = lung[1:3, ], time = 300)
+survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 }
 \keyword{internal}

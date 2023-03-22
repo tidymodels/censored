@@ -24,6 +24,6 @@ A wrapper for survival probabilities with \code{survbagg} models
 \examples{
 library(ipred)
 bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
-survival_prob_survbagg(bagged_tree, lung[1:3, ], time = 100)
+survival_prob_survbagg(bagged_tree, lung[1:3, ], eval_time = 100)
 }
 \keyword{internal}

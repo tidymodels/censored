@@ -58,7 +58,7 @@ get_missings_survbagg <- function(object, new_data) {
 #' @examples
 #' library(ipred)
 #' bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
-#' survival_prob_survbagg(bagged_tree, lung[1:3, ], time = 100)
+#' survival_prob_survbagg(bagged_tree, lung[1:3, ], eval_time = 100)
 survival_prob_survbagg <- function(object, new_data, eval_time, time = deprecated()) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
