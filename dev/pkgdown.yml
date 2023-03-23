@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   examples: examples.html
-last_built: 2023-03-23T14:04Z
+last_built: 2023-03-23T14:15Z
 urls:
   reference: https://censored.tidymodels.org/reference
   article: https://censored.tidymodels.org/articles
