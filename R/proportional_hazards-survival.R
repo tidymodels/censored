@@ -102,7 +102,7 @@ get_missings_coxph <- function(object, new_data) {
 #' @param x A model from `coxph()`.
 #' @param new_data Data for prediction
 #' @param eval_time A vector of integers for prediction times.
-#' @param time Deprecated. A vector of integers for prediction times.
+#' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
 #' @param output One of `"surv"`, `"conf"`, or `"haz"`.
 #' @param interval Add confidence interval for survival probability? Options
 #' are `"none"` or `"confidence"`.

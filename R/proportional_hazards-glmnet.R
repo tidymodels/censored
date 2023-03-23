@@ -485,7 +485,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
-#' @param time Deprecated. A vector of integers for prediction times.
+#' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
 #' @param penalty Penalty value(s).
 #' @param ... Options to pass to [survival::survfit()].

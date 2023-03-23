@@ -99,7 +99,7 @@ survreg_survival <- function(location, object, scale, eval_time, ...) {
 #' @param object A `survreg` object.
 #' @param new_data A data frame.
 #' @param eval_time A vector of time points.
-#' @param time Deprecated. A vector of time points.
+#' @param time Deprecated in favor of `eval_time`. A vector of time points.
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export

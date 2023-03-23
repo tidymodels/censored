@@ -19,7 +19,7 @@ survival_prob_partykit(
 
 \item{eval_time}{A vector of times to predict the survival probability.}
 
-\item{time}{Deprecated. A vector of times to predict the survival probability.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of times to predict the survival probability.}
 
 \item{output}{Type of output. Can be either \code{"surv"} or \code{"haz"}.}
 }

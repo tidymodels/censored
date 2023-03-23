@@ -22,7 +22,7 @@ survival_prob_coxph(
 
 \item{eval_time}{A vector of integers for prediction times.}
 
-\item{time}{Deprecated. A vector of integers for prediction times.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of integers for prediction times.}
 
 \item{output}{One of \code{"surv"}, \code{"conf"}, or \code{"haz"}.}
 

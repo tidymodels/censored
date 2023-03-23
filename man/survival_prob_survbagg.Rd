@@ -13,7 +13,7 @@ survival_prob_survbagg(object, new_data, eval_time, time = deprecated())
 
 \item{eval_time}{A vector of prediction times.}
 
-\item{time}{Deprecated. A vector of prediction times.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of prediction times.}
 }
 \value{
 A vctrs list of tibbles.

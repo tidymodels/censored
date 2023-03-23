@@ -105,7 +105,7 @@ predict_linear_pred._blackboost <- function(object,
 #' @param x A model from `blackboost()`.
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
-#' @param time Deprecated. A vector of integers for prediction times.
+#' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export

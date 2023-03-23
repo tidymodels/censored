@@ -11,7 +11,7 @@ survival_prob_mboost(object, new_data, eval_time, time = deprecated())
 
 \item{eval_time}{A vector of integers for prediction times.}
 
-\item{time}{Deprecated. A vector of integers for prediction times.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of integers for prediction times.}
 
 \item{x}{A model from \code{blackboost()}.}
 }

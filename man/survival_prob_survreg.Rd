@@ -16,7 +16,7 @@ hazard_survreg(object, new_data, eval_time)
 
 \item{eval_time}{A vector of time points.}
 
-\item{time}{Deprecated. A vector of time points.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of time points.}
 }
 \value{
 A tibble with a list column of nested tibbles.

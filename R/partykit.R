@@ -2,7 +2,7 @@
 #' @param object A model object from `partykit::ctree()` or `partykit::cforest()`.
 #' @param new_data A data frame to be predicted.
 #' @param eval_time A vector of times to predict the survival probability.
-#' @param time Deprecated. A vector of times to predict the survival probability.
+#' @param time Deprecated in favor of `eval_time`. A vector of times to predict the survival probability.
 #' @param output Type of output. Can be either `"surv"` or `"haz"`.
 #' @return A tibble with a list column of nested tibbles.
 #' @export

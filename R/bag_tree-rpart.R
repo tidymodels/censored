@@ -51,7 +51,7 @@ get_missings_survbagg <- function(object, new_data) {
 #' @param object A model from `ipred::bagging()`.
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of prediction times.
-#' @param time Deprecated. A vector of prediction times.
+#' @param time Deprecated in favor of `eval_time`. A vector of prediction times.
 #' @return A vctrs list of tibbles.
 #' @keywords internal
 #' @export

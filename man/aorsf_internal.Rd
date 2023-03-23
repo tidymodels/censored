@@ -14,7 +14,7 @@ survival_prob_orsf(object, new_data, eval_time, time = deprecated())
 
 \item{eval_time}{A vector of times to predict the survival probability.}
 
-\item{time}{Deprecated. A vector of times to predict the survival probability.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of times to predict the survival probability.}
 }
 \value{
 A tibble with a list column of nested tibbles.

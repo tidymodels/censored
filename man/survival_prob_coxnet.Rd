@@ -21,7 +21,7 @@ survival_prob_coxnet(
 
 \item{eval_time}{A vector of integers for prediction times.}
 
-\item{time}{Deprecated. A vector of integers for prediction times.}
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of integers for prediction times.}
 
 \item{output}{One of "surv" or "haz".}
 
