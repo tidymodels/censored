@@ -115,7 +115,7 @@ With the <code>"rpart"</code> engine
 <pre><code><span>  <span class="co">## ── <span style="font-weight: bold;">Attaching packages</span> ──────────────────────────────── tidymodels 1.0.0 ──</span></span></code></pre>
 <pre><code><span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 1.0.4          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 1.1.1     </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dials       </span> 1.1.0          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble      </span> 3.2.1     </span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.1.0          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.3.0     </span></span>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.1.1          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.3.0     </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.4          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 1.0.1     </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">modeldata   </span> 1.1.0          <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflows   </span> 1.1.3     </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 1.0.4.<span style="color: #BB0000;">9005</span>     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 1.0.0     </span></span>
@@ -861,7 +861,7 @@ With the <code>"glmnet"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 1</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6da55b70&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5df821df8&gt;</span></span>
 <span>  <span class="co">## attr(,"predvars")</span></span>
 <span>  <span class="co">## list(Surv(time, status), inst, age, sex, ph.ecog, ph.karno, pat.karno, </span></span>
 <span>  <span class="co">##     meal.cal, wt.loss)</span></span>
@@ -6421,14 +6421,14 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 1</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6dde3118&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83cfac8&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_with_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ .</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6dde3118&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83cfac8&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_without_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span></span>
 <span>  <span class="co">##     pat.karno + meal.cal + wt.loss</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6dde3118&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83cfac8&gt;</span></span>
 <span>  <span class="co">## attr(,"dot")</span></span>
 <span>  <span class="co">## [1] "sequential"</span></span>
 <span>  <span class="co">## </span></span>
@@ -6500,7 +6500,7 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##         X &lt;- as.list(X)</span></span>
 <span>  <span class="co">##     .Internal(lapply(X, FUN))</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x556e5dfbac98&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55e5cc5c33d8&gt;</span></span>
 <span>  <span class="co">## &lt;environment: namespace:base&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$saveinfo</span></span>
@@ -6520,8 +6520,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x556e6b7e7708&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6de26ac0&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55e5ded6e368&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83a6e40&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$splitfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6531,8 +6531,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x556e6b7e5708&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6de269e0&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55e5ded6f530&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83a6f20&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$svselectfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6542,8 +6542,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x556e6b7e7708&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6de26900&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55e5ded6e368&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83a7000&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$svsplitfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6553,8 +6553,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x556e6b7e5708&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6de267b0&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55e5ded6f530&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83a7150&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$teststat</span></span>
 <span>  <span class="co">## [1] "quadratic"</span></span>
@@ -6598,8 +6598,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## $trafo</span></span>
 <span>  <span class="co">## function (subset, weights, info, estfun, object, ...) </span></span>
 <span>  <span class="co">## list(estfun = Y, unweighted = TRUE)</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x556e6c4b4f80&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6de28468&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55e5d2a679c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83a4f58&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $predictf</span></span>
 <span>  <span class="co">## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + </span></span>
@@ -6627,14 +6627,14 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 0</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6dde3118&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83cfac8&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_with_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ .</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6dde3118&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83cfac8&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_without_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span></span>
 <span>  <span class="co">##     pat.karno + meal.cal + wt.loss</span></span>
-<span>  <span class="co">## &lt;environment: 0x556e6dde3118&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55e5d83cfac8&gt;</span></span>
 <span>  <span class="co">## attr(,"dot")</span></span>
 <span>  <span class="co">## [1] "sequential"</span></span>
 <span>  <span class="co">## </span></span>
@@ -6712,7 +6712,7 @@ With the <code>"aorsf"</code> engine
 <span>  <span class="co">##  Average leaves per tree: 21</span></span>
 <span>  <span class="co">## Min observations in leaf: 5</span></span>
 <span>  <span class="co">##       Min events in leaf: 1</span></span>
-<span>  <span class="co">##           OOB stat value: 0.61</span></span>
+<span>  <span class="co">##           OOB stat value: 0.62</span></span>
 <span>  <span class="co">##            OOB stat type: Harrell's C-statistic</span></span>
 <span>  <span class="co">##      Variable importance: anova</span></span>
 <span>  <span class="co">## </span></span>
@@ -6731,9 +6731,9 @@ different time points as well as event time.</p>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 3 × 2</span></span></span>
 <span>  <span class="co">##   .eval_time .pred_survival</span></span>
 <span>  <span class="co">##        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.928 </span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.383 </span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.074<span style="text-decoration: underline;">5</span></span></span></code></pre>
+<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.933 </span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.385 </span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.043<span style="text-decoration: underline;">9</span></span></span></code></pre>
 </details>
 </div>
 <div class="section level2">
