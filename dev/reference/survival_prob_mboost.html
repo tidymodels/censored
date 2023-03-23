@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">censored</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.1.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">survival_prob_mboost</span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">time</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">survival_prob_mboost</span><span class="op">(</span><span class="va">object</span>, <span class="va">new_data</span>, <span class="va">eval_time</span>, time <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,8 +66,12 @@
 <dd><p>Data for prediction.</p></dd>
 
 
-<dt>time</dt>
+<dt>eval_time</dt>
 <dd><p>A vector of integers for prediction times.</p></dd>
+
+
+<dt>time</dt>
+<dd><p>Deprecated in favor of <code>eval_time</code>. A vector of integers for prediction times.</p></dd>
 
 
 <dt>x</dt>
@@ -87,7 +91,7 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: parallel</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: stabs</span>
 <span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mboost/man/blackboost.html" class="external-link">blackboost</a></span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">lung</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mboost/man/Family.html" class="external-link">CoxPH</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">survival_prob_mboost</span><span class="op">(</span><span class="va">mod</span>, new_data <span class="op">=</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span>, time <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">survival_prob_mboost</span><span class="op">(</span><span class="va">mod</span>, new_data <span class="op">=</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span>, eval_time <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .pred           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          </span>
