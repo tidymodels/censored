@@ -197,7 +197,7 @@ test_that("`fix_xy()` works", {
     xy_fit,
     new_data = lung_pred,
     type = "hazard",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_hazard, xy_pred_hazard)
 })

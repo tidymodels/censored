@@ -131,7 +131,7 @@ survival_prob_mboost <- function(object, new_data, eval_time, time = deprecated(
     survival_prob = survival_curve$surv
   )
 
-  # survival_prob is length(time) x nrow(new_data) and
+  # survival_prob is length(eval_time) x nrow(new_data) and
   # `matrix_to_nested_tibbles_survival()` expects the transpose of that (and
   # then does another t() inside).
   # this version doesn't need to transpose the matrix at all

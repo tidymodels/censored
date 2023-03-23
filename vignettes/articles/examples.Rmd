@@ -59,7 +59,7 @@ The following examples use the same data set throughout.
     bt_fit, 
     lung_test, 
     type = "survival", 
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -104,7 +104,7 @@ The following examples use the same data set throughout.
     bt_fit, 
     lung_test,
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -149,7 +149,7 @@ The following examples use the same data set throughout.
     dt_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -191,7 +191,7 @@ The following examples use the same data set throughout.
     dt_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -236,7 +236,7 @@ The following examples use the same data set throughout.
     ph_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -279,7 +279,7 @@ The following examples use the same data set throughout.
     ph_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -324,7 +324,7 @@ The following examples use the same data set throughout.
     rf_fit, 
     lung_test, 
     type = "survival", 
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -367,7 +367,7 @@ The following examples use the same data set throughout.
     rf_fit, 
     lung_test, 
     type = "survival", 
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -410,7 +410,7 @@ The following examples use the same data set throughout.
     sr_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -419,7 +419,7 @@ The following examples use the same data set throughout.
   predict(sr_fit, lung_test, type = "quantile") %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
-  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   ```
@@ -460,7 +460,7 @@ The following examples use the same data set throughout.
     sr_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -469,7 +469,7 @@ The following examples use the same data set throughout.
   predict(sr_fit, lung_test, type = "quantile") %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
-  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   ```
@@ -510,7 +510,7 @@ The following examples use the same data set throughout.
     sr_fit, 
     lung_test, 
     type = "survival",
-    time = c(100, 500, 1000)
+    eval_time = c(100, 500, 1000)
   ) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -519,7 +519,7 @@ The following examples use the same data set throughout.
   predict(sr_fit, lung_test, type = "quantile") %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
-  predict(sr_fit, lung_test, type = "hazard", time = c(100, 500, 1000)) %>% 
+  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
   ```
