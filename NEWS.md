@@ -1,5 +1,7 @@
 # censored (development version)
 
+* The argument `time` for the time points at which to predict survival probability and hazard at has been deprecated in favor of the new  `eval_time` argument (#244).
+
 * Added the new `"aorsf"` engine for `rand_forest()` for accelerated oblique random survival forests with the aorsf package (@bcjaeger, #211).
 
 * Added the new `flexsurvspline` engine for `survival_reg()` (@mattwarkentin, #213).
