@@ -1,8 +1,8 @@
 keep_cols <- function(x, output, keep_penalty = FALSE) {
   if (keep_penalty) {
-    cols_to_keep <- c(".row", "penalty", ".time")
+    cols_to_keep <- c(".row", "penalty", ".eval_time")
   } else {
-    cols_to_keep <- c(".row", ".time")
+    cols_to_keep <- c(".row", ".eval_time")
   }
   output_cols <- switch(output,
     surv = ".pred_survival",
@@ -62,8 +62,8 @@ prob_template <- tibble::tibble(
 )
 
 
-predict_survival_na <- function(time, interval = "none") {
-  ret <- tibble(.time = time, .pred_survival = NA_real_)
+predict_survival_na <- function(eval_time, interval = "none") {
+  ret <- tibble(.eval_time = eval_time, .pred_survival = NA_real_)
   if (interval == "confidence") {
     ret <- ret %>%
       dplyr::mutate(.pred_lower = NA_real_, .pred_upper = NA_real_)
@@ -75,10 +75,10 @@ predict_survival_na <- function(time, interval = "none") {
 
 # This function takes a matrix and turns it into list of nested tibbles
 # suitable for predict_survival
-matrix_to_nested_tibbles_survival <- function(x, time) {
+matrix_to_nested_tibbles_survival <- function(x, eval_time) {
   res <- tibble(
     .row = rep(seq_len(nrow(x)), each = ncol(x)),
-    .time = rep(time, nrow(x)),
+    .eval_time = rep(eval_time, nrow(x)),
     .pred_survival = as.numeric(t(x))
   )
 
@@ -112,9 +112,9 @@ available_survfit_summary_elements <- function(object) {
   )
 }
 
-survfit_summary_patch_infinite_time <- function(object, time) {
-  time_neg_inf <- is.infinite(time) & (time < 0)
-  time_inf <- is.infinite(time) & (time > 0)
+survfit_summary_patch_infinite_time <- function(object, eval_time) {
+  time_neg_inf <- is.infinite(eval_time) & (eval_time < 0)
+  time_inf <- is.infinite(eval_time) & (eval_time > 0)
 
   patch_neg_inf <- function(x, value, n_patch) {
     rbind(
@@ -200,12 +200,12 @@ survfit_summary_patch_infinite_time <- function(object, time) {
   object
 }
 
-survfit_summary_restore_time_order <- function(object, time) {
-  # preserve original order of `time` because `summary()` returns a result for
+survfit_summary_restore_time_order <- function(object, eval_time) {
+  # preserve original order of `eval_time` because `summary()` returns a result for
   # an ordered vector of finite time
   # Note that this requires a survfit summary object which has already been
   # patched for infinite time points
-  original_order_time <- match(time, sort(time))
+  original_order_time <- match(eval_time, sort(eval_time))
 
   elements <- available_survfit_summary_elements(object)
 
@@ -217,13 +217,13 @@ survfit_summary_restore_time_order <- function(object, time) {
   object
 }
 
-survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
+survfit_summary_patch_missings <- function(object, index_missing, eval_time, n_obs) {
   if (is.null(index_missing)) {
     return(object)
   }
 
-  patch_element <- function(x, time, n_obs, index_missing) {
-    full_matrix <- matrix(NA, nrow = length(time), ncol = n_obs)
+  patch_element <- function(x, eval_time, n_obs, index_missing) {
+    full_matrix <- matrix(NA, nrow = length(eval_time), ncol = n_obs)
     full_matrix[, -index_missing] <- x
     full_matrix
   }
@@ -233,7 +233,7 @@ survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
   for (i in elements) {
     object[[i]] <- patch_element(
       object[[i]],
-      time = time,
+      eval_time = eval_time,
       n_obs = n_obs,
       index_missing = index_missing
     )
@@ -242,10 +242,10 @@ survfit_summary_patch_missings <- function(object, index_missing, time, n_obs) {
   object
 }
 
-survfit_summary_to_tibble <- function(object, time, n_obs) {
+survfit_summary_to_tibble <- function(object, eval_time, n_obs) {
   ret <- tibble::tibble(
-    .row = rep(seq_len(n_obs), each = length(time)),
-    .time = rep(time, times = n_obs),
+    .row = rep(seq_len(n_obs), each = length(eval_time)),
+    .eval_time = rep(eval_time, times = n_obs),
     .pred_survival = as.vector(object$surv),
     # TODO standard error
     .pred_lower = as.vector(object$lower),
@@ -256,22 +256,22 @@ survfit_summary_to_tibble <- function(object, time, n_obs) {
   ret
 }
 
-survfit_summary_to_patched_tibble <- function(object, index_missing, time, n_obs) {
+survfit_summary_to_patched_tibble <- function(object, index_missing, eval_time, n_obs) {
   object %>%
-    summary(times = time, extend = TRUE) %>%
+    summary(times = eval_time, extend = TRUE) %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(time = time) %>%
-    survfit_summary_restore_time_order(time = time) %>%
+    survfit_summary_patch_infinite_time(eval_time = eval_time) %>%
+    survfit_summary_restore_time_order(eval_time = eval_time) %>%
     survfit_summary_patch_missings(
       index_missing = index_missing,
-      time = time,
+      eval_time = eval_time,
       n_obs = n_obs
     ) %>%
-    survfit_summary_to_tibble(time = time, n_obs = n_obs)
+    survfit_summary_to_tibble(eval_time = eval_time, n_obs = n_obs)
 }
 
-combine_list_of_survfit_summary <- function(object, time) {
-  n_time <- sum(is.finite(time))
+combine_list_of_survfit_summary <- function(object, eval_time) {
+  n_time <- sum(is.finite(eval_time))
   elements <- available_survfit_summary_elements(object[[1]])
 
   ret <- list()
@@ -284,14 +284,14 @@ combine_list_of_survfit_summary <- function(object, time) {
   ret
 }
 
-survfit_summary_patch <- function(object, index_missing, time, n_obs) {
+survfit_summary_patch <- function(object, index_missing, eval_time, n_obs) {
   object %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(time = time) %>%
-    survfit_summary_restore_time_order(time = time) %>%
+    survfit_summary_patch_infinite_time(eval_time = eval_time) %>%
+    survfit_summary_restore_time_order(eval_time = eval_time) %>%
     survfit_summary_patch_missings(
       index_missing = index_missing,
-      time = time,
+      eval_time = eval_time,
       n_obs = n_obs
     )
 }

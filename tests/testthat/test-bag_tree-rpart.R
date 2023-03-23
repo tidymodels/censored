@@ -65,10 +65,10 @@ test_that("survival predictions", {
 
   expect_error(
     predict(f_fit, lung, type = "survival"),
-    "When using 'type' values of 'survival' or 'hazard' are given"
+    "When using `type` values of 'survival' or 'hazard', a numeric vector"
   )
 
-  f_pred <- predict(f_fit, lung, type = "survival", time = 100:200)
+  f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
     ~ summary(.x, times = c(100:200))$surv
@@ -81,19 +81,19 @@ test_that("survival predictions", {
     all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(101, 2))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".time", ".pred_survival"))))
+    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".eval_time", ".pred_survival"))))
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     unlist(exp_f_pred)
   )
   expect_equal(
-    tidyr::unnest(f_pred, cols = c(.pred))$.time,
+    tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
     rep(100:200, nrow(lung))
   )
 
   # Out of domain prediction
-  f_pred <- predict(f_fit, lung, type = "survival", time = 10000)
+  f_pred <- predict(f_fit, lung, type = "survival", eval_time = 10000)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
     ~ summary(.x, times = c(max(.x$time)))$surv
@@ -122,9 +122,9 @@ test_that("survival_prob_survbagg() works", {
     times = pred_time,
     extend = TRUE
   ) %>%
-    combine_list_of_survfit_summary(time = pred_time)
+    combine_list_of_survfit_summary(eval_time = pred_time)
 
-  prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
+  prob <- survival_prob_survbagg(mod, new_data = lung_pred, eval_time = pred_time)
   exp_prob <- surv_fit_summary$surv
 
   prob_na <- prob$.pred[[2]]
@@ -134,15 +134,15 @@ test_that("survival_prob_survbagg() works", {
   # get missings right
   expect_true(all(is.na(prob_na$.pred_survival)))
   # for non-missings, get probs right
-  expect_equal(prob_non_na$.time, pred_time)
+  expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(
     prob_non_na$.pred_survival[c(1, 4)],
     c(1, 0)
   )
   expect_equal(
     prob_non_na %>%
-      dplyr::filter(is.finite(.time)) %>%
-      dplyr::arrange(.time) %>%
+      dplyr::filter(is.finite(.eval_time)) %>%
+      dplyr::arrange(.eval_time) %>%
       dplyr::pull(.pred_survival),
     exp_prob_non_na
   )
@@ -156,9 +156,9 @@ test_that("survival_prob_survbagg() works", {
     times = pred_time,
     extend = TRUE
   ) %>%
-    combine_list_of_survfit_summary(time = pred_time)
+    combine_list_of_survfit_summary(eval_time = pred_time)
 
-  prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
+  prob <- survival_prob_survbagg(mod, new_data = lung_pred, eval_time = pred_time)
   prob <- tidyr::unnest(prob, cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -167,14 +167,14 @@ test_that("survival_prob_survbagg() works", {
     c(1, 0)
   )
   expect_equal(
-    prob %>% dplyr::filter(is.finite(.time)) %>% dplyr::pull(.pred_survival),
+    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
     as.vector(exp_prob)
   )
 
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
 
-  prob <- survival_prob_survbagg(mod, new_data = lung_pred, time = pred_time)
+  prob <- survival_prob_survbagg(mod, new_data = lung_pred, eval_time = pred_time)
   prob <- tidyr::unnest(prob, cols = .pred)
   expect_true(all(is.na(prob$.pred_survival)))
 })
@@ -191,7 +191,7 @@ test_that("survival predictions without surrogate splits for NA", {
       f_fit,
       new_data_3,
       type = "survival",
-      time = c(100, 500, 1000)
+      eval_time = c(100, 500, 1000)
     ),
     NA
   )
@@ -234,13 +234,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_survival <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 })

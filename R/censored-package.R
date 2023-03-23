@@ -40,13 +40,14 @@
 #' @importFrom dplyr %>%
 #' @importFrom generics fit fit_xy
 #' @importFrom hardhat tune
+#' @importFrom lifecycle deprecated
 #' @importFrom parsnip eval_args multi_predict predict_raw predict_survival
 #' @importFrom parsnip predict_linear_pred
 #' @importFrom parsnip predict.model_fit translate
 #' @importFrom purrr map map_dbl
+#' @importFrom rlang %||%
 #' @importFrom rlang abort call2 empty_env enquos eval_tidy expr is_call
 #' @importFrom rlang new_quosure
-#' @importFrom rlang %||%
 #' @importFrom stats na.exclude na.pass predict quantile setNames
 #' @importFrom survival strata
 #' @importFrom tibble as_tibble tibble
@@ -57,7 +58,7 @@ NULL
 
 utils::globalVariables(
   c(
-    "time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
+    "eval_time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
     ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
     ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred",
     ".pred_link", ".pred_time", ".pred_survival", "next_event_time",

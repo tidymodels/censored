@@ -5,14 +5,16 @@
 \alias{survival_prob_orsf}
 \title{Internal helper function for aorsf objects}
 \usage{
-survival_prob_orsf(object, new_data, time)
+survival_prob_orsf(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
 \item{object}{A model object from \code{aorsf::orsf()}.}
 
 \item{new_data}{A data frame to be predicted.}
 
-\item{time}{A vector of times to predict the survival probability.}
+\item{eval_time}{A vector of times to predict the survival probability.}
+
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of times to predict the survival probability.}
 }
 \value{
 A tibble with a list column of nested tibbles.
@@ -23,6 +25,6 @@ Internal helper function for aorsf objects
 \examples{
 library(aorsf)
 aorsf <- orsf(na.omit(lung), Surv(time, status) ~ age + ph.ecog, n_tree = 10)
-preds <- survival_prob_orsf(aorsf, lung[1:3, ], time = c(250, 100))
+preds <- survival_prob_orsf(aorsf, lung[1:3, ], eval_time = c(250, 100))
 }
 \keyword{internal}

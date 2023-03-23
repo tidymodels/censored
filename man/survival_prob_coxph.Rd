@@ -7,7 +7,8 @@
 survival_prob_coxph(
   x,
   new_data,
-  time,
+  eval_time,
+  time = deprecated(),
   output = "surv",
   interval = "none",
   conf.int = 0.95,
@@ -19,7 +20,9 @@ survival_prob_coxph(
 
 \item{new_data}{Data for prediction}
 
-\item{time}{A vector of integers for prediction times.}
+\item{eval_time}{A vector of integers for prediction times.}
+
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of integers for prediction times.}
 
 \item{output}{One of \code{"surv"}, \code{"conf"}, or \code{"haz"}.}
 
@@ -38,6 +41,6 @@ A wrapper for survival probabilities with coxph models
 }
 \examples{
 cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
-survival_prob_coxph(cox_mod, new_data = lung[1:3, ], time = 300)
+survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 }
 \keyword{internal}

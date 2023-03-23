@@ -231,7 +231,7 @@ test_that("survival probabilities without strata", {
       f_fit,
       new_data = lung2[1, ],
       type = "survival",
-      time = c(100, 200)
+      eval_time = c(100, 200)
     ),
     NA
   )
@@ -240,7 +240,7 @@ test_that("survival probabilities without strata", {
     f_fit,
     new_data = new_data_3,
     type = "survival",
-    time = c(100, 200),
+    eval_time = c(100, 200),
     penalty = 0.1
   )
 
@@ -253,13 +253,13 @@ test_that("survival probabilities without strata", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(names(.x) == c(".time", ".pred_survival"))
+      ~ all(names(.x) == c(".eval_time", ".pred_survival"))
     ))
   )
 
   # single observation
   expect_error(
-    f_pred_1 <- predict(f_fit, lung2[1, ], type = "survival", time = c(100, 200)),
+    f_pred_1 <- predict(f_fit, lung2[1, ], type = "survival", eval_time = c(100, 200)),
     NA
   )
   expect_equal(nrow(f_pred_1), 1)
@@ -273,7 +273,7 @@ test_that("survival probabilities without strata", {
       f_fit,
       new_data = new_data_3,
       type = "survival",
-      time = c(100, 200),
+      eval_time = c(100, 200),
       penalty = 0.05
     ) %>%
     tidyr::unnest(cols = .pred) %>%
@@ -283,15 +283,15 @@ test_that("survival probabilities without strata", {
     )
   exp_pred_multi_unnested <-
     dplyr::bind_rows(f_pred_unnested_005, f_pred_unnested_01) %>%
-    dplyr::arrange(.row, penalty, .time) %>%
-    dplyr::select(penalty, .time, .pred_survival)
+    dplyr::arrange(.row, penalty, .eval_time) %>%
+    dplyr::select(penalty, .eval_time, .pred_survival)
 
 
   pred_multi <- multi_predict(
     f_fit,
     new_data = new_data_3,
     type = "survival",
-    time = c(100, 200),
+    eval_time = c(100, 200),
     penalty = c(0.05, 0.1)
   )
   expect_s3_class(pred_multi, "tbl_df")
@@ -306,7 +306,7 @@ test_that("survival probabilities without strata", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".time", ".pred_survival"))
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
   expect_equal(
@@ -336,7 +336,7 @@ test_that("survival probabilities with strata", {
     f_fit,
     new_data = new_data_3,
     type = "survival",
-    time = c(10, 20),
+    eval_time = c(10, 20),
     penalty = 0.1
   )
 
@@ -349,12 +349,12 @@ test_that("survival probabilities with strata", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(names(.x) == c(".time", ".pred_survival"))
+      ~ all(names(.x) == c(".eval_time", ".pred_survival"))
     ))
   )
   # single observation
   expect_error(
-    f_pred_1 <- predict(f_fit, bladder[1, ], type = "survival", time = c(10, 20)),
+    f_pred_1 <- predict(f_fit, bladder[1, ], type = "survival", eval_time = c(10, 20)),
     NA
   )
   expect_equal(nrow(f_pred_1), 1)
@@ -368,7 +368,7 @@ test_that("survival probabilities with strata", {
       f_fit,
       new_data = new_data_3,
       type = "survival",
-      time = c(10, 20),
+      eval_time = c(10, 20),
       penalty = 0.05
     ) %>%
     tidyr::unnest(cols = .pred) %>%
@@ -378,14 +378,14 @@ test_that("survival probabilities with strata", {
     )
   exp_pred_multi_unnested <-
     dplyr::bind_rows(f_pred_unnested_005, f_pred_unnested_01) %>%
-    dplyr::arrange(.row, penalty, .time) %>%
-    dplyr::select(penalty, .time, .pred_survival)
+    dplyr::arrange(.row, penalty, .eval_time) %>%
+    dplyr::select(penalty, .eval_time, .pred_survival)
 
   pred_multi <- multi_predict(
     f_fit,
     new_data = new_data_3,
     type = "survival",
-    time = c(10, 20),
+    eval_time = c(10, 20),
     penalty = c(0.05, 0.1)
   )
   expect_s3_class(pred_multi, "tbl_df")
@@ -400,7 +400,7 @@ test_that("survival probabilities with strata", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".time", ".pred_survival"))
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
   expect_equal(
@@ -430,7 +430,7 @@ test_that("survival prediction with NA in predictor", {
 
   # survival probabilities
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_x, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_x_data_x, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
@@ -438,7 +438,7 @@ test_that("survival prediction with NA in predictor", {
   expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_1, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_x_data_1, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
@@ -446,7 +446,7 @@ test_that("survival prediction with NA in predictor", {
   expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_0, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_x_data_0, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
@@ -454,21 +454,21 @@ test_that("survival prediction with NA in predictor", {
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_x, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_1_data_x, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_1, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_1_data_1, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_0, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_1_data_0, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
@@ -496,7 +496,7 @@ test_that("survival prediction with NA in strata", {
 
   # survival probabilities
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_x, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_x_data_x, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
@@ -504,7 +504,7 @@ test_that("survival prediction with NA in strata", {
   expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_1, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_x_data_1, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
@@ -512,7 +512,7 @@ test_that("survival prediction with NA in strata", {
   expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_0, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_x_data_0, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
@@ -520,21 +520,21 @@ test_that("survival prediction with NA in strata", {
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_x, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_1_data_x, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_1, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_1_data_1, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_0, type = "survival", time = c(306, 455)),
+    f_pred <- predict(f_fit, na_1_data_0, type = "survival", eval_time = c(306, 455)),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
@@ -577,7 +577,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   prob <- survival_prob_coxnet(
     f_fit,
     new_data = lung_pred,
-    time = pred_time,
+    eval_time = pred_time,
     penalty = pred_penalty
   )
   exp_prob <- surv_fit_summary$surv
@@ -589,15 +589,15 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   # get missings right
   expect_true(all(is.na(prob_na$.pred_survival)))
   # for non-missings, get probs right
-  expect_equal(prob_non_na$.time, pred_time)
+  expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(
     prob_non_na$.pred_survival[c(1, 4)],
     c(1, 0)
   )
   expect_equal(
     prob_non_na %>%
-      dplyr::filter(is.finite(.time)) %>%
-      dplyr::arrange(.time) %>%
+      dplyr::filter(is.finite(.eval_time)) %>%
+      dplyr::arrange(.eval_time) %>%
       dplyr::pull(.pred_survival),
     exp_prob_non_na
   )
@@ -607,7 +607,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   surv_fit <- survfit(exp_f_fit, newx = as.matrix(lung_pred), s = pred_penalty, x = lung_x, y = lung_y)
   surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
 
-  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, time = pred_time, penalty = pred_penalty)
+  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, eval_time = pred_time, penalty = pred_penalty)
   prob <- tidyr::unnest(prob, cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -617,8 +617,8 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   )
   expect_equal(
     prob %>%
-      dplyr::filter(is.finite(.time)) %>%
-      dplyr::arrange(.time) %>%
+      dplyr::filter(is.finite(.eval_time)) %>%
+      dplyr::arrange(.eval_time) %>%
       dplyr::pull(.pred_survival),
     exp_prob
   )
@@ -626,7 +626,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
 
-  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, time = pred_time, penalty = pred_penalty)
+  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, eval_time = pred_time, penalty = pred_penalty)
   prob <- tidyr::unnest(prob, cols = .pred)
   expect_true(all(is.na(prob$.pred_survival)))
 })
@@ -657,7 +657,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   surv_fit <- survfit(exp_f_fit, newx = as.matrix(lung_pred), s = pred_penalty, x = lung_x, y = lung_y)
   surv_fit_summary <- purrr::map(surv_fit, summary, times = pred_time, extend = TRUE)
 
-  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, time = pred_time, penalty = pred_penalty)
+  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, eval_time = pred_time, penalty = pred_penalty)
   prob_na <- prob$.pred[[2]]
   prob_non_na <- prob$.pred[[3]]
   # observation in row 15
@@ -666,15 +666,15 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   # get missings right
   expect_true(all(is.na(prob_na$.pred_survival)))
   # for non-missings, get probs right
-  expect_equal(prob_non_na$.time, rep(pred_time, length(pred_penalty)))
+  expect_equal(prob_non_na$.eval_time, rep(pred_time, length(pred_penalty)))
   expect_equal(
     prob_non_na$.pred_survival[c(1, 4, 7, 10)],
     c(1, 0, 1, 0)
   )
   expect_equal(
     prob_non_na %>%
-      dplyr::filter(is.finite(.time)) %>%
-      dplyr::arrange(penalty, .time) %>%
+      dplyr::filter(is.finite(.eval_time)) %>%
+      dplyr::arrange(penalty, .eval_time) %>%
       dplyr::pull(.pred_survival),
     exp_prob
   )
@@ -684,19 +684,19 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   surv_fit <- survfit(exp_f_fit, newx = as.matrix(lung_pred), s = pred_penalty, x = lung_x, y = lung_y)
   surv_fit_summary <- purrr::map(surv_fit, summary, times = pred_time, extend = TRUE)
 
-  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, time = pred_time, penalty = pred_penalty)
+  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, eval_time = pred_time, penalty = pred_penalty)
   prob <- tidyr::unnest(prob, cols = .pred)
   exp_prob <- purrr::map(surv_fit_summary, purrr::pluck, "surv") %>% unlist()
 
-  expect_equal(prob_non_na$.time, rep(pred_time, length(pred_penalty)))
+  expect_equal(prob_non_na$.eval_time, rep(pred_time, length(pred_penalty)))
   expect_equal(
     prob$.pred_survival[c(1, 4, 7, 10)],
     c(1, 0, 1, 0)
   )
   expect_equal(
     prob %>%
-      dplyr::filter(is.finite(.time)) %>%
-      dplyr::arrange(penalty, .time) %>%
+      dplyr::filter(is.finite(.eval_time)) %>%
+      dplyr::arrange(penalty, .eval_time) %>%
       dplyr::pull(.pred_survival),
     exp_prob
   )
@@ -704,7 +704,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
 
-  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, time = pred_time, penalty = pred_penalty)
+  prob <- survival_prob_coxnet(f_fit, new_data = lung_pred, eval_time = pred_time, penalty = pred_penalty)
   prob <- tidyr::unnest(prob, cols = .pred)
   expect_true(all(is.na(prob$.pred_survival)))
 })
@@ -941,7 +941,7 @@ test_that("predictions with strata and dot in formula", {
   # expect warnings "'to new 6 after EncodeVars()"
   expect_snapshot({
     predict(f_fit, lung2, type = "linear_pred")
-    predict(f_fit, lung2, type = "survival", time = c(100, 300))
+    predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
   })
   expect_equal(
     predict(f_fit, lung2, type = "linear_pred"),
@@ -949,8 +949,8 @@ test_that("predictions with strata and dot in formula", {
   )
   # expect warnings "'to new 6 after EncodeVars()"
   expect_snapshot({
-    f_pred <- predict(f_fit, lung2, type = "survival", time = c(100, 300))
-    f_pred_2 <- predict(f_fit_2, lung2, type = "survival", time = c(100, 300))
+    f_pred <- predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
+    f_pred_2 <- predict(f_fit_2, lung2, type = "survival", eval_time = c(100, 300))
   })
   expect_equal(f_pred, f_pred_2)
 })
@@ -978,13 +978,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_survival <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 

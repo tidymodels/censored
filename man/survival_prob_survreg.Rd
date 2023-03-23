@@ -5,16 +5,18 @@
 \alias{hazard_survreg}
 \title{Internal function helps for parametric survival models}
 \usage{
-survival_prob_survreg(object, new_data, time)
+survival_prob_survreg(object, new_data, eval_time, time = deprecated())
 
-hazard_survreg(object, new_data, time)
+hazard_survreg(object, new_data, eval_time)
 }
 \arguments{
 \item{object}{A \code{survreg} object.}
 
 \item{new_data}{A data frame.}
 
-\item{time}{A vector of time points.}
+\item{eval_time}{A vector of time points.}
+
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of time points.}
 }
 \value{
 A tibble with a list column of nested tibbles.
@@ -24,7 +26,7 @@ Internal function helps for parametric survival models
 }
 \examples{
 surv_reg <- survreg(Surv(time, status) ~ ., data = lung)
-survival_prob_survreg(surv_reg, lung[1:3, ], time = 100)
-hazard_survreg(surv_reg, lung[1:3, ], time = 100)
+survival_prob_survreg(surv_reg, lung[1:3, ], eval_time = 100)
+hazard_survreg(surv_reg, lung[1:3, ], eval_time = 100)
 }
 \keyword{internal}

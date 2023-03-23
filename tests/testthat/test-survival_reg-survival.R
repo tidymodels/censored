@@ -48,16 +48,16 @@ test_that("survival probability prediction", {
 
   expect_error(
     predict(res, head(lung), type = "survival"),
-    "a numeric vector 'time'"
+    "a numeric vector `eval_time`"
   )
 
-  exp_pred <- predict(res, head(lung), type = "survival", time = c(0, 500, 1000))
+  exp_pred <- predict(res, head(lung), type = "survival", eval_time = c(0, 500, 1000))
   exp_pred_vert <- exp_pred %>%
     dplyr::mutate(.patient = dplyr::row_number()) %>%
     tidyr::unnest(cols = .pred)
 
   expect_true(all(names(exp_pred) == ".pred"))
-  expect_equal(names(exp_pred_vert), c(".time", ".pred_survival", ".patient"))
+  expect_equal(names(exp_pred_vert), c(".eval_time", ".pred_survival", ".patient"))
 
   # using rms for expected results
   expect_equal(
@@ -114,16 +114,16 @@ test_that("survival hazard prediction", {
 
   expect_error(
     predict(res, head(lung), type = "hazard"),
-    "a numeric vector 'time'"
+    "a numeric vector `eval_time`"
   )
 
-  exp_pred <- predict(res, head(lung), type = "hazard", time = c(0, 500, 1000))
+  exp_pred <- predict(res, head(lung), type = "hazard", eval_time = c(0, 500, 1000))
   exp_pred_vert <- exp_pred %>%
     dplyr::mutate(.patient = dplyr::row_number()) %>%
     tidyr::unnest(cols = .pred)
 
   expect_true(all(names(exp_pred) == ".pred"))
-  expect_equal(names(exp_pred_vert), c(".time", ".pred_hazard", ".patient"))
+  expect_equal(names(exp_pred_vert), c(".eval_time", ".pred_hazard", ".patient"))
 
   # using rms for expected results
   expect_equal(
@@ -159,13 +159,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_survival <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "survival",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 
@@ -191,13 +191,50 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "hazard",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   xy_pred_hazard <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "hazard",
-    time = c(100, 200)
+    eval_time = c(100, 200)
   )
   expect_equal(f_pred_hazard, xy_pred_hazard)
+})
+
+
+# deprecation of time arg -------------------------------------------------
+
+test_that("deprecation of `time` arg for type 'survival'", {
+  f_fit <- survival_reg() %>%
+    set_engine("survival") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+  exp_pred <- predict(f_fit, head(lung), type = "survival", eval_time = c(0, 500, 1000))
+
+  rlang::local_options(lifecycle_verbosity = "error")
+  expect_error(
+    predict(f_fit, head(lung), type = "survival", time = c(0, 500, 1000)),
+    class = "defunctError"
+  )
+
+  rlang::local_options(lifecycle_verbosity = "quiet")
+  pred <- predict(f_fit, head(lung), type = "survival", time = c(0, 500, 1000))
+  expect_identical(pred, exp_pred)
+})
+
+test_that("deprecation of `time` arg for type 'hazard'", {
+  f_fit <- survival_reg() %>%
+    set_engine("survival") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+  exp_pred <- predict(f_fit, head(lung), type = "hazard", eval_time = c(0, 500, 1000))
+
+  rlang::local_options(lifecycle_verbosity = "error")
+  expect_error(
+    predict(f_fit, head(lung), type = "hazard", time = c(0, 500, 1000)),
+    class = "defunctError"
+  )
+
+  rlang::local_options(lifecycle_verbosity = "quiet")
+  pred <- predict(f_fit, head(lung), type = "hazard", time = c(0, 500, 1000))
+  expect_identical(pred, exp_pred)
 })

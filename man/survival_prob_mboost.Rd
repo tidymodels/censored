@@ -4,12 +4,14 @@
 \alias{survival_prob_mboost}
 \title{A wrapper for survival probabilities with mboost models}
 \usage{
-survival_prob_mboost(object, new_data, time)
+survival_prob_mboost(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
 \item{new_data}{Data for prediction.}
 
-\item{time}{A vector of integers for prediction times.}
+\item{eval_time}{A vector of integers for prediction times.}
+
+\item{time}{Deprecated in favor of \code{eval_time}. A vector of integers for prediction times.}
 
 \item{x}{A model from \code{blackboost()}.}
 }
@@ -22,6 +24,6 @@ A wrapper for survival probabilities with mboost models
 \examples{
 library(mboost)
 mod <- blackboost(Surv(time, status) ~ ., data = lung, family = CoxPH())
-survival_prob_mboost(mod, new_data = lung[1:3, ], time = 300)
+survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
 }
 \keyword{internal}

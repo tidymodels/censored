@@ -101,7 +101,8 @@ get_missings_coxph <- function(object, new_data) {
 #' A wrapper for survival probabilities with coxph models
 #' @param x A model from `coxph()`.
 #' @param new_data Data for prediction
-#' @param time A vector of integers for prediction times.
+#' @param eval_time A vector of integers for prediction times.
+#' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
 #' @param output One of `"surv"`, `"conf"`, or `"haz"`.
 #' @param interval Add confidence interval for survival probability? Options
 #' are `"none"` or `"confidence"`.
@@ -112,14 +113,24 @@ get_missings_coxph <- function(object, new_data) {
 #' @export
 #' @examples
 #' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
-#' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], time = 300)
+#' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_coxph <- function(x,
                                 new_data,
-                                time,
+                                eval_time,
+                                time = deprecated(),
                                 output = "surv",
                                 interval = "none",
                                 conf.int = .95,
                                 ...) {
+  if (lifecycle::is_present(time)) {
+    lifecycle::deprecate_warn(
+      "0.1.1.9002",
+      "survival_prob_coxph(time)",
+      "survival_prob_coxph(eval_time)"
+    )
+    eval_time <- time
+  }
+
   interval <- rlang::arg_match(interval, c("none", "confidence"))
   output <- rlang::arg_match(output, c("surv", "conf", "haz"))
   if (output == "surv" & interval == "confidence") {
@@ -133,7 +144,7 @@ survival_prob_coxph <- function(x,
     n_missing <- length(missings_in_new_data)
     all_missing <- n_missing == n_obs
     if (all_missing) {
-      ret <- predict_survival_na(time, interval)
+      ret <- predict_survival_na(eval_time, interval)
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
@@ -151,7 +162,7 @@ survival_prob_coxph <- function(x,
   res <- surv_fit %>%
     survfit_summary_to_patched_tibble(
       index_missing = missings_in_new_data,
-      time = time,
+      eval_time = eval_time,
       n_obs = n_obs
     ) %>%
     keep_cols(output) %>%

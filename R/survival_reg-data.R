@@ -110,7 +110,8 @@ make_survival_reg_survival <- function() {
       args =
         list(
           object = expr(object$fit),
-          new_data = expr(new_data)
+          new_data = expr(new_data),
+          eval_time = expr(eval_time)
         )
     )
   )
@@ -127,7 +128,8 @@ make_survival_reg_survival <- function() {
       args =
         list(
           object = expr(object$fit),
-          new_data = expr(new_data)
+          new_data = expr(new_data),
+          eval_time = expr(eval_time)
         )
     )
   )
@@ -255,14 +257,21 @@ make_survival_reg_flexsurv <- function() {
     type = "hazard",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(pred, object) {
+        pred %>%
+          dplyr::rowwise() %>%
+          dplyr::mutate(
+            .pred = list(dplyr::rename(.pred, .eval_time = .time))
+          ) %>%
+          dplyr::ungroup()
+      },
       func = c(fun = "predict"),
       args =
         list(
           object = rlang::expr(object$fit),
           newdata = rlang::expr(new_data),
           type = "hazard",
-          times = rlang::expr(time)
+          times = rlang::expr(eval_time)
         )
     )
   )
@@ -274,14 +283,21 @@ make_survival_reg_flexsurv <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(pred, object) {
+        pred %>%
+          dplyr::rowwise() %>%
+          dplyr::mutate(
+            .pred = list(dplyr::rename(.pred, .eval_time = .time))
+          ) %>%
+          dplyr::ungroup()
+      },
       func = c(fun = "predict"),
       args =
         list(
           object = expr(object$fit),
           newdata = expr(new_data),
           type = "survival",
-          times = expr(time),
+          times = expr(eval_time),
           conf.int = rlang::expr(interval == "confidence"),
           conf.level = rlang::expr(level)
         )
@@ -412,14 +428,21 @@ make_survival_reg_flexsurvspline <- function() {
     type = "hazard",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(pred, object) {
+        pred %>%
+          dplyr::rowwise() %>%
+          dplyr::mutate(
+            .pred = list(dplyr::rename(.pred, .eval_time = .time))
+          ) %>%
+          dplyr::ungroup()
+      },
       func = c(fun = "predict"),
       args =
         list(
           object = rlang::expr(object$fit),
           newdata = rlang::expr(new_data),
           type = "hazard",
-          times = rlang::expr(time)
+          times = rlang::expr(eval_time)
         )
     )
   )
@@ -431,14 +454,21 @@ make_survival_reg_flexsurvspline <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = function(pred, object) {
+        pred %>%
+          dplyr::rowwise() %>%
+          dplyr::mutate(
+            .pred = list(dplyr::rename(.pred, .eval_time = .time))
+          ) %>%
+          dplyr::ungroup()
+      },
       func = c(fun = "predict"),
       args =
         list(
           object = expr(object$fit),
           newdata = expr(new_data),
           type = "survival",
-          times = expr(time),
+          times = expr(eval_time),
           conf.int = rlang::expr(interval == "confidence"),
           conf.level = rlang::expr(level)
         )

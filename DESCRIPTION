@@ -1,6 +1,6 @@
 Package: censored
 Title: 'parsnip' Engines for Survival Models
-Version: 0.1.1.9001
+Version: 0.1.1.9002
 Authors@R: c(
     person("Emil", "Hvitfeldt", , "emil.hvitfeldt@posit.co", role = "aut",
            comment = c(ORCID = "0000-0002-0679-1945")),
@@ -18,7 +18,7 @@ URL: https://github.com/tidymodels/censored,
     https://censored.tidymodels.org
 BugReports: https://github.com/tidymodels/censored/issues
 Depends:
-    parsnip (>= 1.0.3),
+    parsnip (>= 1.0.4.9005),
     R (>= 3.5.0),
     survival (>= 3.3-1)
 Imports: 
@@ -27,6 +27,7 @@ Imports:
     generics,
     glue,
     hardhat (>= 1.1.0),
+    lifecycle,
     mboost,
     prettyunits,
     purrr,
@@ -54,3 +55,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Remotes:
+    tidymodels/parsnip#936
