@@ -86,7 +86,7 @@
        8            -1.51 
        9            -0.906
       10            -1.43 
-      # ... with 217 more rows
+      # i 217 more rows
     Code
       predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
     Condition
@@ -106,7 +106,7 @@
        8 <tibble [2 x 2]>
        9 <tibble [2 x 2]>
       10 <tibble [2 x 2]>
-      # ... with 217 more rows
+      # i 217 more rows
 
 ---
 
