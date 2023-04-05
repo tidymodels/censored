@@ -81,15 +81,16 @@ has_strata <- function(formula, data) {
 }
 
 # glmnet only allows one strata column so we require that there's only one term
-check_strata_nterms <- function(formula, data) {
+check_strata_nterms <- function(formula, data, call = caller_env()) {
   mod_terms <- stats::terms(formula, specials = "strata", data = data)
   strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
     rlang::abort(
-      paste(
-        "There should be a single 'strata' term specified using the `strata()`",
-        "function. It can contain multiple strata colums, e.g., ` ~ x + strata(s1, s2)`."
-      )
+      c(
+        "There can only be a single 'strata' term specified using the `strata()` function.",
+        i = "It can contain multiple strata columns, e.g., ` ~ x + strata(s1, s2)`."
+      ),
+      call = call
     )
   }
   invisible(formula)
@@ -114,7 +115,7 @@ remove_strata <- function(formula, data, call = rlang::caller_env()) {
   rhs <- formula[[3]]
   formula[[3]] <- rhs %>%
     drop_strata() %>%
-    check_intercept_model() %>%
+    check_intercept_model(call = call) %>%
     check_strata_remaining(call = call)
   formula
 }
@@ -141,9 +142,12 @@ drop_strata <- function(expr, in_plus = TRUE) {
   }
 }
 
-check_intercept_model <- function(expr) {
+check_intercept_model <- function(expr, call = caller_env()) {
   if (expr == rlang::sym("1") | is_call(expr, "strata")) {
-    abort("The Cox model does not contain an intercept, please add a predictor.")
+    abort(
+      "The Cox model does not contain an intercept, please add a predictor.",
+      call = call
+    )
   }
   expr
 }
@@ -166,7 +170,7 @@ check_strata_remaining <- function(expr, call = rlang::caller_env()) {
   }
 }
 
-check_dots_coxnet <- function(x) {
+check_dots_coxnet <- function(x, call = caller_env()) {
   bad_args <- c("subset", "contrasts", "offset", "family")
   bad_names <- names(x) %in% bad_args
   if (any(bad_names)) {
@@ -174,7 +178,8 @@ check_dots_coxnet <- function(x) {
       glue::glue(
         "These argument(s) cannot be used to create the model: ",
         glue::glue_collapse(glue::glue("`{names(x)[bad_names]}`"), sep = ", ")
-      )
+      ),
+      call = call
     )
   }
   invisible(NULL)

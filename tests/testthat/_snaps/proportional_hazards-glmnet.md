@@ -1,8 +1,25 @@
-# formula modifications
+# stratification is specified in a single term
 
     Code
-      proportional_hazards(penalty = 0.1) %>% set_engine("glmnet") %>% fit(Surv(time,
-        status) ~ age + (ph.ecog + strata(sex)), data = lung)
+      fit(spec, Surv(time, status) ~ age + ph.ecog + strata(sex) + strata(inst),
+      data = lung)
+    Condition
+      Error in `censored::coxnet_train()`:
+      ! There can only be a single 'strata' term specified using the `strata()` function.
+      i It can contain multiple strata columns, e.g., ` ~ x + strata(s1, s2)`.
+
+# formula modifications to remove strata
+
+    Code
+      fit(spec, Surv(time, status) ~ strata(sex), data = lung)
+    Condition
+      Error in `censored::coxnet_train()`:
+      ! The Cox model does not contain an intercept, please add a predictor.
+
+---
+
+    Code
+      fit(spec, Surv(time, status) ~ age + (ph.ecog + strata(sex)), data = lung)
     Condition
       Error in `map()`:
       i In index: 2.
@@ -14,6 +31,15 @@
       ! Stratification must be nested under a chain of `+` calls.
       i # Good: ~ x1 + x2 + strata(s)
       i # Bad: ~ x1 + (x2 + strata(s))
+
+# protect certain glmnet engine args
+
+    Code
+      proportional_hazards(penalty = 0.1) %>% set_engine("glmnet", family = "gaussian") %>%
+        fit(Surv(time, status) ~ age + sex, data = lung)
+    Condition
+      Error in `censored::coxnet_train()`:
+      ! These argument(s) cannot be used to create the model: `family`
 
 # predictions with strata and dot in formula
 
