@@ -44,6 +44,7 @@ Suggests:
     ipred,
     partykit,
     pec,
+    prodlim (>= 2023-04-02),
     rmarkdown,
     rpart,
     testthat (>= 3.0.0)
