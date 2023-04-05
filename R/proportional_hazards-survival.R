@@ -14,7 +14,9 @@ predict_linear_pred._coxph <- function(object,
   res
 }
 
-cph_survival_pre <- function(new_data, object) {
+cph_survival_pre <- function(new_data, object, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
   # Check that the stratification variable is part of `new_data`.
   # If this information is missing, survival::survfit() does not error but
   # instead returns the survival curves for _all_ strata.
@@ -29,7 +31,10 @@ cph_survival_pre <- function(new_data, object) {
     strata <- sub(pattern = "\\)", replacement = "", x = strata)
 
     if (!all(strata %in% names(new_data))) {
-      rlang::abort("Please provide the strata variable(s) in `new_data`.")
+      rlang::abort(
+        "Please provide the strata variable(s) in `new_data`.",
+        call = call
+      )
     }
   }
 

@@ -142,6 +142,15 @@ test_that("time predictions with NA", {
   expect_true(is.na(f_pred$.pred_time))
 })
 
+test_that("prediction from stratified models require strata variables in new_data", {
+  f_fit <- proportional_hazards() %>%
+    set_engine("survival") %>%
+      fit(Surv(time, status) ~ age + sex + strata(inst), data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, new_data = dplyr::select(lung, -inst))
+  })
+})
 
 # prediction: survival ----------------------------------------------------
 
