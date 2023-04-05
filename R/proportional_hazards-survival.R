@@ -14,8 +14,8 @@ predict_linear_pred._coxph <- function(object,
   res
 }
 
-cph_survival_pre <- function(new_data, object, ..., call = rlang::caller_env()) {
-  rlang::check_dots_empty()
+cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
+  check_dots_empty()
 
   # Check that the stratification variable is part of `new_data`.
   # If this information is missing, survival::survfit() does not error but
