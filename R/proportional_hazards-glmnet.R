@@ -163,7 +163,8 @@ check_strata_remaining <- function(expr, call = rlang::caller_env()) {
       call = call
     )
   } else if (is_call(expr)) {
-    expr[-1] <- map(as.list(expr[-1]), check_strata_remaining, call = call)
+    #lapply() instead of map() to avoid map() reporting the index of where it errors
+    expr[-1] <- lapply(as.list(expr[-1]), check_strata_remaining, call = call)
     expr
   } else {
     expr
