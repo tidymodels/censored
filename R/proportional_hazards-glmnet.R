@@ -188,7 +188,7 @@ print._coxnet <- function(x, ...) {
   if (inherits(x$fit$fit, "try-error")) {
     cat("Model fit failed with error:\n", x$fit, "\n")
   } else {
-    print(x$fit, ...)
+    print(x$fit$fit, ...)
     cat("The training data has been saved for prediction.\n")
   }
   invisible(x)
