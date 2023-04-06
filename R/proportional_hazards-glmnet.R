@@ -307,11 +307,11 @@ multi_predict._coxnet <- function(object,
                                   type = NULL,
                                   penalty = NULL,
                                   ...) {
-  if (any(names(enquos(...)) == "newdata")) {
-    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-  }
-
   dots <- list(...)
+
+  if (any(names(dots) == "newdata")) {
+    rlang::abort("Please use `new_data` instead of `newdata`.")
+  }
 
   object$spec <- eval_args(object$spec)
 
