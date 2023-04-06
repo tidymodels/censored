@@ -18,6 +18,7 @@
 #' @param data The data.
 #' @inheritParams glmnet::glmnet
 #' @param ... additional parameters passed to glmnet::glmnet.
+#' @param call The call passed to [rlang::abort()].
 #'
 #' @return A fitted `glmnet` model.
 #' @export
@@ -29,9 +30,10 @@ coxnet_train <- function(formula,
                          alpha = 1,
                          lambda = NULL,
                          weights = NULL,
-                         ...) {
+                         ...,
+                         call = caller_env()) {
   dots <- rlang::quos(...)
-  check_dots_coxnet(dots)
+  check_dots_coxnet(dots, call = call)
 
   encoding_info <-
     parsnip::get_encoding("proportional_hazards") %>%
@@ -40,7 +42,7 @@ coxnet_train <- function(formula,
   indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
   remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
 
-  formula_without_strata <- remove_strata(formula, data)
+  formula_without_strata <- remove_strata(formula, data, call = call)
 
   data_obj <- parsnip::.convert_form_to_xy_fit(
     formula = formula_without_strata,
@@ -51,7 +53,7 @@ coxnet_train <- function(formula,
   )
 
   if (has_strata(formula, data)) {
-    check_strata_nterms(formula, data)
+    check_strata_nterms(formula, data, call = call)
     strata <- get_strata_glmnet(formula, data)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
