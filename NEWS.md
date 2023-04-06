@@ -14,6 +14,8 @@
 
 * Predictions of type `"linear_pred"` for the `"flexsurv"` engine to `survival_reg()` are now on the correct scale for distributions where the natural scale and the unrestricted scale of the location parameter are identical, e.g. `dist = "lnorm"` (#229).
 
+* Fixed a bug for printing `coxnet` models, i.e., `proportional_hazards()` models fitted with the `"glmnet"` engine (#249).
+
 
 # censored 0.1.1
 

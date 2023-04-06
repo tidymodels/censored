@@ -20,6 +20,14 @@ test_that("model object", {
   expect_equal(f_fit$fit$fit[-11], exp_f_fit[-11])
 })
 
+test_that("print coxnet model", {
+  lung2 <- lung[-14, ]
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  expect_snapshot(f_fit)
+})
 
 # prediction: time --------------------------------------------------------
 
