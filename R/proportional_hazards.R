@@ -44,6 +44,12 @@ fit_xy.proportional_hazards <- function(object,
 
   if (object$engine == "glmnet") {
     # we need to keep the training data for prediction
+    if (!is.matrix(x)) {
+      x <- as.matrix(x)
+    }
+    if (!inherits(y, "Surv")) {
+      y <- y[[1]]
+    }
     res$training_data <- list(x = x, y = y)
   }
 
