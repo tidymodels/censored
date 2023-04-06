@@ -87,7 +87,7 @@ test_that("survival predictions", {
 # fit via matrix interface ------------------------------------------------
 
 test_that("`fix_xy()` works", {
-  skip_if_not_installed("prodlim", minimum_version = "2023-04-02")
+  skip_if_not_installed("prodlim", minimum_version = "2023.3.31")
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
