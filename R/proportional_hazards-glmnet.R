@@ -260,10 +260,6 @@ coxnet_prepare_x <- function(new_data, object) {
 #' @export
 predict._coxnet <-
   function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
-    if (any(names(enquos(...)) == "newdata")) {
-      rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-    }
-
     # See discussion in https://github.com/tidymodels/parsnip/issues/195
     if (is.null(penalty) & !is.null(object$spec$args$penalty)) {
       penalty <- object$spec$args$penalty
@@ -277,10 +273,6 @@ predict._coxnet <-
 
 #' @export
 predict_survival._coxnet <- function(object, new_data, ...) {
-  if (any(names(enquos(...)) == "newdata")) {
-    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-  }
-
   object$spec <- eval_args(object$spec)
   NextMethod()
 }
@@ -301,10 +293,6 @@ predict_linear_pred._coxnet <- function(object,
 
 #' @export
 predict_raw._coxnet <- function(object, new_data, opts = list(), ...) {
-  if (any(names(enquos(...)) == "newdata")) {
-    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-  }
-
   object$spec <- eval_args(object$spec)
   opts$s <- object$spec$args$penalty
   NextMethod()
