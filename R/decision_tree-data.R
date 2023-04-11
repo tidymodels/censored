@@ -74,6 +74,9 @@ make_decision_tree_rpart <- function() {
       pre = NULL,
       post = function(x, object) {
         eval_time <- object$spec$method$pred$survival$args$eval_time
+        if (!is.matrix(x)) {
+          x <- matrix(x, nrow = 1)
+        }
         matrix_to_nested_tibbles_survival(x, eval_time)
       },
       func = c(pkg = "pec", fun = "predictSurvProb"),
