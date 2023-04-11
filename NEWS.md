@@ -16,6 +16,8 @@
 
 * Fixed a bug for printing `coxnet` models, i.e., `proportional_hazards()` models fitted with the `"glmnet"` engine (#249).
 
+* Improved error messages throughout the package (#248).
+
 
 # censored 0.1.1
 

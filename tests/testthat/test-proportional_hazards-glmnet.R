@@ -893,7 +893,15 @@ test_that("linear_pred predictions with strata", {
 
 # helper functions --------------------------------------------------------
 
-test_that("formula modifications", {
+test_that("stratification is specified in a single term", {
+  spec <- proportional_hazards(penalty = 0.123) %>%
+    set_engine("glmnet")
+  expect_snapshot(error = TRUE, {
+    fit(spec, Surv(time, status) ~ age + ph.ecog + strata(sex) + strata(inst), data = lung)
+  })
+})
+
+test_that("formula modifications to remove strata", {
   # base case
   expect_equal(
     drop_strata(rlang::expr(x + strata(s))),
@@ -914,13 +922,21 @@ test_that("formula modifications", {
   )
 
   skip_if(R.version$major == "3")
+  spec <- proportional_hazards(penalty = 0.1) %>%
+    set_engine("glmnet")
+  expect_snapshot(error = TRUE, {
+    fit(spec, Surv(time, status) ~ strata(sex), data = lung)
+  })
+  expect_snapshot(error = TRUE, {
+    fit(spec, Surv(time, status) ~ age + (ph.ecog + strata(sex)), data = lung)
+  })
+})
+
+test_that("protect certain glmnet engine args", {
   expect_snapshot(error = TRUE, {
     proportional_hazards(penalty = 0.1) %>%
-      set_engine("glmnet") %>%
-      fit(
-        Surv(time, status) ~ age + (ph.ecog + strata(sex)),
-        data = lung
-      )
+      set_engine("glmnet", family = "gaussian") %>%
+      fit(Surv(time, status) ~ age + sex, data = lung)
   })
 })
 

@@ -18,6 +18,7 @@
 #' @param data The data.
 #' @inheritParams glmnet::glmnet
 #' @param ... additional parameters passed to glmnet::glmnet.
+#' @param call The call passed to [rlang::abort()].
 #'
 #' @return A fitted `glmnet` model.
 #' @export
@@ -29,9 +30,10 @@ coxnet_train <- function(formula,
                          alpha = 1,
                          lambda = NULL,
                          weights = NULL,
-                         ...) {
+                         ...,
+                         call = caller_env()) {
   dots <- rlang::quos(...)
-  check_dots_coxnet(dots)
+  check_dots_coxnet(dots, call = call)
 
   encoding_info <-
     parsnip::get_encoding("proportional_hazards") %>%
@@ -40,7 +42,7 @@ coxnet_train <- function(formula,
   indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
   remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
 
-  formula_without_strata <- remove_strata(formula, data)
+  formula_without_strata <- remove_strata(formula, data, call = call)
 
   data_obj <- parsnip::.convert_form_to_xy_fit(
     formula = formula_without_strata,
@@ -51,7 +53,7 @@ coxnet_train <- function(formula,
   )
 
   if (has_strata(formula, data)) {
-    check_strata_nterms(formula, data)
+    check_strata_nterms(formula, data, call = call)
     strata <- get_strata_glmnet(formula, data)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
@@ -81,15 +83,16 @@ has_strata <- function(formula, data) {
 }
 
 # glmnet only allows one strata column so we require that there's only one term
-check_strata_nterms <- function(formula, data) {
+check_strata_nterms <- function(formula, data, call = caller_env()) {
   mod_terms <- stats::terms(formula, specials = "strata", data = data)
   strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
     rlang::abort(
-      paste(
-        "There should be a single 'strata' term specified using the `strata()`",
-        "function. It can contain multiple strata colums, e.g., ` ~ x + strata(s1, s2)`."
-      )
+      c(
+        "There can only be a single 'strata' term specified using the `strata()` function.",
+        i = "It can contain multiple strata columns, e.g., ` ~ x + strata(s1, s2)`."
+      ),
+      call = call
     )
   }
   invisible(formula)
@@ -114,7 +117,7 @@ remove_strata <- function(formula, data, call = rlang::caller_env()) {
   rhs <- formula[[3]]
   formula[[3]] <- rhs %>%
     drop_strata() %>%
-    check_intercept_model() %>%
+    check_intercept_model(call = call) %>%
     check_strata_remaining(call = call)
   formula
 }
@@ -141,9 +144,12 @@ drop_strata <- function(expr, in_plus = TRUE) {
   }
 }
 
-check_intercept_model <- function(expr) {
+check_intercept_model <- function(expr, call = caller_env()) {
   if (expr == rlang::sym("1") | is_call(expr, "strata")) {
-    abort("The Cox model does not contain an intercept, please add a predictor.")
+    abort(
+      "The Cox model does not contain an intercept, please add a predictor.",
+      call = call
+    )
   }
   expr
 }
@@ -159,14 +165,15 @@ check_strata_remaining <- function(expr, call = rlang::caller_env()) {
       call = call
     )
   } else if (is_call(expr)) {
-    expr[-1] <- map(as.list(expr[-1]), check_strata_remaining, call = call)
+    #lapply() instead of map() to avoid map() reporting the index of where it errors
+    expr[-1] <- lapply(as.list(expr[-1]), check_strata_remaining, call = call)
     expr
   } else {
     expr
   }
 }
 
-check_dots_coxnet <- function(x) {
+check_dots_coxnet <- function(x, call = caller_env()) {
   bad_args <- c("subset", "contrasts", "offset", "family")
   bad_names <- names(x) %in% bad_args
   if (any(bad_names)) {
@@ -174,7 +181,8 @@ check_dots_coxnet <- function(x) {
       glue::glue(
         "These argument(s) cannot be used to create the model: ",
         glue::glue_collapse(glue::glue("`{names(x)[bad_names]}`"), sep = ", ")
-      )
+      ),
+      call = call
     )
   }
   invisible(NULL)
@@ -254,10 +262,6 @@ coxnet_prepare_x <- function(new_data, object) {
 #' @export
 predict._coxnet <-
   function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
-    if (any(names(enquos(...)) == "newdata")) {
-      rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-    }
-
     # See discussion in https://github.com/tidymodels/parsnip/issues/195
     if (is.null(penalty) & !is.null(object$spec$args$penalty)) {
       penalty <- object$spec$args$penalty
@@ -271,10 +275,6 @@ predict._coxnet <-
 
 #' @export
 predict_survival._coxnet <- function(object, new_data, ...) {
-  if (any(names(enquos(...)) == "newdata")) {
-    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-  }
-
   object$spec <- eval_args(object$spec)
   NextMethod()
 }
@@ -295,10 +295,6 @@ predict_linear_pred._coxnet <- function(object,
 
 #' @export
 predict_raw._coxnet <- function(object, new_data, opts = list(), ...) {
-  if (any(names(enquos(...)) == "newdata")) {
-    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-  }
-
   object$spec <- eval_args(object$spec)
   opts$s <- object$spec$args$penalty
   NextMethod()
@@ -313,11 +309,11 @@ multi_predict._coxnet <- function(object,
                                   type = NULL,
                                   penalty = NULL,
                                   ...) {
-  if (any(names(enquos(...)) == "newdata")) {
-    rlang::abort("Did you mean to use `new_data` instead of `newdata`?")
-  }
-
   dots <- list(...)
+
+  if (any(names(dots) == "newdata")) {
+    rlang::abort("Please use `new_data` instead of `newdata`.")
+  }
 
   object$spec <- eval_args(object$spec)
 

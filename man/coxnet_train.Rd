@@ -4,7 +4,15 @@
 \alias{coxnet_train}
 \title{Wrapper for glmnet for censored}
 \usage{
-coxnet_train(formula, data, alpha = 1, lambda = NULL, weights = NULL, ...)
+coxnet_train(
+  formula,
+  data,
+  alpha = 1,
+  lambda = NULL,
+  weights = NULL,
+  ...,
+  call = caller_env()
+)
 }
 \arguments{
 \item{formula}{The model formula.}
@@ -29,6 +37,8 @@ and its often faster to fit a whole path than compute a single fit.}
 proportion matrices. Default is 1 for each observation}
 
 \item{...}{additional parameters passed to glmnet::glmnet.}
+
+\item{call}{The call passed to \code{\link[rlang:abort]{rlang::abort()}}.}
 }
 \value{
 A fitted \code{glmnet} model.
