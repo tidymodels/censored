@@ -61,6 +61,7 @@
 <li><p>Predictions of type <code>"linear_pred"</code> for the <code>"flexsurv"</code> engine to <code><a href="https://parsnip.tidymodels.org/reference/survival_reg.html" class="external-link">survival_reg()</a></code> are now on the correct scale for distributions where the natural scale and the unrestricted scale of the location parameter are identical, e.g. <code>dist = "lnorm"</code> (<a href="https://github.com/tidymodels/censored/issues/229" class="external-link">#229</a>).</p></li>
 <li><p>Fixed a bug for printing <code>coxnet</code> models, i.e., <code><a href="https://parsnip.tidymodels.org/reference/proportional_hazards.html" class="external-link">proportional_hazards()</a></code> models fitted with the <code>"glmnet"</code> engine (<a href="https://github.com/tidymodels/censored/issues/249" class="external-link">#249</a>).</p></li>
 <li><p>Improved error messages throughout the package (<a href="https://github.com/tidymodels/censored/issues/248" class="external-link">#248</a>).</p></li>
+<li><p>Predictions of survival probability for <code>survival_reg(engine = "flexsurv")</code> for a single time point are now nested correctly (<a href="https://github.com/tidymodels/censored/issues/254" class="external-link">#254</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="censored-011">censored 0.1.1<a class="anchor" aria-label="anchor" href="#censored-011"></a></h2><p class="text-muted">CRAN release: 2022-09-30</p>
