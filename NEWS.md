@@ -20,6 +20,8 @@
 
 * Predictions of survival probability for `survival_reg(engine = "flexsurv")` for a single time point are now nested correctly (#254).
 
+* Predictions of survival probability for `decision_tree(engine = "rpart")` for a single observation now work (#256).
+
 
 # censored 0.1.1
 
