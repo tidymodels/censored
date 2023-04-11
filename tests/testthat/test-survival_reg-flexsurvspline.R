@@ -116,6 +116,25 @@ test_that("survival probability prediction", {
   )
 })
 
+test_that("survival probabilities for single eval time point", {
+  f_fit <- survival_reg(engine = "flexsurvspline") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+
+  pred <- predict(f_fit, lung[1:3, ], type = "survival", eval_time = 100)
+
+  expect_identical(nrow(pred), 3L)
+  expect_identical(names(pred), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred$.pred,
+      ~ all(names(.x) == c(
+        ".eval_time",
+        ".pred_survival"
+      ))
+    ))
+  )
+})
+
 # prediction: linear_pred -------------------------------------------------
 
 test_that("linear predictor", {
@@ -255,6 +274,26 @@ test_that("hazard prediction", {
   )
   expect_equal(f_pred, exp_pred)
 })
+
+test_that("hazard for single eval time point", {
+  f_fit <- survival_reg(engine = "flexsurvspline") %>%
+    fit(Surv(time, status) ~ age + sex, data = lung)
+
+  pred <- predict(f_fit, lung[1:3, ], type = "hazard", eval_time = 100)
+
+  expect_identical(nrow(pred), 3L)
+  expect_identical(names(pred), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred$.pred,
+      ~ all(names(.x) == c(
+        ".eval_time",
+        ".pred_hazard"
+      ))
+    ))
+  )
+})
+
 
 # fit via matrix interface ------------------------------------------------
 
