@@ -18,6 +18,8 @@
 
 * Improved error messages throughout the package (#248).
 
+* Predictions of survival probability for `survival_reg(engine = "flexsurv")` for a single time point are now nested correctly (#254).
+
 
 # censored 0.1.1
 
