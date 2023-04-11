@@ -37,6 +37,10 @@ test_that("time predictions", {
   expect_true(all(names(f_pred) == ".pred_time"))
   expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  f_pred <- predict(f_fit, lung[2,], type = "time")
+  expect_identical(nrow(f_pred), 1L)
 })
 
 
@@ -81,6 +85,14 @@ test_that("survival predictions", {
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     as.numeric(t(exp_f_pred))
   )
+
+  # single observation
+  f_pred <- predict(f_fit, lung[2,], type = "survival", eval_time = 100:200)
+  expect_identical(nrow(f_pred), 1L)
+  expect_true(
+    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".eval_time", ".pred_survival"))))
+  )
+  expect_equal(f_pred$.pred[[1]]$.eval_time, 100:200)
 })
 
 
