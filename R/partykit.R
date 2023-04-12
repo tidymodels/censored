@@ -20,7 +20,7 @@ survival_prob_partykit <- function(object,
                                    output = "surv") {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_partykit(time)",
       "survival_prob_partykit(eval_time)"
     )

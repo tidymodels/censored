@@ -62,7 +62,7 @@ get_missings_survbagg <- function(object, new_data) {
 survival_prob_survbagg <- function(object, new_data, eval_time, time = deprecated()) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_survbagg(time)",
       "survival_prob_survbagg(eval_time)"
     )

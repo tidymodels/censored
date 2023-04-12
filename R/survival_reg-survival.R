@@ -114,7 +114,7 @@ survreg_survival <- function(location, object, scale, eval_time, ...) {
 survival_prob_survreg <- function(object, new_data, eval_time, time = deprecated()) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_survreg(time)",
       "survival_prob_survreg(eval_time)"
     )

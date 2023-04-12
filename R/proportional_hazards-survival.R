@@ -129,7 +129,7 @@ survival_prob_coxph <- function(x,
                                 ...) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_coxph(time)",
       "survival_prob_coxph(eval_time)"
     )

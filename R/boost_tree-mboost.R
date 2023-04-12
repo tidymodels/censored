@@ -116,7 +116,7 @@ predict_linear_pred._blackboost <- function(object,
 survival_prob_mboost <- function(object, new_data, eval_time, time = deprecated()) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_mboost(time)",
       "survival_prob_mboost(eval_time)"
     )
