@@ -18,6 +18,8 @@
 
 * Predictions of type `"linear_pred"` for `survival_reg(engine = "flexsurv")` are now on the correct scale for distributions where the natural scale and the unrestricted scale of the location parameter are identical, e.g. `dist = "lnorm"` (#229).
 
+* Predictions of type `"linear_pred"` for `proportional_hazards(engine = "glmnet")` via `multi_predict()` now have the same sign as those via `predict()` (#242).
+
 * Predictions of survival probability for `survival_reg(engine = "flexsurv")` for a single time point are now nested correctly (#254).
 
 * Predictions of survival probability for `decision_tree(engine = "rpart")` for a single observation now work (#256).
