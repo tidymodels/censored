@@ -22,6 +22,8 @@
 
 * Predictions of survival probability for `decision_tree(engine = "rpart")` for a single observation now work (#256).
 
+* Predictions of `type = "quantile"` for `survival_reg(engine = "survival")` for a single observation now work (#257).
+
 
 # censored 0.1.1
 
