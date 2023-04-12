@@ -58,6 +58,10 @@ test_that("time predictions", {
   expect_true(all(names(f_pred) == ".pred_time"))
   expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 

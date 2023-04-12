@@ -47,6 +47,10 @@ test_that("time predictions", {
   expect_true(all(names(f_pred) == ".pred_time"))
   expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[1, ], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 
@@ -89,6 +93,7 @@ test_that("survival predictions", {
     rep(100:200, nrow(lung))
   )
 
+  # single observation
   f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = 306)
   new_km <- predict(exp_f_fit, newdata = lung[1, ], type = "prob")[[1]]
   # Prediction should be fairly near the actual value

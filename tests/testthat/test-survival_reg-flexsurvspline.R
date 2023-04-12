@@ -37,6 +37,10 @@ test_that("time prediction", {
   f_pred <- predict(f_fit, head(lung), type = "time")
 
   expect_equal(f_pred, exp_pred)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 # prediction: survival ----------------------------------------------------
@@ -114,6 +118,10 @@ test_that("survival probability prediction", {
       ))
     ))
   )
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "survival", eval_time = 100)
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 test_that("survival probabilities for single eval time point", {
@@ -154,6 +162,10 @@ test_that("linear predictor", {
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
   expect_equal(nrow(f_pred), 5)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "linear_pred")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 # prediction: quantile ----------------------------------------------------
@@ -218,6 +230,10 @@ test_that("quantile predictions", {
       ))
     ))
   )
+
+  # single observation
+  f_pred_1 <- predict(fit_s, bladder[2,], type = "quantile")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 # prediction: hazard ------------------------------------------------------
@@ -273,6 +289,10 @@ test_that("hazard prediction", {
     )
   )
   expect_equal(f_pred, exp_pred)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "hazard", eval_time = c(100, 200))
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 test_that("hazard for single eval time point", {

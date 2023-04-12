@@ -36,6 +36,10 @@ test_that("survival time prediction", {
   exp_pred <- predict(res$fit, head(lung))
   exp_pred <- tibble::tibble(.pred_time = unname(exp_pred))
   expect_equal(exp_pred, predict(res, head(lung)))
+
+  # single observation
+  f_pred_1 <- predict(res, lung[1, ], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 # prediction: survival ----------------------------------------------------
@@ -65,6 +69,10 @@ test_that("survival probability prediction", {
     rms_surv,
     tolerance = 0.001
   )
+
+  # single observation
+  f_pred_1 <- predict(res, lung[1, ], type = "survival", eval_time = c(100, 500))
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 
@@ -83,6 +91,10 @@ test_that("linear predictor", {
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
   expect_equal(f_pred$.pred_linear_pred, unname(exp_pred))
   expect_equal(nrow(f_pred), 5)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[1, ], type = "linear_pred")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 
@@ -101,6 +113,10 @@ test_that("prediction of survival time quantile", {
   obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4) / 5)
 
   expect_equal(as.data.frame(exp_quant), as.data.frame(obs_quant))
+
+  # single observation
+  f_pred_1 <- predict(res, lung[1, ], type = "quantile")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 
@@ -131,6 +147,10 @@ test_that("survival hazard prediction", {
     rms_haz[-1],
     tolerance = 0.001
   )
+
+  # single observation
+  f_pred_1 <- predict(res, lung[1, ], type = "hazard", eval_time = c(100, 500))
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 # fit via matrix interface ------------------------------------------------

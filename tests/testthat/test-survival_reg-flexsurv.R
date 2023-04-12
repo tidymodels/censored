@@ -42,6 +42,10 @@ test_that("flexsurv time prediction", {
   f_pred <- predict(f_fit, head(lung), type = "time")
 
   expect_equal(f_pred, exp_pred)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 
@@ -110,6 +114,10 @@ test_that("survival probability prediction", {
       ))
     ))
   )
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "survival", eval_time = 100)
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 test_that("survival probabilities for single eval time point", {
@@ -165,6 +173,10 @@ test_that("linear predictor", {
   exp_pred <- predict(exp_fit, lung[1:5, ], type = "linear")
 
   expect_equal(f_pred$.pred_linear_pred, exp_pred$.pred_link)
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "linear_pred")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 
@@ -227,6 +239,10 @@ test_that("quantile predictions", {
       ))
     ))
   )
+
+  # single observation
+  f_pred_1 <- predict(fit_s, bladder[2,], type = "quantile")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 # prediction: hazard ------------------------------------------------------
@@ -273,6 +289,10 @@ test_that("hazard prediction", {
     rms_haz,
     tolerance = 0.001
   )
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "hazard", eval_time = c(100, 200))
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 test_that("hazard for single eval time point", {
