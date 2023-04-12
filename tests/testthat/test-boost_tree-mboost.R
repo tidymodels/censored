@@ -217,9 +217,11 @@ test_that("linear_pred predictions", {
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung2[1, ], type = "linear_pred")
+  expect_identical(nrow(f_pred_1), 1L)
 })
-
-
 
 
 # fit via matrix interface ------------------------------------------------

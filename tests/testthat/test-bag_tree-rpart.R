@@ -36,6 +36,10 @@ test_that("time predictions", {
     purrr::map_dbl(exp_f_pred, ~ quantile(.x, probs = .5)$quantile)
   )
   expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[1, ], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 test_that("time predictions without surrogate splits for NA", {

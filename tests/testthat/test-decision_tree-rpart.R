@@ -39,8 +39,8 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 
   # single observation
-  f_pred <- predict(f_fit, lung[2,], type = "time")
-  expect_identical(nrow(f_pred), 1L)
+  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
 })
 
 

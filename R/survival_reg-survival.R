@@ -3,6 +3,10 @@
 # ------------------------------------------------------------------------------
 
 survreg_quant <- function(results, object) {
+  if (!is.matrix(results)) {
+    results <- matrix(results, nrow = 1)
+  }
+
   pctl <- object$spec$method$pred$quantile$args$p
   n <- nrow(results)
   p <- ncol(results)
