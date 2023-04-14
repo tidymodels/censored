@@ -14,7 +14,7 @@
 survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated()) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_orsf(time)",
       "survival_prob_orsf(eval_time)"
     )

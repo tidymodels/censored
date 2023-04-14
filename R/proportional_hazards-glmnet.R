@@ -502,7 +502,7 @@ survival_prob_coxnet <- function(object,
                                  ...) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
-      "0.1.1.9002",
+      "0.2.0",
       "survival_prob_coxnet(time)",
       "survival_prob_coxnet(eval_time)"
     )
