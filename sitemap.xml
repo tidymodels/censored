@@ -4,6 +4,9 @@
     <loc>https://censored.tidymodels.org/404.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/LICENSE-text.html</loc>
   </url>
   <url>
@@ -25,6 +28,9 @@
     <loc>https://censored.tidymodels.org/news/index.html</loc>
   </url>
   <url>
+    <loc>https://censored.tidymodels.org/reference/aorsf_internal.html</loc>
+  </url>
+  <url>
     <loc>https://censored.tidymodels.org/reference/blackboost_train.html</loc>
   </url>
   <url>
@@ -37,9 +43,6 @@
     <loc>https://censored.tidymodels.org/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://censored.tidymodels.org/reference/party_internal.html</loc>
-  </url>
-  <url>
     <loc>https://censored.tidymodels.org/reference/survival_prob_coxnet.html</loc>
   </url>
   <url>
@@ -47,6 +50,9 @@
   </url>
   <url>
     <loc>https://censored.tidymodels.org/reference/survival_prob_mboost.html</loc>
+  </url>
+  <url>
+    <loc>https://censored.tidymodels.org/reference/survival_prob_partykit.html</loc>
   </url>
   <url>
     <loc>https://censored.tidymodels.org/reference/survival_prob_survbagg.html</loc>
