@@ -19,23 +19,6 @@ coxnet_train(
 
 \item{data}{The data.}
 
-\item{alpha}{The elasticnet mixing parameter, with \eqn{0\le\alpha\le 1}.
-The penalty is defined as
-\deqn{(1-\alpha)/2||\beta||_2^2+\alpha||\beta||_1.} \code{alpha=1} is the
-lasso penalty, and \code{alpha=0} the ridge penalty.}
-
-\item{lambda}{A user supplied \code{lambda} sequence. Typical usage is to
-have the program compute its own \code{lambda} sequence based on
-\code{nlambda} and \code{lambda.min.ratio}. Supplying a value of
-\code{lambda} overrides this. WARNING: use with care. Avoid supplying a
-single value for \code{lambda} (for predictions after CV use
-\code{predict()} instead).  Supply instead a decreasing sequence of
-\code{lambda} values. \code{glmnet} relies on its warms starts for speed,
-and its often faster to fit a whole path than compute a single fit.}
-
-\item{weights}{observation weights. Can be total counts if responses are
-proportion matrices. Default is 1 for each observation}
-
 \item{...}{additional parameters passed to glmnet::glmnet.}
 
 \item{call}{The call passed to \code{\link[rlang:abort]{rlang::abort()}}.}
