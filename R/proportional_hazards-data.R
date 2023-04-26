@@ -184,7 +184,7 @@ make_proportional_hazards_glmnet <- function() {
       func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit$fit),
+          object = expr(object$fit),
           newx = expr(new_data),
           type = "link",
           s = expr(object$spec$args$penalty)
@@ -240,7 +240,7 @@ make_proportional_hazards_glmnet <- function() {
       func = c(fun = "predict"),
       args =
         list(
-          object = expr(object$fit$fit),
+          object = expr(object$fit),
           newx = expr(new_data)
         )
     )

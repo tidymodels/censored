@@ -17,7 +17,7 @@ test_that("model object", {
   )
 
   # Removing call element
-  expect_equal(f_fit$fit$fit[-11], exp_f_fit[-11])
+  expect_equal(f_fit$fit[-11], exp_f_fit[-11])
 })
 
 test_that("print coxnet model", {
@@ -992,7 +992,7 @@ test_that("`fix_xy()` works with matrix input", {
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
-  expect_equal(f_fit$fit$fit, xy_fit$fit$fit)
+  expect_equal(f_fit$fit, xy_fit$fit)
 
   f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
   xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
