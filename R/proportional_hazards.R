@@ -20,6 +20,7 @@ fit.proportional_hazards <- function(object,
     # is set up: parsnip::prepare_data() would automatically run with the
     # modified terms in $preproc$terms which are missing the strata term
     res$preproc$coxnet <- res$fit$preproc[!training_data_ind]
+    res$fit <- res$fit$fit
     res$formula <- formula
   }
 
@@ -47,6 +48,7 @@ fit_xy.proportional_hazards <- function(object,
     # res$fit$preproc carries it as used inside of `coxnet_train()`
     training_data_ind <- names(res$fit$preproc) %in% c("x", "y")
     res$training_data <- res$fit$preproc[training_data_ind]
+    res$fit <- res$fit$fit
   }
 
   res
