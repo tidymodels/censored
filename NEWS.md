@@ -1,5 +1,8 @@
 # censored (development version)
 
+* Fixed a bug for `proportional_hazards(engine = "glmnet")` where prediction didn't work for a `workflow()` with a formula as the preprocessor (#264).
+
+
 # censored 0.2.0
 
 ## Cross-package changes with parsnip
