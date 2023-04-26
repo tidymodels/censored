@@ -44,13 +44,9 @@ fit_xy.proportional_hazards <- function(object,
 
   if (object$engine == "glmnet") {
     # we need to keep the training data for prediction
-    if (!is.matrix(x)) {
-      x <- parsnip::maybe_matrix(x)
-    }
-    if (!inherits(y, "Surv")) {
-      y <- y[[1]]
-    }
-    res$training_data <- list(x = x, y = y)
+    # res$fit$preproc carries it as used inside of `coxnet_train()`
+    training_data_ind <- names(res$fit$preproc) %in% c("x", "y")
+    res$training_data <- res$fit$preproc[training_data_ind]
   }
 
   res
