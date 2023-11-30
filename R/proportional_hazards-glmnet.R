@@ -193,10 +193,10 @@ print._coxnet <- function(x, ...) {
   cat("parsnip model object\n\n")
   cat("Fit time: ", prettyunits::pretty_sec(x$elapsed[["elapsed"]]), "\n")
 
-  if (inherits(x$fit$fit, "try-error")) {
+  if (inherits(x$fit, "try-error")) {
     cat("Model fit failed with error:\n", x$fit, "\n")
   } else {
-    print(x$fit$fit, ...)
+    print(x$fit, ...)
     cat("The training data has been saved for prediction.\n")
   }
   invisible(x)
@@ -438,7 +438,7 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
   }
 
   y <- survival::survfit(
-    object$fit$fit,
+    object$fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -546,7 +546,7 @@ survival_prob_coxnet <- function(object,
   }
 
   y <- survival::survfit(
-    object$fit$fit,
+    object$fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
