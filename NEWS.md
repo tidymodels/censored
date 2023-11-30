@@ -2,6 +2,8 @@
 
 * Fixed a bug for `proportional_hazards(engine = "glmnet")` where prediction didn't work for a `workflow()` with a formula as the preprocessor (#264).
 
+* `extract_fit_engine()` now works properly for proportional hazards models fitted with the `"glmnet"` engine (#266).
+
 
 # censored 0.2.0
 
