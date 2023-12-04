@@ -101,7 +101,6 @@ test_that("survival predictions", {
   )
 })
 
-
 test_that("survival_curve_to_prob() works", {
   lung_pred <- tidyr::drop_na(lung)
 
@@ -185,6 +184,20 @@ test_that("survival_prob_mboost() works", {
   #   eval_time = c(0, 100, 200)
   # )
   # expect_equal(nrow(pred), 1)
+})
+
+test_that("can predict for out-of-domain timepoints", {
+  eval_time_obs_max_and_ood <- c(1022, 2000)
+  obs_without_NA <- lung[c(2,4),] # two observations because of https://github.com/boost-R/mboost/issues/117
+
+  mod <- boost_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("mboost") %>%
+    fit(Surv(time, status) ~ ., data = lung)
+
+  expect_no_error(
+    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+  )
 })
 
 # prediction: linear_pred -------------------------------------------------

@@ -205,6 +205,19 @@ test_that("survival predictions without surrogate splits for NA", {
   expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
 })
 
+test_that("can predict for out-of-domain timepoints", {
+  eval_time_obs_max_and_ood <- c(1022, 2000)
+  obs_without_NA <- lung[2,]
+
+  mod <- bag_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart") %>%
+    fit(Surv(time, status) ~ ., data = lung)
+
+  expect_no_error(
+    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+  )
+})
 
 # fit via matrix interface ------------------------------------------------
 

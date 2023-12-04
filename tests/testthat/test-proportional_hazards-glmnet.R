@@ -717,6 +717,20 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   expect_true(all(is.na(prob$.pred_survival)))
 })
 
+test_that("can predict for out-of-domain timepoints", {
+  eval_time_obs_max_and_ood <- c(1022, 2000)
+  obs_without_NA <- lung[2,]
+
+  mod <- proportional_hazards(penalty = 0.1) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ ., data = lung)
+
+  expect_no_error(
+    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+  )
+})
+
 # prediction: linear_pred -------------------------------------------------
 
 test_that("linear_pred predictions without strata", {
