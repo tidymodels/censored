@@ -449,6 +449,19 @@ test_that("survival_prob_coxph() works with confidence intervals", {
   )
 })
 
+test_that("can predict for out-of-domain timepoints", {
+  eval_time_obs_max_and_ood <- c(1022, 2000)
+  obs_without_NA <- lung[2,]
+
+  mod <- proportional_hazards() %>%
+    set_mode("censored regression") %>%
+    set_engine("survival") %>%
+    fit(Surv(time, status) ~ ., data = lung)
+
+  expect_no_error(
+    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+  )
+})
 
 # prediction: linear_pred -------------------------------------------------
 
