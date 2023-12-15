@@ -4,6 +4,8 @@
 
 * `extract_fit_engine()` now works properly for proportional hazards models fitted with the `"glmnet"` engine (#266).
 
+* `survival_time_coxnet()` gained a `multi` argument to allow multiple values for `penalty` (#278).
+
 
 # censored 0.2.0
 
