@@ -400,6 +400,7 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #' @param object A fitted `_coxnet` object.
 #' @param new_data Data for prediction.
 #' @param penalty Penalty value(s).
+#' @param multi Allow multiple penalty values?
 #' @param ... Options to pass to [survival::survfit()].
 #' @return A vector.
 #' @keywords internal
@@ -409,12 +410,18 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #'   set_engine("glmnet") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
-survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
+survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE, ...) {
+  n_obs <- nrow(new_data)
+  n_penalty <- length(penalty)
+  if (n_penalty > 1 & !multi) {
+    rlang::abort("Cannot use multiple penalty values with `multi = FALSE`.")
+  }
+
   new_x <- coxnet_prepare_x(new_data, object)
 
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (went_through_formula_interface &&
-    has_strata(object$formula, object$training_data)) {
+      has_strata(object$formula, object$training_data)) {
     new_strata <- get_strata_glmnet(
       object$formula,
       data = new_data,
@@ -426,11 +433,20 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
 
   missings_in_new_data <- get_missings_coxnet(new_x, new_strata)
   if (!is.null(missings_in_new_data)) {
-    n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
-    all_missing <- n_missing == n_total
+    all_missing <- n_missing == n_obs
     if (all_missing) {
-      ret <- rep(NA, n_missing)
+      if (multi) {
+        ret <- tibble::tibble(
+          penalty = rep(penalty, each = n_obs),
+          .pred_time = NA,
+          .row = rep(seq_len(n_obs), times = n_penalty)
+        ) %>%
+          tidyr::nest(.pred = c(-.row)) %>%
+          dplyr::select(-.row)
+      } else {
+        ret <- rep(NA, n_missing)
+      }
       return(ret)
     }
     new_x <- new_x[-missings_in_new_data, , drop = FALSE]
@@ -449,7 +465,28 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
     ...
   )
 
-  tabs <- summary(y)$table
+  if (length(penalty) > 1) {
+    res <- purrr::map(y, extract_patched_survival_time, missings_in_new_data, n_obs) %>%
+      purrr::list_c()
+  } else {
+    res <- extract_patched_survival_time(y, missings_in_new_data, n_obs)
+  }
+
+  if (multi) {
+    res <- tibble::tibble(
+      penalty = rep(penalty, each = n_obs),
+      .pred_time = res,
+      .row = rep(seq_len(n_obs), times = n_penalty)
+    ) %>%
+      tidyr::nest(.pred = c(-.row)) %>%
+      dplyr::select(-.row)
+  }
+
+  res
+}
+
+extract_patched_survival_time <- function(survfit_object, missings_in_new_data, n_obs) {
+  tabs <- summary(survfit_object)$table
   if (is.matrix(tabs)) {
     colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
     res <- unname(tabs[, "rmean"])
@@ -458,13 +495,12 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, ...) {
     res <- unname(tabs["rmean"])
   }
   if (!is.null(missings_in_new_data)) {
-    index_with_na <- rep(NA, n_total)
+    index_with_na <- rep(NA, n_obs)
     index_with_na[-missings_in_new_data] <- seq_along(res)
     res <- res[index_with_na]
   }
   res
 }
-
 
 get_missings_coxnet <- function(new_x, new_strata) {
   missings_logical <- apply(cbind(new_x, new_strata), MARGIN = 1, anyNA)

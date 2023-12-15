@@ -4,7 +4,7 @@
 \alias{survival_time_coxnet}
 \title{A wrapper for survival times with coxnet models}
 \usage{
-survival_time_coxnet(object, new_data, penalty = NULL, ...)
+survival_time_coxnet(object, new_data, penalty = NULL, multi = FALSE, ...)
 }
 \arguments{
 \item{object}{A fitted \verb{_coxnet} object.}
@@ -12,6 +12,8 @@ survival_time_coxnet(object, new_data, penalty = NULL, ...)
 \item{new_data}{Data for prediction.}
 
 \item{penalty}{Penalty value(s).}
+
+\item{multi}{Allow multiple penalty values?}
 
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }

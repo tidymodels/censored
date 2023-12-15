@@ -214,6 +214,186 @@ test_that("time predictions with NA in strata", {
   expect_identical(which(is.na(f_pred$.pred_time)), 1L)
 })
 
+test_that("survival_time_coxnet() works for single penalty value", {
+  # single penalty value
+  pred_penalty <- 0.1
+
+  lung2 <- lung[-14, ]
+  lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung2$time, lung2$status)
+
+  exp_f_fit <- suppressWarnings(
+    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox")
+  )
+  f_fit <- suppressWarnings(
+    proportional_hazards(penalty = 0.1) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+  )
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15, c("age", "ph.ecog")]
+  surv_fit <- survfit(
+    exp_f_fit,
+    newx = as.matrix(lung_pred),
+    s = pred_penalty,
+    x = lung_x,
+    y = lung_y
+  )
+
+  pred <- survival_time_coxnet(
+    f_fit,
+    new_data = lung_pred,
+    penalty = pred_penalty
+  )
+  exp_pred <- extract_patched_survival_time(
+    surv_fit,
+    missings_in_new_data = 2,
+    n_obs = 3
+  )
+
+  expect_identical(pred, exp_pred)
+  expect_identical(which(is.na(pred)), 2L)
+
+  # single observation
+  lung_pred <- lung[13, c("age", "ph.ecog")]
+  surv_fit <- survfit(
+    exp_f_fit,
+    newx = as.matrix(lung_pred),
+    s = pred_penalty,
+    x = lung_x,
+    y = lung_y
+  )
+
+  pred <- survival_time_coxnet(
+    f_fit,
+    new_data = lung_pred,
+    penalty = pred_penalty
+  )
+  exp_pred <- extract_patched_survival_time(
+    surv_fit,
+    missings_in_new_data = NULL,
+    n_obs = 1
+  )
+
+  expect_identical(pred, exp_pred)
+
+  # all observations with missings
+  lung_pred <- lung[c(14, 14), ]
+
+  pred <- survival_time_coxnet(
+    f_fit,
+    new_data = lung_pred,
+    penalty = pred_penalty
+  )
+  exp_pred <- rep(NA, 2)
+
+  expect_identical(pred, exp_pred)
+})
+
+test_that("survival_time_coxnet() works for multiple penalty values", {
+  # multiple penalty values
+  pred_penalty <- c(0.1, 0.2)
+
+  lung2 <- lung[-14, ]
+  lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung2$time, lung2$status)
+
+  exp_f_fit <- suppressWarnings(
+    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox")
+  )
+  f_fit <- suppressWarnings(
+    proportional_hazards(penalty = 0.1) %>%
+      set_engine("glmnet") %>%
+      fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+  )
+
+  # multiple observations (with 1 missing)
+  lung_pred <- lung[13:15, c("age", "ph.ecog")]
+  surv_fit <- survfit(
+    exp_f_fit,
+    newx = as.matrix(lung_pred),
+    s = pred_penalty,
+    x = lung_x,
+    y = lung_y
+  )
+
+  pred <- survival_time_coxnet(
+    f_fit,
+    new_data = lung_pred,
+    penalty = pred_penalty,
+    multi = TRUE
+  )
+  exp_pred <- purrr::map(
+    surv_fit,
+    extract_patched_survival_time,
+    missings_in_new_data = 2,
+    n_obs = 3
+  ) %>%
+    purrr::list_c()
+
+  expect_named(pred, ".pred")
+  expect_named(pred$.pred[[1]], c("penalty", ".pred_time"))
+  expect_identical(
+    pred %>% tidyr::unnest(cols = .pred) %>% dplyr::arrange(penalty) %>% dplyr::pull(.pred_time),
+    exp_pred
+  )
+  expect_identical(
+    pred$.pred[[2]] %>% dplyr::pull(.pred_time),
+    rep(NA_real_, 2)
+  )
+
+  # single observation
+  lung_pred <- lung[13, c("age", "ph.ecog")]
+  surv_fit <- survfit(
+    exp_f_fit,
+    newx = as.matrix(lung_pred),
+    s = pred_penalty,
+    x = lung_x,
+    y = lung_y
+  )
+
+  pred <- survival_time_coxnet(
+    f_fit,
+    new_data = lung_pred,
+    penalty = pred_penalty,
+    multi = TRUE
+  )
+  exp_pred <- purrr::map(
+    surv_fit,
+    extract_patched_survival_time,
+    missings_in_new_data = NULL,
+    n_obs = 1
+  ) %>%
+    purrr::list_c()
+
+  expect_named(pred, ".pred")
+  expect_named(pred$.pred[[1]], c("penalty", ".pred_time"))
+  expect_identical(
+    pred %>% tidyr::unnest(cols = .pred) %>% dplyr::arrange(penalty) %>% dplyr::pull(.pred_time),
+    exp_pred
+  )
+
+  # all observations with missings
+  lung_pred <- lung[c(14, 14), ]
+
+  pred <- survival_time_coxnet(
+    f_fit,
+    new_data = lung_pred,
+    penalty = pred_penalty,
+    multi = TRUE
+  )
+  exp_pred <- rep(NA, 4)
+
+  expect_named(pred, ".pred")
+  expect_named(pred$.pred[[1]], c("penalty", ".pred_time"))
+  expect_identical(
+    pred %>% tidyr::unnest(cols = .pred) %>% dplyr::arrange(penalty) %>% dplyr::pull(.pred_time),
+    exp_pred
+  )
+
+})
+
 # prediction: survival ----------------------------------------------------
 
 test_that("survival probabilities without strata", {
