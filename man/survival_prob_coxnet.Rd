@@ -11,6 +11,7 @@ survival_prob_coxnet(
   time = deprecated(),
   output = "surv",
   penalty = NULL,
+  multi = FALSE,
   ...
 )
 }
@@ -26,6 +27,8 @@ survival_prob_coxnet(
 \item{output}{One of "surv" or "haz".}
 
 \item{penalty}{Penalty value(s).}
+
+\item{multi}{Allow multiple penalty values?}
 
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }
