@@ -1175,7 +1175,7 @@ test_that("predictions with strata and dot in formula", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works with matrix input", {
+test_that("`fit_xy()` works with matrix input", {
   lung2 <- lung[-14, ]
   lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
   lung_y <- Surv(lung2$time, lung2$status)
@@ -1211,7 +1211,7 @@ test_that("`fix_xy()` works with matrix input", {
   expect_equal(f_pred_lp, xy_pred_lp)
 })
 
-test_that("`fix_xy()` works with data frame input", {
+test_that("`fit_xy()` works with data frame input", {
   lung2 <- lung[-14, ]
   lung_x <- lung2[, c("age", "ph.ecog")]
   lung_y <- data.frame(surv = Surv(lung2$time, lung2$status))
@@ -1247,7 +1247,7 @@ test_that("`fix_xy()` works with data frame input", {
   expect_equal(f_pred_lp, xy_pred_lp)
 })
 
-test_that("`fix_xy()` errors with stratification", {
+test_that("`fit_xy()` errors with stratification", {
   lung2 <- lung[-14, ]
   lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
   lung_y <- Surv(lung2$time, lung2$status)
