@@ -411,6 +411,10 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE, ...) {
+  if (is.null(penalty)) {
+    penalty <- object$spec$args$penalty
+  }
+
   n_obs <- nrow(new_data)
   n_penalty <- length(penalty)
   if (n_penalty > 1 & !multi) {
