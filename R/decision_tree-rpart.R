@@ -21,12 +21,10 @@ survival_prob_pecRpart <- function(object, new_data, eval_time) {
     pred <- matrix(pred, nrow = 1)
   }
 
-  res <- tibble::new_tibble(
-    list(
-        .row = rep(seq_len(n_obs), times = n_eval_time),
-        .eval_time = rep(eval_time, each = n_obs),
-        .pred_survival =  as.numeric(pred)
-    )
+  res <- data.frame(
+    .row = rep(seq_len(n_obs), times = n_eval_time),
+    .eval_time = rep(eval_time, each = n_obs),
+    .pred_survival =  as.numeric(pred)
   ) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)
