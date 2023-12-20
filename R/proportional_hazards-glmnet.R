@@ -524,6 +524,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
 #' @param penalty Penalty value(s).
+#' @param multi Allow multiple penalty values? Defaults to FALSE.
 #' @param ... Options to pass to [survival::survfit()].
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
@@ -539,6 +540,7 @@ survival_prob_coxnet <- function(object,
                                  time = deprecated(),
                                  output = "surv",
                                  penalty = NULL,
+                                 multi = FALSE,
                                  ...) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -553,14 +555,18 @@ survival_prob_coxnet <- function(object,
     penalty <- object$spec$args$penalty
   }
 
+  n_penalty <- length(penalty)
+  if (n_penalty > 1 & !multi) {
+    rlang::abort("Cannot use multiple penalty values with `multi = FALSE`.")
+  }
+
   output <- match.arg(output, c("surv", "haz"))
-  multi <- length(penalty) > 1
 
   new_x <- coxnet_prepare_x(new_data, object)
 
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (went_through_formula_interface &&
-    has_strata(object$formula, object$training_data)) {
+      has_strata(object$formula, object$training_data)) {
     new_strata <- get_strata_glmnet(
       object$formula,
       data = new_data,
@@ -577,7 +583,11 @@ survival_prob_coxnet <- function(object,
     n_missing <- length(missings_in_new_data)
     all_missing <- n_missing == n_obs
     if (all_missing) {
-      ret <- predict_survival_na(eval_time, interval = "none")
+      if (multi) {
+        ret <- predict_survival_na(eval_time, interval = "none", penalty = penalty)
+      } else {
+        ret <- predict_survival_na(eval_time, interval = "none")
+      }
       ret <- tibble(.pred = rep(list(ret), n_missing))
       return(ret)
     }
@@ -597,7 +607,7 @@ survival_prob_coxnet <- function(object,
     ...
   )
 
-  if (multi) {
+  if (length(penalty) > 1) {
     res_patched <- purrr::map(
       y,
       survfit_summary_to_patched_tibble,
@@ -605,7 +615,17 @@ survival_prob_coxnet <- function(object,
       eval_time = eval_time,
       n_obs = n_obs
     )
-    res <- tibble::tibble(
+  } else {
+    res_patched <- survfit_summary_to_patched_tibble(
+      y,
+      index_missing = missings_in_new_data,
+      eval_time = eval_time,
+      n_obs = n_obs
+    )
+  }
+
+  if (multi) {
+    res_formatted <- tibble::tibble(
       penalty = penalty,
       res_patched = res_patched
     ) %>%
@@ -614,16 +634,11 @@ survival_prob_coxnet <- function(object,
       tidyr::nest(.pred = c(-.row)) %>%
       dplyr::select(-.row)
   } else {
-    res <- survfit_summary_to_patched_tibble(
-      y,
-      index_missing = missings_in_new_data,
-      eval_time = eval_time,
-      n_obs = n_obs
-    ) %>%
+    res_formatted <- res_patched %>%
       keep_cols(output) %>%
       tidyr::nest(.pred = c(-.row)) %>%
       dplyr::select(-.row)
   }
 
-  res
+  res_formatted
 }

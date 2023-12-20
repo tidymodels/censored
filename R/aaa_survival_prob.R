@@ -62,12 +62,31 @@ prob_template <- tibble::tibble(
 )
 
 
-predict_survival_na <- function(eval_time, interval = "none") {
-  ret <- tibble(.eval_time = eval_time, .pred_survival = NA_real_)
+predict_survival_na <- function(eval_time, interval = "none", penalty = NULL) {
+  if (!is.null(penalty)) {
+    n_penalty <- length(penalty)
+    n_eval_time <- length(eval_time)
+    ret <- tibble::new_tibble(
+      list(
+        penalty = rep(penalty, each = n_eval_time),
+        .eval_time = rep(eval_time, times = n_penalty),
+        .pred_survival = rep(NA_real_, n_penalty * n_eval_time)
+      )
+    )
+  } else {
+    ret <- tibble::new_tibble(
+      list(
+        .eval_time = eval_time,
+        .pred_survival = rep(NA_real_, length(eval_time))
+      )
+    )
+  }
+  
   if (interval == "confidence") {
     ret <- ret %>%
       dplyr::mutate(.pred_lower = NA_real_, .pred_upper = NA_real_)
   }
+
   ret
 }
 
