@@ -28,7 +28,7 @@ survival_prob_coxnet(
 
 \item{penalty}{Penalty value(s).}
 
-\item{multi}{Allow multiple penalty values?}
+\item{multi}{Allow multiple penalty values? Defaults to FALSE.}
 
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }
