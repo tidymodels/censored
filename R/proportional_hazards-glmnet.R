@@ -621,12 +621,11 @@ survival_prob_coxnet <- function(object,
   }
 
   if (multi) {
-    res <- tibble::tibble(
+    res_formatted <- tibble::tibble(
       penalty = penalty,
       res_patched = res_patched
     ) %>%
-      tidyr::unnest(cols = res_patched)
-    res_formatted <- res %>%
+      tidyr::unnest(cols = res_patched) %>%
       keep_cols(output, keep_penalty = TRUE) %>%
       tidyr::nest(.pred = c(-.row)) %>%
       dplyr::select(-.row)
