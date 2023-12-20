@@ -21,10 +21,6 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
     eval_time <- time
   }
 
-  # This is not just a `post` hook in `set_pred()` because parsnip adds the
-  # argument `eval_time` to the prediction call and `aorsf::predict.orsf_fit()`
-  # expects empty dots, i.e. no `eval_time` argument.
-
   pred <- predict(
     object,
     new_data = new_data,
