@@ -25,7 +25,7 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
   # argument `eval_time` to the prediction call and `aorsf::predict.orsf_fit()`
   # expects empty dots, i.e. no `eval_time` argument.
 
-  res <- predict(
+  pred <- predict(
     object,
     new_data = new_data,
     pred_horizon = eval_time,
@@ -34,8 +34,16 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
     boundary_checks = FALSE
   )
 
-  res <- matrix_to_nested_tibbles_survival(res, eval_time)
+  n_obs <- nrow(new_data)
+  n_eval_time <- length(eval_time) 
 
-  # return a tibble
-  tibble(.pred = res)
+  res <- data.frame(
+    .row = rep(seq_len(n_obs), times = n_eval_time),
+    .eval_time = rep(eval_time, each = n_obs),
+    .pred_survival =  as.numeric(pred)
+  ) %>%
+    tidyr::nest(.pred = c(-.row)) %>%
+    dplyr::select(-.row)
+
+  res
 }
