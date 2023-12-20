@@ -520,7 +520,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
 #' @param output One of "surv" or "haz".
 #' @param penalty Penalty value(s).
-#' @param multi Allow multiple penalty values?
+#' @param multi Allow multiple penalty values? Defaults to FALSE.
 #' @param ... Options to pass to [survival::survfit()].
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
