@@ -474,7 +474,6 @@ test_that("survival probabilities without strata", {
     dplyr::select(penalty, .eval_time, .pred_survival)
 
 
-  skip("temporarily until we call `survival_prob_coxnet()` directly from `multi_predict()`")
   pred_multi <- multi_predict(
     f_fit,
     new_data = new_data_3,
@@ -569,7 +568,6 @@ test_that("survival probabilities with strata", {
     dplyr::arrange(.row, penalty, .eval_time) %>%
     dplyr::select(penalty, .eval_time, .pred_survival)
 
-  skip("temporarily until we call `survival_prob_coxnet()` directly from `multi_predict()`")
   pred_multi <- multi_predict(
     f_fit,
     new_data = new_data_3,
@@ -1288,4 +1286,458 @@ test_that("`fit_xy()` errors with stratification", {
   expect_snapshot(error = TRUE, {
     fit_xy(spec, x = lung_x, y = lung_y_s)
   })
+})
+
+# `multi_predict()` works for all `type`s available for `predict()` -------
+
+test_that("multi_predict(type = time)", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    penalty = c(0.01, 0.1)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_time"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "time",
+    penalty = c(0.01, 0.1)
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_time"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = survival) for multiple eval_time points", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = c(100, 500),
+    penalty = c(0.01, 0.1)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "survival",
+    eval_time = c(100, 500),
+    penalty = c(0.01, 0.1)
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = survival) for a single eval_time", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = 100,
+    penalty = c(0.01, 0.1)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "survival",
+    eval_time = 100,
+    penalty = c(0.01, 0.1)
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = linear_pred)", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    penalty = c(0.01, 0.1)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "linear_pred",
+    penalty = c(0.01, 0.1)
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+    ))
+  )
+})
+
+test_that("multi_predict(): type = raw", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  exp_f_fit <- glmnet::glmnet(
+    x = as.matrix(lung2[, c(4, 6)]),
+    y = Surv(lung2$time, lung2$status),
+    family = "cox"
+  )
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  exp_pred <- predict(exp_f_fit, as.matrix(new_data_3[, c(4, 6)]),
+                      s = c(0.01, 0.1))
+  f_pred <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "raw",
+    penalty = c(0.01, 0.1)
+  )
+  expect_identical(f_pred, exp_pred)
+
+  # single observation
+  exp_pred_1 <- predict(exp_f_fit, as.matrix(new_data_3[1, c(4, 6)]),
+                        s = c(0.01, 0.1))
+  f_pred_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1, ],
+    type = "raw",
+    penalty = c(0.01, 0.1)
+  )
+  expect_identical(f_pred_1, exp_pred_1)
+})
+
+# multi_predict() works with a single penalty value -----------------------
+
+test_that("multi_predict(type = time) works with single penalty", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    penalty = 0.1
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_time"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "time",
+    penalty = 0.1
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_time"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = survival) works with single penalty for multiple eval_time points", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = 100,
+    penalty = 0.1
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "survival",
+    eval_time = 100,
+    penalty = 0.1
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = survival) works with single penalty for a single eval_time", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = 100,
+    penalty = 0.1
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "survival",
+    eval_time = 100,
+    penalty = 0.1
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = linear_pred) works with single penalty", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    penalty = 0.1
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+    ))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1,],
+    type = "linear_pred",
+    penalty = 0.1
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+    ))
+  )
+})
+
+test_that("multi_predict(type = raw) works with single penalty", {
+  lung2 <- lung[-14, ]
+  exp_f_fit <- glmnet::glmnet(
+    x = as.matrix(lung2[, c(4, 6)]),
+    y = Surv(lung2$time, lung2$status),
+    family = "cox"
+  )
+  cox_spec <- proportional_hazards(penalty = 0.123) %>% set_engine("glmnet")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  f_pred <- multi_predict(f_fit, lung2, type = "raw", penalty = 0.01)
+  exp_f_pred <- predict(exp_f_fit, newx = as.matrix(lung2[, c(4, 6)]), s = 0.01)
+  expect_equal(f_pred, exp_f_pred)
+
+  # single observation
+  f_pred_1 <- multi_predict(f_fit, lung2[1, ], type = "raw", penalty = 0.01)
+  exp_f_pred_1 <- predict(exp_f_fit, newx = as.matrix(lung2[1, c(4, 6)]), s = 0.01)
+  expect_equal(f_pred_1, exp_f_pred_1)
+})
+
+# multi_predict() handles defaults correctly ------------------------------
+
+test_that("multi_predict(): type = NULL", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi_null <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = NULL,
+    penalty = c(0.01, 0.1)
+  )
+  exp_pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    penalty = c(0.01, 0.1)
+  )
+
+  expect_identical(pred_multi_null, exp_pred_multi)
+})
+
+test_that("multi_predict() recognises default penalty", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) %>%
+    set_mode("censored regression") %>%
+    set_engine("glmnet") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  # can use any prediction type to test
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  exp_pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = c(100, 200),
+    penalty = 0.123
+  )
+
+  expect_identical(pred_multi, exp_pred_multi)
 })
