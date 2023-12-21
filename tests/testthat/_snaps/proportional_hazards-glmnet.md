@@ -60,8 +60,8 @@
       data = lung)
     Condition
       Error:
-      ! There can only be a single 'strata' term specified using the `strata()` function.
-      i It can contain multiple strata columns, e.g., ` ~ x + strata(s1, s2)`.
+      ! There can only be a single strata term specified using the `strata()` function.
+      i It can contain multiple strata columns, e.g., `~ x + strata(s1, s2)`.
 
 # formula modifications to remove strata
 
@@ -78,8 +78,8 @@
     Condition
       Error:
       ! Stratification must be nested under a chain of `+` calls.
-      i # Good: ~ x1 + x2 + strata(s)
-      i # Bad: ~ x1 + (x2 + strata(s))
+      i # Good: `~ x1 + x2 + strata(s)`
+      i # Bad: `~ x1 + (x2 + strata(s))`
 
 # protect certain glmnet engine args
 
@@ -88,7 +88,7 @@
         fit(Surv(time, status) ~ age + sex, data = lung)
     Condition
       Error:
-      ! These argument(s) cannot be used to create the model: `family`
+      ! This argument cannot be used to create the model: `family`.
 
 # predictions with strata and dot in formula
 

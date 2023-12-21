@@ -18,7 +18,7 @@
 #' @param data The data.
 #' @inheritParams glmnet::glmnet
 #' @param ... additional parameters passed to glmnet::glmnet.
-#' @param call The call passed to [rlang::abort()].
+#' @param call The call used in errors and warnings.
 #'
 #' @return A fitted `glmnet` model.
 #' @export
@@ -87,10 +87,10 @@ check_strata_nterms <- function(formula, data, call = caller_env()) {
   mod_terms <- stats::terms(formula, specials = "strata", data = data)
   strata_terms <- attr(mod_terms, "specials")$strata
   if (length(strata_terms) > 1) {
-    rlang::abort(
+    cli::cli_abort(
       c(
-        "There can only be a single 'strata' term specified using the `strata()` function.",
-        i = "It can contain multiple strata columns, e.g., ` ~ x + strata(s1, s2)`."
+        "There can only be a single strata term specified using the {.fn strata} function.",
+        i = "It can contain multiple strata columns, e.g., {.code ~ x + strata(s1, s2)}."
       ),
       call = call
     )
@@ -146,7 +146,7 @@ drop_strata <- function(expr, in_plus = TRUE) {
 
 check_intercept_model <- function(expr, call = caller_env()) {
   if (expr == rlang::sym("1") | is_call(expr, "strata")) {
-    abort(
+    cli::cli_abort(
       "The Cox model does not contain an intercept, please add a predictor.",
       call = call
     )
@@ -156,11 +156,11 @@ check_intercept_model <- function(expr, call = caller_env()) {
 
 check_strata_remaining <- function(expr, call = rlang::caller_env()) {
   if (is_call(expr, "strata")) {
-    abort(
+    cli::cli_abort(
       c(
-        "Stratification must be nested under a chain of `+` calls.",
-        i = "# Good: ~ x1 + x2 + strata(s)",
-        i = "# Bad: ~ x1 + (x2 + strata(s))"
+        "Stratification must be nested under a chain of {.code +} calls.",
+        i = "# Good: {.code ~ x1 + x2 + strata(s)}",
+        i = "# Bad: {.code ~ x1 + (x2 + strata(s))}"
       ),
       call = call
     )
@@ -175,13 +175,10 @@ check_strata_remaining <- function(expr, call = rlang::caller_env()) {
 
 check_dots_coxnet <- function(x, call = caller_env()) {
   bad_args <- c("subset", "contrasts", "offset", "family")
-  bad_names <- names(x) %in% bad_args
-  if (any(bad_names)) {
-    rlang::abort(
-      glue::glue(
-        "These argument(s) cannot be used to create the model: ",
-        glue::glue_collapse(glue::glue("`{names(x)[bad_names]}`"), sep = ", ")
-      ),
+  bad_names <- names(x)[names(x) %in% bad_args]
+  if (length(bad_names) > 0) {
+    cli::cli_abort(
+      "{?This/These} argument{?s} cannot be used to create the model: {.arg {bad_names}}.",
       call = call
     )
   }
@@ -418,7 +415,7 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE
   n_obs <- nrow(new_data)
   n_penalty <- length(penalty)
   if (n_penalty > 1 & !multi) {
-    rlang::abort("Cannot use multiple penalty values with `multi = FALSE`.")
+    cli::cli_abort("Cannot use multiple penalty values with {.code multi = FALSE}.")
   }
 
   new_x <- coxnet_prepare_x(new_data, object)
@@ -557,7 +554,7 @@ survival_prob_coxnet <- function(object,
 
   n_penalty <- length(penalty)
   if (n_penalty > 1 & !multi) {
-    rlang::abort("Cannot use multiple penalty values with `multi = FALSE`.")
+    cli::cli_abort("Cannot use multiple penalty values with {.code multi = FALSE}.")
   }
 
   output <- match.arg(output, c("surv", "haz"))
