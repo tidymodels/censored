@@ -37,7 +37,7 @@ fit_xy.proportional_hazards <- function(object,
   # special case for glmnet, which puts stratification on the response
   # via `glmnet::stratifySurv()`
   if (inherits(y, "stratifySurv")) {
-    rlang::abort("For stratification, please use the formula interface via `fit()`.")
+    cli::cli_abort("For stratification, please use the formula interface via {.fn fit}.")
   }
 
   # call parsnip::fit_xy.model_spec()
