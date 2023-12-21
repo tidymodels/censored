@@ -26,7 +26,6 @@ Imports:
     dials,
     dplyr (>= 0.8.0.1),
     generics,
-    glue,
     hardhat (>= 1.1.0),
     lifecycle,
     mboost,
