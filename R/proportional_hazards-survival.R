@@ -29,10 +29,12 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
     strata <- grep(pattern = "^strata", x = strata, value = TRUE)
     strata <- sub(pattern = "strata\\(", replacement = "", x = strata)
     strata <- sub(pattern = "\\)", replacement = "", x = strata)
+    strata_available <- strata %in% names(new_data)
+    strata_missing <- strata[!strata_available]
 
-    if (!all(strata %in% names(new_data))) {
-      rlang::abort(
-        "Please provide the strata variable(s) in `new_data`.",
+    if (length(strata_missing) > 0) {
+      cli::cli_abort(
+        "{.arg new_data} is missing the following stratification variable{?s}: {.code {strata_missing}}.",
         call = call
       )
     }

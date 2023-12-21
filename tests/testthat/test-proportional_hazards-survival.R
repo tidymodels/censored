@@ -68,13 +68,6 @@ test_that("time predictions with strata", {
   # single observation
   expect_error(f_pred_1 <- predict(f_fit, lung[1, ], type = "time"), NA)
   expect_equal(nrow(f_pred_1), 1)
-
-  # prediction without strata info should fail
-  new_data_0 <- data.frame(age = c(50, 60), sex = 1)
-  expect_error(
-    predict(f_fit, new_data = new_data_0, type = "time"),
-    "provide the strata"
-  )
 })
 
 test_that("time predictions with NA", {
@@ -149,6 +142,14 @@ test_that("prediction from stratified models require strata variables in new_dat
 
   expect_snapshot(error = TRUE, {
     predict(f_fit, new_data = dplyr::select(lung, -inst))
+  })
+
+  f_fit <- proportional_hazards() %>%
+    set_engine("survival") %>%
+      fit(Surv(time, status) ~ age + sex + strata(inst) + strata(ph.ecog), data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, new_data = dplyr::select(lung, -inst, -ph.ecog))
   })
 })
 
@@ -264,8 +265,7 @@ test_that("survival predictions with strata", {
   # prediction without strata info should fail
   new_data_s <- new_data_3 %>% dplyr::select(-enum)
   expect_error(
-    predict(f_fit, new_data = new_data_s, type = "survival", eval_time = 20),
-    "provide the strata"
+    predict(f_fit, new_data = new_data_s, type = "survival", eval_time = 20)
   )
 })
 
