@@ -191,11 +191,8 @@ test_that("`fix_xy()` works", {
   set.seed(1)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
-  elements_to_ignore <- "data"
-  f_fit_modified <- f_fit$fit
-  xy_fit_modified <- xy_fit$fit
-  f_fit_modified[elements_to_ignore] <- NULL
-  xy_fit_modified[elements_to_ignore] <- NULL
+  f_fit_modified <- f_fit$fit$forest
+  xy_fit_modified <- xy_fit$fit$forest
 
   expect_equal(
     f_fit_modified,
@@ -236,7 +233,7 @@ test_that("can handle case weights", {
   )
 
   expect_equal(
-    attr(wt_fit$fit, "weights_user"),
+    wt_fit$fit$weights,
     as.vector(dat$wts)
   )
 })
