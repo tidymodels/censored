@@ -48,6 +48,8 @@ Suggests:
     rmarkdown,
     rpart,
     testthat (>= 3.0.0)
+Remotes: 
+    ropensci/aorsf
 Config/Needs/website:
     tidymodels,
     tidyverse/tidytemplate
