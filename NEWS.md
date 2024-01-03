@@ -10,8 +10,6 @@
 
 * Bug fix for `multi_predict(type = "survival")` for `proportional_hazards(engine = "glmnet")` models: when used with a single `penalty` value, this value is now included in the results. It was previously omitted (#267, #282).
 
-* Errors now use the cli package for more consistent styling (#286).
-
 
 # censored 0.2.0
 
