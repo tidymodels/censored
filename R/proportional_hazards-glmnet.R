@@ -341,33 +341,34 @@ multi_predict._coxnet <- function(object,
   }
   check_pred_type_dots(object, type, ...)
 
-pred <- switch(type,
-  "time" = multi_predict_coxnet_time(
-    object,
-    new_data = new_data,
-    penalty = penalty
-  ),
-  "survival" = multi_predict_coxnet_survival(
-    object,
-    new_data = new_data,
-    penalty = penalty,
-    ... # contains eval_time
-  ),
-  "linear_pred" = multi_predict_coxnet_linear_pred(
-    object,
-    new_data = new_data,
-    opts = dots,
-    penalty = penalty
-  ),
-  "raw" = predict(
-    object,
-    new_data = new_data,
-    type = "raw",
-    opts = opts,
-    penalty = penalty,
-    multi = TRUE
+  pred <- switch(
+    type,
+    "time" = multi_predict_coxnet_time(
+      object,
+      new_data = new_data,
+      penalty = penalty
+    ),
+    "survival" = multi_predict_coxnet_survival(
+      object,
+      new_data = new_data,
+      penalty = penalty,
+      ... # contains eval_time
+    ),
+    "linear_pred" = multi_predict_coxnet_linear_pred(
+      object,
+      new_data = new_data,
+      opts = dots,
+      penalty = penalty
+    ),
+    "raw" = predict(
+      object,
+      new_data = new_data,
+      type = "raw",
+      opts = opts,
+      penalty = penalty,
+      multi = TRUE
+    )
   )
-)
 
   pred
 }
