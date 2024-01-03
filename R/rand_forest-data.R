@@ -196,7 +196,7 @@ make_rand_forest_aorsf <- function() {
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_orsf"),
       args = list(
-        object = rlang::expr(object),
+        object = rlang::expr(object$fit),
         new_data = rlang::expr(new_data),
         eval_time = rlang::expr(eval_time)
       )
