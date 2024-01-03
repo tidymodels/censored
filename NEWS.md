@@ -6,6 +6,10 @@
 
 * `survival_time_coxnet()` and `survival_prob_coxnet()` gain a `multi` argument to allow multiple values for `penalty` (#278, #279).
 
+* `multi_predict()` is now available for all prediction types for `proportional_hazards()` models with the `"glmnet"` engine, so newly also for `type = "time"` and `type = "raw"` (#277, #282).
+
+* Bug fix for `multi_predict(type = "survival")` for `proportional_hazards(engine = "glmnet")` models: when used with a single `penalty` value, this value is now included in the results. It was previously omitted (#267, #282).
+
 
 # censored 0.2.0
 
