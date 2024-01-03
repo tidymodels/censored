@@ -22,7 +22,7 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
   }
 
   pred <- predict(
-    object,
+    object$fit,
     new_data = new_data,
     pred_horizon = eval_time,
     pred_type = "surv",
