@@ -30,9 +30,10 @@ survreg_quant <- function(results, object) {
 }
 
 # copied form recipes
-names0 <- function(num, prefix = "x") {
+names0 <- function(num, prefix = "x", ..., call = caller_env()) {
+  check_dots_empty()
   if (num < 1) {
-    rlang::abort("`num` should be > 0.")
+    cli::cli_abort("{.arg num} should be > 0.", call = call)
   }
   ind <- format(1:num)
   ind <- gsub(" ", "0", ind)
