@@ -86,8 +86,18 @@ make_decision_tree_rpart <- function() {
 
 make_decision_tree_partykit <- function() {
   parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "partykit")
-  parsnip::set_dependency("decision_tree", eng = "partykit", pkg = "partykit")
-  parsnip::set_dependency("decision_tree", eng = "partykit", pkg = "censored")
+  parsnip::set_dependency(
+    "decision_tree", 
+    eng = "partykit", 
+    pkg = "partykit", 
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "decision_tree", 
+    eng = "partykit", 
+    pkg = "censored", 
+    mode = "censored regression"
+  )
 
   parsnip::set_model_arg(
     model = "decision_tree",
