@@ -331,11 +331,6 @@ multi_predict._coxnet <- function(object,
   )
 
   # from predict.model_fit()
-  if (inherits(object$fit, "try-error")) {
-    rlang::warn("Model fit failed; cannot make predictions.")
-    return(NULL)
-  }
-
   check_installs(object$spec)
   load_libs(object$spec, quiet = TRUE)
 
