@@ -9,12 +9,8 @@
 #' @name aorsf_internal
 #' @examples
 #' library(aorsf)
-#' rf_spec <-
-#'   rand_forest(trees = 10) %>%
-#'   set_engine("aorsf", na_action = 'impute_meanmode') %>%
-#'   set_mode("censored regression")
-#' rf_fit <- fit(rf_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-#' preds <- survival_prob_orsf(rf_fit, new_data = lung[1:3, ], eval_time = c(250, 100))
+#' aorsf <- orsf(na.omit(lung), Surv(time, status) ~ age + ph.ecog, n_tree = 10)
+#' preds <- survival_prob_orsf(aorsf, lung[1:3, ], eval_time = c(250, 100))
 survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated()) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -26,7 +22,7 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
   }
 
   pred <- predict(
-    object$fit,
+    object,
     new_data = new_data,
     pred_horizon = eval_time,
     pred_type = "surv",
