@@ -165,7 +165,7 @@ check_strata_remaining <- function(expr, call = rlang::caller_env()) {
       call = call
     )
   } else if (is_call(expr)) {
-    #lapply() instead of map() to avoid map() reporting the index of where it errors
+    # lapply() instead of map() to avoid map() reporting the index of where it errors
     expr[-1] <- lapply(as.list(expr[-1]), check_strata_remaining, call = call)
     expr
   } else {
@@ -304,13 +304,10 @@ predict_raw._coxnet <- function(object, new_data, opts = list(), ...) {
 multi_predict._coxnet <- function(object,
                                   new_data,
                                   type = NULL,
+                                  opts = list(),
                                   penalty = NULL,
                                   ...) {
   dots <- list(...)
-
-  if (any(names(dots) == "newdata")) {
-    rlang::abort("Please use `new_data` instead of `newdata`.")
-  }
 
   object$spec <- eval_args(object$spec)
 
@@ -323,29 +320,100 @@ multi_predict._coxnet <- function(object,
     }
   }
 
-  if (type == "linear_pred") {
-    pred <- multi_predict_coxnet_linear_pred(
+  # from predict._coxnet()
+  object$spec$args$penalty <- parsnip::.check_glmnet_penalty_predict(
+    penalty,
+    object,
+    multi = TRUE
+  )
+
+  # from predict.model_fit()
+  check_installs(object$spec)
+  load_libs(object$spec, quiet = TRUE)
+
+  type <- check_pred_type(object, type)
+  check_spec_pred_type(object, type) # added from predict_<type>()
+  if (type != "raw" && length(opts) > 0) {
+    rlang::warn("`opts` is only used with `type = 'raw'` and was ignored.")
+  }
+  check_pred_type_dots(object, type, ...)
+
+  pred <- switch(
+    type,
+    "time" = multi_predict_coxnet_time(
+      object,
+      new_data = new_data,
+      penalty = penalty
+    ),
+    "survival" = multi_predict_coxnet_survival(
+      object,
+      new_data = new_data,
+      penalty = penalty,
+      ... # contains eval_time
+    ),
+    "linear_pred" = multi_predict_coxnet_linear_pred(
       object,
       new_data = new_data,
       opts = dots,
       penalty = penalty
-    )
-  } else {
-    pred <- predict(
+    ),
+    "raw" = predict(
       object,
       new_data = new_data,
-      type = type,
-      ...,
+      type = "raw",
+      opts = opts,
       penalty = penalty,
       multi = TRUE
     )
-  }
+  )
 
   pred
 }
 
-multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
+multi_predict_coxnet_time <- function(object, new_data, penalty) {
+  # from predict_time.model_fit()
+  new_data <- parsnip::prepare_data(object, new_data)
 
+  # no pre- or post-hooks for this engine
+  res <- survival_time_coxnet(
+    object,
+    new_data = new_data,
+    penalty = penalty,
+    multi = TRUE
+  )
+
+  res
+}
+
+multi_predict_coxnet_survival <- function(object, new_data, penalty, ...) {
+  dots <- list(...)
+
+  # from predict_survival.model_fit()
+  if ("time" %in% names(dots)) {
+    lifecycle::deprecate_warn(
+      "0.2.0",
+      "multi_predict(time)",
+      "multi_predict(eval_time)"
+    )
+    dots$eval_time <- dots$time
+  }
+  dots$eval_time <- .filter_eval_time(dots$eval_time)
+
+  new_data <- parsnip::prepare_data(object, new_data)
+
+  # no pre- or post-hooks for this engine
+  res <- survival_prob_coxnet(
+    object,
+    new_data = new_data,
+    penalty = penalty,
+    multi = TRUE,
+    eval_time = dots$eval_time
+  )
+
+  res
+}
+
+multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
   if ("increasing" %in% names(opts)) {
     increasing <- opts$increasing
     opts$increasing <- NULL
