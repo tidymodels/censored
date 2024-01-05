@@ -31,7 +31,7 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
   )
 
   n_obs <- nrow(new_data)
-  n_eval_time <- length(eval_time) 
+  n_eval_time <- length(eval_time)
 
   res <- data.frame(
     .row = rep(seq_len(n_obs), times = n_eval_time),
