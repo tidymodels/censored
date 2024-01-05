@@ -191,8 +191,16 @@ test_that("`fix_xy()` works", {
   set.seed(1)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
-  f_fit_modified <- f_fit$fit$forest
-  xy_fit_modified <- xy_fit$fit$forest
+  if (utils::packageVersion("aorsf") >= "0.1.2") {
+    f_fit_modified <- f_fit$fit$forest
+    xy_fit_modified <- xy_fit$fit$forest
+  } else {
+    elements_to_ignore <- "data"
+    f_fit_modified <- f_fit$fit
+    xy_fit_modified <- xy_fit$fit
+    f_fit_modified[elements_to_ignore] <- NULL
+    xy_fit_modified[elements_to_ignore] <- NULL
+  }
 
   expect_equal(
     f_fit_modified,
@@ -232,8 +240,14 @@ test_that("can handle case weights", {
     regexp = NA
   )
 
+  if (utils::packageVersion("aorsf") >= "0.1.2") {
+    fit_weights <- wt_fit$fit$weights
+  } else {
+    fit_weights <- attr(wt_fit$fit, "weights_user")
+  }
+
   expect_equal(
-    wt_fit$fit$weights,
+    fit_weights,
     as.vector(dat$wts)
   )
 })
