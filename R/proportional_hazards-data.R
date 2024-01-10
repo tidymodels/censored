@@ -151,7 +151,7 @@ make_proportional_hazards_glmnet <- function() {
       predictor_indicators = "traditional",
       compute_intercept = TRUE,
       remove_intercept = TRUE,
-      allow_sparse_x = TRUE
+      allow_sparse_x = FALSE
     )
   )
 
