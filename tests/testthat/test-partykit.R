@@ -1,4 +1,7 @@
 test_that("survival_prob_partykit() works for ctree", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
   set.seed(1234)
   # use only ph.ecog to rule out surrogate splits
   mod <- partykit::ctree(Surv(time, status) ~ ph.ecog, data = lung)
@@ -69,6 +72,9 @@ test_that("survival_prob_partykit() works for ctree", {
 })
 
 test_that("survival_prob_partykit() works for cforest", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+  
   # partykit::cforest takes care of missing values via some form of randomness
   # hence set the seed before predicting on data with missings
 

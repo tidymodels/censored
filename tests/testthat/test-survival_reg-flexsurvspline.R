@@ -1,6 +1,8 @@
 library(testthat)
 
 test_that("model object", {
+  skip_if_not_installed("flexsurv")
+
   set.seed(1234)
   exp_f_fit <- flexsurv::flexsurvspline(
     Surv(time, status) ~ age + ph.ecog,
@@ -28,6 +30,8 @@ test_that("model object", {
 # prediction: time --------------------------------------------------------
 
 test_that("time prediction", {
+  skip_if_not_installed("flexsurv")
+
   exp_fit <- flexsurv::flexsurvspline(Surv(time, status) ~ age, data = lung, k = 1)
   exp_pred <- predict(exp_fit, head(lung), type = "response")
 
@@ -46,6 +50,8 @@ test_that("time prediction", {
 # prediction: survival ----------------------------------------------------
 
 test_that("survival probability prediction", {
+  skip_if_not_installed("flexsurv")
+
   exp_fit <- flexsurv::flexsurvspline(
     Surv(time, status) ~ age + sex,
     data = lung, k = 1
@@ -125,6 +131,8 @@ test_that("survival probability prediction", {
 })
 
 test_that("survival probabilities for single eval time point", {
+  skip_if_not_installed("flexsurv")
+
   f_fit <- survival_reg(engine = "flexsurvspline") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
@@ -144,6 +152,8 @@ test_that("survival probabilities for single eval time point", {
 })
 
 test_that("can predict for out-of-domain timepoints", {
+  skip_if_not_installed("flexsurv")
+
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2,]
 
@@ -163,6 +173,8 @@ test_that("can predict for out-of-domain timepoints", {
 # prediction: linear_pred -------------------------------------------------
 
 test_that("linear predictor", {
+  skip_if_not_installed("flexsurv")
+
   f_fit <- survival_reg() %>%
     set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
@@ -188,6 +200,8 @@ test_that("linear predictor", {
 # prediction: quantile ----------------------------------------------------
 
 test_that("quantile predictions", {
+  skip_if_not_installed("flexsurv")
+
   set.seed(1)
   fit_s <- survival_reg() %>%
     set_engine("flexsurvspline", k = 1) %>%
@@ -256,6 +270,8 @@ test_that("quantile predictions", {
 # prediction: hazard ------------------------------------------------------
 
 test_that("hazard prediction", {
+  skip_if_not_installed("flexsurv")
+
   exp_fit <- flexsurv::flexsurvspline(
     Surv(time, status) ~ age + sex,
     data = lung, k = 1
@@ -313,6 +329,8 @@ test_that("hazard prediction", {
 })
 
 test_that("hazard for single eval time point", {
+  skip_if_not_installed("flexsurv")
+
   f_fit <- survival_reg(engine = "flexsurvspline") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
@@ -335,6 +353,8 @@ test_that("hazard for single eval time point", {
 # fit via matrix interface ------------------------------------------------
 
 test_that("`fix_xy()` works", {
+  skip_if_not_installed("flexsurv")
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
@@ -411,6 +431,8 @@ test_that("`fix_xy()` works", {
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {
+  skip_if_not_installed("flexsurv")
+  
   # flexsurv engine can only take weights > 0
   set.seed(1)
   wts <- runif(nrow(lung))

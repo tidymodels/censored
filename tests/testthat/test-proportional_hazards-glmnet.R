@@ -1,4 +1,5 @@
 library(testthat)
+skip_if_not_installed("glmnet")
 suppressPackageStartupMessages(library(glmnet))
 
 test_that("model object", {
