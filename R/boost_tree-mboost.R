@@ -8,7 +8,7 @@
 #'
 #' @param formula A symbolic description of the model to be fitted.
 #' @param data A data frame containing the variables in the model.
-#' @param family A [mboost::Family] object.
+#' @param family A [mboost::Family()] object.
 #' @param weights An optional vector of weights to be used in the fitting process.
 #' @param teststat A character specifying the type of the test statistic to be
 #'   applied for variable selection.

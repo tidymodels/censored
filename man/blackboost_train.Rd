@@ -24,7 +24,7 @@ blackboost_train(
 
 \item{data}{A data frame containing the variables in the model.}
 
-\item{family}{A \link[mboost:Family]{mboost::Family} object.}
+\item{family}{A \code{\link[mboost:Family]{mboost::Family()}} object.}
 
 \item{weights}{An optional vector of weights to be used in the fitting process.}
 
