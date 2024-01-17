@@ -7,13 +7,13 @@
 survival_prob_mboost(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
+\item{object}{A model from \code{blackboost()}.}
+
 \item{new_data}{Data for prediction.}
 
 \item{eval_time}{A vector of integers for prediction times.}
 
 \item{time}{Deprecated in favor of \code{eval_time}. A vector of integers for prediction times.}
-
-\item{x}{A model from \code{blackboost()}.}
 }
 \value{
 A tibble with a list column of nested tibbles.
