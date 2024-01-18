@@ -7,7 +7,7 @@
 survival_prob_pecRpart(object, new_data, eval_time)
 }
 \arguments{
-\item{object}{A fitted \verb{_pecRpart} object.}
+\item{object}{A parsnip \code{model_fit} object resulting from \code{decision_tree()} with \code{engine = "rpart"}.}
 
 \item{new_data}{Data for prediction.}
 
