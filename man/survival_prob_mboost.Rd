@@ -7,7 +7,7 @@
 survival_prob_mboost(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
-\item{object}{A model from \code{blackboost()}.}
+\item{object}{A parsnip \code{model_fit} object resulting from \code{boost_tree()} with \code{engine = "mboost"}.}
 
 \item{new_data}{Data for prediction.}
 
@@ -22,8 +22,10 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with mboost models
 }
 \examples{
-library(mboost)
-mod <- blackboost(Surv(time, status) ~ ., data = lung, family = CoxPH())
+mod <- bag_tree() \%>\%
+  set_engine("rpart") \%>\%
+  set_mode("censored regression") \%>\%
+  fit(Surv(time, status) ~ ., data = lung)
 survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
 }
 \keyword{internal}

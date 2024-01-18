@@ -104,7 +104,7 @@ predict_linear_pred._blackboost <- function(object,
 }
 
 #' A wrapper for survival probabilities with mboost models
-#' @param object A model from `blackboost()`.
+#' @param object A parsnip `model_fit` object resulting from `boost_tree()` with `engine = "mboost"`.
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
@@ -112,10 +112,16 @@ predict_linear_pred._blackboost <- function(object,
 #' @keywords internal
 #' @export
 #' @examples
-#' library(mboost)
-#' mod <- blackboost(Surv(time, status) ~ ., data = lung, family = CoxPH())
+#' mod <- bag_tree() %>%
+#'   set_engine("rpart") %>%
+#'   set_mode("censored regression") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_mboost <- function(object, new_data, eval_time, time = deprecated()) {
+  if (inherits(object, "mboost")) {
+    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object.")
+  }
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -125,7 +131,7 @@ survival_prob_mboost <- function(object, new_data, eval_time, time = deprecated(
     eval_time <- time
   }
 
-  survival_curve <- mboost::survFit(object, newdata = new_data)
+  survival_curve <- mboost::survFit(object$fit, newdata = new_data)
 
   survival_prob <- survival_curve_to_prob(
     eval_time,
@@ -165,19 +171,23 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 
 
 #' A wrapper for mean survival times with `mboost` models
-#' @param object A model from `blackboost()`.
+#' @param object A parsnip `model_fit` object resulting from `boost_tree()` with `engine = "mboost"`.
 #' @param new_data Data for prediction
 #' @return A tibble.
 #' @keywords internal
 #' @export
 #' @examples
-#' library(mboost)
-#' boosted_tree <- blackboost(Surv(time, status) ~ age + ph.ecog,
-#'   data = lung[-14, ], family = CoxPH()
-#' )
+#' boosted_tree <- bag_tree() %>%
+#'   set_engine("rpart") %>%
+#'   set_mode("censored regression") %>%
+#'   fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
 #' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 survival_time_mboost <- function(object, new_data) {
-  y <- mboost::survFit(object, new_data)
+  if (inherits(object, "mboost")) {
+    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object.")
+  }
+
+  y <- mboost::survFit(object$fit, new_data)
 
   stacked_survfit <- stack_survfit(y, n = nrow(new_data))
 
