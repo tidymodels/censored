@@ -13,7 +13,8 @@ survival_prob_partykit(
 )
 }
 \arguments{
-\item{object}{A model object from \code{partykit::ctree()} or \code{partykit::cforest()}.}
+\item{object}{A parsnip \code{model_fit} object resulting from \code{bag_tree()} with
+\code{engine = "partykit"} or from \code{rand_forest()} with \code{engine = "partykit"}.}
 
 \item{new_data}{A data frame to be predicted.}
 
@@ -30,10 +31,15 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with partykit models
 }
 \examples{
-library(partykit)
-c_tree <- ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
-survival_prob_partykit(c_tree, lung[1:3, ], eval_time = 100)
-c_forest <- cforest(Surv(time, status) ~ age + ph.ecog, data = lung, ntree = 10)
-survival_prob_partykit(c_forest, lung[1:3, ], eval_time = 100)
+tree <- decision_tree() \%>\%
+  set_mode("censored regression") \%>\%
+  set_engine("partykit") \%>\%
+  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+survival_prob_partykit(tree, lung[1:3, ], eval_time = 100)
+forest <- rand_forest() \%>\%
+  set_mode("censored regression") \%>\%
+  set_engine("partykit") \%>\%
+  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+survival_prob_partykit(forest, lung[1:3, ], eval_time = 100)
 }
 \keyword{internal}
