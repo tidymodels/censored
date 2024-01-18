@@ -19,16 +19,16 @@ test_that("model object", {
 test_that("main args work without set_model_arg()", {
   set.seed(1234)
   exp_f_fit <- ipred::bagging(
-    Surv(time, status) ~ age + ph.ecog, 
+    Surv(time, status) ~ age + ph.ecog,
     data = lung,
     # already part of translate?
     maxdepth = 20,
     minsplit = 10,
-    cp = 0.5    
+    cp = 0.5
   )
 
   # formula method
-  mod_spec <- bag_tree(tree_depth = 20, min_n = 10, cost_complexity = 0.5) %>% 
+  mod_spec <- bag_tree(tree_depth = 20, min_n = 10, cost_complexity = 0.5) %>%
     set_mode("censored regression") %>%
     set_engine("rpart")
   set.seed(1234)
@@ -76,6 +76,13 @@ test_that("time predictions without surrogate splits for NA", {
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(which(is.na(f_pred$.pred_time)), 2)
+})
+
+test_that("survival_time_survbagg() throws an informative error with an engine object", {
+  mod <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  expect_snapshot(error = TRUE, {
+    survival_time_survbagg(mod)
+  })
 })
 
 # prediction: survival ----------------------------------------------------
@@ -133,14 +140,16 @@ test_that("survival predictions", {
 test_that("survival_prob_survbagg() works", {
   set.seed(1234)
   # use only ph.ecog to force missings by avoiding surrogate splits
-  mod <- ipred::bagging(Surv(time, status) ~ ph.ecog, data = lung)
-
+  mod <-  bag_tree(engine = "rpart") %>%
+    set_mode("censored regression") %>%
+    fit(Surv(time, status) ~ ph.ecog, data = lung)
+  engine_mod <- extract_fit_engine(mod)
   # time: combination of order, out-of-range, infinite
   pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
 
   # multiple observations (with 1 missing)
   lung_pred <- lung[13:15, ]
-  surv_fit <- predict(mod, newdata = lung_pred[c(1, 3), ])
+  surv_fit <- predict(engine_mod, newdata = lung_pred[c(1, 3), ])
   surv_fit_summary <- purrr::map(
     surv_fit,
     summary,
@@ -174,7 +183,7 @@ test_that("survival_prob_survbagg() works", {
 
   # single observation
   lung_pred <- lung[13, ]
-  surv_fit <- predict(mod, newdata = lung_pred)
+  surv_fit <- predict(engine_mod, newdata = lung_pred)
   surv_fit_summary <- purrr::map(
     surv_fit,
     summary,
