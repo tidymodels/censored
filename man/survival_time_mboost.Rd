@@ -18,8 +18,8 @@ A tibble.
 A wrapper for mean survival times with \code{mboost} models
 }
 \examples{
-boosted_tree <- bag_tree() \%>\%
-  set_engine("rpart") \%>\%
+boosted_tree <- boost_tree() \%>\%
+  set_engine("mboost") \%>\%
   set_mode("censored regression") \%>\%
   fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
 survival_time_mboost(boosted_tree, new_data = lung[1:3, ])

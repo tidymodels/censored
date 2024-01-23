@@ -22,8 +22,8 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with mboost models
 }
 \examples{
-mod <- bag_tree() \%>\%
-  set_engine("rpart") \%>\%
+mod <- boost_tree() \%>\%
+  set_engine("mboost") \%>\%
   set_mode("censored regression") \%>\%
   fit(Surv(time, status) ~ ., data = lung)
 survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
