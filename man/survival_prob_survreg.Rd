@@ -10,7 +10,7 @@ survival_prob_survreg(object, new_data, eval_time, time = deprecated())
 hazard_survreg(object, new_data, eval_time)
 }
 \arguments{
-\item{object}{A \code{survreg} object.}
+\item{object}{A parsnip \code{model_fit} object resulting from \code{survival_reg()} with \code{engine = "survival"}.}
 
 \item{new_data}{A data frame.}
 
@@ -25,8 +25,10 @@ A tibble with a list column of nested tibbles.
 Internal function helps for parametric survival models
 }
 \examples{
-surv_reg <- survreg(Surv(time, status) ~ ., data = lung)
-survival_prob_survreg(surv_reg, lung[1:3, ], eval_time = 100)
-hazard_survreg(surv_reg, lung[1:3, ], eval_time = 100)
+mod <- survival_reg() \%>\% 
+  set_engine("survival") \%>\%
+  fit(Surv(time, status) ~ ., data = lung)
+survival_prob_survreg(mod, lung[1:3, ], eval_time = 100)
+hazard_survreg(mod, lung[1:3, ], eval_time = 100)
 }
 \keyword{internal}
