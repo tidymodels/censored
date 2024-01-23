@@ -7,7 +7,7 @@
 survival_time_coxnet(object, new_data, penalty = NULL, multi = FALSE, ...)
 }
 \arguments{
-\item{object}{A fitted \verb{_coxnet} object.}
+\item{object}{A parsnip \code{model_fit} object resulting from \code{proportional_hazards()} with \code{engine = "glmnet"}.}
 
 \item{new_data}{Data for prediction.}
 
