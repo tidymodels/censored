@@ -46,16 +46,22 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 # prediction: time --------------------------------------------------------
 
 #' A wrapper for survival times with `coxph` models
-#' @param object A model from `coxph()`.
+#' @param object A parsnip `model_fit` object resulting from `proportional_hazards()` with `engine = "survival"`.
 #' @param new_data Data for prediction
 #' @return A vector.
 #' @keywords internal
 #' @export
 #' @examples
-#' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+#' cox_mod <- proportional_hazards() %>% 
+#'   set_engine("survival") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
-  missings_in_new_data <- get_missings_coxph(object, new_data)
+  if (inherits(object, "coxph")) {
+    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object.")
+  }
+
+  missings_in_new_data <- get_missings_coxph(object$fit, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
@@ -67,8 +73,7 @@ survival_time_coxph <- function(object, new_data) {
     new_data <- new_data[-missings_in_new_data, ]
   }
 
-
-  y <- survival::survfit(object, new_data, na.action = stats::na.exclude)
+  y <- survival::survfit(object$fit, new_data, na.action = stats::na.exclude)
 
   tabs <- summary(y)$table
   if (is.matrix(tabs)) {
@@ -106,7 +111,8 @@ get_missings_coxph <- function(object, new_data) {
 # prediction: survival ----------------------------------------------------
 
 #' A wrapper for survival probabilities with coxph models
-#' @param x A model from `coxph()`.
+#' @param object A parsnip `model_fit` object resulting from `proportional_hazards()` with `engine = "survival"`.
+#' @param x Deprecated. A model from `coxph()`.
 #' @param new_data Data for prediction
 #' @param eval_time A vector of integers for prediction times.
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
@@ -119,9 +125,12 @@ get_missings_coxph <- function(object, new_data) {
 #' @keywords internal
 #' @export
 #' @examples
-#' cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+#' cox_mod <- proportional_hazards() %>% 
+#'   set_engine("survival") %>%
+#'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
-survival_prob_coxph <- function(x,
+survival_prob_coxph <- function(object,
+                                x = deprecated(),
                                 new_data,
                                 eval_time,
                                 time = deprecated(),
@@ -129,6 +138,16 @@ survival_prob_coxph <- function(x,
                                 interval = "none",
                                 conf.int = .95,
                                 ...) {
+  if (inherits(object, "coxph")) {
+    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object.")
+  }
+  if (lifecycle::is_present(x)) {
+    lifecycle::deprecate_stop(
+      "0.3.0",
+      "survival_prob_coxph(x)",
+      "survival_prob_coxph(object)"
+    )
+  }
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -145,7 +164,7 @@ survival_prob_coxph <- function(x,
   }
 
   n_obs <- nrow(new_data)
-  missings_in_new_data <- get_missings_coxph(x, new_data)
+  missings_in_new_data <- get_missings_coxph(object$fit, new_data)
 
   if (!is.null(missings_in_new_data)) {
     n_missing <- length(missings_in_new_data)
@@ -159,7 +178,7 @@ survival_prob_coxph <- function(x,
   }
 
   surv_fit <- survival::survfit(
-    x,
+    object$fit,
     newdata = new_data,
     conf.int = conf.int,
     na.action = na.exclude,

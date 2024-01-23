@@ -112,8 +112,8 @@ predict_linear_pred._blackboost <- function(object,
 #' @keywords internal
 #' @export
 #' @examples
-#' mod <- bag_tree() %>%
-#'   set_engine("rpart") %>%
+#' mod <- boost_tree() %>%
+#'   set_engine("mboost") %>%
 #'   set_mode("censored regression") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
@@ -177,8 +177,8 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 #' @keywords internal
 #' @export
 #' @examples
-#' boosted_tree <- bag_tree() %>%
-#'   set_engine("rpart") %>%
+#' boosted_tree <- boost_tree() %>%
+#'   set_engine("mboost") %>%
 #'   set_mode("censored regression") %>%
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
 #' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])

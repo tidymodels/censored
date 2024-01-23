@@ -7,7 +7,7 @@
 survival_time_coxph(object, new_data)
 }
 \arguments{
-\item{object}{A model from \code{coxph()}.}
+\item{object}{A parsnip \code{model_fit} object resulting from \code{proportional_hazards()} with \code{engine = "survival"}.}
 
 \item{new_data}{Data for prediction}
 }
@@ -18,7 +18,9 @@ A vector.
 A wrapper for survival times with \code{coxph} models
 }
 \examples{
-cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+cox_mod <- proportional_hazards() \%>\% 
+  set_engine("survival") \%>\%
+  fit(Surv(time, status) ~ ., data = lung)
 survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 }
 \keyword{internal}
