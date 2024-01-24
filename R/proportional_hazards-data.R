@@ -63,7 +63,7 @@ make_proportional_hazards_survival <- function() {
       func = c(pkg = "censored", fun = "survival_time_coxph"),
       args =
         list(
-          object = quote(object$fit),
+          object = quote(object),
           new_data = quote(new_data)
         )
     )
@@ -80,7 +80,7 @@ make_proportional_hazards_survival <- function() {
       func = c(pkg = "censored", fun = "survival_prob_coxph"),
       args =
         list(
-          x = quote(object$fit),
+          object = quote(object),
           new_data = quote(new_data),
           eval_time = rlang::expr(eval_time),
           output = "surv",

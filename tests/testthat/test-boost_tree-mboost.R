@@ -161,15 +161,14 @@ test_that("survival_curve_to_prob() works", {
 
 test_that("survival_prob_mboost() works", {
   lung2 <- lung[-14, ]
-  mboost_object <- mboost::blackboost(
-    Surv(time, status) ~ age + ph.ecog,
-    data = lung2,
-    family = mboost::CoxPH()
-  )
+  mod <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression") %>%
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # can handle missings
   pred <- survival_prob_mboost(
-    mboost_object,
+    mod,
     new_data = lung[14:15, ],
     eval_time = c(0, 100, 200)
   )
@@ -179,7 +178,7 @@ test_that("survival_prob_mboost() works", {
   # skip until mboost::survFit() works with a single row for `newdata`
   # fix submitted: https://github.com/boost-R/mboost/pull/118
   # pred <- survival_prob_mboost(
-  #   mboost_object,
+  #   mod,
   #   new_data = lung[1,],
   #   eval_time = c(0, 100, 200)
   # )

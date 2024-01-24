@@ -7,7 +7,7 @@
 survival_prob_survbagg(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
-\item{object}{A model from \code{ipred::bagging()}.}
+\item{object}{A parsnip \code{model_fit} object resulting from \link[parsnip:details_bag_tree_rpart]{bag_tree() with engine = "rpart"}.}
 
 \item{new_data}{Data for prediction.}
 
@@ -22,8 +22,10 @@ A vctrs list of tibbles.
 A wrapper for survival probabilities with \code{survbagg} models
 }
 \examples{
-library(ipred)
-bagged_tree <- bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+bagged_tree <- bag_tree() \%>\%
+  set_engine("rpart") \%>\%
+  set_mode("censored regression") \%>\%
+  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 survival_prob_survbagg(bagged_tree, lung[1:3, ], eval_time = 100)
 }
 \keyword{internal}

@@ -338,14 +338,15 @@ test_that("survival prediction with NA", {
 })
 
 test_that("survival_prob_coxph() works", {
-  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
+  mod <- proportional_hazards() %>% 
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
   pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
 
   # multiple observations (with 1 missing)
   lung_pred <- lung[13:15, ]
-  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit <- survfit(mod$fit, newdata = lung_pred)
   surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
 
   prob <- survival_prob_coxph(mod, new_data = lung_pred, eval_time = pred_time)
@@ -373,7 +374,7 @@ test_that("survival_prob_coxph() works", {
 
   # single observation
   lung_pred <- lung[13, ]
-  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit <- survfit(mod$fit, newdata = lung_pred)
   surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
 
   prob <- survival_prob_coxph(mod, new_data = lung_pred, eval_time = pred_time)
@@ -401,14 +402,15 @@ test_that("survival_prob_coxph() works", {
 })
 
 test_that("survival_prob_coxph() works with confidence intervals", {
-  mod <- coxph(Surv(time, status) ~ age + ph.ecog, data = lung)
+  mod <- proportional_hazards() %>% 
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
   pred_time <- c(-Inf, 0, 100, Inf, 1022, 3000)
 
   # multiple observations (with 1 missing)
   lung_pred <- lung[13:15, ]
-  surv_fit <- survfit(mod, newdata = lung_pred)
+  surv_fit <- survfit(mod$fit, newdata = lung_pred)
 
   pred <- survival_prob_coxph(
     mod,

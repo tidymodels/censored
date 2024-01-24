@@ -58,7 +58,7 @@ make_bag_tree_rpart <- function() {
       func = c(pkg = "censored", fun = "survival_time_survbagg"),
       args =
         list(
-          object = rlang::expr(object$fit),
+          object = rlang::expr(object),
           new_data = rlang::expr(new_data)
         )
     )
@@ -75,7 +75,7 @@ make_bag_tree_rpart <- function() {
       func = c(pkg = "censored", fun = "survival_prob_survbagg"),
       args =
         list(
-          object = rlang::expr(object$fit),
+          object = rlang::expr(object),
           new_data = rlang::expr(new_data),
           eval_time = rlang::expr(eval_time)
         )

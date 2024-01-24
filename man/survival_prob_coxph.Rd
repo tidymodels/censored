@@ -5,7 +5,8 @@
 \title{A wrapper for survival probabilities with coxph models}
 \usage{
 survival_prob_coxph(
-  x,
+  object,
+  x = deprecated(),
   new_data,
   eval_time,
   time = deprecated(),
@@ -16,7 +17,10 @@ survival_prob_coxph(
 )
 }
 \arguments{
-\item{x}{A model from \code{coxph()}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_proportional_hazards_survival]{proportional_hazards() with engine = "survival"}.}
+
+\item{x}{Deprecated. A model from \code{coxph()}.}
 
 \item{new_data}{Data for prediction}
 
@@ -40,7 +44,9 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with coxph models
 }
 \examples{
-cox_mod <- coxph(Surv(time, status) ~ ., data = lung)
+cox_mod <- proportional_hazards() \%>\% 
+  set_engine("survival") \%>\%
+  fit(Surv(time, status) ~ ., data = lung)
 survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 }
 \keyword{internal}

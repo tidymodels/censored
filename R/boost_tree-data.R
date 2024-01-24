@@ -103,7 +103,7 @@ make_boost_tree_mboost <- function() {
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_mboost"),
       args = list(
-        object = rlang::expr(object$fit),
+        object = rlang::expr(object),
         new_data = rlang::expr(new_data),
         eval_time = rlang::expr(eval_time)
       )
@@ -138,7 +138,7 @@ make_boost_tree_mboost <- function() {
       func = c(pkg = "censored", fun = "survival_time_mboost"),
       args =
         list(
-          object = quote(object$fit),
+          object = quote(object),
           new_data = quote(new_data)
         )
     )

@@ -8,7 +8,8 @@
 survival_prob_orsf(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
-\item{object}{A model object from \code{aorsf::orsf()}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_rand_forest_aorsf]{rand_forest() with engine = "aorsf"}.}
 
 \item{new_data}{A data frame to be predicted.}
 
@@ -23,8 +24,10 @@ A tibble with a list column of nested tibbles.
 Internal helper function for aorsf objects
 }
 \examples{
-library(aorsf)
-aorsf <- orsf(na.omit(lung), Surv(time, status) ~ age + ph.ecog, n_tree = 10)
-preds <- survival_prob_orsf(aorsf, lung[1:3, ], eval_time = c(250, 100))
+mod <- rand_forest() \%>\%
+  set_engine("aorsf") \%>\%
+  set_mode("censored regression") \%>\%
+  fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+preds <- survival_prob_orsf(mod, lung[1:3, ], eval_time = c(250, 100))
 }
 \keyword{internal}

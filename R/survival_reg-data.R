@@ -109,7 +109,7 @@ make_survival_reg_survival <- function() {
       func = c(pkg = "censored", fun = "hazard_survreg"),
       args =
         list(
-          object = expr(object$fit),
+          object = expr(object),
           new_data = expr(new_data),
           eval_time = expr(eval_time)
         )
@@ -127,7 +127,7 @@ make_survival_reg_survival <- function() {
       func = c(pkg = "censored", fun = "survival_prob_survreg"),
       args =
         list(
-          object = expr(object$fit),
+          object = expr(object),
           new_data = expr(new_data),
           eval_time = expr(eval_time)
         )
