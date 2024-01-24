@@ -12,7 +12,7 @@
 
 * Bug fix: `proportional_hazards(engine = "glmnet")` models now don't pretend to be able to deal with sparse matrices when they are not (#291).
 
-* Breaking change: The `survival_prob_*()`, `survival_time_*()`, and `hazard_*()` functions now all take a parsnip `model_fit` object as the main input, instead of an engine fit as was the case for some of them previously.
+* Breaking change: The `survival_prob_*()`, `survival_time_*()`, and `hazard_*()` functions now all take a parsnip `model_fit` object as the main input, instead of an engine fit as was the case for some of them previously (#302).
 
 
 # censored 0.2.0
