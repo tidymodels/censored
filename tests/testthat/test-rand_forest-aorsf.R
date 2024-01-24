@@ -29,6 +29,42 @@ test_that("model object", {
   )
 })
 
+# prediction: time --------------------------------------------------------
+
+test_that("time predictions", {
+  skip_if_not_installed("aorsf")
+
+  lung_orsf <- na.omit(lung)
+
+  set.seed(1234)
+  exp_f_fit <- aorsf::orsf(
+    data = lung_orsf,
+    formula = Surv(time, status) ~ age + ph.ecog
+  )
+  exp_f_pred <- predict(
+    exp_f_fit, 
+    new_data = lung,
+    pred_type = "time",
+    na_action = "pass"
+  )
+
+  mod_spec <- rand_forest() %>%
+    set_engine("aorsf") %>%
+    set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
+  f_pred <- predict(f_fit, lung, type = "time")
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_equal(f_pred$.pred_time, as.vector(exp_f_pred))
+  expect_equal(nrow(f_pred), nrow(lung))
+
+  # single observation
+  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  expect_identical(nrow(f_pred_1), 1L)
+})
+
 # prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {

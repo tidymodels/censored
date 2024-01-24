@@ -190,6 +190,26 @@ make_rand_forest_aorsf <- function() {
     model = "rand_forest",
     eng = "aorsf",
     mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = function(x, object) {
+        as.vector(x)
+      },
+      func = c(fun = "predict"),
+      args = list(
+        object = rlang::expr(object$fit),
+        new_data = rlang::expr(new_data),
+        pred_type = "time",
+        na_action = "pass"
+      )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "aorsf",
+    mode = "censored regression",
     type = "survival",
     value = list(
       pre = NULL,
