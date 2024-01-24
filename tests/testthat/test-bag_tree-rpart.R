@@ -87,6 +87,7 @@ test_that("time predictions without surrogate splits for NA", {
 })
 
 test_that("survival_time_survbagg() throws an informative error with an engine object", {
+  skip_if_not_installed("ipred")
   mod <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
   expect_snapshot(error = TRUE, {
     survival_time_survbagg(mod)

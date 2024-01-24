@@ -156,6 +156,7 @@ test_that("prediction from stratified models require strata variables in new_dat
 # prediction: survival ----------------------------------------------------
 
 test_that("survival predictions without strata", {
+  skip_if_not_installed("pec")
   # due to pec:
   skip_if_not_installed("Matrix", minimum_version = "1.4.2")
 
