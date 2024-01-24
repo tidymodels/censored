@@ -22,10 +22,12 @@ A vctrs list of tibbles.
 A wrapper for survival probabilities with \code{survbagg} models
 }
 \examples{
+\dontshow{if (rlang::is_installed("ipred")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 bagged_tree <- bag_tree() \%>\%
   set_engine("rpart") \%>\%
   set_mode("censored regression") \%>\%
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 survival_prob_survbagg(bagged_tree, lung[1:3, ], eval_time = 100)
+\dontshow{\}) # examplesIf}
 }
 \keyword{internal}

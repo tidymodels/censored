@@ -5,7 +5,7 @@
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("pec")
 #' mod <- decision_tree() %>% 
 #'   set_mode("censored regression") %>%
 #'     set_engine("rpart") %>%

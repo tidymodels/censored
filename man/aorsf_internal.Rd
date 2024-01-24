@@ -24,10 +24,12 @@ A tibble with a list column of nested tibbles.
 Internal helper function for aorsf objects
 }
 \examples{
+\dontshow{if (rlang::is_installed("aorsf")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 mod <- rand_forest() \%>\%
   set_engine("aorsf") \%>\%
   set_mode("censored regression") \%>\%
   fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
 preds <- survival_prob_orsf(mod, lung[1:3, ], eval_time = c(250, 100))
+\dontshow{\}) # examplesIf}
 }
 \keyword{internal}

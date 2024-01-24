@@ -31,7 +31,7 @@
 #' @return A fitted blackboost model.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("mboost")
 #' blackboost_train(Surv(time, status) ~ age + ph.ecog,
 #'   data = lung[-14, ], family = mboost::CoxPH()
 #' )
@@ -111,7 +111,7 @@ predict_linear_pred._blackboost <- function(object,
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("mboost")
 #' mod <- boost_tree() %>%
 #'   set_engine("mboost") %>%
 #'   set_mode("censored regression") %>%
@@ -176,7 +176,7 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 #' @return A tibble.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("mboost")
 #' boosted_tree <- boost_tree() %>%
 #'   set_engine("mboost") %>%
 #'   set_mode("censored regression") %>%

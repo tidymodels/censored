@@ -63,8 +63,10 @@ A fitted blackboost model.
 where all of the model arguments are in the main function.
 }
 \examples{
+\dontshow{if (rlang::is_installed("mboost")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 blackboost_train(Surv(time, status) ~ age + ph.ecog,
   data = lung[-14, ], family = mboost::CoxPH()
 )
+\dontshow{\}) # examplesIf}
 }
 \keyword{internal}
