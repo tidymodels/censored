@@ -31,6 +31,7 @@ Imports:
     lifecycle,
     mboost,
     prettyunits,
+    prodlim (>= 2023.03.31),
     purrr,
     rlang (>= 1.0.0),
     stats,
@@ -45,7 +46,6 @@ Suggests:
     ipred,
     partykit,
     pec,
-    prodlim (>= 2023.03.31),
     rmarkdown,
     rpart,
     testthat (>= 3.0.0)
