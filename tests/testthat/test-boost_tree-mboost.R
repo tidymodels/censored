@@ -1,6 +1,8 @@
 library(testthat)
 
 test_that("model object", {
+  skip_if_not_installed("mboost")
+
   lung2 <- lung[-14, ]
   exp_f_fit <- mboost::blackboost(
     Surv(time, status) ~ age + ph.ecog,
@@ -28,6 +30,8 @@ test_that("model object", {
 # prediction: time --------------------------------------------------------
 
 test_that("time predictions", {
+  skip_if_not_installed("mboost")
+
   cox_spec <- boost_tree() %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
@@ -50,6 +54,8 @@ test_that("time predictions", {
 # prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
+  skip_if_not_installed("mboost")
+  
   pred_time <- c(0, 100, 200, 10000)
 
   set.seed(403)
@@ -160,6 +166,8 @@ test_that("survival_curve_to_prob() works", {
 })
 
 test_that("survival_prob_mboost() works", {
+  skip_if_not_installed("mboost")
+
   lung2 <- lung[-14, ]
   mod <- boost_tree() %>%
     set_engine("mboost") %>%
@@ -186,6 +194,8 @@ test_that("survival_prob_mboost() works", {
 })
 
 test_that("can predict for out-of-domain timepoints", {
+  skip_if_not_installed("mboost")
+
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[c(2,4),] # two observations because of https://github.com/boost-R/mboost/issues/117
 
@@ -202,6 +212,8 @@ test_that("can predict for out-of-domain timepoints", {
 # prediction: linear_pred -------------------------------------------------
 
 test_that("linear_pred predictions", {
+  skip_if_not_installed("mboost")
+
   lung2 <- lung[-14, ]
   exp_f_fit <- mboost::blackboost(
     Surv(time, status) ~ age + ph.ecog,
@@ -239,6 +251,8 @@ test_that("linear_pred predictions", {
 # fit via matrix interface ------------------------------------------------
 
 test_that("`fix_xy()` works", {
+  skip_if_not_installed("mboost")
+  
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

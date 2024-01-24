@@ -306,6 +306,7 @@ test_that("combine_list_of_survfit_summary() works for survbagg", {
 
 test_that("combine_list_of_survfit_summary() works for ctree", {
   skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
 
   lung_pred <- tidyr::drop_na(lung)
 
@@ -338,6 +339,7 @@ test_that("combine_list_of_survfit_summary() works for ctree", {
 
 test_that("combine_list_of_survfit_summary() works for cforest", {
   skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
 
   lung_pred <- tidyr::drop_na(lung)
 

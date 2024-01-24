@@ -2,6 +2,8 @@ library(testthat)
 
 test_that("model object", {
   skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
   set.seed(1234)
   exp_f_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -31,6 +33,8 @@ test_that("model object", {
 
 test_that("time predictions", {
   skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
   set.seed(1234)
   exp_f_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -58,6 +62,8 @@ test_that("time predictions", {
 
 test_that("survival predictions", {
   skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
   set.seed(1234)
   exp_f_fit <- partykit::ctree(Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -106,6 +112,9 @@ test_that("survival predictions", {
 })
 
 test_that("can predict for out-of-domain timepoints", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2,]
 
@@ -122,6 +131,9 @@ test_that("can predict for out-of-domain timepoints", {
 # fit via matrix interface ------------------------------------------------
 
 test_that("`fix_xy()` works", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+  
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

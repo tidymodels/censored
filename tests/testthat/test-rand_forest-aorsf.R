@@ -160,6 +160,8 @@ test_that("survival predictions", {
 })
 
 test_that("can predict for out-of-domain timepoints", {
+  skip_if_not_installed("aorsf")
+
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2,]
   lung_orsf <- na.omit(lung)
@@ -177,6 +179,8 @@ test_that("can predict for out-of-domain timepoints", {
 # fit via matrix interface ------------------------------------------------
 
 test_that("`fix_xy()` works", {
+  skip_if_not_installed("aorsf")
+
   lung_orsf <- na.omit(lung)
 
   lung_x <- as.matrix(lung_orsf[, c("age", "ph.ecog")])
@@ -228,6 +232,8 @@ test_that("`fix_xy()` works", {
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {
+  skip_if_not_installed("aorsf")
+  
   dat <- make_cens_wts()
 
   expect_error(
