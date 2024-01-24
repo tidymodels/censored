@@ -63,7 +63,8 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A model object from <code><a href="https://docs.ropensci.org/aorsf/reference/orsf.html" class="external-link">aorsf::orsf()</a></code>.</p></dd>
+<dd><p>A parsnip <code>model_fit</code> object resulting from
+<a href="https://parsnip.tidymodels.org/reference/details_rand_forest_aorsf.html" class="external-link">rand_forest() with engine = "aorsf"</a>.</p></dd>
 
 
 <dt>new_data</dt>
@@ -87,9 +88,11 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/aorsf" class="external-link">aorsf</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">aorsf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/aorsf/reference/orsf.html" class="external-link">orsf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span>, <span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">ph.ecog</span>, n_tree <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu">survival_prob_orsf</span><span class="op">(</span><span class="va">aorsf</span>, <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span>, eval_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">rand_forest</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">set_engine</span><span class="op">(</span><span class="st">"aorsf"</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">set_mode</span><span class="op">(</span><span class="st">"censored regression"</span><span class="op">)</span> <span class="op">%&gt;%</span></span></span>
+<span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">ph.ecog</span>, data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu">survival_prob_orsf</span><span class="op">(</span><span class="va">mod</span>, <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">]</span>, eval_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
