@@ -10,7 +10,8 @@ survival_prob_survreg(object, new_data, eval_time, time = deprecated())
 hazard_survreg(object, new_data, eval_time)
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{survival_reg()} with \code{engine = "survival"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_survival_reg_survival]{survival_reg() with engine = "survival"}.}
 
 \item{new_data}{A data frame.}
 

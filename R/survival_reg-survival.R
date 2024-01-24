@@ -101,7 +101,8 @@ survreg_survival <- function(location, object, scale, eval_time, ...) {
 }
 
 #' Internal function helps for parametric survival models
-#' @param object A parsnip `model_fit` object resulting from `survival_reg()` with `engine = "survival"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [survival_reg() with engine = "survival"][parsnip::details_survival_reg_survival].
 #' @param new_data A data frame.
 #' @param eval_time A vector of time points.
 #' @param time Deprecated in favor of `eval_time`. A vector of time points.

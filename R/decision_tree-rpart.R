@@ -1,5 +1,5 @@
 #' A wrapper for survival probabilities with pecRpart models
-#' @param object A parsnip `model_fit` object resulting from `decision_tree()` with `engine = "rpart"`.
+#' @param object A parsnip `model_fit` object resulting from [decision_tree() with engine = "rpart"][parsnip::details_decision_tree_rpart].
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
 #' @return A tibble with a list column of nested tibbles.

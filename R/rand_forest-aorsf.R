@@ -1,5 +1,6 @@
 #' Internal helper function for aorsf objects
-#' @param object A parsnip `model_fit` object resulting from `rand_forest()` with `engine = "aorsf"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [rand_forest() with engine = "aorsf"][parsnip::details_rand_forest_aorsf].
 #' @param new_data A data frame to be predicted.
 #' @param eval_time A vector of times to predict the survival probability.
 #' @param time Deprecated in favor of `eval_time`. A vector of times to predict the survival probability.

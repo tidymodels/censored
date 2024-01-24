@@ -13,8 +13,9 @@ survival_prob_partykit(
 )
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{bag_tree()} with
-\code{engine = "partykit"} or from \code{rand_forest()} with \code{engine = "partykit"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_decision_tree_partykit]{decision_tree() with engine = "partykit"} or
+\link[parsnip:details_rand_forest_partykit]{rand_forest() with engine = "partykit"}.}
 
 \item{new_data}{A data frame to be predicted.}
 

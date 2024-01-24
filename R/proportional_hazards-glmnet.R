@@ -462,7 +462,8 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 # prediction: time --------------------------------------------------------
 
 #' A wrapper for survival times with coxnet models
-#' @param object A parsnip `model_fit` object resulting from `proportional_hazards()` with `engine = "glmnet"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [proportional_hazards() with engine = "glmnet"][parsnip::details_proportional_hazards_glmnet].
 #' @param new_data Data for prediction.
 #' @param penalty Penalty value(s).
 #' @param multi Allow multiple penalty values?
@@ -583,7 +584,8 @@ get_missings_coxnet <- function(new_x, new_strata) {
 
 
 #' A wrapper for survival probabilities with coxnet models
-#' @param object A parsnip `model_fit` object resulting from `proportional_hazards()` with `engine = "glmnet"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [proportional_hazards() with engine = "glmnet"][parsnip::details_proportional_hazards_glmnet].
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.

@@ -7,7 +7,7 @@
 survival_prob_mboost(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{boost_tree()} with \code{engine = "mboost"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from \link[parsnip:details_boost_tree_mboost]{boost_tree() with engine = "mboost"}.}
 
 \item{new_data}{Data for prediction.}
 

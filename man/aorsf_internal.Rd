@@ -8,7 +8,8 @@
 survival_prob_orsf(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{rand_forest()} with \code{engine = "aorsf"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_rand_forest_aorsf]{rand_forest() with engine = "aorsf"}.}
 
 \item{new_data}{A data frame to be predicted.}
 

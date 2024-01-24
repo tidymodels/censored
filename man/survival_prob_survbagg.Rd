@@ -7,7 +7,7 @@
 survival_prob_survbagg(object, new_data, eval_time, time = deprecated())
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{bag_tree()} with \code{engine = "rpart"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from \link[parsnip:details_bag_tree_rpart]{bag_tree() with engine = "rpart"}.}
 
 \item{new_data}{Data for prediction.}
 

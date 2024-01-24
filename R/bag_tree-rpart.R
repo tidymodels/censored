@@ -1,5 +1,5 @@
 #' A wrapper for survival times with `survbagg` models
-#' @param object A parsnip `model_fit` object resulting from `bag_tree()` with `engine = "rpart"`.
+#' @param object A parsnip `model_fit` object resulting from [bag_tree() with engine = "rpart"][parsnip::details_bag_tree_rpart].
 #' @param new_data Data for prediction
 #' @return A vector.
 #' @keywords internal
@@ -54,7 +54,7 @@ get_missings_survbagg <- function(object, new_data) {
 }
 
 #' A wrapper for survival probabilities with `survbagg` models
-#' @param object A parsnip `model_fit` object resulting from `bag_tree()` with `engine = "rpart"`.
+#' @param object A parsnip `model_fit` object resulting from [bag_tree() with engine = "rpart"][parsnip::details_bag_tree_rpart].
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of prediction times.
 #' @param time Deprecated in favor of `eval_time`. A vector of prediction times.

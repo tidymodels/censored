@@ -104,7 +104,7 @@ predict_linear_pred._blackboost <- function(object,
 }
 
 #' A wrapper for survival probabilities with mboost models
-#' @param object A parsnip `model_fit` object resulting from `boost_tree()` with `engine = "mboost"`.
+#' @param object A parsnip `model_fit` object resulting from [boost_tree() with engine = "mboost"][parsnip::details_boost_tree_mboost].
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
@@ -171,7 +171,7 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 
 
 #' A wrapper for mean survival times with `mboost` models
-#' @param object A parsnip `model_fit` object resulting from `boost_tree()` with `engine = "mboost"`.
+#' @param object A parsnip `model_fit` object resulting from [boost_tree() with engine = "mboost"][parsnip::details_boost_tree_mboost].
 #' @param new_data Data for prediction
 #' @return A tibble.
 #' @keywords internal

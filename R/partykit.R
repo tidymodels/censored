@@ -1,6 +1,7 @@
 #' A wrapper for survival probabilities with partykit models
-#' @param object A parsnip `model_fit` object resulting from `bag_tree()` with 
-#' `engine = "partykit"` or from `rand_forest()` with `engine = "partykit"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [decision_tree() with engine = "partykit"][parsnip::details_decision_tree_partykit] or 
+#' [rand_forest() with engine = "partykit"][parsnip::details_rand_forest_partykit].
 #' @param new_data A data frame to be predicted.
 #' @param eval_time A vector of times to predict the survival probability.
 #' @param time Deprecated in favor of `eval_time`. A vector of times to predict the survival probability.

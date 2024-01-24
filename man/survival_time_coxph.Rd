@@ -7,7 +7,8 @@
 survival_time_coxph(object, new_data)
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{proportional_hazards()} with \code{engine = "survival"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_proportional_hazards_survival]{proportional_hazards() with engine = "survival"}.}
 
 \item{new_data}{Data for prediction}
 }

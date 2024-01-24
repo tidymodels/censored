@@ -46,7 +46,8 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 # prediction: time --------------------------------------------------------
 
 #' A wrapper for survival times with `coxph` models
-#' @param object A parsnip `model_fit` object resulting from `proportional_hazards()` with `engine = "survival"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [proportional_hazards() with engine = "survival"][parsnip::details_proportional_hazards_survival].
 #' @param new_data Data for prediction
 #' @return A vector.
 #' @keywords internal
@@ -111,7 +112,8 @@ get_missings_coxph <- function(object, new_data) {
 # prediction: survival ----------------------------------------------------
 
 #' A wrapper for survival probabilities with coxph models
-#' @param object A parsnip `model_fit` object resulting from `proportional_hazards()` with `engine = "survival"`.
+#' @param object A parsnip `model_fit` object resulting from 
+#' [proportional_hazards() with engine = "survival"][parsnip::details_proportional_hazards_survival].
 #' @param x Deprecated. A model from `coxph()`.
 #' @param new_data Data for prediction
 #' @param eval_time A vector of integers for prediction times.

@@ -16,7 +16,8 @@ survival_prob_coxnet(
 )
 }
 \arguments{
-\item{object}{A parsnip \code{model_fit} object resulting from \code{proportional_hazards()} with \code{engine = "glmnet"}.}
+\item{object}{A parsnip \code{model_fit} object resulting from
+\link[parsnip:details_proportional_hazards_glmnet]{proportional_hazards() with engine = "glmnet"}.}
 
 \item{new_data}{Data for prediction.}
 
