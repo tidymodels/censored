@@ -23,7 +23,7 @@
 #' @return A fitted `glmnet` model.
 #' @export
 #' @keywords internal
-#' @examples
+#' @examplesIf rlang::is_installed("glmnet")
 #' coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
 coxnet_train <- function(formula,
                          data,
@@ -471,7 +471,7 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #' @return A vector.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("glmnet")
 #' cox_mod <- proportional_hazards(penalty = 0.1) %>%
 #'   set_engine("glmnet") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
@@ -596,7 +596,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @return A tibble with a list column of nested tibbles.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("glmnet")
 #' cox_mod <- proportional_hazards(penalty = 0.1) %>%
 #'   set_engine("glmnet") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)

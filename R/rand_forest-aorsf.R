@@ -8,7 +8,7 @@
 #' @export
 #' @keywords internal
 #' @name aorsf_internal
-#' @examples
+#' @examplesIf rlang::is_installed("aorsf")
 #' mod <- rand_forest() %>%
 #'   set_engine("aorsf") %>%
 #'   set_mode("censored regression") %>%

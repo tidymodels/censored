@@ -4,7 +4,7 @@
 #' @return A vector.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("ipred")
 #' bagged_tree <- bag_tree() %>%
 #'   set_engine("rpart") %>%
 #'   set_mode("censored regression") %>%
@@ -61,7 +61,7 @@ get_missings_survbagg <- function(object, new_data) {
 #' @return A vctrs list of tibbles.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examplesIf rlang::is_installed("ipred")
 #' bagged_tree <- bag_tree() %>%
 #'   set_engine("rpart") %>%
 #'   set_mode("censored regression") %>%

@@ -9,7 +9,7 @@
 #' @return A tibble with a list column of nested tibbles.
 #' @export
 #' @keywords internal
-#' @examples
+#' @examplesIf rlang::is_installed(c("partykit", "coin"))
 #' tree <- decision_tree() %>%
 #'   set_mode("censored regression") %>%
 #'   set_engine("partykit") %>%
