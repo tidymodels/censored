@@ -59,6 +59,7 @@
 <li><p>Bug fix for <code>multi_predict(type = "survival")</code> for <code>proportional_hazards(engine = "glmnet")</code> models: when used with a single <code>penalty</code> value, this value is now included in the results. It was previously omitted (<a href="https://github.com/tidymodels/censored/issues/267" class="external-link">#267</a>, <a href="https://github.com/tidymodels/censored/issues/282" class="external-link">#282</a>).</p></li>
 <li><p>Bug fix: <code>proportional_hazards(engine = "glmnet")</code> models now don’t pretend to be able to deal with sparse matrices when they are not (<a href="https://github.com/tidymodels/censored/issues/291" class="external-link">#291</a>).</p></li>
 <li><p>Breaking change: The <code>survival_prob_*()</code>, <code>survival_time_*()</code>, and <code>hazard_*()</code> functions now all take a parsnip <code>model_fit</code> object as the main input, instead of an engine fit as was the case for some of them previously (<a href="https://github.com/tidymodels/censored/issues/302" class="external-link">#302</a>).</p></li>
+<li><p>Random forests with the <code>"aorsf"</code> engine can now predict survival time, i.e., <code>predict(type = "time")</code> is now available (<a href="https://github.com/tidymodels/censored/issues/308" class="external-link">#308</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="censored-020">censored 0.2.0<a class="anchor" aria-label="anchor" href="#censored-020"></a></h2><p class="text-muted">CRAN release: 2023-04-13</p>
