@@ -14,6 +14,8 @@
 
 * Breaking change: The `survival_prob_*()`, `survival_time_*()`, and `hazard_*()` functions now all take a parsnip `model_fit` object as the main input, instead of an engine fit as was the case for some of them previously (#302).
 
+* Random forests with the `"aorsf"` engine can now predict survival time, i.e., `predict(type = "time")` is now available (#308).
+
 
 # censored 0.2.0
 
