@@ -32,7 +32,7 @@ test_that("model object", {
 # prediction: time --------------------------------------------------------
 
 test_that("time predictions", {
-  skip_if_not_installed("aorsf")
+  skip_if_not_installed("aorsf", "0.1.2")
 
   lung_orsf <- na.omit(lung)
 
