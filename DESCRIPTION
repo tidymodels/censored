@@ -1,6 +1,6 @@
 Package: censored
 Title: 'parsnip' Engines for Survival Models
-Version: 0.2.0.9001
+Version: 0.3.0
 Authors@R: c(
     person("Emil", "Hvitfeldt", , "emil.hvitfeldt@posit.co", role = "aut",
            comment = c(ORCID = "0000-0002-0679-1945")),
