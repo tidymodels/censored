@@ -14,9 +14,9 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.5/font.css" rel="stylesheet">
-<link href="../deps/Source_Code_Pro-0.4.5/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.8/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.8/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Fitting and Predicting with censored">
@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">censored</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,21 +111,21 @@ With the <code>"rpart"</code> engine
 </summary><p>We’ll model the survival of lung cancer patients.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span>  <span class="co">## ── <span style="font-weight: bold;">Attaching packages</span> ──────────────────────────────── tidymodels 1.0.0 ──</span></span></code></pre>
-<pre><code><span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 1.0.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 1.1.1</span></span>
+<pre><code><span>  <span class="co">## ── <span style="font-weight: bold;">Attaching packages</span> ──────────────────────────────── tidymodels 1.1.1 ──</span></span></code></pre>
+<pre><code><span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 1.0.5     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 1.2.0</span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dials       </span> 1.2.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble      </span> 3.2.1</span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.1.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.3.0</span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 1.1.1</span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">modeldata   </span> 1.1.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflows   </span> 1.1.3</span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 1.1.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 1.0.1</span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr       </span> 1.0.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">yardstick   </span> 1.1.0</span></span>
-<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">recipes     </span> 1.0.5</span></span></code></pre>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.1.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.3.1</span></span>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.6     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 1.1.2</span></span>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">modeldata   </span> 1.3.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflows   </span> 1.1.3</span></span>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">parsnip     </span> 1.1.1     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">workflowsets</span> 1.0.1</span></span>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr       </span> 1.0.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">yardstick   </span> 1.3.0</span></span>
+<span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">recipes     </span> 1.0.9</span></span></code></pre>
 <pre><code><span>  <span class="co">## ── <span style="font-weight: bold;">Conflicts</span> ─────────────────────────────────── tidymodels_conflicts() ──</span></span>
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">purrr</span>::<span style="color: #00BB00;">discard()</span> masks <span style="color: #0000BB;">scales</span>::discard()</span></span>
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span></span>
-<span>  <span class="co">## <span style="color: #0000BB;">•</span> Use <span style="color: #00BB00;">tidymodels_prefer()</span> to resolve common conflicts.</span></span></code></pre>
+<span>  <span class="co">## <span style="color: #0000BB;">•</span> Learn how to get started at <span style="color: #00BB00;">https://www.tidymodels.org/start/</span></span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## Loading required package: survival</span></span></code></pre>
@@ -232,7 +232,7 @@ With the <code>"mboost"</code> engine
 <span>  <span class="co">##     Model-based Boosting</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## Call:</span></span>
-<span>  <span class="co">## mboost::blackboost(formula = formula, data = data, family = family,     control = mboost::boost_control(mstop = 15), tree_controls = partykit::ctree_control(teststat = "quad",         testtype = "Teststatistic", mincriterion = 0, minsplit = 10,         minbucket = 4, maxdepth = 2, saveinfo = FALSE))</span></span>
+<span>  <span class="co">## mboost::blackboost(formula = formula, data = data, family = family,     control = mboost::boost_control(mstop = 15), tree_controls = partykit::ctree_control(teststat = "quadratic",         testtype = "Teststatistic", mincriterion = 0, minsplit = 10,         minbucket = 4, maxdepth = 2, saveinfo = FALSE))</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">##     Cox Partial Likelihood </span></span>
@@ -6174,14 +6174,14 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 1</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655467a79c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e471428&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_with_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ .</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655467a79c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e471428&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_without_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span></span>
 <span>  <span class="co">##     pat.karno + meal.cal + wt.loss</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655467a79c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e471428&gt;</span></span>
 <span>  <span class="co">## attr(,"dot")</span></span>
 <span>  <span class="co">## [1] "sequential"</span></span>
 <span>  <span class="co">## </span></span>
@@ -6253,7 +6253,7 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##         X &lt;- as.list(X)</span></span>
 <span>  <span class="co">##     .Internal(lapply(X, FUN))</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x56553dd01c98&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55846b217b20&gt;</span></span>
 <span>  <span class="co">## &lt;environment: namespace:base&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$saveinfo</span></span>
@@ -6273,8 +6273,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x56554ee63518&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655442c9308&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55847c7eb330&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e4c1550&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$splitfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6284,8 +6284,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x56554ee73240&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655442c93e8&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55847c7ed678&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e4c1470&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$svselectfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6295,8 +6295,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x56554ee63518&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655442c94c8&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55847c7eb330&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e4c1390&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$svsplitfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6306,8 +6306,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x56554ee73240&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655442c9650&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x55847c7ed678&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e4c1240&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$teststat</span></span>
 <span>  <span class="co">## [1] "quadratic"</span></span>
@@ -6351,8 +6351,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## $trafo</span></span>
 <span>  <span class="co">## function (subset, weights, info, estfun, object, ...) </span></span>
 <span>  <span class="co">## list(estfun = Y, unweighted = TRUE)</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x56554f3c5358&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655442c7458&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5584799a1978&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e4c3208&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $predictf</span></span>
 <span>  <span class="co">## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + </span></span>
@@ -6380,14 +6380,14 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 0</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655467a79c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e471428&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_with_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ .</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655467a79c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e471428&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_without_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span></span>
 <span>  <span class="co">##     pat.karno + meal.cal + wt.loss</span></span>
-<span>  <span class="co">## &lt;environment: 0x5655467a79c8&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x55847e471428&gt;</span></span>
 <span>  <span class="co">## attr(,"dot")</span></span>
 <span>  <span class="co">## [1] "sequential"</span></span>
 <span>  <span class="co">## </span></span>
@@ -6456,17 +6456,17 @@ With the <code>"aorsf"</code> engine
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## ---------- Oblique random survival forest</span></span>
 <span>  <span class="co">## </span></span>
-<span>  <span class="co">##      Linear combinations: Accelerated</span></span>
+<span>  <span class="co">##      Linear combinations: Accelerated Cox regression</span></span>
 <span>  <span class="co">##           N observations: 162</span></span>
-<span>  <span class="co">##                 N events: 116</span></span>
+<span>  <span class="co">##                 N events: 278</span></span>
 <span>  <span class="co">##                  N trees: 200</span></span>
 <span>  <span class="co">##       N predictors total: 8</span></span>
 <span>  <span class="co">##    N predictors per node: 3</span></span>
-<span>  <span class="co">##  Average leaves per tree: 21</span></span>
+<span>  <span class="co">##  Average leaves per tree: 17.175</span></span>
 <span>  <span class="co">## Min observations in leaf: 5</span></span>
 <span>  <span class="co">##       Min events in leaf: 1</span></span>
-<span>  <span class="co">##           OOB stat value: 0.61</span></span>
-<span>  <span class="co">##            OOB stat type: Harrell's C-statistic</span></span>
+<span>  <span class="co">##           OOB stat value: 0.62</span></span>
+<span>  <span class="co">##            OOB stat type: Harrell's C-index</span></span>
 <span>  <span class="co">##      Variable importance: anova</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## -----------------------------------------</span></span></code></pre>
@@ -6484,9 +6484,19 @@ different time points as well as event time.</p>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 3 × 2</span></span></span>
 <span>  <span class="co">##   .eval_time .pred_survival</span></span>
 <span>  <span class="co">##        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.928 </span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.383 </span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.074<span style="text-decoration: underline;">5</span></span></span></code></pre>
+<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.917 </span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.397 </span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.053<span style="text-decoration: underline;">8</span></span></span></code></pre>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">rf_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
+<span>  <span class="co">##   .pred_time</span></span>
+<span>  <span class="co">##        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>       371.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>       255.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       231.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">4</span>       205.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">5</span>       213.</span></span></code></pre>
 </details>
 </div>
 <div class="section level2">
@@ -6496,7 +6506,7 @@ different time points as well as event time.</p>
 <details id="survival-reg-survival"><summary>
 With the <code>"survival"</code> engine
 </summary><p>We’ll model the survival of lung cancer patients.</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html" class="external-link">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -6507,7 +6517,7 @@ With the <code>"survival"</code> engine
 <span>  <span class="va">lung_train</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="op">]</span></span>
 <span>  <span class="va">lung_test</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span></span></code></pre></div>
 <p>We can define the model with specific parameters:</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sr_spec</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/survival_reg.html" class="external-link">survival_reg</a></span><span class="op">(</span>dist <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"survival"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -6520,7 +6530,7 @@ With the <code>"survival"</code> engine
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## Computational engine: survival</span></span></code></pre>
 <p>Now we create the model fit object:</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">sr_fit</span> <span class="op">&lt;-</span> <span class="va">sr_spec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">lung_train</span><span class="op">)</span></span>
 <span>  <span class="va">sr_fit</span></span></code></pre></div>
@@ -6544,7 +6554,7 @@ With the <code>"survival"</code> engine
 <p>The holdout data can be predicted for survival probability at
 different time points as well as event time, linear predictor, quantile,
 and hazard.</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
 <span>    <span class="va">sr_fit</span>, </span>
 <span>    <span class="va">lung_test</span>, </span>
@@ -6559,7 +6569,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.912 </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.386 </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.074<span style="text-decoration: underline;">2</span></span></span></code></pre>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_time</span></span>
@@ -6569,7 +6579,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       361.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">4</span>       268.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">5</span>       313.</span></span></code></pre>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"linear_pred"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_linear_pred</span></span>
@@ -6579,7 +6589,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>              5.89</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">4</span>              5.59</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">5</span>              5.75</span></span></code></pre>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code></pre></div>
@@ -6595,7 +6605,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">7</span>       0.7           588.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">8</span>       0.8           718.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">9</span>       0.9           919.</span></span></code></pre>
-<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"hazard"</span>, eval_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code></pre></div>
@@ -6608,7 +6618,7 @@ and hazard.</p>
 </details><details id="survival-reg-flexsurv"><summary>
 With the <code>"flexsurv"</code> engine
 </summary><p>We’ll model the survival of lung cancer patients.</p>
-<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html" class="external-link">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -6619,7 +6629,7 @@ With the <code>"flexsurv"</code> engine
 <span>  <span class="va">lung_train</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="op">]</span></span>
 <span>  <span class="va">lung_test</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span></span></code></pre></div>
 <p>We can define the model with specific parameters:</p>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sr_spec</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/survival_reg.html" class="external-link">survival_reg</a></span><span class="op">(</span>dist <span class="op">=</span> <span class="st">"weibull"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"flexsurv"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -6632,7 +6642,7 @@ With the <code>"flexsurv"</code> engine
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## Computational engine: flexsurv</span></span></code></pre>
 <p>Now we create the model fit object:</p>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">sr_fit</span> <span class="op">&lt;-</span> <span class="va">sr_spec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">ph.ecog</span>, data <span class="op">=</span> <span class="va">lung_train</span><span class="op">)</span></span>
@@ -6664,7 +6674,7 @@ With the <code>"flexsurv"</code> engine
 <p>The holdout data can be predicted for survival probability at
 different time points as well as event time, linear predictor, quantile,
 and hazard.</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
 <span>    <span class="va">sr_fit</span>, </span>
 <span>    <span class="va">lung_test</span>, </span>
@@ -6679,7 +6689,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.889 </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.330 </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.054<span style="text-decoration: underline;">3</span></span></span></code></pre>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_time</span></span>
@@ -6689,7 +6699,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       292.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">4</span>       336.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">5</span>       327.</span></span></code></pre>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"linear_pred"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_linear_pred</span></span>
@@ -6699,7 +6709,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>              5.77</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">4</span>              5.91</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">5</span>              5.88</span></span></code></pre>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code></pre></div>
@@ -6715,7 +6725,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">7</span>       0.7          531. </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">8</span>       0.8          653. </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">9</span>       0.9          845.</span></span></code></pre>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"hazard"</span>, eval_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code></pre></div>
@@ -6728,7 +6738,7 @@ and hazard.</p>
 </details><details id="survival-reg-flexsurvspline"><summary>
 With the <code>"flexsurvspline"</code> engine
 </summary><p>We’ll model the survival of lung cancer patients.</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://tidymodels.tidymodels.org/reference/tidymodels_prefer.html" class="external-link">tidymodels_prefer</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -6739,7 +6749,7 @@ With the <code>"flexsurvspline"</code> engine
 <span>  <span class="va">lung_train</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, <span class="op">]</span></span>
 <span>  <span class="va">lung_test</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span></span></code></pre></div>
 <p>We can define the model:</p>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="va">sr_spec</span> <span class="op">&lt;-</span> </span>
 <span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/survival_reg.html" class="external-link">survival_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"flexsurvspline"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -6749,7 +6759,7 @@ With the <code>"flexsurvspline"</code> engine
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## Computational engine: flexsurvspline</span></span></code></pre>
 <p>Now we create the model fit object:</p>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">sr_fit</span> <span class="op">&lt;-</span> <span class="va">sr_spec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">ph.ecog</span>, data <span class="op">=</span> <span class="va">lung_train</span><span class="op">)</span></span>
@@ -6781,7 +6791,7 @@ With the <code>"flexsurvspline"</code> engine
 <p>The holdout data can be predicted for survival probability at
 different time points as well as event time, linear predictor, quantile,
 and hazard.</p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span></span>
 <span>    <span class="va">sr_fit</span>, </span>
 <span>    <span class="va">lung_test</span>, </span>
@@ -6796,7 +6806,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">1</span>        100         0.889 </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">2</span>        500         0.330 </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       <span style="text-decoration: underline;">1</span>000         0.054<span style="text-decoration: underline;">3</span></span></span></code></pre>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_time</span></span>
@@ -6806,7 +6816,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       292.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">4</span>       336.</span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">5</span>       327.</span></span></code></pre>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"linear_pred"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_linear_pred</span></span>
@@ -6816,7 +6826,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">3</span>             -<span style="color: #BB0000;">8.04</span></span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">4</span>             -<span style="color: #BB0000;">8.24</span></span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">5</span>             -<span style="color: #BB0000;">8.20</span></span></span></code></pre>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"quantile"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code></pre></div>
@@ -6832,7 +6842,7 @@ and hazard.</p>
 <span>  <span class="co">## <span style="color: #BCBCBC;">7</span>       0.7          531. </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">8</span>       0.8          653. </span></span>
 <span>  <span class="co">## <span style="color: #BCBCBC;">9</span>       0.9          845.</span></span></code></pre>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">sr_fit</span>, <span class="va">lung_test</span>, type <span class="op">=</span> <span class="st">"hazard"</span>, eval_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">slice</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>    <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.pred</span><span class="op">)</span></span></code></pre></div>
