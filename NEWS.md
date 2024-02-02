@@ -1,20 +1,28 @@
-# censored (development version)
+# censored 0.3.0
 
-* Fixed a bug for `proportional_hazards(engine = "glmnet")` where prediction didn't work for a `workflow()` with a formula as the preprocessor (#264).
-
-* `extract_fit_engine()` now works properly for proportional hazards models fitted with the `"glmnet"` engine (#266).
-
-* `survival_time_coxnet()` and `survival_prob_coxnet()` gain a `multi` argument to allow multiple values for `penalty` (#278, #279).
+## New features
 
 * `multi_predict()` is now available for all prediction types for `proportional_hazards()` models with the `"glmnet"` engine, so newly also for `type = "time"` and `type = "raw"` (#277, #282).
 
-* Bug fix for `multi_predict(type = "survival")` for `proportional_hazards(engine = "glmnet")` models: when used with a single `penalty` value, this value is now included in the results. It was previously omitted (#267, #282).
-
-* Bug fix: `proportional_hazards(engine = "glmnet")` models now don't pretend to be able to deal with sparse matrices when they are not (#291).
-
-* Breaking change: The `survival_prob_*()`, `survival_time_*()`, and `hazard_*()` functions now all take a parsnip `model_fit` object as the main input, instead of an engine fit as was the case for some of them previously (#302).
-
 * Random forests with the `"aorsf"` engine can now predict survival time, i.e., `predict(type = "time")` is now available (#308).
+
+## Breaking change
+
+* The `survival_prob_*()`, `survival_time_*()`, and `hazard_*()` helper functions now all take a parsnip `model_fit` object as the main input, instead of an engine fit as was the case for some of them previously (#302).
+
+## Bug fixes
+
+* `extract_fit_engine()` now works properly for proportional hazards models fitted with the `"glmnet"` engine (#266).
+
+* `multi_predict(type = "survival")` for `proportional_hazards(engine = "glmnet")` models: when used with a single `penalty` value, this value is now included in the results. It was previously omitted (#267, #282).
+
+* `proportional_hazards(engine = "glmnet")` models now don't pretend to be able to deal with sparse matrices when they are not (#291).
+
+* Fixed a bug for `proportional_hazards(engine = "glmnet")` where prediction didn't work for a `workflow()` with a formula as the preprocessor (#264).
+
+## Other
+
+* The helper functions `survival_time_coxnet()` and `survival_prob_coxnet()` gain a `multi` argument to allow multiple values for `penalty` (#278, #279).
 
 
 # censored 0.2.0
