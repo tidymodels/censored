@@ -115,14 +115,6 @@ make_decision_tree_partykit <- function() {
     func = list(pkg = "dials", fun = "min_n"),
     has_submodel = FALSE
   )
-  parsnip::set_model_arg(
-    model = "decision_tree",
-    eng = "partykit",
-    parsnip = "mtry",
-    original = "mtry",
-    func = list(pkg = "dials", fun = "mtry"),
-    has_submodel = FALSE
-  )
 
   parsnip::set_fit(
     model = "decision_tree",
