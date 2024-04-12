@@ -185,6 +185,17 @@ check_dots_coxnet <- function(x, call = caller_env()) {
   invisible(NULL)
 }
 
+#' @export
+print._coxnet <- function(x, ...) {
+  if (inherits(x$fit, "try-error")) {
+    cat("Model fit failed with error:\n", x$fit, "\n")
+  } else {
+    NextMethod(print, x)
+    cat("The training data has been saved for prediction.\n")
+  }
+  invisible(x)
+}
+
 # prediction --------------------------------------------------------------
 
 coxnet_prepare_x <- function(new_data, object) {

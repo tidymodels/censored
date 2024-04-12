@@ -5,7 +5,6 @@
     Output
       parsnip model object
       
-      Fit time:  NA 
       
       Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      weights = weights, alpha = alpha, lambda = lambda) 
       
