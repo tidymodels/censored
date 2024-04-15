@@ -187,18 +187,10 @@ check_dots_coxnet <- function(x, call = caller_env()) {
 
 #' @export
 print._coxnet <- function(x, ...) {
-  cat("parsnip model object\n\n")
-  cat("Fit time: ", prettyunits::pretty_sec(x$elapsed[["elapsed"]]), "\n")
-
-  if (inherits(x$fit, "try-error")) {
-    cat("Model fit failed with error:\n", x$fit, "\n")
-  } else {
-    print(x$fit, ...)
-    cat("The training data has been saved for prediction.\n")
-  }
+  NextMethod(print, x)
+  cat("The training data has been saved for prediction.\n")
   invisible(x)
 }
-
 
 # prediction --------------------------------------------------------------
 
@@ -462,7 +454,7 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 # prediction: time --------------------------------------------------------
 
 #' A wrapper for survival times with coxnet models
-#' @param object A parsnip `model_fit` object resulting from 
+#' @param object A parsnip `model_fit` object resulting from
 #' [proportional_hazards() with engine = "glmnet"][parsnip::details_proportional_hazards_glmnet].
 #' @param new_data Data for prediction.
 #' @param penalty Penalty value(s).
@@ -584,7 +576,7 @@ get_missings_coxnet <- function(new_x, new_strata) {
 
 
 #' A wrapper for survival probabilities with coxnet models
-#' @param object A parsnip `model_fit` object resulting from 
+#' @param object A parsnip `model_fit` object resulting from
 #' [proportional_hazards() with engine = "glmnet"][parsnip::details_proportional_hazards_glmnet].
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.

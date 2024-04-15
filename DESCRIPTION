@@ -30,7 +30,6 @@ Imports:
     hardhat (>= 1.1.0),
     lifecycle,
     mboost,
-    prettyunits,
     prodlim (>= 2023.03.31),
     purrr,
     rlang (>= 1.0.0),
@@ -56,4 +55,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
