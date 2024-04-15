@@ -30,7 +30,6 @@ Imports:
     hardhat (>= 1.1.0),
     lifecycle,
     mboost,
-    prettyunits,
     prodlim (>= 2023.03.31),
     purrr,
     rlang (>= 1.0.0),
