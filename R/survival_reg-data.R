@@ -257,21 +257,7 @@ make_survival_reg_flexsurv <- function() {
     type = "hazard",
     value = list(
       pre = NULL,
-      post = function(pred, object) {
-        if (".pred" %in% names(pred)) {
-          pred %>%
-            dplyr::rowwise() %>%
-            dplyr::mutate(
-              .pred = list(dplyr::rename(.pred, .eval_time = .time))
-            ) %>%
-            dplyr::ungroup()
-        } else {
-          dplyr::rename(pred, .eval_time = .time) %>%
-            dplyr::mutate(.row = seq_len(nrow(pred))) %>%
-            tidyr::nest(.by = .row) %>%
-            dplyr::select(-.row)
-        }
-      },
+      post = flexsurv_post,
       func = c(fun = "predict"),
       args =
         list(
@@ -290,21 +276,7 @@ make_survival_reg_flexsurv <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = function(pred, object) {
-        if (".pred" %in% names(pred)) {
-          pred %>%
-            dplyr::rowwise() %>%
-            dplyr::mutate(
-              .pred = list(dplyr::rename(.pred, .eval_time = .time))
-            ) %>%
-            dplyr::ungroup()
-        } else {
-          dplyr::rename(pred, .eval_time = .time) %>%
-            dplyr::mutate(.row = seq_len(nrow(pred))) %>%
-            tidyr::nest(.by = .row) %>%
-            dplyr::select(-.row)
-        }
-      },
+      post = flexsurv_post,
       func = c(fun = "predict"),
       args =
         list(
@@ -442,21 +414,7 @@ make_survival_reg_flexsurvspline <- function() {
     type = "hazard",
     value = list(
       pre = NULL,
-      post = function(pred, object) {
-        if (".pred" %in% names(pred)) {
-          pred %>%
-            dplyr::rowwise() %>%
-            dplyr::mutate(
-              .pred = list(dplyr::rename(.pred, .eval_time = .time))
-            ) %>%
-            dplyr::ungroup()
-        } else {
-          dplyr::rename(pred, .eval_time = .time) %>%
-            dplyr::mutate(.row = seq_len(nrow(pred))) %>%
-            tidyr::nest(.by = .row) %>%
-            dplyr::select(-.row)
-        }
-      },
+      post = flexsurv_post,
       func = c(fun = "predict"),
       args =
         list(
@@ -475,21 +433,7 @@ make_survival_reg_flexsurvspline <- function() {
     type = "survival",
     value = list(
       pre = NULL,
-      post = function(pred, object) {
-        if (".pred" %in% names(pred)) {
-          pred %>%
-            dplyr::rowwise() %>%
-            dplyr::mutate(
-              .pred = list(dplyr::rename(.pred, .eval_time = .time))
-            ) %>%
-            dplyr::ungroup()
-        } else {
-          dplyr::rename(pred, .eval_time = .time) %>%
-            dplyr::mutate(.row = seq_len(nrow(pred))) %>%
-            tidyr::nest(.by = .row) %>%
-            dplyr::select(-.row)
-        }
-      },
+      post = flexsurv_post,
       func = c(fun = "predict"),
       args =
         list(
