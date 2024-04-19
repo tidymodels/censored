@@ -1,5 +1,5 @@
 flexsurv_post <- function(pred, object) {
-  if (packageVersion("flexsurv") < "2.3") {
+  if (utils::packageVersion("flexsurv") < "2.3") {
     pred <- flexsurv_rename_time(pred)
   }
 
