@@ -41,7 +41,7 @@ survival_prob_partykit(tree, lung[1:3, ], eval_time = 100)
 forest <- rand_forest() \%>\%
   set_mode("censored regression") \%>\%
   set_engine("partykit") \%>\%
-  fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  fit(Surv(time, status) ~ age + ph.ecog, data = lung[1:100, ])
 survival_prob_partykit(forest, lung[1:3, ], eval_time = 100)
 \dontshow{\}) # examplesIf}
 }
