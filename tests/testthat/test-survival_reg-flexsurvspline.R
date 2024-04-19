@@ -61,12 +61,15 @@ test_that("survival probability prediction", {
     head(lung),
     type = "survival",
     times = c(0, 500, 1000)
-  ) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      .pred = list(dplyr::rename(.pred, .eval_time = .time))
-    ) %>%
-    dplyr::ungroup()
+  ) 
+  if (packageVersion("flexsurv") < "2.3") {
+    exp_pred <- exp_pred %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        .pred = list(dplyr::rename(.pred, .eval_time = .time))
+      ) %>%
+      dplyr::ungroup()
+  }
 
   f_fit <- survival_reg() %>%
     set_engine("flexsurvspline", k = 1) %>%
@@ -281,12 +284,15 @@ test_that("hazard prediction", {
     head(lung),
     type = "hazard",
     times = c(0, 500, 1000)
-  ) %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      .pred = list(dplyr::rename(.pred, .eval_time = .time))
-    ) %>%
-    dplyr::ungroup()
+  ) 
+  if (packageVersion("flexsurv") < "2.3") {
+    exp_pred <- exp_pred %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        .pred = list(dplyr::rename(.pred, .eval_time = .time))
+      ) %>%
+      dplyr::ungroup()
+  }
 
   f_fit <- survival_reg() %>%
     set_engine("flexsurvspline", k = 1) %>%
