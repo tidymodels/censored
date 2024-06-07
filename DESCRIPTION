@@ -20,7 +20,7 @@ BugReports: https://github.com/tidymodels/censored/issues
 Depends:
     parsnip (>= 1.1.0),
     R (>= 3.5.0),
-    survival (>= 3.3-1)
+    survival (>= 3.7-0)
 Imports: 
     cli,
     dials,
