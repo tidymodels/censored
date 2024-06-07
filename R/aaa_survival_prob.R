@@ -264,8 +264,6 @@ survfit_summary_to_patched_tibble <- function(object, index_missing, eval_time, 
   object %>%
     summary(times = eval_time, extend = TRUE) %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(eval_time = eval_time) %>%
-    survfit_summary_restore_time_order(eval_time = eval_time) %>%
     survfit_summary_patch_missings(
       index_missing = index_missing,
       eval_time = eval_time,

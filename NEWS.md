@@ -1,5 +1,11 @@
 # censored (development version)
 
+* censored now depends on survival >= 3.7-0 which allows us to use it also for predictions of survival probabilities at infinite time points. 
+This means that 
+    - Survival probabilities at `eval_time = Inf` are now not always set to 0.
+    - Confidence intervals for survival probabilities at `eval_time = Inf` are now not always set to `NA`.
+This applies to: `proportional_hazards()` models.
+
 # censored 0.3.1
 
 * Internal changes to the `predict()` methods for flexsurv models, in preparation for the upcoming flexsurv release (#317).

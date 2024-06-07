@@ -776,17 +776,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   expect_true(all(is.na(prob_na$.pred_survival)))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
-  expect_equal(
-    prob_non_na$.pred_survival[c(1, 4)],
-    c(1, 0)
-  )
-  expect_equal(
-    prob_non_na %>%
-      dplyr::filter(is.finite(.eval_time)) %>%
-      dplyr::arrange(.eval_time) %>%
-      dplyr::pull(.pred_survival),
-    exp_prob_non_na
-  )
+  expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
 
   # single observation
   lung_pred <- lung[13, c("age", "ph.ecog")]
@@ -797,17 +787,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   prob <- tidyr::unnest(prob, cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
-  expect_equal(
-    prob$.pred_survival[c(1, 4)],
-    c(1, 0)
-  )
-  expect_equal(
-    prob %>%
-      dplyr::filter(is.finite(.eval_time)) %>%
-      dplyr::arrange(.eval_time) %>%
-      dplyr::pull(.pred_survival),
-    exp_prob
-  )
+  expect_equal(prob$.pred_survival, exp_prob)
 
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
@@ -858,17 +838,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   expect_true(all(is.na(prob_na$.pred_survival)))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, rep(pred_time, length(pred_penalty)))
-  expect_equal(
-    prob_non_na$.pred_survival[c(1, 4, 7, 10)],
-    c(1, 0, 1, 0)
-  )
-  expect_equal(
-    prob_non_na %>%
-      dplyr::filter(is.finite(.eval_time)) %>%
-      dplyr::arrange(penalty, .eval_time) %>%
-      dplyr::pull(.pred_survival),
-    exp_prob
-  )
+  expect_equal(prob_non_na$.pred_survival, exp_prob)
 
   # single observation
   lung_pred <- lung[13, c("age", "ph.ecog")]
@@ -887,17 +857,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   exp_prob <- purrr::map(surv_fit_summary, purrr::pluck, "surv") %>% unlist()
 
   expect_equal(prob_non_na$.eval_time, rep(pred_time, length(pred_penalty)))
-  expect_equal(
-    prob$.pred_survival[c(1, 4, 7, 10)],
-    c(1, 0, 1, 0)
-  )
-  expect_equal(
-    prob %>%
-      dplyr::filter(is.finite(.eval_time)) %>%
-      dplyr::arrange(penalty, .eval_time) %>%
-      dplyr::pull(.pred_survival),
-    exp_prob
-  )
+  expect_equal(prob$.pred_survival, exp_prob)
 
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
