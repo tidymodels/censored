@@ -273,7 +273,7 @@ survfit_summary_to_patched_tibble <- function(object, index_missing, eval_time, 
 }
 
 combine_list_of_survfit_summary <- function(object, eval_time) {
-  n_time <- sum(is.finite(eval_time))
+  n_time <- length(eval_time)
   elements <- available_survfit_summary_elements(object[[1]])
 
   ret <- list()
@@ -286,11 +286,9 @@ combine_list_of_survfit_summary <- function(object, eval_time) {
   ret
 }
 
-survfit_summary_patch <- function(object, index_missing, eval_time, n_obs) {
+survfit_summary_patch <- function(object, index_missing, eval_time, n_obs) {11
   object %>%
     survfit_summary_typestable() %>%
-    survfit_summary_patch_infinite_time(eval_time = eval_time) %>%
-    survfit_summary_restore_time_order(eval_time = eval_time) %>%
     survfit_summary_patch_missings(
       index_missing = index_missing,
       eval_time = eval_time,
