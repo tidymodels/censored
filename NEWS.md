@@ -4,7 +4,7 @@
 This means that 
     - Survival probabilities at `eval_time = Inf` are now not always set to 0.
     - Confidence intervals for survival probabilities at `eval_time = Inf` are now not always set to `NA`.
-This applies to: `proportional_hazards()`, `bag_tree()` models.
+This applies to: `proportional_hazards()`, `bag_tree()` models and models with the `partykit` engine, `decision_tree()` and `rand_forest()`. 
 
 # censored 0.3.1
 
