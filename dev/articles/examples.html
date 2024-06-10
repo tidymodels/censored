@@ -113,7 +113,7 @@ With the <code>"rpart"</code> engine
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## ── <span style="font-weight: bold;">Attaching packages</span> ──────────────────────────────── tidymodels 1.2.0 ──</span></span></code></pre>
-<pre><code><span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 1.0.5      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 1.2.1 </span></span>
+<pre><code><span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">broom       </span> 1.0.6      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">rsample     </span> 1.2.1 </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dials       </span> 1.2.1      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble      </span> 3.2.1 </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr       </span> 1.1.4      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr       </span> 1.3.1 </span></span>
 <span>  <span class="co">## <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">infer       </span> 1.0.7      <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tune        </span> 1.2.1 </span></span>
@@ -126,7 +126,7 @@ With the <code>"rpart"</code> engine
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span>  masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>     masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
 <span>  <span class="co">## <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">recipes</span>::<span style="color: #00BB00;">step()</span>  masks <span style="color: #0000BB;">stats</span>::step()</span></span>
-<span>  <span class="co">## <span style="color: #0000BB;">•</span> Dig deeper into tidy modeling with R at <span style="color: #00BB00;">https://www.tmwr.org</span></span></span></code></pre>
+<span>  <span class="co">## <span style="color: #0000BB;">•</span> Use <span style="color: #00BB00;">tidymodels_prefer()</span> to resolve common conflicts.</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored" class="external-link">censored</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span>  <span class="co">## Loading required package: survival</span></span></code></pre>
@@ -6174,14 +6174,14 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 1</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c171db10&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b56a4560&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_with_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ .</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c171db10&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b56a4560&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_without_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span></span>
 <span>  <span class="co">##     pat.karno + meal.cal + wt.loss</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c171db10&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b56a4560&gt;</span></span>
 <span>  <span class="co">## attr(,"dot")</span></span>
 <span>  <span class="co">## [1] "sequential"</span></span>
 <span>  <span class="co">## </span></span>
@@ -6253,7 +6253,7 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##         X &lt;- as.list(X)</span></span>
 <span>  <span class="co">##     .Internal(lapply(X, FUN))</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x55e4b25528e0&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5628a9897c40&gt;</span></span>
 <span>  <span class="co">## &lt;environment: namespace:base&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$saveinfo</span></span>
@@ -6273,8 +6273,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x55e4c0862cf0&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c183d550&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5628bbd95e08&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b5642958&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$splitfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6284,8 +6284,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x55e4c0865038&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c183d470&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5628bbd98038&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b5642a38&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$svselectfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6295,8 +6295,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .select(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x55e4c0862cf0&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c183d390&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5628bbd95e08&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b5642b18&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$svsplitfun</span></span>
 <span>  <span class="co">## function (model, trafo, data, subset, weights, whichvar, ctrl) </span></span>
@@ -6306,8 +6306,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">##     .split(model, trafo, data, subset, weights, whichvar, ctrl, </span></span>
 <span>  <span class="co">##         FUN = .ctree_test)</span></span>
 <span>  <span class="co">## }</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x55e4c0865038&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c183d240&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5628bbd98038&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b5642c68&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $info$control$teststat</span></span>
 <span>  <span class="co">## [1] "quadratic"</span></span>
@@ -6351,8 +6351,8 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## $trafo</span></span>
 <span>  <span class="co">## function (subset, weights, info, estfun, object, ...) </span></span>
 <span>  <span class="co">## list(estfun = Y, unweighted = TRUE)</span></span>
-<span>  <span class="co">## &lt;bytecode: 0x55e4c8883048&gt;</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c1841550&gt;</span></span>
+<span>  <span class="co">## &lt;bytecode: 0x5628b8af7e30&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b5640990&gt;</span></span>
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## $predictf</span></span>
 <span>  <span class="co">## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + </span></span>
@@ -6380,14 +6380,14 @@ With the <code>"partykit"</code> engine
 <span>  <span class="co">## attr(,"response")</span></span>
 <span>  <span class="co">## [1] 0</span></span>
 <span>  <span class="co">## attr(,".Environment")</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c171db10&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b56a4560&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_with_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ .</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c171db10&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b56a4560&gt;</span></span>
 <span>  <span class="co">## attr(,"Formula_without_dot")</span></span>
 <span>  <span class="co">## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + </span></span>
 <span>  <span class="co">##     pat.karno + meal.cal + wt.loss</span></span>
-<span>  <span class="co">## &lt;environment: 0x55e4c171db10&gt;</span></span>
+<span>  <span class="co">## &lt;environment: 0x5628b56a4560&gt;</span></span>
 <span>  <span class="co">## attr(,"dot")</span></span>
 <span>  <span class="co">## [1] "sequential"</span></span>
 <span>  <span class="co">## </span></span>
@@ -6492,11 +6492,11 @@ different time points as well as event time.</p>
 <pre><code><span>  <span class="co">## <span style="color: #949494;"># A tibble: 5 × 1</span></span></span>
 <span>  <span class="co">##   .pred_time</span></span>
 <span>  <span class="co">##        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>       371.</span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>       255.</span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       231.</span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">4</span>       205.</span></span>
-<span>  <span class="co">## <span style="color: #BCBCBC;">5</span>       213.</span></span></code></pre>
+<span>  <span class="co">## <span style="color: #BCBCBC;">1</span>       397.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">2</span>       277.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">3</span>       240.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">4</span>       228.</span></span>
+<span>  <span class="co">## <span style="color: #BCBCBC;">5</span>       226.</span></span></code></pre>
 </details>
 </div>
 <div class="section level2">
@@ -6657,7 +6657,7 @@ With the <code>"flexsurv"</code> engine
 <span>  <span class="co">##          data mean  est        L95%       U95%       se         exp(est) </span></span>
 <span>  <span class="co">## shape           NA   1.39e+00   1.21e+00   1.61e+00   1.02e-01         NA</span></span>
 <span>  <span class="co">## scale           NA   5.74e+02   1.99e+02   1.65e+03   3.10e+02         NA</span></span>
-<span>  <span class="co">## age       6.24e+01  -9.02e-03  -2.50e-02   6.93e-03   8.14e-03   9.91e-01</span></span>
+<span>  <span class="co">## age       6.24e+01  -9.02e-03  -2.50e-02   6.95e-03   8.15e-03   9.91e-01</span></span>
 <span>  <span class="co">## sex       1.38e+00   4.02e-01   1.17e-01   6.87e-01   1.45e-01   1.50e+00</span></span>
 <span>  <span class="co">## ph.ecog   9.51e-01  -3.17e-01  -5.13e-01  -1.21e-01   1.00e-01   7.28e-01</span></span>
 <span>  <span class="co">##          L95%       U95%     </span></span>
@@ -6772,15 +6772,15 @@ With the <code>"flexsurvspline"</code> engine
 <span>  <span class="co">## </span></span>
 <span>  <span class="co">## Estimates: </span></span>
 <span>  <span class="co">##          data mean  est        L95%       U95%       se         exp(est) </span></span>
-<span>  <span class="co">## gamma0          NA   -8.85681  -10.78535   -6.92827    0.98397         NA</span></span>
+<span>  <span class="co">## gamma0          NA   -8.85681  -10.78595   -6.92767    0.98427         NA</span></span>
 <span>  <span class="co">## gamma1          NA    1.39431    1.19358    1.59504    0.10241         NA</span></span>
-<span>  <span class="co">## age       62.41358    0.01258   -0.00966    0.03482    0.01135    1.01266</span></span>
+<span>  <span class="co">## age       62.41358    0.01258   -0.00968    0.03484    0.01136    1.01266</span></span>
 <span>  <span class="co">## sex        1.38272   -0.56080   -0.95517   -0.16643    0.20121    0.57075</span></span>
 <span>  <span class="co">## ph.ecog    0.95062    0.44213    0.17197    0.71230    0.13784    1.55602</span></span>
 <span>  <span class="co">##          L95%       U95%     </span></span>
 <span>  <span class="co">## gamma0          NA         NA</span></span>
 <span>  <span class="co">## gamma1          NA         NA</span></span>
-<span>  <span class="co">## age        0.99039    1.03543</span></span>
+<span>  <span class="co">## age        0.99037    1.03545</span></span>
 <span>  <span class="co">## sex        0.38475    0.84668</span></span>
 <span>  <span class="co">## ph.ecog    1.18764    2.03867</span></span>
 <span>  <span class="co">## </span></span>
