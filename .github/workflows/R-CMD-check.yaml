@@ -57,7 +57,7 @@ jobs:
         with:
           extra-packages: 
             any::rcmdcheck,
-            quantreg=?ignore-before-r=4.3.0
+            pec=?ignore-before-r=4.3.0
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
