@@ -56,6 +56,7 @@ jobs:
         with:
           extra-packages: 
             any::rcmdcheck,
+            aorsf=?ignore-before-r=4.1.0,
             pec=?ignore-before-r=4.3.0
           needs: check
 
