@@ -286,7 +286,7 @@ combine_list_of_survfit_summary <- function(object, eval_time) {
   ret
 }
 
-survfit_summary_patch <- function(object, index_missing, eval_time, n_obs) {11
+survfit_summary_patch <- function(object, index_missing, eval_time, n_obs) {
   object %>%
     survfit_summary_typestable() %>%
     survfit_summary_patch_missings(
