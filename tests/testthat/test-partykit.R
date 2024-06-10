@@ -33,11 +33,7 @@ test_that("survival_prob_partykit() works for ctree", {
     rep(pred_time, nrow(lung_pred))
   )
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
-    rep(c(1, 0), nrow(lung_pred))
-  )
-  expect_equal(
-    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
+    prob$.pred_survival,
     as.vector(exp_prob)
   )
 
@@ -57,11 +53,7 @@ test_that("survival_prob_partykit() works for ctree", {
   exp_prob <- surv_fit_summary$surv
 
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
-    c(1, 0)
-  )
-  expect_equal(
-    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
+    prob$.pred_survival,
     as.vector(exp_prob)
   )
 
@@ -111,11 +103,7 @@ test_that("survival_prob_partykit() works for cforest", {
     rep(pred_time, nrow(lung_pred))
   )
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
-    rep(c(1, 0), nrow(lung_pred))
-  )
-  expect_equal(
-    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
+    prob$.pred_survival,
     as.vector(exp_prob)
   )
 
@@ -137,11 +125,7 @@ test_that("survival_prob_partykit() works for cforest", {
   exp_prob <- surv_fit_summary$surv
 
   expect_equal(
-    prob %>% dplyr::filter(is.infinite(.eval_time)) %>% dplyr::pull(.pred_survival),
-    c(1, 0)
-  )
-  expect_equal(
-    prob %>% dplyr::filter(is.finite(.eval_time)) %>% dplyr::pull(.pred_survival),
+    prob$.pred_survival,
     as.vector(exp_prob)
   )
 

@@ -132,7 +132,7 @@ test_that("survival_curve_to_prob() works", {
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
-  expect_equal(prob[c(2, 3, 1), ], exp_prob)
+  expect_equal(prob, exp_prob)
 
   # can handle out of range time (before and after events)
   pred_time_extend <- c(-2, 0, 3000)
@@ -146,19 +146,15 @@ test_that("survival_curve_to_prob() works", {
 
   # can handle infinite time
   pred_time_inf <- c(-Inf, 0, Inf, 1022, -Inf)
-  exp_prob <- summary(surv_fit, time = pred_time_inf)$surv
+  exp_prob <- summary(surv_fit, time = pred_time_inf, extend = TRUE)$surv
   prob <- survival_curve_to_prob(
     eval_time = pred_time_inf,
     event_times = surv_fit$time,
     survival_prob = surv_fit$surv
   )
   expect_equal(nrow(prob), length(pred_time_inf))
-  expect_equal(prob[c(2, 4), ], exp_prob)
-  expect_equal(
-    prob[c(1, 5), ],
-    matrix(1, nrow = 2, ncol = nrow(lung_pred)),
-    ignore_attr = "dimnames"
-  )
+
+  expect_equal(prob[-3, ], exp_prob[-3, ])
   expect_equal(
     prob[3, ] %>% unname(),
     rep(0, nrow(lung_pred))
