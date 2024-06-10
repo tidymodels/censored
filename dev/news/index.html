@@ -52,7 +52,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="censored-development-version">censored (development version)<a class="anchor" aria-label="anchor" href="#censored-development-version"></a></h2>
-</div>
+<ul><li>censored now depends on survival &gt;= 3.7-0 which allows us to use it also for predictions of survival probabilities at infinite evaluation time points. This means that: Survival probabilities at <code>eval_time = Inf</code> are now not always set to 0 and confidence intervals at infinite evaluation times are now not always set to <code>NA</code>. This applies to <code><a href="https://parsnip.tidymodels.org/reference/proportional_hazards.html" class="external-link">proportional_hazards()</a></code>and <code><a href="https://parsnip.tidymodels.org/reference/bag_tree.html" class="external-link">bag_tree()</a></code> models as well as models with the <code>partykit</code> engine, <code><a href="https://parsnip.tidymodels.org/reference/decision_tree.html" class="external-link">decision_tree()</a></code> and <code><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest()</a></code> (<a href="https://github.com/tidymodels/censored/issues/320" class="external-link">#320</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="censored-031">censored 0.3.1<a class="anchor" aria-label="anchor" href="#censored-031"></a></h2><p class="text-muted">CRAN release: 2024-04-19</p>
 <ul><li>Internal changes to the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> methods for flexsurv models, in preparation for the upcoming flexsurv release (<a href="https://github.com/tidymodels/censored/issues/317" class="external-link">#317</a>).</li>
