@@ -1,4 +1,4 @@
-# These functions define the AFT survival models.
+# These functions define the Cox regression models.
 # They are executed when this package is loaded via `.onLoad()` and modify the
 # parsnip package's model environment.
 
@@ -9,20 +9,20 @@
 
 # nocov
 
-make_boost_tree_xgboost_aft <- function() {
-  parsnip::set_model_engine("boost_tree", mode = "censored regression", eng = "xgboost_aft")
+make_boost_tree_xgboost_cox <- function() {
+  parsnip::set_model_engine("boost_tree", mode = "censored regression", eng = "xgboost_cox")
   parsnip::set_dependency("boost_tree",
-                          eng = "xgboost_aft",
+                          eng = "xgboost_cox",
                           pkg = "xgboost",
                           mode = "censored regression")
   parsnip::set_dependency("boost_tree",
-                          eng = "xgboost_aft",
+                          eng = "xgboost_cox",
                           pkg = "censored",
                           mode = "censored regression")
 
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "tree_depth",
     original = "max_depth",
     func = list(pkg = "dials", fun = "tree_depth"),
@@ -30,7 +30,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "trees",
     original = "nrounds",
     func = list(pkg = "dials", fun = "trees"),
@@ -38,7 +38,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "learn_rate",
     original = "eta",
     func = list(pkg = "dials", fun = "learn_rate"),
@@ -46,7 +46,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "mtry",
     original = "colsample_bynode",
     func = list(pkg = "dials", fun = "mtry"),
@@ -54,7 +54,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "min_n",
     original = "min_child_weight",
     func = list(pkg = "dials", fun = "min_n"),
@@ -62,7 +62,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "loss_reduction",
     original = "gamma",
     func = list(pkg = "dials", fun = "loss_reduction"),
@@ -70,7 +70,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "sample_size",
     original = "subsample",
     func = list(pkg = "dials", fun = "sample_size"),
@@ -78,7 +78,7 @@ make_boost_tree_xgboost_aft <- function() {
   )
   parsnip::set_model_arg(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     parsnip = "stop_iter",
     original = "early_stop",
     func = list(pkg = "dials", fun = "stop_iter"),
@@ -88,19 +88,19 @@ make_boost_tree_xgboost_aft <- function() {
 
   parsnip::set_fit(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     mode = "censored regression",
     value = list(
       interface = "matrix",
       protect = c("x", "y",'objective'),
       func = c(pkg = "censored", fun = "xgb_train_censored"),
-      defaults = list(nthread = 1, verbose = 0,objective = 'survival:aft')
+      defaults = list(nthread = 1, verbose = 0,objective = 'survival:cox')
     )
   )
 
   parsnip::set_encoding(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     mode = "censored regression",
     options = list(
       predictor_indicators = "none",
@@ -112,15 +112,15 @@ make_boost_tree_xgboost_aft <- function() {
 
   parsnip::set_pred(
     model = "boost_tree",
-    eng = "xgboost_aft",
+    eng = "xgboost_cox",
     mode = "censored regression",
-    type = "time",
+    type = "linear_pred",
     value = list(
       pre = function(x, object) {
-        if (object$fit$params$objective != "survival:aft")
+        if (object$fit$params$objective != "survival:cox")
           rlang::abort(
             glue::glue(
-              "The objective should be survival:aft not {object$fit$params$objective}"
+              "The objective should be survival:cox not {object$fit$params$objective}"
             )
           )
         x
@@ -132,5 +132,3 @@ make_boost_tree_xgboost_aft <- function() {
   )
 
 }
-
-

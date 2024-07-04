@@ -283,7 +283,7 @@ as_xgb_data <- function(x, y, validation = 0, weights = NULL, event_level = "fir
       train_data <- xgboost::xgb.DMatrix(x_train, missing = NA,info = info_list)
 
       y_train[y_train[, 2, drop = TRUE] == 0] <- y_train[y_train[, 2, drop = TRUE] == 0][,1] * -1
-      xgboost::setinfo
+      xgboost::setinfo(train_data, "label", y_train[, 1, drop = TRUE])
 
       # Create training data and watch list for return
       dat <- train_data
