@@ -1,78 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://censored.tidymodels.org/dev/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/articles/examples.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/index.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/aorsf_internal.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/blackboost_train.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/censored-package.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/coxnet_train.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_coxnet.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_coxph.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_mboost.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_partykit.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_pecRpart.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_survbagg.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_prob_survreg.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_time_coxnet.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_time_coxph.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_time_mboost.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/survival_time_survbagg.html</loc>
-  </url>
-  <url>
-    <loc>https://censored.tidymodels.org/dev/reference/time_to_million.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://censored.tidymodels.org/dev/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/LICENSE-text.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/LICENSE.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/articles/examples.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/articles/index.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/authors.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/index.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/news/index.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/aorsf_internal.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/blackboost_train.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/censored-package.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/coxnet_train.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/index.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_coxnet.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_coxph.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_mboost.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_partykit.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_pecRpart.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_survbagg.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_prob_survreg.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_time_coxnet.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_time_coxph.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_time_mboost.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_time_survbagg.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/time_to_million.html</loc></url>
 </urlset>
+

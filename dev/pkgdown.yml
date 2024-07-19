@@ -1,10 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.0.9
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  examples: examples.html
-last_built: 2024-06-12T08:10Z
+  articles/examples: examples.html
+last_built: 2024-07-19T18:34Z
 urls:
   reference: https://censored.tidymodels.org/reference
   article: https://censored.tidymodels.org/articles
-
