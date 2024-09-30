@@ -35,7 +35,8 @@ Imports:
     rlang (>= 1.0.0),
     stats,
     tibble (>= 3.1.3),
-    tidyr (>= 1.0.0)
+    tidyr (>= 1.0.0),
+    vctrs
 Suggests:
     aorsf (>= 0.1.2),
     coin,
