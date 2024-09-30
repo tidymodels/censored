@@ -50,7 +50,8 @@ Suggests:
     rpart,
     testthat (>= 3.0.0)
 Remotes:
-    tidymodels/hardhat    
+    tidymodels/hardhat,
+    tidymodels/parsnip#1209
 Config/Needs/website:
     tidymodels,
     tidyverse/tidytemplate
