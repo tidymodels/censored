@@ -165,9 +165,9 @@ test_that("survival predictions without strata", {
 
   # formula method
   expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
-  expect_error(
+  expect_snapshot(
     predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
+    error = TRUE
   )
   # Test at observed event times since we use the step function and pec does not
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = c(306, 455))
@@ -339,7 +339,7 @@ test_that("survival prediction with NA", {
 })
 
 test_that("survival_prob_coxph() works", {
-  mod <- proportional_hazards() %>% 
+  mod <- proportional_hazards() %>%
     fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
@@ -383,7 +383,7 @@ test_that("survival_prob_coxph() works", {
 })
 
 test_that("survival_prob_coxph() works with confidence intervals", {
-  mod <- proportional_hazards() %>% 
+  mod <- proportional_hazards() %>%
     fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite

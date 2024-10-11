@@ -42,7 +42,7 @@ test_that("time predictions", {
     formula = Surv(time, status) ~ age + ph.ecog
   )
   exp_f_pred <- predict(
-    exp_f_fit, 
+    exp_f_fit,
     new_data = lung,
     pred_type = "time",
     na_action = "pass"
@@ -85,9 +85,9 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
 
-  expect_error(
+  expect_snapshot(
     predict(f_fit, lung_orsf, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
+    error = TRUE
   )
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = c(100, 500, 1200))
@@ -269,7 +269,7 @@ test_that("`fix_xy()` works", {
 
 test_that("can handle case weights", {
   skip_if_not_installed("aorsf")
-  
+
   dat <- make_cens_wts()
 
   expect_error(
