@@ -86,14 +86,14 @@ make_survival_reg_survival <- function() {
     type = "quantile",
     value = list(
       pre = NULL,
-      post = survreg_quant,
+      post = parsnip::matrix_to_quantile_pred,
       func = c(fun = "predict"),
       args =
         list(
           object = expr(object$fit),
           newdata = expr(new_data),
           type = "quantile",
-          p = expr(quantile)
+          p = expr(quantile_levels)
         )
     )
   )
@@ -236,14 +236,14 @@ make_survival_reg_flexsurv <- function() {
     type = "quantile",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = flexsurv_to_quantile_pred,
       func = c(fun = "predict"),
       args =
         list(
           object = rlang::expr(object$fit),
           newdata = rlang::expr(new_data),
           type = "quantile",
-          p = rlang::expr(quantile),
+          p = rlang::expr(quantile_levels),
           conf.int = rlang::expr(interval == "confidence"),
           conf.level = rlang::expr(level)
         )
@@ -393,14 +393,14 @@ make_survival_reg_flexsurvspline <- function() {
     type = "quantile",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = flexsurv_to_quantile_pred,
       func = c(fun = "predict"),
       args =
         list(
           object = rlang::expr(object$fit),
           newdata = rlang::expr(new_data),
           type = "quantile",
-          p = rlang::expr(quantile),
+          p = rlang::expr(quantile_levels),
           conf.int = rlang::expr(interval == "confidence"),
           conf.level = rlang::expr(level)
         )

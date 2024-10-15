@@ -55,7 +55,7 @@ test_that("time predictions", {
 
 test_that("survival predictions", {
   skip_if_not_installed("mboost")
-  
+
   pred_time <- c(0, 100, 200, 10000)
 
   set.seed(403)
@@ -70,9 +70,9 @@ test_that("survival predictions", {
   set.seed(403)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
+  expect_snapshot(
     predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
+    error = TRUE
   )
 
   set.seed(403)
@@ -248,7 +248,7 @@ test_that("linear_pred predictions", {
 
 test_that("`fix_xy()` works", {
   skip_if_not_installed("mboost")
-  
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

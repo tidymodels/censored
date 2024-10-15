@@ -62,12 +62,12 @@ utils::globalVariables(
     ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
     ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred",
     ".pred_link", ".pred_time", ".pred_survival", "next_event_time",
-    "sum_component", "time_interval"
+    "sum_component", "time_interval", "quantile_levels"
   )
 )
 
 # quiet R-CMD-check NOTEs that prodlim is unused
-# (parsnip uses it for all censored regression models 
+# (parsnip uses it for all censored regression models
 # but only has it in Suggests)
 #' @importFrom prodlim prodlim
 NULL

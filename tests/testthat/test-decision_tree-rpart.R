@@ -62,9 +62,9 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
+  expect_snapshot(
     predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
+    error = TRUE
   )
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)

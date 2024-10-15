@@ -417,9 +417,7 @@ The following examples use the same data set throughout.
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
   predict(sr_fit, lung_test, type = "linear_pred")
-  predict(sr_fit, lung_test, type = "quantile") %>% 
-    slice(1) %>% 
-    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "quantile")
   predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -467,9 +465,7 @@ The following examples use the same data set throughout.
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
   predict(sr_fit, lung_test, type = "linear_pred")
-  predict(sr_fit, lung_test, type = "quantile") %>% 
-    slice(1) %>% 
-    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "quantile")
   predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)
@@ -517,9 +513,7 @@ The following examples use the same data set throughout.
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
   predict(sr_fit, lung_test, type = "linear_pred")
-  predict(sr_fit, lung_test, type = "quantile") %>% 
-    slice(1) %>% 
-    tidyr::unnest(col = .pred)
+  predict(sr_fit, lung_test, type = "quantile") 
   predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
     slice(1) %>% 
     tidyr::unnest(col = .pred)

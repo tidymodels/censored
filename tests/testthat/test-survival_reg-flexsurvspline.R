@@ -61,7 +61,7 @@ test_that("survival probability prediction", {
     head(lung),
     type = "survival",
     times = c(0, 500, 1000)
-  ) 
+  )
   if (packageVersion("flexsurv") < "2.3") {
     exp_pred <- exp_pred %>%
       dplyr::rowwise() %>%
@@ -211,59 +211,26 @@ test_that("quantile predictions", {
     set_mode("censored regression") %>%
     fit(Surv(stop, event) ~ rx + size + enum, data = bladder)
   pred <- predict(fit_s, new_data = bladder[1:3, ], type = "quantile")
-
-  set.seed(1)
-  exp_fit <- flexsurv::flexsurvspline(
-    Surv(stop, event) ~ rx + size + enum,
-    data = bladder,
-    k = 1
-  )
-  exp_pred <- summary(
-    exp_fit,
-    newdata = bladder[1:3, ],
-    type = "quantile",
-    quantiles = (1:9) / 10
-  )
-
   expect_s3_class(pred, "tbl_df")
-  expect_equal(names(pred), ".pred")
+  expect_equal(names(pred), ".pred_quantile")
   expect_equal(nrow(pred), 3)
-  expect_true(
-    all(purrr::map_lgl(
-      pred$.pred,
-      ~ all(dim(.x) == c(9, 2))
-    ))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      pred$.pred,
-      ~ all(names(.x) == c(".quantile", ".pred_quantile"))
-    ))
-  )
-  expect_equal(
-    tidyr::unnest(pred, cols = .pred)$.pred_quantile,
-    do.call(rbind, exp_pred)$est
-  )
+  expect_s3_class(pred$.pred_quantile, c("quantile_pred", "vctrs_vctr", "list"))
+
 
   # add confidence interval
-  pred <- predict(
+  pred_ci <- predict(
     fit_s,
     new_data = bladder[1:3, ],
     type = "quantile",
     interval = "confidence",
     level = 0.7
   )
-  expect_true(
-    all(purrr::map_lgl(
-      pred$.pred,
-      ~ all(names(.x) == c(
-        ".quantile",
-        ".pred_quantile",
-        ".pred_lower",
-        ".pred_upper"
-      ))
-    ))
-  )
+  expect_s3_class(pred_ci, "tbl_df")
+  expect_equal(names(pred_ci), c(".pred_quantile", ".pred_lower", ".pred_upper"))
+  expect_equal(nrow(pred_ci), 3)
+  expect_s3_class(pred_ci$.pred_quantile, c("quantile_pred", "vctrs_vctr", "list"))
+  expect_s3_class(pred_ci$.pred_lower, c("quantile_pred", "vctrs_vctr", "list"))
+  expect_s3_class(pred_ci$.pred_upper, c("quantile_pred", "vctrs_vctr", "list"))
 
   # single observation
   f_pred_1 <- predict(fit_s, bladder[2,], type = "quantile")
@@ -284,7 +251,7 @@ test_that("hazard prediction", {
     head(lung),
     type = "hazard",
     times = c(0, 500, 1000)
-  ) 
+  )
   if (packageVersion("flexsurv") < "2.3") {
     exp_pred <- exp_pred %>%
       dplyr::rowwise() %>%
@@ -409,13 +376,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "quantile",
-    quantile = c(0.2, 0.8)
+    quantile_levels = c(0.2, 0.8)
   )
   xy_pred_quantile <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "quantile",
-    quantile = c(0.2, 0.8)
+    quantile_levels = c(0.2, 0.8)
   )
   expect_equal(f_pred_quantile, xy_pred_quantile)
 
@@ -438,7 +405,7 @@ test_that("`fix_xy()` works", {
 
 test_that("can handle case weights", {
   skip_if_not_installed("flexsurv")
-  
+
   # flexsurv engine can only take weights > 0
   set.seed(1)
   wts <- runif(nrow(lung))

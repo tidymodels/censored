@@ -85,9 +85,9 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
+  expect_snapshot(
     predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
+    error = TRUE
   )
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
@@ -156,7 +156,7 @@ test_that("can predict for out-of-domain timepoints", {
 test_that("`fix_xy()` works", {
   skip_if_not_installed("partykit")
   skip_if_not_installed("coin")
-  
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

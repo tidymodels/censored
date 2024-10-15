@@ -4,6 +4,7 @@
 
 * censored now depends on survival >= 3.7-0 which allows us to use it also for predictions of survival probabilities at infinite evaluation time points. This means that: Survival probabilities at `eval_time = Inf` are now not always set to 0 and confidence intervals at infinite evaluation times are now not always set to `NA`. This applies to `proportional_hazards()`and `bag_tree()` models as well as models with the `partykit` engine, `decision_tree()` and `rand_forest()` (#320).
 
+* Update the format of quantile predictions to match new parsnip requirements  (#332) (tidymodels/parsnip/#1209)
 
 # censored 0.3.1
 
