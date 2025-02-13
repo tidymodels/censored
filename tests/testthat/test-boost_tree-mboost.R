@@ -70,9 +70,7 @@ test_that("survival predictions", {
   set.seed(403)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_snapshot(error = TRUE, {
-    predict(f_fit, lung, type = "survival")
-  })
+  # move snapshot test below back here after parsnip v1.3.0 release
 
   set.seed(403)
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = pred_time)
@@ -106,6 +104,21 @@ test_that("survival predictions", {
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     as.vector(exp_f_pred)
   )
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("mboost")
+
+  cox_spec <- boost_tree() %>%
+    set_engine("mboost") %>%
+    set_mode("censored regression")
+  set.seed(403)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("survival_curve_to_prob() works", {

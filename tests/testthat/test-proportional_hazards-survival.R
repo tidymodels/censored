@@ -168,9 +168,7 @@ test_that("survival predictions without strata", {
     f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung),
     NA
   )
-  expect_snapshot(error = TRUE, {
-    predict(f_fit, lung, type = "survival")
-  })
+  # move snapshot test below back here after parsnip v1.3.0 release
 
   # Test at observed event times since we use the step function and pec does not
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = c(306, 455))
@@ -211,6 +209,20 @@ test_that("survival predictions without strata", {
     NA
   )
   expect_equal(nrow(f_pred_1), 1)
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("pec")
+  # due to pec:
+  skip_if_not_installed("Matrix", minimum_version = "1.4.2")
+
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)
+  
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("survival predictions with strata", {

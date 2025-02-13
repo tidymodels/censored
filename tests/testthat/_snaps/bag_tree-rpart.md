@@ -6,7 +6,7 @@
       Error in `survival_time_survbagg()`:
       ! `object` needs to be a parsnip <model_fit> object, not a <survbagg> object.
 
-# survival predictions
+# survival predictions - error snapshot
 
     Code
       predict(f_fit, lung, type = "survival")

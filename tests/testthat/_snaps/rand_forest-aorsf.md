@@ -1,4 +1,4 @@
-# survival predictions
+# survival predictions - error snapshot
 
     Code
       predict(f_fit, lung_orsf, type = "survival")

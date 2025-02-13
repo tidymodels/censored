@@ -62,9 +62,7 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_snapshot(error = TRUE, {
-    predict(f_fit, lung, type = "survival")
-  })
+  # move snapshot test below back here after parsnip v1.3.0 release
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
@@ -110,6 +108,21 @@ test_that("survival predictions", {
     )
   )
   expect_equal(f_pred$.pred[[1]]$.eval_time, 100:200)
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("pec")
+
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
+  set.seed(1234)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("can predict for out-of-domain timepoints", {

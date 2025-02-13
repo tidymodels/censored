@@ -14,7 +14,7 @@
       Error in `predict_time()`:
       ! `new_data` is missing the following stratification variables: `inst` and `ph.ecog`.
 
-# survival predictions without strata
+# survival predictions - error snapshot
 
     Code
       predict(f_fit, lung, type = "survival")
