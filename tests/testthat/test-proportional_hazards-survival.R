@@ -164,11 +164,12 @@ test_that("survival predictions without strata", {
   exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
   # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
   expect_error(
-    predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung),
+    NA
   )
+  # move snapshot test below back here after parsnip v1.3.0 release
+
   # Test at observed event times since we use the step function and pec does not
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = c(306, 455))
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = c(306, 455))
@@ -177,16 +178,18 @@ test_that("survival predictions without strata", {
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      ~ all(dim(.x) == c(2, 2))
-    ))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~all(dim(.x) == c(2, 2))
+      )
+    )
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+        ~all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -197,10 +200,29 @@ test_that("survival predictions without strata", {
 
   # single observation
   expect_error(
-    f_pred_1 <- predict(f_fit, lung[1, ], type = "survival", eval_time = c(306, 455)),
+    f_pred_1 <- predict(
+      f_fit,
+      lung[1, ],
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred_1), 1)
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("pec")
+  # due to pec:
+  skip_if_not_installed("Matrix", minimum_version = "1.4.2")
+
+  cox_spec <- proportional_hazards() %>% set_engine("survival")
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)
+  
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("survival predictions with strata", {

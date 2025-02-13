@@ -85,10 +85,7 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
-    predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
-  )
+  # move snapshot test below back here after parsnip v1.3.0 release
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
 
@@ -102,17 +99,18 @@ test_that("survival predictions", {
   cf_names <-
     c(".eval_time", ".pred_survival")
   expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      ~ identical(names(.x), cf_names)
-    ))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~identical(names(.x), cf_names)
+      )
+    )
   )
 
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
     rep(100:200, nrow(lung))
   )
-
 
   f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = 306)
   new_km <- predict(exp_f_fit, lung[1, ], type = "prob")[[1]]
@@ -132,6 +130,22 @@ test_that("survival predictions", {
     f_pred$.pred[[1]]$.pred_survival,
     new_km$surv[new_km$time == 71]
   )
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
+  mod_spec <- rand_forest() %>%
+    set_engine("partykit") %>%
+    set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("can predict for out-of-domain timepoints", {

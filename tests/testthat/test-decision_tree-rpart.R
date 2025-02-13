@@ -62,10 +62,7 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
-    predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
-  )
+  # move snapshot test below back here after parsnip v1.3.0 release
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- pec::predictSurvProb(exp_f_fit, lung, times = 100:200)
@@ -74,13 +71,20 @@ test_that("survival predictions", {
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      ~ all(dim(.x) == c(101, 2))
-    ))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~all(dim(.x) == c(101, 2))
+      )
+    )
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".eval_time", ".pred_survival"))))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+      )
+    )
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
@@ -93,12 +97,32 @@ test_that("survival predictions", {
   )
 
   # single observation
-  f_pred <- predict(f_fit, lung[2,], type = "survival", eval_time = 100:200)
+  f_pred <- predict(f_fit, lung[2, ], type = "survival", eval_time = 100:200)
   expect_identical(nrow(f_pred), 1L)
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".eval_time", ".pred_survival"))))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+      )
+    )
   )
   expect_equal(f_pred$.pred[[1]]$.eval_time, 100:200)
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("pec")
+
+  cox_spec <- decision_tree() %>%
+    set_mode("censored regression") %>%
+    set_engine("rpart")
+  set.seed(1234)
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("can predict for out-of-domain timepoints", {

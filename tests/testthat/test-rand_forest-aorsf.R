@@ -85,12 +85,14 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
 
-  expect_error(
-    predict(f_fit, lung_orsf, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
-  )
+  # move snapshot test below back here after parsnip v1.3.0 release
 
-  f_pred <- predict(f_fit, lung, type = "survival", eval_time = c(100, 500, 1200))
+  f_pred <- predict(
+    f_fit,
+    lung,
+    type = "survival",
+    eval_time = c(100, 500, 1200)
+  )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
@@ -104,10 +106,12 @@ test_that("survival predictions", {
     c(".eval_time", ".pred_survival")
 
   expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      ~ identical(names(.x), cf_names)
-    ))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~identical(names(.x), cf_names)
+      )
+    )
   )
 
   # correct prediction times in object
@@ -138,7 +142,12 @@ test_that("survival predictions", {
   )
 
   # equal predictions with multiple times and one testing observation
-  f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = c(100, 500, 1200))
+  f_pred <- predict(
+    f_fit,
+    lung[1, ],
+    type = "survival",
+    eval_time = c(100, 500, 1200)
+  )
 
   new_km <- predict(
     exp_f_fit,
@@ -193,6 +202,24 @@ test_that("survival predictions", {
     f_pred$.pred[[1]]$.pred_survival,
     new_km
   )
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("aorsf")
+
+  lung_orsf <- na.omit(lung)
+
+  mod_spec <- rand_forest() %>%
+    set_engine("aorsf") %>%
+    set_mode("censored regression")
+
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung_orsf, type = "survival")
+  })
 })
 
 test_that("can predict for out-of-domain timepoints", {

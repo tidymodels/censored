@@ -106,25 +106,27 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
-    predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
-  )
+  # move snapshot test below back here after parsnip v1.3.0 release
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
-    ~ summary(.x, times = c(100:200))$surv
+    ~summary(.x, times = c(100:200))$surv
   )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(101, 2))))
+    all(purrr::map_lgl(f_pred$.pred, ~all(dim(.x) == c(101, 2))))
   )
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(names(.x) == c(".eval_time", ".pred_survival"))))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+      )
+    )
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -139,13 +141,26 @@ test_that("survival predictions", {
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 10000)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
-    ~ summary(.x, times = c(max(.x$time)))$surv
+    ~summary(.x, times = c(max(.x$time)))$surv
   )
 
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
     unlist(exp_f_pred)
   )
+})
+
+test_that("survival predictions - error snapshot", {
+  skip_if_not_installed("parsnip", minimum_version = "1.3.0")
+  skip_if_not_installed("ipred")
+  
+  mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 })
 
 test_that("survival_prob_survbagg() works", {
