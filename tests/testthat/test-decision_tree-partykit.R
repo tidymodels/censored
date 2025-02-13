@@ -73,10 +73,10 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
-    predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
-  )
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
+
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
 
   expect_s3_class(f_pred, "tbl_df")
@@ -89,10 +89,12 @@ test_that("survival predictions", {
   cf_names <-
     c(".eval_time", ".pred_survival")
   expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      ~ identical(names(.x), cf_names)
-    ))
+    all(
+      purrr::map_lgl(
+        f_pred$.pred,
+        ~identical(names(.x), cf_names)
+      )
+    )
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,

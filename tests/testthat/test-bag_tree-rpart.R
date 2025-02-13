@@ -106,10 +106,9 @@ test_that("survival predictions", {
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  expect_error(
-    predict(f_fit, lung, type = "survival"),
-    "When using `type` values of 'survival' or 'hazard', a numeric vector"
-  )
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, lung, type = "survival")
+  })
 
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- purrr::map(
