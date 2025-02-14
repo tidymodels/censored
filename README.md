@@ -44,19 +44,19 @@ probability with `type = "survival"`, the linear predictor with
 `type = "linear_pred"`, the quantiles of the event time distribution
 with `type = "quantile"`, and the hazard with `type = "hazard"`.
 
-| model                | engine         | time | survival | linear_pred | raw | quantile | hazard |
-|:---------------------|:---------------|:-----|:---------|:------------|:----|:---------|:-------|
-| bag_tree             | rpart          | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
-| boost_tree           | mboost         | ✔    | ✔        | ✔           | ✖   | ✖        | ✖      |
-| decision_tree        | rpart          | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
-| decision_tree        | partykit       | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
-| proportional_hazards | survival       | ✔    | ✔        | ✔           | ✖   | ✖        | ✖      |
-| proportional_hazards | glmnet         | ✔    | ✔        | ✔           | ✔   | ✖        | ✖      |
-| rand_forest          | partykit       | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
-| rand_forest          | aorsf          | ✔    | ✔        | ✖           | ✖   | ✖        | ✖      |
-| survival_reg         | survival       | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
-| survival_reg         | flexsurv       | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
-| survival_reg         | flexsurvspline | ✔    | ✔        | ✔           | ✖   | ✔        | ✔      |
+| model | engine | time | survival | linear_pred | raw | quantile | hazard |
+|:---|:---|:---|:---|:---|:---|:---|:---|
+| bag_tree | rpart | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| boost_tree | mboost | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
+| decision_tree | rpart | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| decision_tree | partykit | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| proportional_hazards | survival | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
+| proportional_hazards | glmnet | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ |
+| rand_forest | partykit | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| rand_forest | aorsf | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| survival_reg | survival | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |
+| survival_reg | flexsurv | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |
+| survival_reg | flexsurvspline | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |
 
 ## Contributing
 
