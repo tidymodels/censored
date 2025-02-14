@@ -122,17 +122,40 @@ test_that("prediction of survival time quantile", {
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   exp_quant <- predict(res$fit, head(lung), p = (2:4) / 5, type = "quantile")
-  exp_quant <- apply(exp_quant, 1, function(x) {
-    tibble::tibble(.quantile = (2:4) / 5, .pred_quantile = x)
-  })
-  exp_quant <- tibble::tibble(.pred = exp_quant)
-  obs_quant <- predict(res, head(lung), type = "quantile", quantile = (2:4) / 5)
+  obs_quant <- predict(
+    res,
+    head(lung),
+    type = "quantile",
+    quantile_levels = (2:4) / 5
+  )
 
-  expect_equal(as.data.frame(exp_quant), as.data.frame(obs_quant))
+  expect_s3_class(obs_quant, "tbl_df")
+  expect_equal(names(obs_quant), ".pred_quantile")
+  expect_equal(nrow(obs_quant), 6)
+  expect_s3_class(
+    obs_quant$.pred_quantile,
+    c("quantile_pred", "vctrs_vctr", "list")
+  )
+
+  for (.row in 1:nrow(obs_quant)) {
+    expect_equal(
+      unclass(obs_quant$.pred_quantile[.row])[[1]],
+      exp_quant[.row, ]
+    )
+  }
 
   # single observation
   f_pred_1 <- predict(res, lung[1, ], type = "quantile")
   expect_identical(nrow(f_pred_1), 1L)
+
+  # single quantile
+  f_pred_2 <- predict(
+    res,
+    lung[1:2, ],
+    type = "quantile",
+    quantile_levels = 0.5
+  )
+  expect_identical(nrow(f_pred_2), 2L)
 })
 
 
@@ -213,13 +236,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "quantile",
-    quantile = c(0.2, 0.8)
+    quantile_levels = c(0.2, 0.8)
   )
   xy_pred_quantile <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "quantile",
-    quantile = c(0.2, 0.8)
+    quantile_levels = c(0.2, 0.8)
   )
   expect_equal(f_pred_quantile, xy_pred_quantile)
 

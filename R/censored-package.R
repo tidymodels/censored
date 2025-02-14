@@ -58,11 +58,31 @@ NULL
 
 utils::globalVariables(
   c(
-    "eval_time", ".time", "object", "new_data", ".label", ".pred", ".cuts",
-    ".id", ".tmp", "engine", "predictor_indicators", ".strata", "group",
-    ".pred_quantile", ".quantile", "interval", "level", ".pred_linear_pred",
-    ".pred_link", ".pred_time", ".pred_survival", "next_event_time",
-    "sum_component", "time_interval"
+    "eval_time",
+    ".time",
+    "object",
+    "new_data",
+    ".label",
+    ".pred",
+    ".cuts",
+    ".id",
+    ".tmp",
+    "engine",
+    "predictor_indicators",
+    ".strata",
+    "group",
+    ".pred_quantile",
+    ".quantile",
+    "interval",
+    "level",
+    ".pred_linear_pred",
+    ".pred_link",
+    ".pred_time",
+    ".pred_survival",
+    "next_event_time",
+    "sum_component",
+    "time_interval",
+    "quantile_levels"
   )
 )
 

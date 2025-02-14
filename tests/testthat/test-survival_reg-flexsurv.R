@@ -236,45 +236,44 @@ test_that("quantile predictions", {
   )
 
   expect_s3_class(pred, "tbl_df")
-  expect_equal(names(pred), ".pred")
+  expect_equal(names(pred), ".pred_quantile")
   expect_equal(nrow(pred), 3)
-  expect_true(
-    all(purrr::map_lgl(
-      pred$.pred,
-      ~ all(dim(.x) == c(9, 2))
-    ))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      pred$.pred,
-      ~ all(names(.x) == c(".quantile", ".pred_quantile"))
-    ))
-  )
-  expect_equal(
-    tidyr::unnest(pred, cols = .pred)$.pred_quantile,
-    do.call(rbind, exp_pred)$est
-  )
+  expect_s3_class(pred$.pred_quantile, c("quantile_pred", "vctrs_vctr", "list"))
+
+  for (.row in 1:nrow(pred)) {
+    expect_equal(
+      unclass(pred$.pred_quantile[.row])[[1]],
+      exp_pred[[.row]]$est
+    )
+  }
 
   # add confidence interval
-  pred <- predict(fit_s,
-    new_data = bladder[1:3, ], type = "quantile",
-    interval = "confidence", level = 0.7
+  pred <- predict(
+    fit_s,
+    new_data = bladder[1:3, ],
+    type = "quantile",
+    interval = "confidence",
+    level = 0.7
   )
-  expect_true(
-    all(purrr::map_lgl(
-      pred$.pred,
-      ~ all(names(.x) == c(
-        ".quantile",
-        ".pred_quantile",
-        ".pred_lower",
-        ".pred_upper"
-      ))
-    ))
-  )
+  expect_s3_class(pred, "tbl_df")
+  expect_equal(names(pred), c(".pred_quantile", ".pred_lower", ".pred_upper"))
+  expect_equal(nrow(pred), 3)
+  expect_s3_class(pred$.pred_quantile, c("quantile_pred", "vctrs_vctr", "list"))
+  expect_s3_class(pred$.pred_lower, c("quantile_pred", "vctrs_vctr", "list"))
+  expect_s3_class(pred$.pred_upper, c("quantile_pred", "vctrs_vctr", "list"))
 
   # single observation
-  f_pred_1 <- predict(fit_s, bladder[2,], type = "quantile")
+  f_pred_1 <- predict(fit_s, bladder[2, ], type = "quantile")
   expect_identical(nrow(f_pred_1), 1L)
+  
+  # single quantile
+  f_pred_2 <- predict(
+    fit_s,
+    bladder[1:2, ],
+    type = "quantile",
+    quantile_levels = 0.5
+  )
+  expect_identical(nrow(f_pred_2), 2L)
 })
 
 # prediction: hazard ------------------------------------------------------
@@ -401,13 +400,13 @@ test_that("`fix_xy()` works", {
     f_fit,
     new_data = lung_pred,
     type = "quantile",
-    quantile = c(0.2, 0.8)
+    quantile_levels = c(0.2, 0.8)
   )
   xy_pred_quantile <- predict(
     xy_fit,
     new_data = lung_pred,
     type = "quantile",
-    quantile = c(0.2, 0.8)
+    quantile_levels = c(0.2, 0.8)
   )
   expect_equal(f_pred_quantile, xy_pred_quantile)
 
