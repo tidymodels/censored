@@ -3,41 +3,19 @@
 # ------------------------------------------------------------------------------
 
 survreg_quant <- function(results, object) {
+  quantile_levels <- object$spec$quantile_levels
+
   if (!is.matrix(results)) {
-    results <- matrix(results, nrow = 1)
+    if (length(quantile_levels) < 2) {
+      results <- matrix(results, ncol = 1)
+    } else {
+      results <- matrix(results, nrow = 1)
+    }
   }
 
-  pctl <- object$spec$method$pred$quantile$args$p
-  n <- nrow(results)
-  p <- ncol(results)
-  colnames(results) <- names0(p)
-
-  res <- results %>%
-    tibble::as_tibble(results) %>%
-    dplyr::mutate(.row = 1:n) %>%
-    tidyr::pivot_longer(
-      -.row,
-      names_to = ".label",
-      values_to = ".pred_quantile"
-    ) %>%
-    dplyr::arrange(.row, .label) %>%
-    dplyr::mutate(.quantile = rep(pctl, n)) %>%
-    dplyr::select(.row, .quantile, .pred_quantile) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
-    dplyr::select(-.row)
-
-  res
-}
-
-# copied form recipes
-names0 <- function(num, prefix = "x", ..., call = caller_env()) {
-  check_dots_empty()
-  if (num < 1) {
-    cli::cli_abort("{.arg num} should be > 0.", call = call)
-  }
-  ind <- format(1:num)
-  ind <- gsub(" ", "0", ind)
-  paste0(prefix, ind)
+  tibble::new_tibble(
+    x = list(.pred_quantile = hardhat::quantile_pred(results, quantile_levels))
+  )
 }
 
 # ------------------------------------------------------------------------------

@@ -88,13 +88,12 @@ make_survival_reg_survival <- function() {
       pre = NULL,
       post = survreg_quant,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = expr(object$fit),
-          newdata = expr(new_data),
-          type = "quantile",
-          p = expr(quantile)
-        )
+      args = list(
+        object = expr(object$fit),
+        newdata = expr(new_data),
+        type = "quantile",
+        p = expr(quantile_levels)
+      )
     )
   )
 

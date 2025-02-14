@@ -27,7 +27,7 @@ Imports:
     dplyr (>= 0.8.0.1),
     generics,
     glue,
-    hardhat (>= 1.1.0),
+    hardhat (>= 1.4.1),
     lifecycle,
     mboost,
     prodlim (>= 2023.03.31),
