@@ -235,17 +235,16 @@ make_survival_reg_flexsurv <- function() {
     type = "quantile",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = flexsurv_post_quantile,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = rlang::expr(object$fit),
-          newdata = rlang::expr(new_data),
-          type = "quantile",
-          p = rlang::expr(quantile),
-          conf.int = rlang::expr(interval == "confidence"),
-          conf.level = rlang::expr(level)
-        )
+      args = list(
+        object = rlang::expr(object$fit),
+        newdata = rlang::expr(new_data),
+        type = "quantile",
+        p = rlang::expr(quantile_levels),
+        conf.int = rlang::expr(interval == "confidence"),
+        conf.level = rlang::expr(level)
+      )
     )
   )
 
@@ -392,17 +391,16 @@ make_survival_reg_flexsurvspline <- function() {
     type = "quantile",
     value = list(
       pre = NULL,
-      post = NULL,
+      post = flexsurv_post_quantile,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = rlang::expr(object$fit),
-          newdata = rlang::expr(new_data),
-          type = "quantile",
-          p = rlang::expr(quantile),
-          conf.int = rlang::expr(interval == "confidence"),
-          conf.level = rlang::expr(level)
-        )
+      args = list(
+        object = rlang::expr(object$fit),
+        newdata = rlang::expr(new_data),
+        type = "quantile",
+        p = rlang::expr(quantile_levels),
+        conf.int = rlang::expr(interval == "confidence"),
+        conf.level = rlang::expr(level)
+      )
     )
   )
 
