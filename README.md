@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/tidymodels/censored/branch/main/graph/badge.svg)](https://app.codecov.io/gh/tidymodels/censored?branch=main)
+coverage](https://codecov.io/gh/tidymodels/censored/graph/badge.svg)](https://app.codecov.io/gh/tidymodels/censored)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![R-CMD-check-hard](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check-hard.yaml/badge.svg)](https://github.com/tidymodels/censored/actions/workflows/R-CMD-check-hard.yaml)
