@@ -11,3 +11,5 @@
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^revdep$
+^[\.]?air\.toml$
+^\.vscode$

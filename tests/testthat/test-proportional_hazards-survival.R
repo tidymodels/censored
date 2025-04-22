@@ -8,7 +8,10 @@ test_that("model object", {
 
   # formula method
   cox_spec <- proportional_hazards() %>% set_engine("survival")
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung),
+    NA
+  )
 
   # Removing `model` element from f_fit and `call` from both
   expect_equal(f_fit$fit[-c(16, 21)], exp_f_fit[-20], ignore_formula_env = TRUE)
@@ -21,7 +24,10 @@ test_that("time predictions without strata", {
   exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
   # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung),
+    NA
+  )
   f_pred <- predict(f_fit, lung, type = "time")
   tabs <- summary(survfit(exp_f_fit, lung, na.action = na.pass))$table
   colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
@@ -138,7 +144,7 @@ test_that("time predictions with NA", {
 test_that("prediction from stratified models require strata variables in new_data", {
   f_fit <- proportional_hazards() %>%
     set_engine("survival") %>%
-      fit(Surv(time, status) ~ age + sex + strata(inst), data = lung)
+    fit(Surv(time, status) ~ age + sex + strata(inst), data = lung)
 
   expect_snapshot(error = TRUE, {
     predict(f_fit, new_data = dplyr::select(lung, -inst))
@@ -146,7 +152,10 @@ test_that("prediction from stratified models require strata variables in new_dat
 
   f_fit <- proportional_hazards() %>%
     set_engine("survival") %>%
-      fit(Surv(time, status) ~ age + sex + strata(inst) + strata(ph.ecog), data = lung)
+    fit(
+      Surv(time, status) ~ age + sex + strata(inst) + strata(ph.ecog),
+      data = lung
+    )
 
   expect_snapshot(error = TRUE, {
     predict(f_fit, new_data = dplyr::select(lung, -inst, -ph.ecog))
@@ -181,7 +190,7 @@ test_that("survival predictions without strata", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(dim(.x) == c(2, 2))
+        ~ all(dim(.x) == c(2, 2))
       )
     )
   )
@@ -189,7 +198,7 @@ test_that("survival predictions without strata", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -219,7 +228,7 @@ test_that("survival predictions - error snapshot", {
 
   cox_spec <- proportional_hazards() %>% set_engine("survival")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)
-  
+
   expect_snapshot(error = TRUE, {
     predict(f_fit, lung, type = "survival")
   })
@@ -250,8 +259,12 @@ test_that("survival predictions with strata", {
   # reference value from pec::predictSurvProb()
   exp_f_pred <- structure(
     c(
-      0.635719137259774, 0.933929695867806, 0.967237940301564,
-      0.534997251349036, 0.725922785669273, 0.904152770723571
+      0.635719137259774,
+      0.933929695867806,
+      0.967237940301564,
+      0.534997251349036,
+      0.725922785669273,
+      0.904152770723571
     ),
     .Dim = 3:2
   )
@@ -280,7 +293,12 @@ test_that("survival predictions with strata", {
 
   # single observation
   expect_error(
-    f_pred_1 <- predict(f_fit, bladder[1, ], type = "survival", eval_time = c(10, 20)),
+    f_pred_1 <- predict(
+      f_fit,
+      bladder[1, ],
+      type = "survival",
+      eval_time = c(10, 20)
+    ),
     NA
   )
   expect_equal(nrow(f_pred_1), 1)
@@ -315,7 +333,12 @@ test_that("survival prediction with NA", {
 
   # survival probabilities
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_x, type = "survival", eval_time = c(306, 455)),
+    f_pred <- predict(
+      f_fit,
+      na_x_data_x,
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
@@ -323,7 +346,12 @@ test_that("survival prediction with NA", {
   expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_1, type = "survival", eval_time = c(306, 455)),
+    f_pred <- predict(
+      f_fit,
+      na_x_data_1,
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
@@ -331,7 +359,12 @@ test_that("survival prediction with NA", {
   expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_x_data_0, type = "survival", eval_time = c(306, 455)),
+    f_pred <- predict(
+      f_fit,
+      na_x_data_0,
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
@@ -339,21 +372,36 @@ test_that("survival prediction with NA", {
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_x, type = "survival", eval_time = c(306, 455)),
+    f_pred <- predict(
+      f_fit,
+      na_1_data_x,
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_1, type = "survival", eval_time = c(306, 455)),
+    f_pred <- predict(
+      f_fit,
+      na_1_data_1,
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
   expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
 
   expect_error(
-    f_pred <- predict(f_fit, na_1_data_0, type = "survival", eval_time = c(306, 455)),
+    f_pred <- predict(
+      f_fit,
+      na_1_data_0,
+      type = "survival",
+      eval_time = c(306, 455)
+    ),
     NA
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
@@ -361,7 +409,7 @@ test_that("survival prediction with NA", {
 })
 
 test_that("survival_prob_coxph() works", {
-  mod <- proportional_hazards() %>% 
+  mod <- proportional_hazards() %>%
     fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
@@ -405,7 +453,7 @@ test_that("survival_prob_coxph() works", {
 })
 
 test_that("survival_prob_coxph() works with confidence intervals", {
-  mod <- proportional_hazards() %>% 
+  mod <- proportional_hazards() %>%
     fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
@@ -444,7 +492,7 @@ test_that("survival_prob_coxph() works with confidence intervals", {
 
 test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
 
   mod <- proportional_hazards() %>%
     set_mode("censored regression") %>%
@@ -452,7 +500,12 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -463,7 +516,10 @@ test_that("linear_pred predictions without strata", {
   exp_f_fit <- coxph(Surv(time, status) ~ age + sex, data = lung, x = TRUE)
 
   # formula method
-  expect_error(f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung), NA)
+  expect_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung),
+    NA
+  )
   f_pred <- predict(f_fit, lung, type = "linear_pred")
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
@@ -537,7 +593,11 @@ test_that("predictions with strata and dot in formula", {
     NA
   )
   expect_error(
-    f_fit_2 <- fit(cox_spec, Surv(time, status) ~ age + strata(sex), data = lung2),
+    f_fit_2 <- fit(
+      cox_spec,
+      Surv(time, status) ~ age + strata(sex),
+      data = lung2
+    ),
     NA
   )
   expect_error(
@@ -588,12 +648,15 @@ test_that("confidence intervals", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(
-          ".eval_time",
-          ".pred_survival",
-          ".pred_lower",
-          ".pred_upper"
-        ))
+        ~ all(
+          names(.x) ==
+            c(
+              ".eval_time",
+              ".pred_survival",
+              ".pred_lower",
+              ".pred_upper"
+            )
+        )
       )
     )
   )
@@ -627,12 +690,15 @@ test_that("confidence intervals", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(
-          ".eval_time",
-          ".pred_survival",
-          ".pred_lower",
-          ".pred_upper"
-        ))
+        ~ all(
+          names(.x) ==
+            c(
+              ".eval_time",
+              ".pred_survival",
+              ".pred_lower",
+              ".pred_upper"
+            )
+        )
       )
     )
   )
@@ -724,7 +790,11 @@ test_that("get_missings_coxph() can identify missings with single strata term", 
 
   # missing in strata
   cox_spec <- proportional_hazards() %>% set_engine("survival")
-  f_fit <- fit(cox_spec, Surv(time, status) ~ age + strata(ph.ecog), data = lung)
+  f_fit <- fit(
+    cox_spec,
+    Surv(time, status) ~ age + strata(ph.ecog),
+    data = lung
+  )
 
   # lung$ph.ecog[14] is NA
   na_x_data_x <- lung[c(13:15, 14), ]
@@ -765,7 +835,9 @@ test_that("get_missings_coxph() can identify missings with single strata term", 
 test_that("get_missings_coxph() can identify missings with two strata terms", {
   # missing in strata
   cox_spec <- proportional_hazards() %>% set_engine("survival")
-  f_fit <- fit(cox_spec, Surv(time, status) ~ age + strata(ph.ecog) + strata(sex),
+  f_fit <- fit(
+    cox_spec,
+    Surv(time, status) ~ age + strata(ph.ecog) + strata(sex),
     data = lung
   )
 

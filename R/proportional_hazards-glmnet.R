@@ -25,13 +25,15 @@
 #' @keywords internal
 #' @examplesIf rlang::is_installed("glmnet")
 #' coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
-coxnet_train <- function(formula,
-                         data,
-                         alpha = 1,
-                         lambda = NULL,
-                         weights = NULL,
-                         ...,
-                         call = caller_env()) {
+coxnet_train <- function(
+  formula,
+  data,
+  alpha = 1,
+  lambda = NULL,
+  weights = NULL,
+  ...,
+  call = caller_env()
+) {
   dots <- rlang::quos(...)
   check_dots_coxnet(dots, call = call)
 
@@ -250,16 +252,34 @@ coxnet_prepare_x <- function(new_data, object) {
 
 #' @export
 predict._coxnet <-
-  function(object, new_data, type = NULL, opts = list(), penalty = NULL, multi = FALSE, ...) {
+  function(
+    object,
+    new_data,
+    type = NULL,
+    opts = list(),
+    penalty = NULL,
+    multi = FALSE,
+    ...
+  ) {
     # See discussion in https://github.com/tidymodels/parsnip/issues/195
     if (is.null(penalty) & !is.null(object$spec$args$penalty)) {
       penalty <- object$spec$args$penalty
     }
 
-    object$spec$args$penalty <- parsnip::.check_glmnet_penalty_predict(penalty, object, multi)
+    object$spec$args$penalty <- parsnip::.check_glmnet_penalty_predict(
+      penalty,
+      object,
+      multi
+    )
 
     object$spec <- eval_args(object$spec)
-    predict.model_fit(object, new_data = new_data, type = type, opts = opts, ...)
+    predict.model_fit(
+      object,
+      new_data = new_data,
+      type = type,
+      opts = opts,
+      ...
+    )
   }
 
 #' @export
@@ -269,10 +289,12 @@ predict_survival._coxnet <- function(object, new_data, ...) {
 }
 
 #' @export
-predict_linear_pred._coxnet <- function(object,
-                                        new_data,
-                                        ...,
-                                        increasing = TRUE) {
+predict_linear_pred._coxnet <- function(
+  object,
+  new_data,
+  ...,
+  increasing = TRUE
+) {
   res <- NextMethod()
   if (increasing) {
     # For consistency with other models, we want the lp to increase with
@@ -293,12 +315,14 @@ predict_raw._coxnet <- function(object, new_data, opts = list(), ...) {
 # multi_predict -----------------------------------------------------------
 
 #' @export
-multi_predict._coxnet <- function(object,
-                                  new_data,
-                                  type = NULL,
-                                  opts = list(),
-                                  penalty = NULL,
-                                  ...) {
+multi_predict._coxnet <- function(
+  object,
+  new_data,
+  type = NULL,
+  opts = list(),
+  penalty = NULL,
+  ...
+) {
   dots <- list(...)
 
   object$spec <- eval_args(object$spec)
@@ -468,7 +492,13 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #'   set_engine("glmnet") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
-survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE, ...) {
+survival_time_coxnet <- function(
+  object,
+  new_data,
+  penalty = NULL,
+  multi = FALSE,
+  ...
+) {
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }
@@ -476,14 +506,18 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE
   n_obs <- nrow(new_data)
   n_penalty <- length(penalty)
   if (n_penalty > 1 & !multi) {
-    cli::cli_abort("Cannot use multiple penalty values with {.code multi = FALSE}.")
+    cli::cli_abort(
+      "Cannot use multiple penalty values with {.code multi = FALSE}."
+    )
   }
 
   new_x <- coxnet_prepare_x(new_data, object)
 
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
-  if (went_through_formula_interface &&
-      has_strata(object$formula, object$training_data)) {
+  if (
+    went_through_formula_interface &&
+      has_strata(object$formula, object$training_data)
+  ) {
     new_strata <- get_strata_glmnet(
       object$formula,
       data = new_data,
@@ -528,7 +562,12 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE
   )
 
   if (length(penalty) > 1) {
-    res <- purrr::map(y, extract_patched_survival_time, missings_in_new_data, n_obs) %>%
+    res <- purrr::map(
+      y,
+      extract_patched_survival_time,
+      missings_in_new_data,
+      n_obs
+    ) %>%
       purrr::list_c()
   } else {
     res <- extract_patched_survival_time(y, missings_in_new_data, n_obs)
@@ -547,7 +586,11 @@ survival_time_coxnet <- function(object, new_data, penalty = NULL, multi = FALSE
   res
 }
 
-extract_patched_survival_time <- function(survfit_object, missings_in_new_data, n_obs) {
+extract_patched_survival_time <- function(
+  survfit_object,
+  missings_in_new_data,
+  n_obs
+) {
   tabs <- summary(survfit_object)$table
   if (is.matrix(tabs)) {
     colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
@@ -574,7 +617,6 @@ get_missings_coxnet <- function(new_x, new_strata) {
 
 # prediction: survival ----------------------------------------------------
 
-
 #' A wrapper for survival probabilities with coxnet models
 #' @param object A parsnip `model_fit` object resulting from
 #' [proportional_hazards() with engine = "glmnet"][parsnip::details_proportional_hazards_glmnet].
@@ -593,14 +635,16 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #'   set_engine("glmnet") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], eval_time = 300)
-survival_prob_coxnet <- function(object,
-                                 new_data,
-                                 eval_time,
-                                 time = deprecated(),
-                                 output = "surv",
-                                 penalty = NULL,
-                                 multi = FALSE,
-                                 ...) {
+survival_prob_coxnet <- function(
+  object,
+  new_data,
+  eval_time,
+  time = deprecated(),
+  output = "surv",
+  penalty = NULL,
+  multi = FALSE,
+  ...
+) {
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -616,7 +660,9 @@ survival_prob_coxnet <- function(object,
 
   n_penalty <- length(penalty)
   if (n_penalty > 1 & !multi) {
-    cli::cli_abort("Cannot use multiple penalty values with {.code multi = FALSE}.")
+    cli::cli_abort(
+      "Cannot use multiple penalty values with {.code multi = FALSE}."
+    )
   }
 
   output <- match.arg(output, c("surv", "haz"))
@@ -624,8 +670,10 @@ survival_prob_coxnet <- function(object,
   new_x <- coxnet_prepare_x(new_data, object)
 
   went_through_formula_interface <- !is.null(object$preproc$coxnet)
-  if (went_through_formula_interface &&
-      has_strata(object$formula, object$training_data)) {
+  if (
+    went_through_formula_interface &&
+      has_strata(object$formula, object$training_data)
+  ) {
     new_strata <- get_strata_glmnet(
       object$formula,
       data = new_data,
@@ -643,7 +691,11 @@ survival_prob_coxnet <- function(object,
     all_missing <- n_missing == n_obs
     if (all_missing) {
       if (multi) {
-        ret <- predict_survival_na(eval_time, interval = "none", penalty = penalty)
+        ret <- predict_survival_na(
+          eval_time,
+          interval = "none",
+          penalty = penalty
+        )
       } else {
         ret <- predict_survival_na(eval_time, interval = "none")
       }

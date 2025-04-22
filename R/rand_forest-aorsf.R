@@ -1,5 +1,5 @@
 #' Internal helper function for aorsf objects
-#' @param object A parsnip `model_fit` object resulting from 
+#' @param object A parsnip `model_fit` object resulting from
 #' [rand_forest() with engine = "aorsf"][parsnip::details_rand_forest_aorsf].
 #' @param new_data A data frame to be predicted.
 #' @param eval_time A vector of times to predict the survival probability.
@@ -14,9 +14,16 @@
 #'   set_mode("censored regression") %>%
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
 #' preds <- survival_prob_orsf(mod, lung[1:3, ], eval_time = c(250, 100))
-survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated()) {
+survival_prob_orsf <- function(
+  object,
+  new_data,
+  eval_time,
+  time = deprecated()
+) {
   if (inherits(object, "orsf_fit")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls orsf_fit} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls orsf_fit} object."
+    )
   }
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -42,7 +49,7 @@ survival_prob_orsf <- function(object, new_data, eval_time, time = deprecated())
   res <- data.frame(
     .row = rep(seq_len(n_obs), times = n_eval_time),
     .eval_time = rep(eval_time, each = n_obs),
-    .pred_survival =  as.numeric(pred)
+    .pred_survival = as.numeric(pred)
   ) %>%
     tidyr::nest(.pred = c(-.row)) %>%
     dplyr::select(-.row)

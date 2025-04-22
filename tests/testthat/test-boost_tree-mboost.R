@@ -86,13 +86,13 @@ test_that("survival predictions", {
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~all(dim(.x) == c(4, 2))))
+    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(4, 2))))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -207,7 +207,7 @@ test_that("can predict for out-of-domain timepoints", {
   skip_if_not_installed("mboost")
 
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[c(2,4),] # two observations because of https://github.com/boost-R/mboost/issues/117
+  obs_without_NA <- lung[c(2, 4), ] # two observations because of https://github.com/boost-R/mboost/issues/117
 
   mod <- boost_tree() %>%
     set_mode("censored regression") %>%
@@ -215,7 +215,12 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -262,7 +267,7 @@ test_that("linear_pred predictions", {
 
 test_that("`fix_xy()` works", {
   skip_if_not_installed("mboost")
-  
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

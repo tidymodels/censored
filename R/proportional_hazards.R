@@ -1,11 +1,13 @@
 # The model specification is in parsnip.
 
 #' @export
-fit.proportional_hazards <- function(object,
-                                     formula,
-                                     data,
-                                     control = parsnip::control_parsnip(),
-                                     ...) {
+fit.proportional_hazards <- function(
+  object,
+  formula,
+  data,
+  control = parsnip::control_parsnip(),
+  ...
+) {
   # call parsnip::fit.model_spec()
   res <- NextMethod()
 
@@ -28,16 +30,20 @@ fit.proportional_hazards <- function(object,
 }
 
 #' @export
-fit_xy.proportional_hazards <- function(object,
-                                        x,
-                                        y,
-                                        case_weights = NULL,
-                                        control = parsnip::control_parsnip(),
-                                        ...) {
+fit_xy.proportional_hazards <- function(
+  object,
+  x,
+  y,
+  case_weights = NULL,
+  control = parsnip::control_parsnip(),
+  ...
+) {
   # special case for glmnet, which puts stratification on the response
   # via `glmnet::stratifySurv()`
   if (inherits(y, "stratifySurv")) {
-    cli::cli_abort("For stratification, please use the formula interface via {.fn fit}.")
+    cli::cli_abort(
+      "For stratification, please use the formula interface via {.fn fit}."
+    )
   }
 
   # call parsnip::fit_xy.model_spec()

@@ -10,7 +10,11 @@
 # nocov start
 
 make_decision_tree_rpart <- function() {
-  parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "rpart")
+  parsnip::set_model_engine(
+    "decision_tree",
+    mode = "censored regression",
+    eng = "rpart"
+  )
   parsnip::set_dependency(
     "decision_tree",
     eng = "rpart",
@@ -57,11 +61,10 @@ make_decision_tree_rpart <- function() {
       pre = NULL,
       post = unname,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = quote(object$fit$rpart),
-          newdata = quote(new_data)
-        )
+      args = list(
+        object = quote(object$fit$rpart),
+        newdata = quote(new_data)
+      )
     )
   )
 
@@ -74,28 +77,31 @@ make_decision_tree_rpart <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_pecRpart"),
-      args =
-        list(
-          object = rlang::expr(object),
-          new_data = rlang::expr(new_data),
-          eval_time = rlang::expr(eval_time)
-        )
+      args = list(
+        object = rlang::expr(object),
+        new_data = rlang::expr(new_data),
+        eval_time = rlang::expr(eval_time)
+      )
     )
   )
 }
 
 make_decision_tree_partykit <- function() {
-  parsnip::set_model_engine("decision_tree", mode = "censored regression", eng = "partykit")
+  parsnip::set_model_engine(
+    "decision_tree",
+    mode = "censored regression",
+    eng = "partykit"
+  )
   parsnip::set_dependency(
-    "decision_tree", 
-    eng = "partykit", 
-    pkg = "partykit", 
+    "decision_tree",
+    eng = "partykit",
+    pkg = "partykit",
     mode = "censored regression"
   )
   parsnip::set_dependency(
-    "decision_tree", 
-    eng = "partykit", 
-    pkg = "censored", 
+    "decision_tree",
+    eng = "partykit",
+    pkg = "censored",
     mode = "censored regression"
   )
 

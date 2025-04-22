@@ -10,7 +10,11 @@
 # nocov start
 
 make_bag_tree_rpart <- function() {
-  parsnip::set_model_engine("bag_tree", mode = "censored regression", eng = "rpart")
+  parsnip::set_model_engine(
+    "bag_tree",
+    mode = "censored regression",
+    eng = "rpart"
+  )
   parsnip::set_dependency(
     "bag_tree",
     eng = "rpart",
@@ -56,11 +60,10 @@ make_bag_tree_rpart <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_time_survbagg"),
-      args =
-        list(
-          object = rlang::expr(object),
-          new_data = rlang::expr(new_data)
-        )
+      args = list(
+        object = rlang::expr(object),
+        new_data = rlang::expr(new_data)
+      )
     )
   )
 
@@ -73,12 +76,11 @@ make_bag_tree_rpart <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_survbagg"),
-      args =
-        list(
-          object = rlang::expr(object),
-          new_data = rlang::expr(new_data),
-          eval_time = rlang::expr(eval_time)
-        )
+      args = list(
+        object = rlang::expr(object),
+        new_data = rlang::expr(new_data),
+        eval_time = rlang::expr(eval_time)
+      )
     )
   )
 }

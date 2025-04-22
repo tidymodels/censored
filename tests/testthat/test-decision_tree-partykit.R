@@ -90,7 +90,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~identical(names(.x), cf_names)
+        ~ identical(names(.x), cf_names)
       )
     )
   )
@@ -132,7 +132,7 @@ test_that("can predict for out-of-domain timepoints", {
   skip_if_not_installed("coin")
 
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
 
   mod <- decision_tree() %>%
     set_mode("censored regression") %>%
@@ -140,7 +140,12 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -149,7 +154,7 @@ test_that("can predict for out-of-domain timepoints", {
 test_that("`fix_xy()` works", {
   skip_if_not_installed("partykit")
   skip_if_not_installed("coin")
-  
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

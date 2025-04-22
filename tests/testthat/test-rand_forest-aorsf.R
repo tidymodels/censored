@@ -18,7 +18,11 @@ test_that("model object", {
 
   set.seed(1234)
   expect_error(
-    f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf),
+    f_fit <- fit(
+      mod_spec,
+      Surv(time, status) ~ age + ph.ecog,
+      data = lung_orsf
+    ),
     NA
   )
 
@@ -42,7 +46,7 @@ test_that("time predictions", {
     formula = Surv(time, status) ~ age + ph.ecog
   )
   exp_f_pred <- predict(
-    exp_f_fit, 
+    exp_f_fit,
     new_data = lung,
     pred_type = "time",
     na_action = "pass"
@@ -61,7 +65,7 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 
   # single observation
-  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  f_pred_1 <- predict(f_fit, lung[2, ], type = "time")
   expect_identical(nrow(f_pred_1), 1L)
 })
 
@@ -109,7 +113,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~identical(names(.x), cf_names)
+        ~ identical(names(.x), cf_names)
       )
     )
   )
@@ -226,7 +230,7 @@ test_that("can predict for out-of-domain timepoints", {
   skip_if_not_installed("aorsf")
 
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
   lung_orsf <- na.omit(lung)
 
   mod <- rand_forest() %>%
@@ -235,7 +239,12 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung_orsf)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -296,7 +305,7 @@ test_that("`fix_xy()` works", {
 
 test_that("can handle case weights", {
   skip_if_not_installed("aorsf")
-  
+
   dat <- make_cens_wts()
 
   expect_error(

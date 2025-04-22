@@ -2,7 +2,7 @@ library(testthat)
 
 test_that("model object", {
   skip_if_not_installed("flexsurv")
-  
+
   set.seed(1234)
   exp_f_fit <- flexsurv::flexsurvreg(
     Surv(time, status) ~ age + ph.ecog,
@@ -48,7 +48,7 @@ test_that("flexsurv time prediction", {
   expect_equal(f_pred, exp_pred)
 
   # single observation
-  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  f_pred_1 <- predict(f_fit, lung[2, ], type = "time")
   expect_identical(nrow(f_pred_1), 1L)
 })
 
@@ -112,17 +112,20 @@ test_that("survival probability prediction", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      ~ all(names(.x) == c(
-        ".eval_time",
-        ".pred_survival",
-        ".pred_lower",
-        ".pred_upper"
-      ))
+      ~ all(
+        names(.x) ==
+          c(
+            ".eval_time",
+            ".pred_survival",
+            ".pred_lower",
+            ".pred_upper"
+          )
+      )
     ))
   )
 
   # single observation
-  f_pred_1 <- predict(f_fit, lung[2,], type = "survival", eval_time = 100)
+  f_pred_1 <- predict(f_fit, lung[2, ], type = "survival", eval_time = 100)
   expect_identical(nrow(f_pred_1), 1L)
 })
 
@@ -139,19 +142,22 @@ test_that("survival probabilities for single eval time point", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      ~ all(names(.x) == c(
-        ".eval_time",
-        ".pred_survival"
-      ))
+      ~ all(
+        names(.x) ==
+          c(
+            ".eval_time",
+            ".pred_survival"
+          )
+      )
     ))
   )
 })
 
 test_that("can predict for out-of-domain timepoints", {
   skip_if_not_installed("flexsurv")
-  
+
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
 
   mod <- survival_reg() %>%
     set_mode("censored regression") %>%
@@ -160,10 +166,20 @@ test_that("can predict for out-of-domain timepoints", {
     suppressWarnings()
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "hazard", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "hazard",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -189,7 +205,6 @@ test_that("linear predictor", {
   expect_true(all(names(f_pred) == ".pred_linear_pred"))
   expect_equal(nrow(f_pred), 5)
 
-
   f_fit <- survival_reg(dist = "lnorm") %>%
     set_engine("flexsurv") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
@@ -205,7 +220,7 @@ test_that("linear predictor", {
   expect_equal(f_pred$.pred_linear_pred, exp_pred$.pred_link)
 
   # single observation
-  f_pred_1 <- predict(f_fit, lung[2,], type = "linear_pred")
+  f_pred_1 <- predict(f_fit, lung[2, ], type = "linear_pred")
   expect_identical(nrow(f_pred_1), 1L)
 })
 
@@ -265,7 +280,7 @@ test_that("quantile predictions", {
   # single observation
   f_pred_1 <- predict(fit_s, bladder[2, ], type = "quantile")
   expect_identical(nrow(f_pred_1), 1L)
-  
+
   # single quantile
   f_pred_2 <- predict(
     fit_s,
@@ -324,7 +339,12 @@ test_that("hazard prediction", {
   )
 
   # single observation
-  f_pred_1 <- predict(f_fit, lung[2,], type = "hazard", eval_time = c(100, 200))
+  f_pred_1 <- predict(
+    f_fit,
+    lung[2, ],
+    type = "hazard",
+    eval_time = c(100, 200)
+  )
   expect_identical(nrow(f_pred_1), 1L)
 })
 
@@ -341,10 +361,13 @@ test_that("hazard for single eval time point", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      ~ all(names(.x) == c(
-        ".eval_time",
-        ".pred_hazard"
-      ))
+      ~ all(
+        names(.x) ==
+          c(
+            ".eval_time",
+            ".pred_hazard"
+          )
+      )
     ))
   )
 })
@@ -353,7 +376,7 @@ test_that("hazard for single eval time point", {
 
 test_that("`fix_xy()` works", {
   skip_if_not_installed("flexsurv")
-  
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
@@ -365,7 +388,11 @@ test_that("`fix_xy()` works", {
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
   elements_to_ignore <- c(
-    "call", "data", "concat.formula", "all.formulae", "covdata"
+    "call",
+    "data",
+    "concat.formula",
+    "all.formulae",
+    "covdata"
   )
   f_ignore <- which(names(f_fit$fit) %in% elements_to_ignore)
   xy_ignore <- which(names(xy_fit$fit) %in% elements_to_ignore)

@@ -101,7 +101,13 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
 
   # single observation
-  surv_fit <- survfit(mod, newx = lung_pred[1, , drop = FALSE], s = 0.1, x = lung_x, y = lung_y)
+  surv_fit <- survfit(
+    mod,
+    newx = lung_pred[1, , drop = FALSE],
+    s = 0.1,
+    x = lung_x,
+    y = lung_y
+  )
 
   pred_time <- c(100, 200)
   surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
@@ -126,7 +132,11 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
   lung_pred <- lung_x[1:5, ]
   lung_pred_strata <- lung2$sex[1:5]
 
-  mod <- suppressWarnings(glmnet::glmnet(x = lung_x, y = lung_y, family = "cox"))
+  mod <- suppressWarnings(glmnet::glmnet(
+    x = lung_x,
+    y = lung_y,
+    family = "cox"
+  ))
 
   # multiple observations
   surv_fit <- survfit(
@@ -269,7 +279,10 @@ test_that("combine_list_of_survfit_summary() works for cforest", {
   lung_pred <- tidyr::drop_na(lung)
 
   set.seed(1234)
-  engine_fit <- partykit::cforest(Surv(time, status) ~ age + ph.ecog, data = lung)
+  engine_fit <- partykit::cforest(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung
+  )
   survfit_list <- predict(engine_fit, newdata = lung_pred, type = "prob")
 
   pred_time <- c(100, 200)

@@ -74,12 +74,13 @@ survreg_survival <- function(location, object, scale, eval_time, ...) {
   distr <- object$dist
   tibble::tibble(
     .eval_time = eval_time,
-    .pred_survival = 1 - survival::psurvreg(eval_time, location, distribution = distr, scale, ...)
+    .pred_survival = 1 -
+      survival::psurvreg(eval_time, location, distribution = distr, scale, ...)
   )
 }
 
 #' Internal function helps for parametric survival models
-#' @param object A parsnip `model_fit` object resulting from 
+#' @param object A parsnip `model_fit` object resulting from
 #' [survival_reg() with engine = "survival"][parsnip::details_survival_reg_survival].
 #' @param new_data A data frame.
 #' @param eval_time A vector of time points.
@@ -88,14 +89,21 @@ survreg_survival <- function(location, object, scale, eval_time, ...) {
 #' @keywords internal
 #' @export
 #' @examples
-#' mod <- survival_reg() %>% 
+#' mod <- survival_reg() %>%
 #'   set_engine("survival") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_survreg(mod, lung[1:3, ], eval_time = 100)
 #' hazard_survreg(mod, lung[1:3, ], eval_time = 100)
-survival_prob_survreg <- function(object, new_data, eval_time, time = deprecated()) {
+survival_prob_survreg <- function(
+  object,
+  new_data,
+  eval_time,
+  time = deprecated()
+) {
   if (inherits(object, "survreg")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object."
+    )
   }
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -112,16 +120,28 @@ survival_prob_survreg <- function(object, new_data, eval_time, time = deprecated
     purrr::map2(
       lp_estimate,
       scale_estimate,
-      ~ survreg_survival(.x, object = object$fit, eval_time = eval_time, scale = .y)
+      ~ survreg_survival(
+        .x,
+        object = object$fit,
+        eval_time = eval_time,
+        scale = .y
+      )
     )
   tibble::tibble(.pred = unname(res))
 }
 
-survreg_hazard <- function(location, object, scale = object$scale, eval_time, ...) {
+survreg_hazard <- function(
+  location,
+  object,
+  scale = object$scale,
+  eval_time,
+  ...
+) {
   distr <- object$dist
   prob <-
     survival::dsurvreg(eval_time, location, scale, distribution = distr, ...) /
-      (1 - survival::psurvreg(eval_time, location, distribution = distr, scale, ...))
+    (1 -
+      survival::psurvreg(eval_time, location, distribution = distr, scale, ...))
   tibble::tibble(
     .eval_time = eval_time,
     .pred_hazard = prob
@@ -132,7 +152,9 @@ survreg_hazard <- function(location, object, scale = object$scale, eval_time, ..
 #' @rdname survival_prob_survreg
 hazard_survreg <- function(object, new_data, eval_time) {
   if (inherits(object, "survreg")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object."
+    )
   }
   lp_estimate <- predict(object$fit, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object$fit, new_data)
@@ -140,7 +162,12 @@ hazard_survreg <- function(object, new_data, eval_time) {
     purrr::map2(
       lp_estimate,
       scale_estimate,
-      ~ survreg_hazard(.x, object = object$fit, eval_time = eval_time, scale = .y)
+      ~ survreg_hazard(
+        .x,
+        object = object$fit,
+        eval_time = eval_time,
+        scale = .y
+      )
     )
   tibble::tibble(.pred = unname(res))
 }

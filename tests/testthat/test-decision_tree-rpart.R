@@ -43,7 +43,7 @@ test_that("time predictions", {
   expect_equal(nrow(f_pred), nrow(lung))
 
   # single observation
-  f_pred_1 <- predict(f_fit, lung[2,], type = "time")
+  f_pred_1 <- predict(f_fit, lung[2, ], type = "time")
   expect_identical(nrow(f_pred_1), 1L)
 })
 
@@ -74,7 +74,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(dim(.x) == c(101, 2))
+        ~ all(dim(.x) == c(101, 2))
       )
     )
   )
@@ -82,7 +82,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -103,7 +103,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -129,7 +129,7 @@ test_that("can predict for out-of-domain timepoints", {
   skip_if_not_installed("pec")
 
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
 
   mod <- decision_tree() %>%
     set_mode("censored regression") %>%
@@ -137,7 +137,12 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
