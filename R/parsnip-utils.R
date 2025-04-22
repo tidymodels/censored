@@ -1,19 +1,31 @@
 # utilities copied from parnsip
 
 pred_types <- c(
-  "raw", "numeric", "class", "prob", "conf_int", "pred_int", "quantile",
-  "time", "survival", "linear_pred", "hazard"
+  "raw",
+  "numeric",
+  "class",
+  "prob",
+  "conf_int",
+  "pred_int",
+  "quantile",
+  "time",
+  "survival",
+  "linear_pred",
+  "hazard"
 )
 
 # used directly, probably export?
 check_pred_type <- function(object, type, ...) {
   if (is.null(type)) {
     type <-
-      switch(object$spec$mode,
+      switch(
+        object$spec$mode,
         regression = "numeric",
         classification = "class",
         "censored regression" = "time",
-        rlang::abort("`type` should be 'regression', 'censored regression', or 'classification'.")
+        rlang::abort(
+          "`type` should be 'regression', 'censored regression', or 'classification'."
+        )
       )
   }
   if (!(type %in% pred_types)) {
@@ -25,27 +37,42 @@ check_pred_type <- function(object, type, ...) {
     )
   }
 
-  switch(type,
+  switch(
+    type,
     "numeric" = if (object$spec$mode != "regression") {
-      rlang::abort("For numeric predictions, the object should be a regression model.")
+      rlang::abort(
+        "For numeric predictions, the object should be a regression model."
+      )
     },
     "class" = if (object$spec$mode != "classification") {
-      rlang::abort("For class predictions, the object should be a classification model.")
+      rlang::abort(
+        "For class predictions, the object should be a classification model."
+      )
     },
     "prob" = if (object$spec$mode != "classification") {
-      rlang::abort("For probability predictions, the object should be a classification model.")
+      rlang::abort(
+        "For probability predictions, the object should be a classification model."
+      )
     },
     "time" = if (object$spec$mode != "censored regression") {
-      rlang::abort("For event time predictions, the object should be a censored regression.")
+      rlang::abort(
+        "For event time predictions, the object should be a censored regression."
+      )
     },
     "survival" = if (object$spec$mode != "censored regression") {
-      rlang::abort("For survival probability predictions, the object should be a censored regression.")
+      rlang::abort(
+        "For survival probability predictions, the object should be a censored regression."
+      )
     },
     "hazard" = if (object$spec$mode != "censored regression") {
-      rlang::abort("For hazard predictions, the object should be a censored regression.")
+      rlang::abort(
+        "For hazard predictions, the object should be a censored regression."
+      )
     },
     "linear_pred" = if (object$spec$mode != "censored regression") {
-      rlang::abort("For the linear predictor, the object should be a censored regression.")
+      rlang::abort(
+        "For the linear predictor, the object should be a censored regression."
+      )
     }
   )
 
@@ -74,7 +101,12 @@ spec_has_pred_type <- function(object, type) {
 }
 
 # used directly, probably export
-check_pred_type_dots <- function(object, type, ..., call = rlang::caller_env()) {
+check_pred_type_dots <- function(
+  object,
+  type,
+  ...,
+  call = rlang::caller_env()
+) {
   the_dots <- list(...)
   nms <- names(the_dots)
 
@@ -85,8 +117,13 @@ check_pred_type_dots <- function(object, type, ..., call = rlang::caller_env()) 
   # ----------------------------------------------------------------------------
 
   other_args <- c(
-    "interval", "level", "std_error", "quantile",
-    "time", "eval_time", "increasing"
+    "interval",
+    "level",
+    "std_error",
+    "quantile",
+    "time",
+    "eval_time",
+    "increasing"
   )
   is_pred_arg <- names(the_dots) %in% other_args
   if (any(!is_pred_arg)) {
@@ -119,7 +156,9 @@ check_pred_type_dots <- function(object, type, ..., call = rlang::caller_env()) 
     )
   }
   # when eval_time should be passed
-  if (!any(nms %in% c("eval_time", "time")) & type %in% c("survival", "hazard")) {
+  if (
+    !any(nms %in% c("eval_time", "time")) & type %in% c("survival", "hazard")
+  ) {
     rlang::abort(
       paste(
         "When using `type` values of 'survival' or 'hazard',",
@@ -129,9 +168,11 @@ check_pred_type_dots <- function(object, type, ..., call = rlang::caller_env()) 
   }
 
   # `increasing` only applies to linear_pred for censored regression
-  if (any(nms == "increasing") &
-    !(type == "linear_pred" &
-      object$spec$mode == "censored regression")) {
+  if (
+    any(nms == "increasing") &
+      !(type == "linear_pred" &
+        object$spec$mode == "censored regression")
+  ) {
     rlang::abort(
       paste(
         "The 'increasing' argument only applies to predictions of",
@@ -170,7 +211,7 @@ check_installs <- function(x) {
 }
 
 shhhh <- function(x) {
-    suppressPackageStartupMessages(requireNamespace(x, quietly = TRUE))
+  suppressPackageStartupMessages(requireNamespace(x, quietly = TRUE))
 }
 
 is_installed <- function(pkg) {

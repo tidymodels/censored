@@ -36,14 +36,29 @@
 #'   data = lung[-14, ], family = mboost::CoxPH()
 #' )
 blackboost_train <-
-  function(formula, data, family, weights = NULL,
-           teststat = "quadratic", testtype = "Teststatistic",
-           mincriterion = 0, minsplit = 10,
-           minbucket = 4, maxdepth = 2, saveinfo = FALSE, ...) {
+  function(
+    formula,
+    data,
+    family,
+    weights = NULL,
+    teststat = "quadratic",
+    testtype = "Teststatistic",
+    mincriterion = 0,
+    minsplit = 10,
+    minbucket = 4,
+    maxdepth = 2,
+    saveinfo = FALSE,
+    ...
+  ) {
     other_args <- list(...)
     protect_ct <- c(
-      "teststat", "testtype", "mincriterion", "minsplit",
-      "minbucket", "maxdepth", "saveinfo"
+      "teststat",
+      "testtype",
+      "mincriterion",
+      "minsplit",
+      "minbucket",
+      "maxdepth",
+      "saveinfo"
     )
     protect_cb <- character()
     protect_fit <- c("formula", "data", "family", "weight")
@@ -52,8 +67,10 @@ blackboost_train <-
     cb_names <- names(formals(getFromNamespace("boost_control", "mboost")))
     fit_names <- names(formals(getFromNamespace("blackboost", "mboost")))
 
-    other_args <- other_args[!(other_args %in%
-      c(protect_ct, protect_cb, protect_fit))]
+    other_args <- other_args[
+      !(other_args %in%
+        c(protect_ct, protect_cb, protect_fit))
+    ]
 
     ct_args <- other_args[names(other_args) %in% ct_names]
     cb_args <- other_args[names(other_args) %in% cb_names]
@@ -90,10 +107,12 @@ blackboost_train <-
   }
 
 #' @export
-predict_linear_pred._blackboost <- function(object,
-                                            new_data,
-                                            ...,
-                                            increasing = TRUE) {
+predict_linear_pred._blackboost <- function(
+  object,
+  new_data,
+  ...,
+  increasing = TRUE
+) {
   res <- NextMethod()
   if (increasing) {
     # For consistency with other models, we want the lp to increase with
@@ -117,9 +136,16 @@ predict_linear_pred._blackboost <- function(object,
 #'   set_mode("censored regression") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
-survival_prob_mboost <- function(object, new_data, eval_time, time = deprecated()) {
+survival_prob_mboost <- function(
+  object,
+  new_data,
+  eval_time,
+  time = deprecated()
+) {
   if (inherits(object, "mboost")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object."
+    )
   }
 
   if (lifecycle::is_present(time)) {
@@ -184,7 +210,9 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 #' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 survival_time_mboost <- function(object, new_data) {
   if (inherits(object, "mboost")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object."
+    )
   }
 
   y <- mboost::survFit(object$fit, new_data)

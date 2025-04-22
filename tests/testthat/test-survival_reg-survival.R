@@ -55,13 +55,21 @@ test_that("survival probability prediction", {
     "a numeric vector `eval_time`"
   )
 
-  exp_pred <- predict(res, head(lung), type = "survival", eval_time = c(0, 500, 1000))
+  exp_pred <- predict(
+    res,
+    head(lung),
+    type = "survival",
+    eval_time = c(0, 500, 1000)
+  )
   exp_pred_vert <- exp_pred %>%
     dplyr::mutate(.patient = dplyr::row_number()) %>%
     tidyr::unnest(cols = .pred)
 
   expect_true(all(names(exp_pred) == ".pred"))
-  expect_equal(names(exp_pred_vert), c(".eval_time", ".pred_survival", ".patient"))
+  expect_equal(
+    names(exp_pred_vert),
+    c(".eval_time", ".pred_survival", ".patient")
+  )
 
   # using rms for expected results
   expect_equal(
@@ -71,13 +79,18 @@ test_that("survival probability prediction", {
   )
 
   # single observation
-  f_pred_1 <- predict(res, lung[1, ], type = "survival", eval_time = c(100, 500))
+  f_pred_1 <- predict(
+    res,
+    lung[1, ],
+    type = "survival",
+    eval_time = c(100, 500)
+  )
   expect_identical(nrow(f_pred_1), 1L)
 })
 
 test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
 
   mod <- survival_reg() %>%
     set_mode("censored regression") %>%
@@ -85,10 +98,20 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "hazard", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "hazard",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -172,13 +195,21 @@ test_that("survival hazard prediction", {
     "a numeric vector `eval_time`"
   )
 
-  exp_pred <- predict(res, head(lung), type = "hazard", eval_time = c(0, 500, 1000))
+  exp_pred <- predict(
+    res,
+    head(lung),
+    type = "hazard",
+    eval_time = c(0, 500, 1000)
+  )
   exp_pred_vert <- exp_pred %>%
     dplyr::mutate(.patient = dplyr::row_number()) %>%
     tidyr::unnest(cols = .pred)
 
   expect_true(all(names(exp_pred) == ".pred"))
-  expect_equal(names(exp_pred_vert), c(".eval_time", ".pred_hazard", ".patient"))
+  expect_equal(
+    names(exp_pred_vert),
+    c(".eval_time", ".pred_hazard", ".patient")
+  )
 
   # using rms for expected results
   expect_equal(
@@ -268,7 +299,12 @@ test_that("deprecation of `time` arg for type 'survival'", {
   f_fit <- survival_reg() %>%
     set_engine("survival") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
-  exp_pred <- predict(f_fit, head(lung), type = "survival", eval_time = c(0, 500, 1000))
+  exp_pred <- predict(
+    f_fit,
+    head(lung),
+    type = "survival",
+    eval_time = c(0, 500, 1000)
+  )
 
   rlang::local_options(lifecycle_verbosity = "error")
   expect_error(
@@ -285,7 +321,12 @@ test_that("deprecation of `time` arg for type 'hazard'", {
   f_fit <- survival_reg() %>%
     set_engine("survival") %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
-  exp_pred <- predict(f_fit, head(lung), type = "hazard", eval_time = c(0, 500, 1000))
+  exp_pred <- predict(
+    f_fit,
+    head(lung),
+    type = "hazard",
+    eval_time = c(0, 500, 1000)
+  )
 
   rlang::local_options(lifecycle_verbosity = "error")
   expect_error(

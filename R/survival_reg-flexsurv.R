@@ -11,10 +11,10 @@ flexsurv_post <- function(pred, object) {
       tidyr::nest(.by = .row) %>%
       dplyr::select(-.row)
   }
-  pred 
+  pred
 }
 
-flexsurv_rename_time <- function(pred){
+flexsurv_rename_time <- function(pred) {
   if (".pred" %in% names(pred)) {
     pred %>%
       dplyr::rowwise() %>%

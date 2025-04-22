@@ -1,10 +1,12 @@
 # prediction --------------------------------------------------------------
 
 #' @export
-predict_linear_pred._coxph <- function(object,
-                                       new_data,
-                                       ...,
-                                       increasing = TRUE) {
+predict_linear_pred._coxph <- function(
+  object,
+  new_data,
+  ...,
+  increasing = TRUE
+) {
   res <- NextMethod()
   if (increasing) {
     # For consistency with other models, we want the lp to increase with
@@ -46,20 +48,22 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 # prediction: time --------------------------------------------------------
 
 #' A wrapper for survival times with `coxph` models
-#' @param object A parsnip `model_fit` object resulting from 
+#' @param object A parsnip `model_fit` object resulting from
 #' [proportional_hazards() with engine = "survival"][parsnip::details_proportional_hazards_survival].
 #' @param new_data Data for prediction
 #' @return A vector.
 #' @keywords internal
 #' @export
 #' @examples
-#' cox_mod <- proportional_hazards() %>% 
+#' cox_mod <- proportional_hazards() %>%
 #'   set_engine("survival") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
   if (inherits(object, "coxph")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object."
+    )
   }
 
   missings_in_new_data <- get_missings_coxph(object$fit, new_data)
@@ -108,11 +112,10 @@ get_missings_coxph <- function(object, new_data) {
 }
 
 
-
 # prediction: survival ----------------------------------------------------
 
 #' A wrapper for survival probabilities with coxph models
-#' @param object A parsnip `model_fit` object resulting from 
+#' @param object A parsnip `model_fit` object resulting from
 #' [proportional_hazards() with engine = "survival"][parsnip::details_proportional_hazards_survival].
 #' @param x Deprecated. A model from `coxph()`.
 #' @param new_data Data for prediction
@@ -127,21 +130,25 @@ get_missings_coxph <- function(object, new_data) {
 #' @keywords internal
 #' @export
 #' @examples
-#' cox_mod <- proportional_hazards() %>% 
+#' cox_mod <- proportional_hazards() %>%
 #'   set_engine("survival") %>%
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
-survival_prob_coxph <- function(object,
-                                x = deprecated(),
-                                new_data,
-                                eval_time,
-                                time = deprecated(),
-                                output = "surv",
-                                interval = "none",
-                                conf.int = .95,
-                                ...) {
+survival_prob_coxph <- function(
+  object,
+  x = deprecated(),
+  new_data,
+  eval_time,
+  time = deprecated(),
+  output = "surv",
+  interval = "none",
+  conf.int = .95,
+  ...
+) {
   if (inherits(object, "coxph")) {
-    cli::cli_abort("{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object.")
+    cli::cli_abort(
+      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object."
+    )
   }
   if (lifecycle::is_present(x)) {
     lifecycle::deprecate_stop(

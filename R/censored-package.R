@@ -87,7 +87,7 @@ utils::globalVariables(
 )
 
 # quiet R-CMD-check NOTEs that prodlim is unused
-# (parsnip uses it for all censored regression models 
+# (parsnip uses it for all censored regression models
 # but only has it in Suggests)
 #' @importFrom prodlim prodlim
 NULL

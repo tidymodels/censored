@@ -10,7 +10,11 @@
 # nocov start
 
 make_boost_tree_mboost <- function() {
-  parsnip::set_model_engine("boost_tree", mode = "censored regression", eng = "mboost")
+  parsnip::set_model_engine(
+    "boost_tree",
+    mode = "censored regression",
+    eng = "mboost"
+  )
   parsnip::set_dependency(
     "boost_tree",
     eng = "mboost",
@@ -119,11 +123,10 @@ make_boost_tree_mboost <- function() {
       pre = NULL,
       post = as.numeric,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = quote(object$fit),
-          newdata = quote(new_data)
-        )
+      args = list(
+        object = quote(object$fit),
+        newdata = quote(new_data)
+      )
     )
   )
 
@@ -136,11 +139,10 @@ make_boost_tree_mboost <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_time_mboost"),
-      args =
-        list(
-          object = quote(object),
-          new_data = quote(new_data)
-        )
+      args = list(
+        object = quote(object),
+        new_data = quote(new_data)
+      )
     )
   )
 }

@@ -111,20 +111,20 @@ test_that("survival predictions", {
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
-    ~summary(.x, times = c(100:200))$surv
+    ~ summary(.x, times = c(100:200))$surv
   )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~all(dim(.x) == c(101, 2))))
+    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(101, 2))))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~all(names(.x) == c(".eval_time", ".pred_survival"))
+        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -141,7 +141,7 @@ test_that("survival predictions", {
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 10000)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
-    ~summary(.x, times = c(max(.x$time)))$surv
+    ~ summary(.x, times = c(max(.x$time)))$surv
   )
 
   expect_equal(
@@ -153,7 +153,7 @@ test_that("survival predictions", {
 test_that("survival predictions - error snapshot", {
   skip_if_not_installed("parsnip", minimum_version = "1.3.0")
   skip_if_not_installed("ipred")
-  
+
   mod_spec <- bag_tree(engine = "rpart") %>% set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -168,7 +168,7 @@ test_that("survival_prob_survbagg() works", {
 
   set.seed(1234)
   # use only ph.ecog to force missings by avoiding surrogate splits
-  mod <-  bag_tree(engine = "rpart") %>%
+  mod <- bag_tree(engine = "rpart") %>%
     set_mode("censored regression") %>%
     fit(Surv(time, status) ~ ph.ecog, data = lung)
   engine_mod <- extract_fit_engine(mod)
@@ -186,7 +186,11 @@ test_that("survival_prob_survbagg() works", {
   ) %>%
     combine_list_of_survfit_summary(eval_time = pred_time)
 
-  prob <- survival_prob_survbagg(mod, new_data = lung_pred, eval_time = pred_time)
+  prob <- survival_prob_survbagg(
+    mod,
+    new_data = lung_pred,
+    eval_time = pred_time
+  )
   exp_prob <- surv_fit_summary$surv
 
   prob_na <- prob$.pred[[2]]
@@ -210,7 +214,11 @@ test_that("survival_prob_survbagg() works", {
   ) %>%
     combine_list_of_survfit_summary(eval_time = pred_time)
 
-  prob <- survival_prob_survbagg(mod, new_data = lung_pred, eval_time = pred_time)
+  prob <- survival_prob_survbagg(
+    mod,
+    new_data = lung_pred,
+    eval_time = pred_time
+  )
   prob <- tidyr::unnest(prob, cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -219,7 +227,11 @@ test_that("survival_prob_survbagg() works", {
   # all observations with missings
   lung_pred <- lung[c(14, 14), ]
 
-  prob <- survival_prob_survbagg(mod, new_data = lung_pred, eval_time = pred_time)
+  prob <- survival_prob_survbagg(
+    mod,
+    new_data = lung_pred,
+    eval_time = pred_time
+  )
   prob <- tidyr::unnest(prob, cols = .pred)
   expect_true(all(is.na(prob$.pred_survival)))
 })
@@ -252,7 +264,7 @@ test_that("can predict for out-of-domain timepoints", {
   skip_if_not_installed("ipred")
 
   eval_time_obs_max_and_ood <- c(1022, 2000)
-  obs_without_NA <- lung[2,]
+  obs_without_NA <- lung[2, ]
 
   mod <- bag_tree() %>%
     set_mode("censored regression") %>%
@@ -260,7 +272,12 @@ test_that("can predict for out-of-domain timepoints", {
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
-    preds <- predict(mod, obs_without_NA, type = "survival", eval_time = eval_time_obs_max_and_ood)
+    preds <- predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
   )
 })
 
@@ -268,7 +285,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 test_that("`fix_xy()` works", {
   skip_if_not_installed("ipred")
-  
+
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

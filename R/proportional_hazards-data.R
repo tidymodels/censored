@@ -61,11 +61,10 @@ make_proportional_hazards_survival <- function() {
       pre = cph_survival_pre,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_time_coxph"),
-      args =
-        list(
-          object = quote(object),
-          new_data = quote(new_data)
-        )
+      args = list(
+        object = quote(object),
+        new_data = quote(new_data)
+      )
     )
   )
 
@@ -78,15 +77,14 @@ make_proportional_hazards_survival <- function() {
       pre = cph_survival_pre,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_coxph"),
-      args =
-        list(
-          object = quote(object),
-          new_data = quote(new_data),
-          eval_time = rlang::expr(eval_time),
-          output = "surv",
-          interval = expr(interval),
-          conf.int = expr(level)
-        )
+      args = list(
+        object = quote(object),
+        new_data = quote(new_data),
+        eval_time = rlang::expr(eval_time),
+        output = "surv",
+        interval = expr(interval),
+        conf.int = expr(level)
+      )
     )
   )
 
@@ -101,13 +99,12 @@ make_proportional_hazards_survival <- function() {
         unname(x)
       },
       func = c(fun = "predict"),
-      args =
-        list(
-          object = quote(object$fit),
-          newdata = quote(new_data),
-          na.action = quote(stats::na.exclude),
-          reference = "zero"
-        )
+      args = list(
+        object = quote(object$fit),
+        newdata = quote(new_data),
+        na.action = quote(stats::na.exclude),
+        reference = "zero"
+      )
     )
   )
 }
@@ -182,13 +179,12 @@ make_proportional_hazards_glmnet <- function() {
       pre = coxnet_prepare_x,
       post = parsnip::.organize_glmnet_pred,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = expr(object$fit),
-          newx = expr(new_data),
-          type = "link",
-          s = expr(object$spec$args$penalty)
-        )
+      args = list(
+        object = expr(object$fit),
+        newx = expr(new_data),
+        type = "link",
+        s = expr(object$spec$args$penalty)
+      )
     )
   )
 
@@ -201,13 +197,12 @@ make_proportional_hazards_glmnet <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_prob_coxnet"),
-      args =
-        list(
-          object = expr(object),
-          new_data = expr(new_data),
-          eval_time = expr(eval_time),
-          penalty = expr(object$spec$args$penalty)
-        )
+      args = list(
+        object = expr(object),
+        new_data = expr(new_data),
+        eval_time = expr(eval_time),
+        penalty = expr(object$spec$args$penalty)
+      )
     )
   )
 
@@ -220,12 +215,11 @@ make_proportional_hazards_glmnet <- function() {
       pre = NULL,
       post = NULL,
       func = c(pkg = "censored", fun = "survival_time_coxnet"),
-      args =
-        list(
-          object = quote(object),
-          new_data = quote(new_data),
-          penalty = expr(object$spec$args$penalty)
-        )
+      args = list(
+        object = quote(object),
+        new_data = quote(new_data),
+        penalty = expr(object$spec$args$penalty)
+      )
     )
   )
 
@@ -238,11 +232,10 @@ make_proportional_hazards_glmnet <- function() {
       pre = coxnet_prepare_x,
       post = NULL,
       func = c(fun = "predict"),
-      args =
-        list(
-          object = expr(object$fit),
-          newx = expr(new_data)
-        )
+      args = list(
+        object = expr(object$fit),
+        newx = expr(new_data)
+      )
     )
   )
 }
