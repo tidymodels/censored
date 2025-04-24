@@ -6,7 +6,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-0679-1945")),
     person("Hannah", "Frick", , "hannah@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6049-5258")),
-    person("Posit Software, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd"), comment = c(ROR = "03wc8by49"))
   )
 Description: Engines for survival models from the 'parsnip' package. These
     include parametric models (e.g., Jackson (2016)
