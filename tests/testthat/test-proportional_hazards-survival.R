@@ -292,9 +292,9 @@ test_that("survival predictions with strata", {
 
   # prediction without strata info should fail
   new_data_s <- new_data_3 %>% dplyr::select(-enum)
-  expect_error(
+  expect_snapshot(error = TRUE, {
     predict(f_fit, new_data = new_data_s, type = "survival", eval_time = 20)
-  )
+  })
 })
 
 test_that("survival prediction with NA", {

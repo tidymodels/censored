@@ -1229,9 +1229,9 @@ test_that("formula modifications to remove strata", {
     rlang::expr(x * (y + strata(s)) + z)
   )
 
-  expect_error(
+  expect_snapshot(error = TRUE, {
     check_strata_remaining(rlang::expr(x * (y + strata(s)) + z))
-  )
+  })
 
   skip_if(R.version$major == "3")
   spec <- proportional_hazards(penalty = 0.1) %>%

@@ -80,10 +80,11 @@ test_that("survival probability prediction", {
     set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
-  expect_error(
-    predict(f_fit, head(lung), type = "survival"),
-    "a numeric vector `eval_time`"
-  )
+  # snapshot test this here instead of parsnip because
+  # there are not engines in parnsip
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "survival")
+  })
 
   f_pred <- predict(
     f_fit,
@@ -316,10 +317,11 @@ test_that("hazard prediction", {
     set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
-  expect_error(
-    predict(f_fit, head(lung), type = "hazard"),
-    "a numeric vector `eval_time`"
-  )
+  # snapshot test this here instead of parsnip because
+  # there are not engines in parnsip
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "hazard")
+  })
 
   f_pred <- predict(
     f_fit,
