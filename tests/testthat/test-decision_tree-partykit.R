@@ -90,7 +90,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ identical(names(.x), cf_names)
+        \(.x) identical(names(.x), cf_names)
       )
     )
   )

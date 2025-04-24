@@ -190,7 +190,7 @@ test_that("survival predictions without strata", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(dim(.x) == c(2, 2))
+        \(.x) all(dim(.x) == c(2, 2))
       )
     )
   )
@@ -198,7 +198,7 @@ test_that("survival predictions without strata", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -275,14 +275,14 @@ test_that("survival predictions with strata", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(dim(.x) == c(2, 2))
+      \(.x) all(dim(.x) == c(2, 2))
     ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -641,14 +641,14 @@ test_that("confidence intervals", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(dim(.x) == c(2, 4))
+      \(.x) all(dim(.x) == c(2, 4))
     ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(
+        \(.x) all(
           names(.x) ==
             c(
               ".eval_time",
@@ -683,14 +683,14 @@ test_that("confidence intervals", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(dim(.x) == c(2, 4))
+      \(.x) all(dim(.x) == c(2, 4))
     ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(
+        \(.x) all(
           names(.x) ==
             c(
               ".eval_time",

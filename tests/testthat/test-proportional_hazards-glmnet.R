@@ -445,12 +445,12 @@ test_that("survival probabilities without strata", {
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(2, 2))))
+    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(2, 2))))
   )
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
     ))
   )
 
@@ -501,13 +501,13 @@ test_that("survival probabilities without strata", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(dim(.x) == c(2 * 2, 3))
+      \(.x) all(dim(.x) == c(2 * 2, 3))
     ))
   )
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
   expect_equal(
@@ -545,12 +545,12 @@ test_that("survival probabilities with strata", {
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(2, 2))))
+    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(2, 2))))
   )
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
     ))
   )
   # single observation
@@ -600,13 +600,13 @@ test_that("survival probabilities with strata", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(dim(.x) == c(2 * 2, 3))
+      \(.x) all(dim(.x) == c(2 * 2, 3))
     ))
   )
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
   expect_equal(
@@ -937,7 +937,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   prob_na <- prob$.pred[[2]]
   prob_non_na <- prob$.pred[[3]]
   # observation in row 15
-  exp_prob <- purrr::map(surv_fit_summary, ~ .x$surv[, 2]) %>% unlist()
+  exp_prob <- purrr::map(surv_fit_summary, \(.x) .x$surv[, 2]) %>% unlist()
 
   # get missings right
   expect_true(all(is.na(prob_na$.pred_survival)))
@@ -1099,13 +1099,13 @@ test_that("linear_pred predictions without strata", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(dim(.x) == c(2, 2))
+      \(.x) all(dim(.x) == c(2, 2))
     ))
   )
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
     ))
   )
   expect_equal(
@@ -1201,13 +1201,13 @@ test_that("linear_pred predictions with strata", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(dim(.x) == c(2, 2))
+      \(.x) all(dim(.x) == c(2, 2))
     ))
   )
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
     ))
   )
   expect_equal(
@@ -1431,7 +1431,7 @@ test_that("multi_predict(type = time)", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_time"))
+      \(.x) all(names(.x) == c("penalty", ".pred_time"))
     ))
   )
 
@@ -1446,7 +1446,7 @@ test_that("multi_predict(type = time)", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_time"))
+      \(.x) all(names(.x) == c("penalty", ".pred_time"))
     ))
   )
 })
@@ -1473,7 +1473,7 @@ test_that("multi_predict(type = survival) for multiple eval_time points", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 
@@ -1489,7 +1489,7 @@ test_that("multi_predict(type = survival) for multiple eval_time points", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 })
@@ -1516,7 +1516,7 @@ test_that("multi_predict(type = survival) for a single eval_time", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 
@@ -1532,7 +1532,7 @@ test_that("multi_predict(type = survival) for a single eval_time", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 })
@@ -1558,7 +1558,7 @@ test_that("multi_predict(type = linear_pred)", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
     ))
   )
 
@@ -1573,7 +1573,7 @@ test_that("multi_predict(type = linear_pred)", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
     ))
   )
 })
@@ -1645,7 +1645,7 @@ test_that("multi_predict(type = time) works with single penalty", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_time"))
+      \(.x) all(names(.x) == c("penalty", ".pred_time"))
     ))
   )
 
@@ -1660,7 +1660,7 @@ test_that("multi_predict(type = time) works with single penalty", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_time"))
+      \(.x) all(names(.x) == c("penalty", ".pred_time"))
     ))
   )
 })
@@ -1687,7 +1687,7 @@ test_that("multi_predict(type = survival) works with single penalty for multiple
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 
@@ -1703,7 +1703,7 @@ test_that("multi_predict(type = survival) works with single penalty for multiple
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 })
@@ -1730,7 +1730,7 @@ test_that("multi_predict(type = survival) works with single penalty for a single
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 
@@ -1746,7 +1746,7 @@ test_that("multi_predict(type = survival) works with single penalty for a single
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
+      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
     ))
   )
 })
@@ -1772,7 +1772,7 @@ test_that("multi_predict(type = linear_pred) works with single penalty", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
     ))
   )
 
@@ -1787,7 +1787,7 @@ test_that("multi_predict(type = linear_pred) works with single penalty", {
   expect_true(
     all(purrr::map_lgl(
       pred_multi_1$.pred,
-      ~ all(names(.x) == c("penalty", ".pred_linear_pred"))
+      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
     ))
   )
 })

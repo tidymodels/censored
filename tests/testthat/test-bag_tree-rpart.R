@@ -60,7 +60,7 @@ test_that("time predictions", {
   expect_true(all(names(f_pred) == ".pred_time"))
   expect_equal(
     f_pred$.pred_time,
-    purrr::map_dbl(exp_f_pred, ~ quantile(.x, probs = .5)$quantile)
+    purrr::map_dbl(exp_f_pred, \(.x) quantile(.x, probs = .5)$quantile)
   )
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -111,20 +111,20 @@ test_that("survival predictions", {
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 100:200)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
-    ~ summary(.x, times = c(100:200))$surv
+    \(.x) summary(.x, times = c(100:200))$surv
   )
 
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
   expect_true(
-    all(purrr::map_lgl(f_pred$.pred, ~ all(dim(.x) == c(101, 2))))
+    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(101, 2))))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -141,7 +141,7 @@ test_that("survival predictions", {
   f_pred <- predict(f_fit, lung, type = "survival", eval_time = 10000)
   exp_f_pred <- purrr::map(
     predict(exp_f_fit, lung),
-    ~ summary(.x, times = c(max(.x$time)))$surv
+    \(.x) summary(.x, times = c(max(.x$time)))$surv
   )
 
   expect_equal(
