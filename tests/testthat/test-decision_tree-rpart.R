@@ -11,9 +11,8 @@ test_that("model object", {
     set_mode("censored regression") %>%
     set_engine("rpart")
   set.seed(1234)
-  expect_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung),
-    NA
+  expect_no_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   )
 
   expect_equal(f_fit$fit, exp_f_fit, ignore_formula_env = TRUE)

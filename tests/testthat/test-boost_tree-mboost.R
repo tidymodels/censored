@@ -14,9 +14,8 @@ test_that("model object", {
   cox_spec <- boost_tree() %>%
     set_engine("mboost") %>%
     set_mode("censored regression")
-  expect_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2),
-    NA
+  expect_no_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
   )
 
   # Removing `call` element from both
@@ -46,7 +45,7 @@ test_that("time predictions", {
   # single observation
   # skip until mboost::survFit() works with a single row for `newdata`
   # fix submitted: https://github.com/boost-R/mboost/pull/118
-  # expect_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"), NA)
+  # expect_no_error(f_pred_1 <- predict(f_fit, lung[1,], type = "time"))
   # expect_equal(nrow(f_pred_1), 1)
 })
 
