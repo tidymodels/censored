@@ -80,10 +80,11 @@ test_that("survival probability prediction", {
     set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
-  expect_error(
-    predict(f_fit, head(lung), type = "survival"),
-    "a numeric vector `eval_time`"
-  )
+  # snapshot test this here instead of parsnip because
+  # there are not engines in parnsip
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "survival")
+  })
 
   f_pred <- predict(
     f_fit,
@@ -98,14 +99,14 @@ test_that("survival probability prediction", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(dim(.x) == c(3, 2))
+      \(.x) all(dim(.x) == c(3, 2))
     ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".eval_time", ".pred_survival"))
+        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
       )
     )
   )
@@ -124,7 +125,7 @@ test_that("survival probability prediction", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      ~ all(
+      \(.x) all(
         names(.x) ==
           c(
             ".eval_time",
@@ -154,7 +155,7 @@ test_that("survival probabilities for single eval time point", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      ~ all(
+      \(.x) all(
         names(.x) ==
           c(
             ".eval_time",
@@ -316,10 +317,11 @@ test_that("hazard prediction", {
     set_engine("flexsurvspline", k = 1) %>%
     fit(Surv(time, status) ~ age + sex, data = lung)
 
-  expect_error(
-    predict(f_fit, head(lung), type = "hazard"),
-    "a numeric vector `eval_time`"
-  )
+  # snapshot test this here instead of parsnip because
+  # there are not engines in parnsip
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, head(lung), type = "hazard")
+  })
 
   f_pred <- predict(
     f_fit,
@@ -334,14 +336,14 @@ test_that("hazard prediction", {
   expect_true(
     all(purrr::map_lgl(
       f_pred$.pred,
-      ~ all(dim(.x) == c(3, 2))
+      \(.x) all(dim(.x) == c(3, 2))
     ))
   )
   expect_true(
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ all(names(.x) == c(".eval_time", ".pred_hazard"))
+        \(.x) all(names(.x) == c(".eval_time", ".pred_hazard"))
       )
     )
   )
@@ -370,7 +372,7 @@ test_that("hazard for single eval time point", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      ~ all(
+      \(.x) all(
         names(.x) ==
           c(
             ".eval_time",
@@ -474,15 +476,12 @@ test_that("can handle case weights", {
   wts <- runif(nrow(lung))
   wts <- importance_weights(wts)
 
-  expect_error(
-    {
-      wt_fit <- survival_reg() %>%
-        set_engine("flexsurvspline", k = 1) %>%
-        set_mode("censored regression") %>%
-        fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) %>%
-        suppressWarnings()
-    },
-    regexp = NA
+  expect_no_error(
+    wt_fit <- survival_reg() %>%
+      set_engine("flexsurvspline", k = 1) %>%
+      set_mode("censored regression") %>%
+      fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) %>%
+      suppressWarnings()
   )
 
   unwt_fit <-

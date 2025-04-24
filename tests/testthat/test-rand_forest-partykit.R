@@ -15,9 +15,8 @@ test_that("model object", {
     set_engine("partykit") %>%
     set_mode("censored regression")
   set.seed(1234)
-  expect_error(
-    f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung),
-    NA
+  expect_no_error(
+    f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   )
 
   # remove `call` from comparison

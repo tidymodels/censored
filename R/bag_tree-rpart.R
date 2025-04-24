@@ -31,7 +31,7 @@ survival_time_survbagg <- function(object, new_data) {
 
   y <- predict(object$fit, newdata = new_data)
 
-  res <- purrr::map_dbl(y, ~ quantile(.x, probs = .5)$quantile)
+  res <- purrr::map_dbl(y, \(.x) quantile(.x, probs = .5)$quantile)
 
   if (!is.null(missings_in_new_data)) {
     index_with_na <- rep(NA, n_total)

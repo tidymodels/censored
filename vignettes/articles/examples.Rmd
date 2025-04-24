@@ -7,7 +7,9 @@ output:
   knitr:::html_vignette
 ---
 
-```{r startup, include = FALSE}
+```{r}
+#| label: startup
+#| include: false
 library(utils)
 library(ggplot2)
 theme_set(theme_bw())
@@ -30,7 +32,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"rpart"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -75,7 +78,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"mboost"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -120,7 +124,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"rpart"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -162,7 +167,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"partykit"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -207,7 +213,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"survival"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -250,7 +257,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"glmnet"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -295,7 +303,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"partykit"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -337,7 +346,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"aorsf"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -382,7 +392,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"survival"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -429,7 +440,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"flexsurv"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 
@@ -477,7 +489,8 @@ The following examples use the same data set throughout.
   
   <summary>With the `"flexsurvspline"` engine</summary>
   
-  ```{r echo=FALSE}
+  ```{r}
+  #| echo: false
   knitr::spin_child("template-lung.R")
   ```
 

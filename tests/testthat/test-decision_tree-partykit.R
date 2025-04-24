@@ -12,9 +12,8 @@ test_that("model object", {
     set_mode("censored regression") %>%
     set_engine("partykit")
   set.seed(1234)
-  expect_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung),
-    NA
+  expect_no_error(
+    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   )
 
   # Removing `call` element from comparison
@@ -90,7 +89,7 @@ test_that("survival predictions", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        ~ identical(names(.x), cf_names)
+        \(.x) identical(names(.x), cf_names)
       )
     )
   )

@@ -19,7 +19,7 @@ A vector.
 A wrapper for survival times with \code{coxph} models
 }
 \examples{
-cox_mod <- proportional_hazards() \%>\% 
+cox_mod <- proportional_hazards() \%>\%
   set_engine("survival") \%>\%
   fit(Surv(time, status) ~ ., data = lung)
 survival_time_coxph(cox_mod, new_data = lung[1:3, ])

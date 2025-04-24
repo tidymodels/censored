@@ -22,3 +22,11 @@
       Error in `predict()`:
       ! When using `type` values of "survival" or "hazard" a numeric vector `eval_time` should also be given.
 
+# survival predictions with strata
+
+    Code
+      predict(f_fit, new_data = new_data_s, type = "survival", eval_time = 20)
+    Condition
+      Error in `predict_survival()`:
+      ! `new_data` is missing the following stratification variable: `enum`.
+

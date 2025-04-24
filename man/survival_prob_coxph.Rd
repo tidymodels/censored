@@ -44,7 +44,7 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with coxph models
 }
 \examples{
-cox_mod <- proportional_hazards() \%>\% 
+cox_mod <- proportional_hazards() \%>\%
   set_engine("survival") \%>\%
   fit(Surv(time, status) ~ ., data = lung)
 survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)

@@ -26,7 +26,7 @@ A tibble with a list column of nested tibbles.
 Internal function helps for parametric survival models
 }
 \examples{
-mod <- survival_reg() \%>\% 
+mod <- survival_reg() \%>\%
   set_engine("survival") \%>\%
   fit(Surv(time, status) ~ ., data = lung)
 survival_prob_survreg(mod, lung[1:3, ], eval_time = 100)

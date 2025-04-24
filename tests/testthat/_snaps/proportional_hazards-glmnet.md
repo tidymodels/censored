@@ -65,6 +65,16 @@
 # formula modifications to remove strata
 
     Code
+      check_strata_remaining(rlang::expr(x * (y + strata(s)) + z))
+    Condition
+      Error:
+      ! Stratification must be nested under a chain of `+` calls.
+      i # Good: `~ x1 + x2 + strata(s)`
+      i # Bad: `~ x1 + (x2 + strata(s))`
+
+---
+
+    Code
       fit(spec, Surv(time, status) ~ strata(sex), data = lung)
     Condition
       Error:
