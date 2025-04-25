@@ -55,8 +55,8 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 #' @keywords internal
 #' @export
 #' @examples
-#' cox_mod <- proportional_hazards() %>%
-#'   set_engine("survival") %>%
+#' cox_mod <- proportional_hazards() |>
+#'   set_engine("survival") |>
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
@@ -130,8 +130,8 @@ get_missings_coxph <- function(object, new_data) {
 #' @keywords internal
 #' @export
 #' @examples
-#' cox_mod <- proportional_hazards() %>%
-#'   set_engine("survival") %>%
+#' cox_mod <- proportional_hazards() |>
+#'   set_engine("survival") |>
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_coxph <- function(
@@ -194,14 +194,14 @@ survival_prob_coxph <- function(
     ...
   )
 
-  res <- surv_fit %>%
+  res <- surv_fit |>
     survfit_summary_to_patched_tibble(
       index_missing = missings_in_new_data,
       eval_time = eval_time,
       n_obs = n_obs
-    ) %>%
-    keep_cols(output) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+    ) |>
+    keep_cols(output) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 
   res

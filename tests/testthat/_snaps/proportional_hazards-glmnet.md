@@ -93,8 +93,8 @@
 # protect certain glmnet engine args
 
     Code
-      proportional_hazards(penalty = 0.1) %>% set_engine("glmnet", family = "gaussian") %>%
-        fit(Surv(time, status) ~ age + sex, data = lung)
+      fit(set_engine(proportional_hazards(penalty = 0.1), "glmnet", family = "gaussian"),
+      Surv(time, status) ~ age + sex, data = lung)
     Condition
       Error:
       ! This argument cannot be used to create the model: `family`.

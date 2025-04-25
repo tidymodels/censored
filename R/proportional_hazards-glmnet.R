@@ -38,11 +38,11 @@ coxnet_train <- function(
   check_dots_coxnet(dots, call = call)
 
   encoding_info <-
-    parsnip::get_encoding("proportional_hazards") %>%
+    parsnip::get_encoding("proportional_hazards") |>
     dplyr::filter(mode == "censored regression", engine == "glmnet")
 
-  indicators <- encoding_info %>% dplyr::pull(predictor_indicators)
-  remove_intercept <- encoding_info %>% dplyr::pull(remove_intercept)
+  indicators <- encoding_info |> dplyr::pull(predictor_indicators)
+  remove_intercept <- encoding_info |> dplyr::pull(remove_intercept)
 
   formula_without_strata <- remove_strata(formula, data, call = call)
 
@@ -117,9 +117,9 @@ remove_strata <- function(formula, data, call = rlang::caller_env()) {
   }
 
   rhs <- formula[[3]]
-  formula[[3]] <- rhs %>%
-    drop_strata() %>%
-    check_intercept_model(call = call) %>%
+  formula[[3]] <- rhs |>
+    drop_strata() |>
+    check_intercept_model(call = call) |>
     check_strata_remaining(call = call)
   formula
 }
@@ -206,7 +206,7 @@ coxnet_prepare_x <- function(new_data, object) {
       composition = "matrix"
     )$x
   } else {
-    new_x <- new_data[, object$preproc$x_var, drop = FALSE] %>%
+    new_x <- new_data[, object$preproc$x_var, drop = FALSE] |>
       as.matrix()
   }
 
@@ -454,9 +454,9 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 
   # post-processing into nested tibble
   param_key <- tibble(group = colnames(pred), penalty = penalty)
-  pred <- pred %>%
-    as_tibble() %>%
-    dplyr::mutate(.row = seq_len(nrow(pred))) %>%
+  pred <- pred |>
+    as_tibble() |>
+    dplyr::mutate(.row = seq_len(nrow(pred))) |>
     tidyr::pivot_longer(
       -.row,
       names_to = "group",
@@ -467,10 +467,10 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
   } else {
     pred <- dplyr::inner_join(param_key, pred, by = "group")
   }
-  pred <- pred %>%
-    dplyr::select(-group) %>%
-    dplyr::arrange(.row, penalty) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+  pred <- pred |>
+    dplyr::select(-group) |>
+    dplyr::arrange(.row, penalty) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 }
 
@@ -488,8 +488,8 @@ multi_predict_coxnet_linear_pred <- function(object, new_data, opts, penalty) {
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("glmnet")
-#' cox_mod <- proportional_hazards(penalty = 0.1) %>%
-#'   set_engine("glmnet") %>%
+#' cox_mod <- proportional_hazards(penalty = 0.1) |>
+#'   set_engine("glmnet") |>
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
 survival_time_coxnet <- function(
@@ -537,8 +537,8 @@ survival_time_coxnet <- function(
           penalty = rep(penalty, each = n_obs),
           .pred_time = NA,
           .row = rep(seq_len(n_obs), times = n_penalty)
-        ) %>%
-          tidyr::nest(.pred = c(-.row)) %>%
+        ) |>
+          tidyr::nest(.pred = c(-.row)) |>
           dplyr::select(-.row)
       } else {
         ret <- rep(NA, n_missing)
@@ -567,7 +567,7 @@ survival_time_coxnet <- function(
       extract_patched_survival_time,
       missings_in_new_data,
       n_obs
-    ) %>%
+    ) |>
       purrr::list_c()
   } else {
     res <- extract_patched_survival_time(y, missings_in_new_data, n_obs)
@@ -578,8 +578,8 @@ survival_time_coxnet <- function(
       penalty = rep(penalty, each = n_obs),
       .pred_time = res,
       .row = rep(seq_len(n_obs), times = n_penalty)
-    ) %>%
-      tidyr::nest(.pred = c(-.row)) %>%
+    ) |>
+      tidyr::nest(.pred = c(-.row)) |>
       dplyr::select(-.row)
   }
 
@@ -631,8 +631,8 @@ get_missings_coxnet <- function(new_x, new_strata) {
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("glmnet")
-#' cox_mod <- proportional_hazards(penalty = 0.1) %>%
-#'   set_engine("glmnet") %>%
+#' cox_mod <- proportional_hazards(penalty = 0.1) |>
+#'   set_engine("glmnet") |>
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_coxnet <- function(
@@ -739,15 +739,15 @@ survival_prob_coxnet <- function(
     res_formatted <- tibble::tibble(
       penalty = penalty,
       res_patched = res_patched
-    ) %>%
-      tidyr::unnest(cols = res_patched) %>%
-      keep_cols(output, keep_penalty = TRUE) %>%
-      tidyr::nest(.pred = c(-.row)) %>%
+    ) |>
+      tidyr::unnest(cols = res_patched) |>
+      keep_cols(output, keep_penalty = TRUE) |>
+      tidyr::nest(.pred = c(-.row)) |>
       dplyr::select(-.row)
   } else {
-    res_formatted <- res_patched %>%
-      keep_cols(output) %>%
-      tidyr::nest(.pred = c(-.row)) %>%
+    res_formatted <- res_patched |>
+      keep_cols(output) |>
+      tidyr::nest(.pred = c(-.row)) |>
       dplyr::select(-.row)
   }
 

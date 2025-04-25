@@ -6,9 +6,9 @@ flexsurv_post <- function(pred, object) {
   # if there's only one observation in new_data,
   # flexsurv output isn't nested
   if (!(".pred" %in% names(pred))) {
-    pred <- pred %>%
-      dplyr::mutate(.row = seq_len(nrow(pred))) %>%
-      tidyr::nest(.by = .row) %>%
+    pred <- pred |>
+      dplyr::mutate(.row = seq_len(nrow(pred))) |>
+      tidyr::nest(.by = .row) |>
       dplyr::select(-.row)
   }
   pred
@@ -16,14 +16,14 @@ flexsurv_post <- function(pred, object) {
 
 flexsurv_rename_time <- function(pred) {
   if (".pred" %in% names(pred)) {
-    pred %>%
-      dplyr::rowwise() %>%
+    pred |>
+      dplyr::rowwise() |>
       dplyr::mutate(
         .pred = list(dplyr::rename(.pred, .eval_time = .time))
-      ) %>%
+      ) |>
       dplyr::ungroup()
   } else {
-    pred %>%
+    pred |>
       dplyr::rename(.eval_time = .time)
   }
 }

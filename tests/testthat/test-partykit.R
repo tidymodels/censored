@@ -4,9 +4,9 @@ test_that("survival_prob_partykit() works for ctree", {
 
   set.seed(1234)
   # use only ph.ecog to rule out surrogate splits
-  mod <- decision_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("partykit") %>%
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("partykit") |>
     fit(Surv(time, status) ~ ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
@@ -21,14 +21,14 @@ test_that("survival_prob_partykit() works for ctree", {
     summary,
     times = pred_time,
     extend = TRUE
-  ) %>%
+  ) |>
     combine_list_of_survfit_summary(eval_time = pred_time)
 
   prob <- survival_prob_partykit(
     mod,
     new_data = lung_pred,
     eval_time = pred_time
-  ) %>%
+  ) |>
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -49,14 +49,14 @@ test_that("survival_prob_partykit() works for ctree", {
     summary,
     times = pred_time,
     extend = TRUE
-  ) %>%
+  ) |>
     combine_list_of_survfit_summary(eval_time = pred_time)
 
   prob <- survival_prob_partykit(
     mod,
     new_data = lung_pred,
     eval_time = pred_time
-  ) %>%
+  ) |>
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -72,7 +72,7 @@ test_that("survival_prob_partykit() works for ctree", {
     mod,
     new_data = lung_pred,
     eval_time = pred_time
-  ) %>%
+  ) |>
     tidyr::unnest(cols = .pred)
 
   expect_true(all(!is.na(prob$.pred_survival)))
@@ -85,9 +85,9 @@ test_that("survival_prob_partykit() works for cforest", {
   # partykit::cforest takes care of missing values via some form of randomness
   # hence set the seed before predicting on data with missings
 
-  mod <- rand_forest() %>%
-    set_mode("censored regression") %>%
-    set_engine("partykit") %>%
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("partykit") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # time: combination of order, out-of-range, infinite
@@ -102,7 +102,7 @@ test_that("survival_prob_partykit() works for cforest", {
     summary,
     times = pred_time,
     extend = TRUE
-  ) %>%
+  ) |>
     combine_list_of_survfit_summary(eval_time = pred_time)
 
   set.seed(1234)
@@ -110,7 +110,7 @@ test_that("survival_prob_partykit() works for cforest", {
     mod,
     new_data = lung_pred,
     eval_time = pred_time
-  ) %>%
+  ) |>
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -132,7 +132,7 @@ test_that("survival_prob_partykit() works for cforest", {
     summary,
     times = pred_time,
     extend = TRUE
-  ) %>%
+  ) |>
     combine_list_of_survfit_summary(eval_time = pred_time)
 
   set.seed(1234)
@@ -140,7 +140,7 @@ test_that("survival_prob_partykit() works for cforest", {
     mod,
     new_data = lung_pred,
     eval_time = pred_time
-  ) %>%
+  ) |>
     tidyr::unnest(cols = .pred)
   exp_prob <- surv_fit_summary$surv
 
@@ -156,7 +156,7 @@ test_that("survival_prob_partykit() works for cforest", {
     mod,
     new_data = lung_pred,
     eval_time = pred_time
-  ) %>%
+  ) |>
     tidyr::unnest(cols = .pred)
 
   expect_true(all(!is.na(prob$.pred_survival)))

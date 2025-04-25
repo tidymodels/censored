@@ -23,9 +23,9 @@ A wrapper for survival probabilities with mboost models
 }
 \examples{
 \dontshow{if (rlang::is_installed("mboost")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-mod <- boost_tree() \%>\%
-  set_engine("mboost") \%>\%
-  set_mode("censored regression") \%>\%
+mod <- boost_tree() |>
+  set_engine("mboost") |>
+  set_mode("censored regression") |>
   fit(Surv(time, status) ~ ., data = lung)
 survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
 \dontshow{\}) # examplesIf}

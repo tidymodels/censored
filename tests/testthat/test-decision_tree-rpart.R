@@ -7,8 +7,8 @@ test_that("model object", {
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # formula method
-  cox_spec <- decision_tree() %>%
-    set_mode("censored regression") %>%
+  cox_spec <- decision_tree() |>
+    set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
   expect_no_error(
@@ -27,8 +27,8 @@ test_that("time predictions", {
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  cox_spec <- decision_tree() %>%
-    set_mode("censored regression") %>%
+  cox_spec <- decision_tree() |>
+    set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -55,8 +55,8 @@ test_that("survival predictions", {
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  cox_spec <- decision_tree() %>%
-    set_mode("censored regression") %>%
+  cox_spec <- decision_tree() |>
+    set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -113,8 +113,8 @@ test_that("survival predictions - error snapshot", {
   skip_if_not_installed("parsnip", minimum_version = "1.3.0")
   skip_if_not_installed("pec")
 
-  cox_spec <- decision_tree() %>%
-    set_mode("censored regression") %>%
+  cox_spec <- decision_tree() |>
+    set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -130,9 +130,9 @@ test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2, ]
 
-  mod <- decision_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("rpart") %>%
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
@@ -155,8 +155,8 @@ test_that("`fix_xy()` works", {
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
 
-  spec <- decision_tree() %>%
-    set_mode("censored regression") %>%
+  spec <- decision_tree() |>
+    set_mode("censored regression") |>
     set_engine("rpart")
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)

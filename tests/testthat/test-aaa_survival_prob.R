@@ -6,14 +6,14 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
   surv_fit <- survfit(mod, newdata = lung_pred)
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
@@ -22,14 +22,14 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
   surv_fit <- survfit(mod, newdata = lung_pred[1, ])
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
@@ -43,14 +43,14 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
   surv_fit <- survfit(mod, newdata = lung_pred)
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
@@ -59,14 +59,14 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
   surv_fit <- survfit(mod, newdata = lung_pred[1, ])
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
@@ -88,14 +88,14 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
   surv_fit <- survfit(mod, newx = lung_pred, s = 0.1, x = lung_x, y = lung_y)
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
@@ -110,14 +110,14 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
   )
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
@@ -149,14 +149,14 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
   )
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
@@ -172,14 +172,14 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
   )
 
   pred_time <- c(100, 200)
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
   expect_true(all(prob[1, ] > prob[2, ]))
 
   pred_time <- 100
-  surv_fit_summary <- summary(surv_fit, times = pred_time) %>%
+  surv_fit_summary <- summary(surv_fit, times = pred_time) |>
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
@@ -193,8 +193,8 @@ test_that("survfit_summary_patch_missings() works", {
   surv_fit <- survfit(mod, newdata = lung_pred)
   surv_fit_summary <- summary(surv_fit, times = pred_time, extend = TRUE)
 
-  surv_fit_summary_patched <- surv_fit_summary %>%
-    survfit_summary_typestable() %>%
+  surv_fit_summary_patched <- surv_fit_summary |>
+    survfit_summary_typestable() |>
     survfit_summary_patch_missings(
       eval_time = pred_time,
       index_missing = 2,

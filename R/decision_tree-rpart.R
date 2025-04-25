@@ -6,9 +6,9 @@
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("pec")
-#' mod <- decision_tree() %>%
-#'   set_mode("censored regression") %>%
-#'     set_engine("rpart") %>%
+#' mod <- decision_tree() |>
+#'   set_mode("censored regression") |>
+#'     set_engine("rpart") |>
 #'     fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_pecRpart(mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_pecRpart <- function(object, new_data, eval_time) {
@@ -29,8 +29,8 @@ survival_prob_pecRpart <- function(object, new_data, eval_time) {
     .row = rep(seq_len(n_obs), times = n_eval_time),
     .eval_time = rep(eval_time, each = n_obs),
     .pred_survival = as.numeric(pred)
-  ) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+  ) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 
   res

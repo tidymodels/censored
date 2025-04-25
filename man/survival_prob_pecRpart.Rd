@@ -21,9 +21,9 @@ A wrapper for survival probabilities with pecRpart models
 }
 \examples{
 \dontshow{if (rlang::is_installed("pec")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-mod <- decision_tree() \%>\%
-  set_mode("censored regression") \%>\%
-    set_engine("rpart") \%>\%
+mod <- decision_tree() |>
+  set_mode("censored regression") |>
+    set_engine("rpart") |>
     fit(Surv(time, status) ~ ., data = lung)
 survival_prob_pecRpart(mod, new_data = lung[1:3, ], eval_time = 300)
 \dontshow{\}) # examplesIf}

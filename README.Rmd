@@ -57,17 +57,17 @@ nope <- cli::symbol$cross
 
 mod_names <- get_from_env("models")
 model_info <-
-  map_dfr(mod_names, \(.x) get_from_env(paste0(.x, "_predict")) %>% mutate(model = .x))
+  map_dfr(mod_names, \(.x) get_from_env(paste0(.x, "_predict")) |> mutate(model = .x))
 
-model_info %>%
-  filter(mode == "censored regression") %>%
-  select(model, engine, mode, type) %>%
+model_info |>
+  filter(mode == "censored regression") |>
+  select(model, engine, mode, type) |>
   pivot_wider(
     names_from = type,
     values_from = mode,
     values_fill = nope,
     values_fn = function(x) yep
-  ) %>%
+  ) |>
   knitr::kable()
 ```
 

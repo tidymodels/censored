@@ -33,14 +33,14 @@ A wrapper for survival probabilities with partykit models
 }
 \examples{
 \dontshow{if (rlang::is_installed(c("partykit", "coin"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-tree <- decision_tree() \%>\%
-  set_mode("censored regression") \%>\%
-  set_engine("partykit") \%>\%
+tree <- decision_tree() |>
+  set_mode("censored regression") |>
+  set_engine("partykit") |>
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 survival_prob_partykit(tree, lung[1:3, ], eval_time = 100)
-forest <- rand_forest() \%>\%
-  set_mode("censored regression") \%>\%
-  set_engine("partykit") \%>\%
+forest <- rand_forest() |>
+  set_mode("censored regression") |>
+  set_engine("partykit") |>
   fit(Surv(time, status) ~ age + ph.ecog, data = lung[1:100, ])
 survival_prob_partykit(forest, lung[1:3, ], eval_time = 100)
 \dontshow{\}) # examplesIf}

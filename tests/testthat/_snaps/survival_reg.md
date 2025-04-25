@@ -1,7 +1,7 @@
 # arguments
 
     Code
-      translate_args(basic %>% set_engine("flexsurv"))
+      translate_args(set_engine(basic, "flexsurv"))
     Output
       $formula
       missing_arg()
@@ -16,7 +16,7 @@
 ---
 
     Code
-      translate_args(basic %>% set_engine("flexsurv", cl = 0.99))
+      translate_args(set_engine(basic, "flexsurv", cl = 0.99))
     Output
       $formula
       missing_arg()
@@ -36,7 +36,7 @@
 ---
 
     Code
-      translate_args(normal %>% set_engine("flexsurv"))
+      translate_args(set_engine(normal, "flexsurv"))
     Output
       $formula
       missing_arg()
@@ -56,7 +56,7 @@
 ---
 
     Code
-      translate_args(dist_v %>% set_engine("flexsurv"))
+      translate_args(set_engine(dist_v, "flexsurv"))
     Output
       $formula
       missing_arg()

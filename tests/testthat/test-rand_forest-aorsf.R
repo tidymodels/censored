@@ -12,8 +12,8 @@ test_that("model object", {
   )
 
   # formula method
-  mod_spec <- rand_forest() %>%
-    set_engine("aorsf") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("aorsf") |>
     set_mode("censored regression")
 
   set.seed(1234)
@@ -51,8 +51,8 @@ test_that("time predictions", {
     na_action = "pass"
   )
 
-  mod_spec <- rand_forest() %>%
-    set_engine("aorsf") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("aorsf") |>
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
@@ -81,8 +81,8 @@ test_that("survival predictions", {
     formula = Surv(time, status) ~ age + ph.ecog
   )
 
-  mod_spec <- rand_forest() %>%
-    set_engine("aorsf") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("aorsf") |>
     set_mode("censored regression")
 
   set.seed(1234)
@@ -213,8 +213,8 @@ test_that("survival predictions - error snapshot", {
 
   lung_orsf <- na.omit(lung)
 
-  mod_spec <- rand_forest() %>%
-    set_engine("aorsf") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("aorsf") |>
     set_mode("censored regression")
 
   set.seed(1234)
@@ -232,9 +232,9 @@ test_that("can predict for out-of-domain timepoints", {
   obs_without_NA <- lung[2, ]
   lung_orsf <- na.omit(lung)
 
-  mod <- rand_forest() %>%
-    set_mode("censored regression") %>%
-    set_engine("aorsf") %>%
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
     fit(Surv(time, status) ~ ., data = lung_orsf)
 
   expect_no_error(
@@ -258,8 +258,8 @@ test_that("`fix_xy()` works", {
   lung_y <- Surv(lung_orsf$time, lung_orsf$status)
   lung_pred <- lung_orsf[1:5, ]
 
-  spec <- rand_forest() %>%
-    set_engine("aorsf") %>%
+  spec <- rand_forest() |>
+    set_engine("aorsf") |>
     set_mode("censored regression")
   set.seed(1)
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung_orsf)
@@ -308,9 +308,9 @@ test_that("can handle case weights", {
   dat <- make_cens_wts()
 
   expect_no_error(
-      wt_fit <- rand_forest() %>%
-        set_engine("aorsf") %>%
-        set_mode("censored regression") %>%
+      wt_fit <- rand_forest() |>
+        set_engine("aorsf") |>
+        set_mode("censored regression") |>
         fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
     )
 

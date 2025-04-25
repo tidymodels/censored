@@ -19,9 +19,9 @@ A wrapper for mean survival times with \code{mboost} models
 }
 \examples{
 \dontshow{if (rlang::is_installed("mboost")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-boosted_tree <- boost_tree() \%>\%
-  set_engine("mboost") \%>\%
-  set_mode("censored regression") \%>\%
+boosted_tree <- boost_tree() |>
+  set_engine("mboost") |>
+  set_mode("censored regression") |>
   fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
 survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 \dontshow{\}) # examplesIf}

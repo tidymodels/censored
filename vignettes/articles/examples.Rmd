@@ -41,8 +41,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   bt_spec <- 
-    bag_tree(cost_complexity = 0) %>%
-    set_engine("rpart") %>% 
+    bag_tree(cost_complexity = 0) |>
+    set_engine("rpart") |> 
     set_mode("censored regression") 
   bt_spec
   ```
@@ -51,7 +51,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  bt_fit <- bt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  bt_fit <- bt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   bt_fit
   ```
 
@@ -63,8 +63,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival", 
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(bt_fit, lung_test, type = "time")
   ```
@@ -87,8 +87,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   bt_spec <- 
-    boost_tree(trees = 15) %>%
-    set_engine("mboost") %>% 
+    boost_tree(trees = 15) |>
+    set_engine("mboost") |> 
     set_mode("censored regression") 
   bt_spec
   ```
@@ -97,7 +97,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  bt_fit <- bt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  bt_fit <- bt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   bt_fit
   ```
 
@@ -109,8 +109,8 @@ The following examples use the same data set throughout.
     lung_test,
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(bt_fit, lung_test, type = "linear_pred")
   ```
@@ -133,8 +133,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   dt_spec <- 
-    decision_tree(cost_complexity = 0) %>%
-    set_engine("rpart") %>% 
+    decision_tree(cost_complexity = 0) |>
+    set_engine("rpart") |> 
     set_mode("censored regression") 
   dt_spec
   ```
@@ -143,7 +143,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  dt_fit <- dt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  dt_fit <- dt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   dt_fit
   ```
 
@@ -155,8 +155,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(dt_fit, lung_test, type = "time")
   ```
@@ -176,8 +176,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   dt_spec <- 
-    decision_tree() %>%
-    set_engine("partykit") %>% 
+    decision_tree() |>
+    set_engine("partykit") |> 
     set_mode("censored regression") 
   dt_spec
   ```
@@ -186,7 +186,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  dt_fit <- dt_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  dt_fit <- dt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   dt_fit
   ```
 
@@ -198,8 +198,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(dt_fit, lung_test, type = "time")
   ```
@@ -222,8 +222,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   ph_spec <- 
-    proportional_hazards() %>%
-    set_engine("survival") %>% 
+    proportional_hazards() |>
+    set_engine("survival") |> 
     set_mode("censored regression") 
   ph_spec
   ```
@@ -232,7 +232,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  ph_fit <- ph_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  ph_fit <- ph_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   ph_fit
   ```
 
@@ -244,8 +244,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(ph_fit, lung_test, type = "linear_pred")
   predict(ph_fit, lung_test, type = "time")
@@ -266,8 +266,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   ph_spec <- 
-    proportional_hazards(penalty = 0.1) %>%
-    set_engine("glmnet") %>% 
+    proportional_hazards(penalty = 0.1) |>
+    set_engine("glmnet") |> 
     set_mode("censored regression") 
   ph_spec
   ```
@@ -276,7 +276,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  ph_fit <- ph_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  ph_fit <- ph_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   ph_fit
   ```
 
@@ -288,8 +288,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(ph_fit, lung_test, type = "linear_pred")
   ```
@@ -312,8 +312,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   rf_spec <- 
-    rand_forest(trees = 200) %>%
-    set_engine("partykit") %>% 
+    rand_forest(trees = 200) |>
+    set_engine("partykit") |> 
     set_mode("censored regression") 
   rf_spec
   ```
@@ -322,7 +322,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  rf_fit <- rf_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  rf_fit <- rf_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   rf_fit
   ```
 
@@ -334,8 +334,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival", 
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(rf_fit, lung_test, type = "time")
   ```
@@ -355,8 +355,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   rf_spec <- 
-    rand_forest(trees = 200) %>%
-    set_engine("aorsf") %>% 
+    rand_forest(trees = 200) |>
+    set_engine("aorsf") |> 
     set_mode("censored regression") 
   rf_spec
   ```
@@ -366,7 +366,7 @@ The following examples use the same data set throughout.
   ```{r}
   set.seed(1)
 
-  rf_fit <- rf_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  rf_fit <- rf_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   rf_fit
   ```
 
@@ -378,8 +378,8 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival", 
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(rf_fit, lung_test, type = "time")
   ```
@@ -401,8 +401,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   sr_spec <- 
-    survival_reg(dist = "weibull") %>%
-    set_engine("survival") %>% 
+    survival_reg(dist = "weibull") |>
+    set_engine("survival") |> 
     set_mode("censored regression") 
   sr_spec
   ```
@@ -411,7 +411,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  sr_fit <- sr_spec %>% fit(Surv(time, status) ~ ., data = lung_train)
+  sr_fit <- sr_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   sr_fit
   ```
 
@@ -423,14 +423,14 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
   predict(sr_fit, lung_test, type = "linear_pred")
   predict(sr_fit, lung_test, type = "quantile")
-  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
-    slice(1) %>% 
+  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   ```
   
@@ -449,8 +449,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   sr_spec <- 
-    survival_reg(dist = "weibull") %>%
-    set_engine("flexsurv") %>% 
+    survival_reg(dist = "weibull") |>
+    set_engine("flexsurv") |> 
     set_mode("censored regression") 
   sr_spec
   ```
@@ -459,7 +459,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  sr_fit <- sr_spec %>% 
+  sr_fit <- sr_spec |> 
     fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
   sr_fit
   ```
@@ -472,14 +472,14 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
   predict(sr_fit, lung_test, type = "linear_pred")
   predict(sr_fit, lung_test, type = "quantile")
-  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
-    slice(1) %>% 
+  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   ```
   
@@ -498,8 +498,8 @@ The following examples use the same data set throughout.
   
   ```{r}
   sr_spec <- 
-    survival_reg() %>%
-    set_engine("flexsurvspline") %>% 
+    survival_reg() |>
+    set_engine("flexsurvspline") |> 
     set_mode("censored regression") 
   sr_spec
   ```
@@ -508,7 +508,7 @@ The following examples use the same data set throughout.
   
   ```{r}
   set.seed(1)
-  sr_fit <- sr_spec %>% 
+  sr_fit <- sr_spec |> 
     fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
   sr_fit
   ```
@@ -521,14 +521,14 @@ The following examples use the same data set throughout.
     lung_test, 
     type = "survival",
     eval_time = c(100, 500, 1000)
-  ) %>% 
-    slice(1) %>% 
+  ) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   predict(sr_fit, lung_test, type = "time")
   predict(sr_fit, lung_test, type = "linear_pred")
   predict(sr_fit, lung_test, type = "quantile")
-  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) %>% 
-    slice(1) %>% 
+  predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) |> 
+    slice(1) |> 
     tidyr::unnest(col = .pred)
   ```
   

@@ -131,9 +131,9 @@ predict_linear_pred._blackboost <- function(
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("mboost")
-#' mod <- boost_tree() %>%
-#'   set_engine("mboost") %>%
-#'   set_mode("censored regression") %>%
+#' mod <- boost_tree() |>
+#'   set_engine("mboost") |>
+#'   set_mode("censored regression") |>
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_mboost(mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_mboost <- function(
@@ -171,8 +171,8 @@ survival_prob_mboost <- function(
     .row = rep(seq_len(n_obs), each = length(eval_time)),
     .eval_time = rep(eval_time, times = n_obs),
     .pred_survival = as.vector(survival_prob)
-  ) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+  ) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 
   ret
@@ -203,9 +203,9 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("mboost")
-#' boosted_tree <- boost_tree() %>%
-#'   set_engine("mboost") %>%
-#'   set_mode("censored regression") %>%
+#' boosted_tree <- boost_tree() |>
+#'   set_engine("mboost") |>
+#'   set_mode("censored regression") |>
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
 #' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 survival_time_mboost <- function(object, new_data) {
@@ -219,19 +219,19 @@ survival_time_mboost <- function(object, new_data) {
 
   stacked_survfit <- stack_survfit(y, n = nrow(new_data))
 
-  starting_rows <- stacked_survfit %>%
-    dplyr::distinct(.row) %>%
+  starting_rows <- stacked_survfit |>
+    dplyr::distinct(.row) |>
     dplyr::bind_cols(prob_template)
 
-  res <- dplyr::bind_rows(starting_rows, stacked_survfit) %>%
-    dplyr::group_by(.row) %>%
+  res <- dplyr::bind_rows(starting_rows, stacked_survfit) |>
+    dplyr::group_by(.row) |>
     dplyr::mutate(
       next_event_time = dplyr::lead(.time),
       time_interval = next_event_time - .time,
       sum_component = time_interval * .pred_survival
-    ) %>%
-    dplyr::summarize(.pred_time = sum(sum_component, na.rm = TRUE)) %>%
-    dplyr::ungroup() %>%
+    ) |>
+    dplyr::summarize(.pred_time = sum(sum_component, na.rm = TRUE)) |>
+    dplyr::ungroup() |>
     dplyr::select(.pred_time)
 
   res

@@ -10,14 +10,14 @@
 #' @export
 #' @keywords internal
 #' @examplesIf rlang::is_installed(c("partykit", "coin"))
-#' tree <- decision_tree() %>%
-#'   set_mode("censored regression") %>%
-#'   set_engine("partykit") %>%
+#' tree <- decision_tree() |>
+#'   set_mode("censored regression") |>
+#'   set_engine("partykit") |>
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 #' survival_prob_partykit(tree, lung[1:3, ], eval_time = 100)
-#' forest <- rand_forest() %>%
-#'   set_mode("censored regression") %>%
-#'   set_engine("partykit") %>%
+#' forest <- rand_forest() |>
+#'   set_mode("censored regression") |>
+#'   set_engine("partykit") |>
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung[1:100, ])
 #' survival_prob_partykit(forest, lung[1:3, ], eval_time = 100)
 survival_prob_partykit <- function(
@@ -69,10 +69,10 @@ survival_prob_partykit <- function(
     index_missing = missings_in_new_data,
     eval_time = eval_time,
     n_obs = n_obs
-  ) %>%
-    survfit_summary_to_tibble(eval_time = eval_time, n_obs = n_obs) %>%
-    keep_cols(output) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+  ) |>
+    survfit_summary_to_tibble(eval_time = eval_time, n_obs = n_obs) |>
+    keep_cols(output) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 
   res

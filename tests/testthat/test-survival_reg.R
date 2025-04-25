@@ -6,10 +6,10 @@ test_that("arguments", {
   normal <- survival_reg(dist = "lnorm")
   dist_v <- survival_reg(dist = tune())
 
-  expect_snapshot(translate_args(basic %>% set_engine("flexsurv")))
-  expect_snapshot(translate_args(basic %>% set_engine("flexsurv", cl = .99)))
-  expect_snapshot(translate_args(normal %>% set_engine("flexsurv")))
-  expect_snapshot(translate_args(dist_v %>% set_engine("flexsurv")))
+  expect_snapshot(translate_args(basic |> set_engine("flexsurv")))
+  expect_snapshot(translate_args(basic |> set_engine("flexsurv", cl = .99)))
+  expect_snapshot(translate_args(normal |> set_engine("flexsurv")))
+  expect_snapshot(translate_args(dist_v |> set_engine("flexsurv")))
 })
 
 test_that("check_args() works", {
