@@ -37,7 +37,6 @@
 
 ## usethis namespace: start
 #' @importFrom dials parameters
-#' @importFrom dplyr %>%
 #' @importFrom generics fit fit_xy
 #' @importFrom hardhat tune
 #' @importFrom lifecycle deprecated
