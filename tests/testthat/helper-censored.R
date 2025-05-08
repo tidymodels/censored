@@ -11,8 +11,8 @@ clear_quosure_environment <- function(x) {
 # a helper to express the idiom of translating, subsetting out the
 # generated args, and snapshotting them
 translate_args <- function(x) {
-  x %>%
-    translate() %>%
-    purrr::pluck("method", "fit", "args") %>%
+  x |>
+    translate() |>
+    purrr::pluck("method", "fit", "args") |>
     purrr::map(clear_quosure_environment)
 }

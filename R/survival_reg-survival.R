@@ -89,8 +89,8 @@ survreg_survival <- function(location, object, scale, eval_time, ...) {
 #' @keywords internal
 #' @export
 #' @examples
-#' mod <- survival_reg() %>%
-#'   set_engine("survival") %>%
+#' mod <- survival_reg() |>
+#'   set_engine("survival") |>
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_survreg(mod, lung[1:3, ], eval_time = 100)
 #' hazard_survreg(mod, lung[1:3, ], eval_time = 100)

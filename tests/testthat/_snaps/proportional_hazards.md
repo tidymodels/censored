@@ -22,7 +22,7 @@
 ---
 
     Code
-      translate_args(penalty %>% set_engine("glmnet"))
+      translate_args(set_engine(penalty, "glmnet"))
     Output
       $formula
       missing_arg()
@@ -37,7 +37,7 @@
 ---
 
     Code
-      translate_args(penalty %>% set_engine("glmnet", path_values = 4:2))
+      translate_args(set_engine(penalty, "glmnet", path_values = 4:2))
     Output
       $formula
       missing_arg()
@@ -57,7 +57,7 @@
 ---
 
     Code
-      translate_args(mixture %>% set_engine("glmnet"))
+      translate_args(set_engine(mixture, "glmnet"))
     Output
       $formula
       missing_arg()
@@ -77,7 +77,7 @@
 ---
 
     Code
-      translate_args(mixture_v %>% set_engine("glmnet"))
+      translate_args(set_engine(mixture_v, "glmnet"))
     Output
       $formula
       missing_arg()

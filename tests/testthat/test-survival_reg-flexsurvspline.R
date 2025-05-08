@@ -10,8 +10,8 @@ test_that("model object", {
     k = 1
   )
 
-  mod_spec <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
+  mod_spec <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -39,8 +39,8 @@ test_that("time prediction", {
   )
   exp_pred <- predict(exp_fit, head(lung), type = "response")
 
-  f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
+  f_fit <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
     fit(Surv(time, status) ~ age, data = lung)
   f_pred <- predict(f_fit, head(lung), type = "time")
 
@@ -68,16 +68,16 @@ test_that("survival probability prediction", {
     times = c(0, 500, 1000)
   )
   if (packageVersion("flexsurv") < "2.3") {
-    exp_pred <- exp_pred %>%
-      dplyr::rowwise() %>%
+    exp_pred <- exp_pred |>
+      dplyr::rowwise() |>
       dplyr::mutate(
         .pred = list(dplyr::rename(.pred, .eval_time = .time))
-      ) %>%
+      ) |>
       dplyr::ungroup()
   }
 
-  f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
+  f_fit <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   # snapshot test this here instead of parsnip because
@@ -145,7 +145,7 @@ test_that("survival probability prediction", {
 test_that("survival probabilities for single eval time point", {
   skip_if_not_installed("flexsurv")
 
-  f_fit <- survival_reg(engine = "flexsurvspline") %>%
+  f_fit <- survival_reg(engine = "flexsurvspline") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   pred <- predict(f_fit, lung[1:3, ], type = "survival", eval_time = 100)
@@ -172,9 +172,9 @@ test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2, ]
 
-  mod <- survival_reg() %>%
-    set_mode("censored regression") %>%
-    set_engine("flexsurvspline") %>%
+  mod <- survival_reg() |>
+    set_mode("censored regression") |>
+    set_engine("flexsurvspline") |>
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
@@ -200,8 +200,8 @@ test_that("can predict for out-of-domain timepoints", {
 test_that("linear predictor", {
   skip_if_not_installed("flexsurv")
 
-  f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
+  f_fit <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
     fit(Surv(time, status) ~ age + sex, data = lung)
   f_pred <- predict(f_fit, lung[1:5, ], type = "linear_pred")
 
@@ -228,9 +228,9 @@ test_that("quantile predictions", {
   skip_if_not_installed("flexsurv")
 
   set.seed(1)
-  fit_s <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
-    set_mode("censored regression") %>%
+  fit_s <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
+    set_mode("censored regression") |>
     fit(Surv(stop, event) ~ rx + size + enum, data = bladder)
   pred <- predict(fit_s, new_data = bladder[1:3, ], type = "quantile")
 
@@ -305,16 +305,16 @@ test_that("hazard prediction", {
     times = c(0, 500, 1000)
   )
   if (packageVersion("flexsurv") < "2.3") {
-    exp_pred <- exp_pred %>%
-      dplyr::rowwise() %>%
+    exp_pred <- exp_pred |>
+      dplyr::rowwise() |>
       dplyr::mutate(
         .pred = list(dplyr::rename(.pred, .eval_time = .time))
-      ) %>%
+      ) |>
       dplyr::ungroup()
   }
 
-  f_fit <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
+  f_fit <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   # snapshot test this here instead of parsnip because
@@ -362,7 +362,7 @@ test_that("hazard prediction", {
 test_that("hazard for single eval time point", {
   skip_if_not_installed("flexsurv")
 
-  f_fit <- survival_reg(engine = "flexsurvspline") %>%
+  f_fit <- survival_reg(engine = "flexsurvspline") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   pred <- predict(f_fit, lung[1:3, ], type = "hazard", eval_time = 100)
@@ -393,8 +393,8 @@ test_that("`fix_xy()` works", {
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
 
-  spec <- survival_reg() %>%
-    set_engine("flexsurvspline", k = 1) %>%
+  spec <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
     set_mode("censored regression")
   set.seed(1)
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -477,18 +477,18 @@ test_that("can handle case weights", {
   wts <- importance_weights(wts)
 
   expect_no_error(
-    wt_fit <- survival_reg() %>%
-      set_engine("flexsurvspline", k = 1) %>%
-      set_mode("censored regression") %>%
-      fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) %>%
+    wt_fit <- survival_reg() |>
+      set_engine("flexsurvspline", k = 1) |>
+      set_mode("censored regression") |>
+      fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) |>
       suppressWarnings()
   )
 
   unwt_fit <-
-    survival_reg() %>%
-    set_engine("flexsurvspline") %>%
-    set_mode("censored regression") %>%
-    fit(Surv(time, status) ~ age + sex, data = lung) %>%
+    survival_reg() |>
+    set_engine("flexsurvspline") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, status) ~ age + sex, data = lung) |>
     suppressWarnings()
 
   expect_snapshot(wt_fit$fit$call)

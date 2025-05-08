@@ -11,8 +11,8 @@ test_that("model object", {
   )
 
   # formula method
-  cox_spec <- boost_tree() %>%
-    set_engine("mboost") %>%
+  cox_spec <- boost_tree() |>
+    set_engine("mboost") |>
     set_mode("censored regression")
   expect_no_error(
     f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
@@ -31,8 +31,8 @@ test_that("model object", {
 test_that("time predictions", {
   skip_if_not_installed("mboost")
 
-  cox_spec <- boost_tree() %>%
-    set_engine("mboost") %>%
+  cox_spec <- boost_tree() |>
+    set_engine("mboost") |>
     set_mode("censored regression")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
@@ -63,8 +63,8 @@ test_that("survival predictions", {
     data = lung,
     family = mboost::CoxPH()
   )
-  cox_spec <- boost_tree() %>%
-    set_engine("mboost") %>%
+  cox_spec <- boost_tree() |>
+    set_engine("mboost") |>
     set_mode("censored regression")
   set.seed(403)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -109,8 +109,8 @@ test_that("survival predictions - error snapshot", {
   skip_if_not_installed("parsnip", minimum_version = "1.3.0")
   skip_if_not_installed("mboost")
 
-  cox_spec <- boost_tree() %>%
-    set_engine("mboost") %>%
+  cox_spec <- boost_tree() |>
+    set_engine("mboost") |>
     set_mode("censored regression")
   set.seed(403)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -169,7 +169,7 @@ test_that("survival_curve_to_prob() works", {
 
   expect_equal(prob[-3, ], exp_prob[-3, ])
   expect_equal(
-    prob[3, ] %>% unname(),
+    prob[3, ] |> unname(),
     rep(0, nrow(lung_pred))
   )
 })
@@ -178,9 +178,9 @@ test_that("survival_prob_mboost() works", {
   skip_if_not_installed("mboost")
 
   lung2 <- lung[-14, ]
-  mod <- boost_tree() %>%
-    set_engine("mboost") %>%
-    set_mode("censored regression") %>%
+  mod <- boost_tree() |>
+    set_engine("mboost") |>
+    set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # can handle missings
@@ -208,9 +208,9 @@ test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[c(2, 4), ] # two observations because of https://github.com/boost-R/mboost/issues/117
 
-  mod <- boost_tree() %>%
-    set_mode("censored regression") %>%
-    set_engine("mboost") %>%
+  mod <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
@@ -234,8 +234,8 @@ test_that("linear_pred predictions", {
     data = lung2,
     family = mboost::CoxPH()
   )
-  cox_spec <- boost_tree() %>%
-    set_engine("mboost") %>%
+  cox_spec <- boost_tree() |>
+    set_engine("mboost") |>
     set_mode("censored regression")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
@@ -271,8 +271,8 @@ test_that("`fix_xy()` works", {
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
 
-  spec <- boost_tree() %>%
-    set_engine("mboost") %>%
+  spec <- boost_tree() |>
+    set_engine("mboost") |>
     set_mode("censored regression")
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)

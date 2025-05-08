@@ -84,7 +84,7 @@ predict_survival_na <- function(eval_time, interval = "none", penalty = NULL) {
   }
 
   if (interval == "confidence") {
-    ret <- ret %>%
+    ret <- ret |>
       dplyr::mutate(.pred_lower = NA_real_, .pred_upper = NA_real_)
   }
 
@@ -167,14 +167,14 @@ survfit_summary_to_patched_tibble <- function(
   eval_time,
   n_obs
 ) {
-  object %>%
-    summary(times = eval_time, extend = TRUE) %>%
-    survfit_summary_typestable() %>%
+  object |>
+    summary(times = eval_time, extend = TRUE) |>
+    survfit_summary_typestable() |>
     survfit_summary_patch_missings(
       index_missing = index_missing,
       eval_time = eval_time,
       n_obs = n_obs
-    ) %>%
+    ) |>
     survfit_summary_to_tibble(eval_time = eval_time, n_obs = n_obs)
 }
 
@@ -184,8 +184,8 @@ combine_list_of_survfit_summary <- function(object, eval_time) {
 
   ret <- list()
   for (i in elements) {
-    ret[[i]] <- purrr::map(object, purrr::pluck, i) %>%
-      unlist() %>%
+    ret[[i]] <- purrr::map(object, purrr::pluck, i) |>
+      unlist() |>
       matrix(nrow = n_time)
   }
 
@@ -193,8 +193,8 @@ combine_list_of_survfit_summary <- function(object, eval_time) {
 }
 
 survfit_summary_patch <- function(object, index_missing, eval_time, n_obs) {
-  object %>%
-    survfit_summary_typestable() %>%
+  object |>
+    survfit_summary_typestable() |>
     survfit_summary_patch_missings(
       index_missing = index_missing,
       eval_time = eval_time,

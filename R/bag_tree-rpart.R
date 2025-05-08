@@ -5,9 +5,9 @@
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("ipred")
-#' bagged_tree <- bag_tree() %>%
-#'   set_engine("rpart") %>%
-#'   set_mode("censored regression") %>%
+#' bagged_tree <- bag_tree() |>
+#'   set_engine("rpart") |>
+#'   set_mode("censored regression") |>
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 #' survival_time_survbagg(bagged_tree, lung[1:3, ])
 survival_time_survbagg <- function(object, new_data) {
@@ -64,9 +64,9 @@ get_missings_survbagg <- function(object, new_data) {
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("ipred")
-#' bagged_tree <- bag_tree() %>%
-#'   set_engine("rpart") %>%
-#'   set_mode("censored regression") %>%
+#' bagged_tree <- bag_tree() |>
+#'   set_engine("rpart") |>
+#'   set_mode("censored regression") |>
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 #' survival_prob_survbagg(bagged_tree, lung[1:3, ], eval_time = 100)
 survival_prob_survbagg <- function(
@@ -128,10 +128,10 @@ survival_prob_survbagg <- function(
     index_missing = missings_in_new_data,
     eval_time = eval_time,
     n_obs = n_obs
-  ) %>%
-    survfit_summary_to_tibble(eval_time = eval_time, n_obs = n_obs) %>%
-    keep_cols(output) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+  ) |>
+    survfit_summary_to_tibble(eval_time = eval_time, n_obs = n_obs) |>
+    keep_cols(output) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 
   res

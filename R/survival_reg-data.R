@@ -295,8 +295,8 @@ make_survival_reg_flexsurv <- function() {
         location_index <- which(object$fit$dlist$pars == location_name)
         transformation <- object$fit$dlist$transforms[[location_index]]
 
-        results %>%
-          dplyr::mutate(.pred_linear_pred = transformation(.pred_link)) %>%
+        results |>
+          dplyr::mutate(.pred_linear_pred = transformation(.pred_link)) |>
           dplyr::select(.pred_linear_pred)
       },
       func = c(fun = "predict"),
@@ -447,8 +447,8 @@ make_survival_reg_flexsurvspline <- function() {
         location_index <- which(object$fit$dlist$pars == location_name)
         transformation <- object$fit$dlist$transforms[[location_index]]
 
-        results %>%
-          dplyr::mutate(.pred_linear_pred = transformation(.pred_link)) %>%
+        results |>
+          dplyr::mutate(.pred_linear_pred = transformation(.pred_link)) |>
           dplyr::select(.pred_linear_pred)
       },
       func = c(fun = "predict"),

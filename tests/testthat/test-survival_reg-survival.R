@@ -8,8 +8,8 @@ test_that("model object", {
     model = TRUE
   )
 
-  mod_spec <- survival_reg() %>%
-    set_engine("survival") %>%
+  mod_spec <- survival_reg() |>
+    set_engine("survival") |>
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -29,8 +29,8 @@ test_that("model object", {
 # prediction: time --------------------------------------------------------
 
 test_that("survival time prediction", {
-  res <- survival_reg() %>%
-    set_engine("survival") %>%
+  res <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   exp_pred <- predict(res$fit, head(lung))
@@ -46,8 +46,8 @@ test_that("survival time prediction", {
 
 test_that("survival probability prediction", {
   rms_surv <- readRDS(test_path("data", "rms_surv.rds"))
-  res <- survival_reg() %>%
-    set_engine("survival") %>%
+  res <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   # snapshot test this here instead of parsnip because
@@ -62,8 +62,8 @@ test_that("survival probability prediction", {
     type = "survival",
     eval_time = c(0, 500, 1000)
   )
-  exp_pred_vert <- exp_pred %>%
-    dplyr::mutate(.patient = dplyr::row_number()) %>%
+  exp_pred_vert <- exp_pred |>
+    dplyr::mutate(.patient = dplyr::row_number()) |>
     tidyr::unnest(cols = .pred)
 
   expect_true(all(names(exp_pred) == ".pred"))
@@ -93,9 +93,9 @@ test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2, ]
 
-  mod <- survival_reg() %>%
-    set_mode("censored regression") %>%
-    set_engine("survival") %>%
+  mod <- survival_reg() |>
+    set_mode("censored regression") |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
@@ -119,8 +119,8 @@ test_that("can predict for out-of-domain timepoints", {
 # prediction: linear_pred -------------------------------------------------
 
 test_that("linear predictor", {
-  f_fit <- survival_reg() %>%
-    set_engine("survival") %>%
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
   f_pred <- predict(f_fit, lung[1:5, ], type = "linear_pred")
 
@@ -141,8 +141,8 @@ test_that("linear predictor", {
 # prediction: quantile ----------------------------------------------------
 
 test_that("prediction of survival time quantile", {
-  res <- survival_reg() %>%
-    set_engine("survival") %>%
+  res <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   exp_quant <- predict(res$fit, head(lung), p = (2:4) / 5, type = "quantile")
@@ -187,8 +187,8 @@ test_that("prediction of survival time quantile", {
 
 test_that("survival hazard prediction", {
   rms_haz <- readRDS(test_path("data", "rms_haz.rds"))
-  res <- survival_reg() %>%
-    set_engine("survival") %>%
+  res <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
 
   # snapshot test this here instead of parsnip because
@@ -203,8 +203,8 @@ test_that("survival hazard prediction", {
     type = "hazard",
     eval_time = c(0, 500, 1000)
   )
-  exp_pred_vert <- exp_pred %>%
-    dplyr::mutate(.patient = dplyr::row_number()) %>%
+  exp_pred_vert <- exp_pred |>
+    dplyr::mutate(.patient = dplyr::row_number()) |>
     tidyr::unnest(cols = .pred)
 
   expect_true(all(names(exp_pred) == ".pred"))
@@ -232,8 +232,8 @@ test_that("`fix_xy()` works", {
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
 
-  spec <- survival_reg() %>%
-    set_engine("survival") %>%
+  spec <- survival_reg() |>
+    set_engine("survival") |>
     set_mode("censored regression")
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
@@ -298,8 +298,8 @@ test_that("`fix_xy()` works", {
 # deprecation of time arg -------------------------------------------------
 
 test_that("deprecation of `time` arg for type 'survival'", {
-  f_fit <- survival_reg() %>%
-    set_engine("survival") %>%
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
   exp_pred <- predict(
     f_fit,
@@ -320,8 +320,8 @@ test_that("deprecation of `time` arg for type 'survival'", {
 })
 
 test_that("deprecation of `time` arg for type 'hazard'", {
-  f_fit <- survival_reg() %>%
-    set_engine("survival") %>%
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
     fit(Surv(time, status) ~ age + sex, data = lung)
   exp_pred <- predict(
     f_fit,

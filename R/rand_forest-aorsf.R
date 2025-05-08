@@ -9,9 +9,9 @@
 #' @keywords internal
 #' @name aorsf_internal
 #' @examplesIf rlang::is_installed("aorsf")
-#' mod <- rand_forest() %>%
-#'   set_engine("aorsf") %>%
-#'   set_mode("censored regression") %>%
+#' mod <- rand_forest() |>
+#'   set_engine("aorsf") |>
+#'   set_mode("censored regression") |>
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
 #' preds <- survival_prob_orsf(mod, lung[1:3, ], eval_time = c(250, 100))
 survival_prob_orsf <- function(
@@ -50,8 +50,8 @@ survival_prob_orsf <- function(
     .row = rep(seq_len(n_obs), times = n_eval_time),
     .eval_time = rep(eval_time, each = n_obs),
     .pred_survival = as.numeric(pred)
-  ) %>%
-    tidyr::nest(.pred = c(-.row)) %>%
+  ) |>
+    tidyr::nest(.pred = c(-.row)) |>
     dplyr::select(-.row)
 
   res

@@ -11,8 +11,8 @@ test_that("model object", {
   )
 
   # formula method
-  mod_spec <- rand_forest() %>%
-    set_engine("partykit") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("partykit") |>
     set_mode("censored regression")
   set.seed(1234)
   expect_no_error(
@@ -44,8 +44,8 @@ test_that("time predictions", {
     data = lung
   )
 
-  mod_spec <- rand_forest() %>%
-    set_engine("partykit") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("partykit") |>
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -78,8 +78,8 @@ test_that("survival predictions", {
     data = lung
   )
 
-  mod_spec <- rand_forest() %>%
-    set_engine("partykit") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("partykit") |>
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -136,8 +136,8 @@ test_that("survival predictions - error snapshot", {
   skip_if_not_installed("partykit")
   skip_if_not_installed("coin")
 
-  mod_spec <- rand_forest() %>%
-    set_engine("partykit") %>%
+  mod_spec <- rand_forest() |>
+    set_engine("partykit") |>
     set_mode("censored regression")
   set.seed(1234)
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
@@ -154,9 +154,9 @@ test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2, ]
 
-  mod <- rand_forest() %>%
-    set_mode("censored regression") %>%
-    set_engine("partykit") %>%
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("partykit") |>
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
@@ -179,8 +179,8 @@ test_that("`fix_xy()` works", {
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]
 
-  spec <- rand_forest() %>%
-    set_engine("partykit") %>%
+  spec <- rand_forest() |>
+    set_engine("partykit") |>
     set_mode("censored regression")
   set.seed(1)
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)

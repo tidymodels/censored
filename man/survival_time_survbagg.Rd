@@ -19,9 +19,9 @@ A wrapper for survival times with \code{survbagg} models
 }
 \examples{
 \dontshow{if (rlang::is_installed("ipred")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-bagged_tree <- bag_tree() \%>\%
-  set_engine("rpart") \%>\%
-  set_mode("censored regression") \%>\%
+bagged_tree <- bag_tree() |>
+  set_engine("rpart") |>
+  set_mode("censored regression") |>
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 survival_time_survbagg(bagged_tree, lung[1:3, ])
 \dontshow{\}) # examplesIf}
