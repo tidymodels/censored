@@ -25,6 +25,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install armadillo headers on Linux for aorsf
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -y && sudo apt-get install -y libarmadillo-dev
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
