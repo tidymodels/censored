@@ -308,11 +308,11 @@ test_that("can handle case weights", {
   dat <- make_cens_wts()
 
   expect_no_error(
-      wt_fit <- rand_forest() |>
-        set_engine("aorsf") |>
-        set_mode("censored regression") |>
-        fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
-    )
+    wt_fit <- rand_forest() |>
+      set_engine("aorsf") |>
+      set_mode("censored regression") |>
+      fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
+  )
 
   if (utils::packageVersion("aorsf") >= "0.1.2") {
     fit_weights <- wt_fit$fit$weights
