@@ -31,5 +31,5 @@ bagged_tree <- bag_tree() |>
   set_mode("censored regression") |>
   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 survival_time_survbagg(bagged_tree, lung[1:3, ])
-#> [1] 305 350 429
+#> [1] 310 350 394
 ```
