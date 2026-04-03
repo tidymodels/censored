@@ -17,8 +17,12 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
 
 stack_survfit <- function(x, n, penalty = NULL) {
   # glmnet does not calculate confidence intervals
-  if (is.null(x$lower)) x$lower <- NA_real_
-  if (is.null(x$upper)) x$upper <- NA_real_
+  if (is.null(x$lower)) {
+    x$lower <- NA_real_
+  }
+  if (is.null(x$upper)) {
+    x$upper <- NA_real_
+  }
 
   has_strata <- any(names(x) == "strata")
 

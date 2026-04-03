@@ -125,15 +125,17 @@ test_that("survival probability prediction", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      \(.x) all(
-        names(.x) ==
-          c(
-            ".eval_time",
-            ".pred_survival",
-            ".pred_lower",
-            ".pred_upper"
-          )
-      )
+      \(.x) {
+        all(
+          names(.x) ==
+            c(
+              ".eval_time",
+              ".pred_survival",
+              ".pred_lower",
+              ".pred_upper"
+            )
+        )
+      }
     ))
   )
 
@@ -155,13 +157,15 @@ test_that("survival probabilities for single eval time point", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      \(.x) all(
-        names(.x) ==
-          c(
-            ".eval_time",
-            ".pred_survival"
-          )
-      )
+      \(.x) {
+        all(
+          names(.x) ==
+            c(
+              ".eval_time",
+              ".pred_survival"
+            )
+        )
+      }
     ))
   )
 })
@@ -372,13 +376,15 @@ test_that("hazard for single eval time point", {
   expect_true(
     all(purrr::map_lgl(
       pred$.pred,
-      \(.x) all(
-        names(.x) ==
-          c(
-            ".eval_time",
-            ".pred_hazard"
-          )
-      )
+      \(.x) {
+        all(
+          names(.x) ==
+            c(
+              ".eval_time",
+              ".pred_hazard"
+            )
+        )
+      }
     ))
   )
 })

@@ -623,15 +623,17 @@ test_that("confidence intervals", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        \(.x) all(
-          names(.x) ==
-            c(
-              ".eval_time",
-              ".pred_survival",
-              ".pred_lower",
-              ".pred_upper"
-            )
-        )
+        \(.x) {
+          all(
+            names(.x) ==
+              c(
+                ".eval_time",
+                ".pred_survival",
+                ".pred_lower",
+                ".pred_upper"
+              )
+          )
+        }
       )
     )
   )
@@ -665,15 +667,17 @@ test_that("confidence intervals", {
     all(
       purrr::map_lgl(
         f_pred$.pred,
-        \(.x) all(
-          names(.x) ==
-            c(
-              ".eval_time",
-              ".pred_survival",
-              ".pred_lower",
-              ".pred_upper"
-            )
-        )
+        \(.x) {
+          all(
+            names(.x) ==
+              c(
+                ".eval_time",
+                ".pred_survival",
+                ".pred_lower",
+                ".pred_upper"
+              )
+          )
+        }
       )
     )
   )
