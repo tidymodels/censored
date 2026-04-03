@@ -18,7 +18,7 @@ A tibble.
 A wrapper for mean survival times with \code{mboost} models
 }
 \examples{
-\dontshow{if (rlang::is_installed("mboost")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("mboost")) withAutoprint(\{ # examplesIf}
 boosted_tree <- boost_tree() |>
   set_engine("mboost") |>
   set_mode("censored regression") |>

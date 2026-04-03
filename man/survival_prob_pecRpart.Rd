@@ -20,7 +20,7 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with pecRpart models
 }
 \examples{
-\dontshow{if (rlang::is_installed("pec")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("pec")) withAutoprint(\{ # examplesIf}
 mod <- decision_tree() |>
   set_mode("censored regression") |>
     set_engine("rpart") |>

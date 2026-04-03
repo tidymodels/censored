@@ -25,7 +25,7 @@ A vector.
 A wrapper for survival times with coxnet models
 }
 \examples{
-\dontshow{if (rlang::is_installed("glmnet")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("glmnet")) withAutoprint(\{ # examplesIf}
 cox_mod <- proportional_hazards(penalty = 0.1) |>
   set_engine("glmnet") |>
   fit(Surv(time, status) ~ ., data = lung)

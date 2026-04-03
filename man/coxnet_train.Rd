@@ -59,7 +59,7 @@ The wrapper retains the original formula and the pre-processing elements
 including the training data to allow for predictions from the fitted model.
 }
 \examples{
-\dontshow{if (rlang::is_installed("glmnet")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("glmnet")) withAutoprint(\{ # examplesIf}
 coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
 \dontshow{\}) # examplesIf}
 }
