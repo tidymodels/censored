@@ -258,7 +258,8 @@ test_that("quantile predictions", {
 
   for (.row in 1:nrow(pred)) {
     expect_equal(
-      unclass(pred$.pred_quantile[.row])[[1]],
+      unclass(pred$.pred_quantile[.row])[[1]] |>
+        as.vector(),
       exp_pred[[.row]]$est
     )
   }
