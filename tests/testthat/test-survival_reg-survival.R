@@ -163,7 +163,8 @@ test_that("prediction of survival time quantile", {
 
   for (.row in 1:nrow(obs_quant)) {
     expect_equal(
-      unclass(obs_quant$.pred_quantile[.row])[[1]],
+      unclass(obs_quant$.pred_quantile[.row])[[1]] |>
+        as.vector(),
       exp_quant[.row, ]
     )
   }
