@@ -24,7 +24,7 @@ A tibble with a list column of nested tibbles.
 Internal helper function for aorsf objects
 }
 \examples{
-\dontshow{if (rlang::is_installed("aorsf")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("aorsf")) withAutoprint(\{ # examplesIf}
 mod <- rand_forest() |>
   set_engine("aorsf") |>
   set_mode("censored regression") |>

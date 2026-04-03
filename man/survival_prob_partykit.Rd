@@ -32,7 +32,7 @@ A tibble with a list column of nested tibbles.
 A wrapper for survival probabilities with partykit models
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("partykit", "coin"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("partykit", "coin"))) withAutoprint(\{ # examplesIf}
 tree <- decision_tree() |>
   set_mode("censored regression") |>
   set_engine("partykit") |>
