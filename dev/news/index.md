@@ -2,6 +2,13 @@
 
 ## censored (development version)
 
+## censored 0.3.4
+
+CRAN release: 2026-04-04
+
+- Adapted tests for hardhat 1.4.3
+  ([\#358](https://github.com/tidymodels/censored/issues/358)).
+
 ## censored 0.3.3
 
 CRAN release: 2025-02-14
