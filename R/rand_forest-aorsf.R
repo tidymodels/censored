@@ -23,7 +23,7 @@ survival_prob_orsf <- function(
   check_inherits(object, "model_fit")
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "ObliqueForestSurvival", arg = "object$fit")
-  rlang::check_data_frame(new_data)
+  check_data_frame(new_data)
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(

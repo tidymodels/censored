@@ -15,7 +15,7 @@ survival_prob_pecRpart <- function(object, new_data, eval_time) {
   check_inherits(object, "model_fit")
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "pecRpart", arg = "object$fit")
-  rlang::check_data_frame(new_data)
+  check_data_frame(new_data)
 
   n_obs <- nrow(new_data)
   n_eval_time <- length(eval_time)

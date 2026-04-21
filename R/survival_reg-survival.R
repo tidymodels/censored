@@ -103,7 +103,7 @@ survival_prob_survreg <- function(
   check_inherits(object, "model_fit")
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "survreg", arg = "object$fit")
-  rlang::check_data_frame(new_data)
+  check_data_frame(new_data)
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -154,7 +154,7 @@ hazard_survreg <- function(object, new_data, eval_time) {
   check_inherits(object, "model_fit")
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "survreg", arg = "object$fit")
-  rlang::check_data_frame(new_data)
+  check_data_frame(new_data)
 
   lp_estimate <- predict(engine_fit, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(engine_fit, new_data)

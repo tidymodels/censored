@@ -63,7 +63,7 @@ survival_time_coxph <- function(object, new_data) {
   check_inherits(object, "model_fit")
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "coxph", arg = "object$fit")
-  rlang::check_data_frame(new_data)
+  check_data_frame(new_data)
 
   missings_in_new_data <- get_missings_coxph(engine_fit, new_data)
   if (!is.null(missings_in_new_data)) {
@@ -147,7 +147,7 @@ survival_prob_coxph <- function(
   check_inherits(object, "model_fit")
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "coxph", arg = "object$fit")
-  rlang::check_data_frame(new_data)
+  check_data_frame(new_data)
 
   if (lifecycle::is_present(x)) {
     lifecycle::deprecate_stop(
