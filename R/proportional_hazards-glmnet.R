@@ -675,7 +675,7 @@ survival_prob_coxnet <- function(
     )
   }
 
-  output <- match.arg(output, c("surv", "haz"))
+  output <- arg_match(output, c("surv", "haz"))
 
   new_x <- coxnet_prepare_x(new_data, object)
 
