@@ -100,11 +100,8 @@ survival_prob_survreg <- function(
   eval_time,
   time = deprecated()
 ) {
-  if (inherits(object, "survreg")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -151,11 +148,8 @@ survreg_hazard <- function(
 #' @export
 #' @rdname survival_prob_survreg
 hazard_survreg <- function(object, new_data, eval_time) {
-  if (inherits(object, "survreg")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+
   lp_estimate <- predict(object$fit, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(object$fit, new_data)
   res <-

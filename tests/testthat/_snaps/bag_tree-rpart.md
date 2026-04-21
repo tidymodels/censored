@@ -4,7 +4,7 @@
       survival_time_survbagg(mod)
     Condition
       Error in `survival_time_survbagg()`:
-      ! `object` needs to be a parsnip <model_fit> object, not a <survbagg> object.
+      ! `object` must be a <model_fit> object, not a <survbagg> object.
 
 # survival predictions - error snapshot
 

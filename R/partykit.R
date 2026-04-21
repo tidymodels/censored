@@ -27,11 +27,7 @@ survival_prob_partykit <- function(
   time = deprecated(),
   output = "surv"
 ) {
-  if (inherits(object, "party")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls party} object."
-    )
-  }
+  check_inherits(object, "model_fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(

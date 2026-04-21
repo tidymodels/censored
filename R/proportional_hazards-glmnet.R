@@ -499,6 +499,8 @@ survival_time_coxnet <- function(
   multi = FALSE,
   ...
 ) {
+  check_inherits(object, "model_fit")
+
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }
@@ -645,6 +647,8 @@ survival_prob_coxnet <- function(
   multi = FALSE,
   ...
 ) {
+  check_inherits(object, "model_fit")
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",

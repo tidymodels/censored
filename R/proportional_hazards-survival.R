@@ -60,11 +60,7 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
-  if (inherits(object, "coxph")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object."
-    )
-  }
+  check_inherits(object, "model_fit")
 
   missings_in_new_data <- get_missings_coxph(object$fit, new_data)
   if (!is.null(missings_in_new_data)) {
@@ -145,11 +141,8 @@ survival_prob_coxph <- function(
   conf.int = .95,
   ...
 ) {
-  if (inherits(object, "coxph")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+
   if (lifecycle::is_present(x)) {
     lifecycle::deprecate_stop(
       "0.3.0",

@@ -20,11 +20,8 @@ survival_prob_orsf <- function(
   eval_time,
   time = deprecated()
 ) {
-  if (inherits(object, "orsf_fit")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls orsf_fit} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",

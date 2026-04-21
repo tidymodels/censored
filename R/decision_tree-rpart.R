@@ -12,6 +12,8 @@
 #'     fit(Surv(time, status) ~ ., data = lung)
 #' survival_prob_pecRpart(mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_pecRpart <- function(object, new_data, eval_time) {
+  check_inherits(object, "model_fit")
+
   n_obs <- nrow(new_data)
   n_eval_time <- length(eval_time)
 

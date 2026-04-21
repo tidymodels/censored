@@ -142,11 +142,7 @@ survival_prob_mboost <- function(
   eval_time,
   time = deprecated()
 ) {
-  if (inherits(object, "mboost")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object."
-    )
-  }
+  check_inherits(object, "model_fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -209,11 +205,7 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
 #' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 survival_time_mboost <- function(object, new_data) {
-  if (inherits(object, "mboost")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls mboost} object."
-    )
-  }
+  check_inherits(object, "model_fit")
 
   y <- mboost::survFit(object$fit, new_data)
 

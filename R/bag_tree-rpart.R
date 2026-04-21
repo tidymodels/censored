@@ -11,11 +11,7 @@
 #'   fit(Surv(time, status) ~ age + ph.ecog, data = lung)
 #' survival_time_survbagg(bagged_tree, lung[1:3, ])
 survival_time_survbagg <- function(object, new_data) {
-  if (inherits(object, "survbagg")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survbagg} object."
-    )
-  }
+  check_inherits(object, "model_fit")
 
   missings_in_new_data <- get_missings_survbagg(object$fit, new_data)
   if (!is.null(missings_in_new_data)) {
@@ -75,11 +71,7 @@ survival_prob_survbagg <- function(
   eval_time,
   time = deprecated()
 ) {
-  if (inherits(object, "survbagg")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survbagg} object."
-    )
-  }
+  check_inherits(object, "model_fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
