@@ -28,6 +28,8 @@ survival_prob_partykit <- function(
   output = "surv"
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, c("party", "parties"), arg = "object$fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -47,7 +49,7 @@ survival_prob_partykit <- function(
   # partykit handles missing values
   missings_in_new_data <- NULL
 
-  y <- predict(object$fit, newdata = new_data, type = "prob")
+  y <- predict(engine_fit, newdata = new_data, type = "prob")
 
   survfit_summary_list <- purrr::map(
     y,

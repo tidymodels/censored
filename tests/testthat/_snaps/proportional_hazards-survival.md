@@ -30,3 +30,35 @@
       Error in `predict_survival()`:
       ! `new_data` is missing the following stratification variable: `enum`.
 
+# survival_time_coxph() errors informatively on bad input
+
+    Code
+      survival_time_coxph(raw_fit)
+    Condition
+      Error in `survival_time_coxph()`:
+      ! `object` must be a <model_fit> object, not a <coxph> object.
+
+---
+
+    Code
+      survival_time_coxph(wrong_engine)
+    Condition
+      Error in `survival_time_coxph()`:
+      ! `object$fit` must be a <coxph> object, not a <survreg> object.
+
+# survival_prob_coxph() errors informatively on bad input
+
+    Code
+      survival_prob_coxph(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_coxph()`:
+      ! `object` must be a <model_fit> object, not a <coxph> object.
+
+---
+
+    Code
+      survival_prob_coxph(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_coxph()`:
+      ! `object$fit` must be a <coxph> object, not a <survreg> object.
+

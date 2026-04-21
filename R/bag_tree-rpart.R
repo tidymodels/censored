@@ -12,8 +12,10 @@
 #' survival_time_survbagg(bagged_tree, lung[1:3, ])
 survival_time_survbagg <- function(object, new_data) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "survbagg", arg = "object$fit")
 
-  missings_in_new_data <- get_missings_survbagg(object$fit, new_data)
+  missings_in_new_data <- get_missings_survbagg(engine_fit, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
@@ -25,7 +27,7 @@ survival_time_survbagg <- function(object, new_data) {
     new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
-  y <- predict(object$fit, newdata = new_data)
+  y <- predict(engine_fit, newdata = new_data)
 
   res <- purrr::map_dbl(y, \(.x) quantile(.x, probs = .5)$quantile)
 
@@ -72,6 +74,8 @@ survival_prob_survbagg <- function(
   time = deprecated()
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "survbagg", arg = "object$fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -89,7 +93,7 @@ survival_prob_survbagg <- function(
   output <- "surv"
 
   n_obs <- nrow(new_data)
-  missings_in_new_data <- get_missings_survbagg(object$fit, new_data)
+  missings_in_new_data <- get_missings_survbagg(engine_fit, new_data)
 
   if (!is.null(missings_in_new_data)) {
     n_missing <- length(missings_in_new_data)
@@ -102,7 +106,7 @@ survival_prob_survbagg <- function(
     new_data <- new_data[-missings_in_new_data, , drop = FALSE]
   }
 
-  y <- predict(object$fit, newdata = new_data)
+  y <- predict(engine_fit, newdata = new_data)
 
   survfit_summary_list <- purrr::map(
     y,

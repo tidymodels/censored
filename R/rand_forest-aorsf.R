@@ -21,6 +21,8 @@ survival_prob_orsf <- function(
   time = deprecated()
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "ObliqueForestSurvival", arg = "object$fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -32,7 +34,7 @@ survival_prob_orsf <- function(
   }
 
   pred <- predict(
-    object$fit,
+    engine_fit,
     new_data = new_data,
     pred_horizon = eval_time,
     pred_type = "surv",

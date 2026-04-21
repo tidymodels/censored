@@ -210,3 +210,35 @@
       Error in `fit_xy()`:
       ! For stratification, please use the formula interface via `fit()`.
 
+# survival_time_coxnet() errors informatively on bad input
+
+    Code
+      survival_time_coxnet(raw_fit)
+    Condition
+      Error in `survival_time_coxnet()`:
+      ! `object` must be a <model_fit> object, not a <coxnet> object.
+
+---
+
+    Code
+      survival_time_coxnet(wrong_engine)
+    Condition
+      Error in `survival_time_coxnet()`:
+      ! `object$fit` must be a <coxnet> object, not a <coxph> object.
+
+# survival_prob_coxnet() errors informatively on bad input
+
+    Code
+      survival_prob_coxnet(raw_fit, new_data = lung2[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_coxnet()`:
+      ! `object` must be a <model_fit> object, not a <coxnet> object.
+
+---
+
+    Code
+      survival_prob_coxnet(wrong_engine, new_data = lung2[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_coxnet()`:
+      ! `object$fit` must be a <coxnet> object, not a <coxph> object.
+

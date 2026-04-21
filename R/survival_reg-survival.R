@@ -101,6 +101,8 @@ survival_prob_survreg <- function(
   time = deprecated()
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "survreg", arg = "object$fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -111,15 +113,15 @@ survival_prob_survreg <- function(
     eval_time <- time
   }
 
-  lp_estimate <- predict(object$fit, new_data, type = "lp")
-  scale_estimate <- get_survreg_scale(object$fit, new_data)
+  lp_estimate <- predict(engine_fit, new_data, type = "lp")
+  scale_estimate <- get_survreg_scale(engine_fit, new_data)
   res <-
     purrr::map2(
       lp_estimate,
       scale_estimate,
       ~ survreg_survival(
         .x,
-        object = object$fit,
+        object = engine_fit,
         eval_time = eval_time,
         scale = .y
       )
@@ -149,16 +151,18 @@ survreg_hazard <- function(
 #' @rdname survival_prob_survreg
 hazard_survreg <- function(object, new_data, eval_time) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "survreg", arg = "object$fit")
 
-  lp_estimate <- predict(object$fit, new_data, type = "lp")
-  scale_estimate <- get_survreg_scale(object$fit, new_data)
+  lp_estimate <- predict(engine_fit, new_data, type = "lp")
+  scale_estimate <- get_survreg_scale(engine_fit, new_data)
   res <-
     purrr::map2(
       lp_estimate,
       scale_estimate,
       ~ survreg_hazard(
         .x,
-        object = object$fit,
+        object = engine_fit,
         eval_time = eval_time,
         scale = .y
       )

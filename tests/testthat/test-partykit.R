@@ -161,3 +161,33 @@ test_that("survival_prob_partykit() works for cforest", {
 
   expect_true(all(!is.na(prob$.pred_survival)))
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_partykit() errors informatively on bad input", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
+  raw_fit <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("partykit") |>
+    fit(Surv(time, status) ~ age, data = lung) |>
+    extract_fit_engine()
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_partykit(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_partykit(
+      wrong_engine,
+      new_data = lung[1:3, ],
+      eval_time = 100
+    )
+  )
+})

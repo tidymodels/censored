@@ -500,6 +500,8 @@ survival_time_coxnet <- function(
   ...
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxnet", arg = "object$fit")
 
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
@@ -552,7 +554,7 @@ survival_time_coxnet <- function(
   }
 
   y <- survival::survfit(
-    object$fit,
+    engine_fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -648,6 +650,8 @@ survival_prob_coxnet <- function(
   ...
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxnet", arg = "object$fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -711,7 +715,7 @@ survival_prob_coxnet <- function(
   }
 
   y <- survival::survfit(
-    object$fit,
+    engine_fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,

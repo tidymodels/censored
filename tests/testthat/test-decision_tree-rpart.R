@@ -192,3 +192,25 @@ test_that("`fix_xy()` works", {
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_pecRpart() errors informatively on bad input", {
+  skip_if_not_installed("pec")
+
+  raw_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "rpart")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+

@@ -84,14 +84,6 @@ test_that("time predictions without surrogate splits for NA", {
   expect_equal(which(is.na(f_pred$.pred_time)), 2)
 })
 
-test_that("survival_time_survbagg() throws an informative error with an engine object", {
-  skip_if_not_installed("ipred")
-  mod <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
-  expect_snapshot(error = TRUE, {
-    survival_time_survbagg(mod)
-  })
-})
-
 # prediction: survival ----------------------------------------------------
 
 test_that("survival predictions", {
@@ -321,4 +313,40 @@ test_that("`fix_xy()` works", {
     eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
+})
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_time_survbagg() errors informatively on bad input", {
+  skip_if_not_installed("ipred")
+  raw_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(error = TRUE, survival_time_survbagg(raw_fit))
+  expect_snapshot(error = TRUE, survival_time_survbagg(wrong_engine))
+})
+
+test_that("survival_prob_survbagg() errors informatively on bad input", {
+  skip_if_not_installed("ipred")
+  raw_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(
+      wrong_engine,
+      new_data = lung[1:3, ],
+      eval_time = 100
+    )
+  )
 })

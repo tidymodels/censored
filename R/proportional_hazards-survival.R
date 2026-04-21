@@ -61,8 +61,10 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxph", arg = "object$fit")
 
-  missings_in_new_data <- get_missings_coxph(object$fit, new_data)
+  missings_in_new_data <- get_missings_coxph(engine_fit, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
@@ -74,7 +76,7 @@ survival_time_coxph <- function(object, new_data) {
     new_data <- new_data[-missings_in_new_data, ]
   }
 
-  y <- survival::survfit(object$fit, new_data, na.action = stats::na.exclude)
+  y <- survival::survfit(engine_fit, new_data, na.action = stats::na.exclude)
 
   tabs <- summary(y)$table
   if (is.matrix(tabs)) {
@@ -142,6 +144,8 @@ survival_prob_coxph <- function(
   ...
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxph", arg = "object$fit")
 
   if (lifecycle::is_present(x)) {
     lifecycle::deprecate_stop(
@@ -166,7 +170,7 @@ survival_prob_coxph <- function(
   }
 
   n_obs <- nrow(new_data)
-  missings_in_new_data <- get_missings_coxph(object$fit, new_data)
+  missings_in_new_data <- get_missings_coxph(engine_fit, new_data)
 
   if (!is.null(missings_in_new_data)) {
     n_missing <- length(missings_in_new_data)
@@ -180,7 +184,7 @@ survival_prob_coxph <- function(
   }
 
   surv_fit <- survival::survfit(
-    object$fit,
+    engine_fit,
     newdata = new_data,
     conf.int = conf.int,
     na.action = na.exclude,

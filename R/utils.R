@@ -15,9 +15,10 @@ check_inherits <- function(
     }
   }
 
+  what <- paste0("a ", oxford_comma(paste0("<", class, ">")), " object")
   rlang::stop_input_type(
     x,
-    paste0("a <", class[[1]], "> object"),
+    what,
     ...,
     allow_null = allow_null,
     arg = arg,

@@ -325,3 +325,27 @@ test_that("can handle case weights", {
     as.vector(dat$wts)
   )
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_orsf() errors informatively on bad input", {
+  skip_if_not_installed("aorsf")
+
+  raw_fit <- aorsf::orsf(
+    Surv(time, status) ~ age + ph.ecog,
+    data = na.omit(lung)
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})

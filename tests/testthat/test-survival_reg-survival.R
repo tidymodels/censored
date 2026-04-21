@@ -341,3 +341,39 @@ test_that("deprecation of `time` arg for type 'hazard'", {
   pred <- predict(f_fit, head(lung), type = "hazard", time = c(0, 500, 1000))
   expect_identical(pred, exp_pred)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_survreg() errors informatively on bad input", {
+  raw_fit <- survival::survreg(Surv(time, status) ~ age, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survreg(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survreg(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("hazard_survreg() errors informatively on bad input", {
+  raw_fit <- survival::survreg(Surv(time, status) ~ age, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    hazard_survreg(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    hazard_survreg(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})

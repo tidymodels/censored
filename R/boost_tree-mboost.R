@@ -143,6 +143,8 @@ survival_prob_mboost <- function(
   time = deprecated()
 ) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "mboost", arg = "object$fit")
 
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
@@ -153,7 +155,7 @@ survival_prob_mboost <- function(
     eval_time <- time
   }
 
-  survival_curve <- mboost::survFit(object$fit, newdata = new_data)
+  survival_curve <- mboost::survFit(engine_fit, newdata = new_data)
 
   survival_prob <- survival_curve_to_prob(
     eval_time,
@@ -206,8 +208,10 @@ survival_curve_to_prob <- function(eval_time, event_times, survival_prob) {
 #' survival_time_mboost(boosted_tree, new_data = lung[1:3, ])
 survival_time_mboost <- function(object, new_data) {
   check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "mboost", arg = "object$fit")
 
-  y <- mboost::survFit(object$fit, new_data)
+  y <- mboost::survFit(engine_fit, new_data)
 
   stacked_survfit <- stack_survfit(y, n = nrow(new_data))
 

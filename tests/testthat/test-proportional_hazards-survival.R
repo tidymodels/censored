@@ -899,3 +899,33 @@ test_that("`fix_xy()` works", {
   xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
   expect_equal(f_pred_lp, xy_pred_lp)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_time_coxph() errors informatively on bad input", {
+  raw_fit <- survival::coxph(Surv(time, status) ~ age, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "survreg")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(error = TRUE, survival_time_coxph(raw_fit))
+  expect_snapshot(error = TRUE, survival_time_coxph(wrong_engine))
+})
+
+test_that("survival_prob_coxph() errors informatively on bad input", {
+  raw_fit <- survival::coxph(Surv(time, status) ~ age, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "survreg")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
