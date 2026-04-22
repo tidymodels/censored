@@ -1,5 +1,7 @@
 # censored (development version)
 
+* The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
+
 # censored 0.3.4
 
 * Adapted tests for hardhat 1.4.3 (#358).
