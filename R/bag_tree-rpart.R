@@ -88,6 +88,8 @@ survival_prob_survbagg <- function(
     eval_time <- time
   }
 
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
+
   # we could access more than the survival probabilities but
   # we should not use the standard error and confidence intervals because
   # "the KM does not know about the tree at all", or more specifically,

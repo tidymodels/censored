@@ -22,3 +22,27 @@
       Error in `survival_prob_orsf()`:
       ! `object$fit` must be a <ObliqueForestSurvival> object, not a <coxph> object.
 
+# survival_prob_orsf() fails gracefully for eval_time values it can't handle
+
+    Code
+      survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+    Condition
+      Error in `survival_prob_orsf()`:
+      ! `eval_time` can't contain missing values.
+
+---
+
+    Code
+      survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+    Condition
+      Error in `survival_prob_orsf()`:
+      ! `eval_time` can't contain negative values.
+
+---
+
+    Code
+      survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, -50))
+    Condition
+      Error in `survival_prob_orsf()`:
+      ! `eval_time` can't contain negative values.
+

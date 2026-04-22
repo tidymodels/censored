@@ -62,3 +62,19 @@
       Error in `survival_prob_coxph()`:
       ! `object$fit` must be a <coxph> object, not a <survreg> object.
 
+# survival_prob_coxph() fails gracefully for eval_time values it can't handle
+
+    Code
+      survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = numeric(0))
+    Condition
+      Error in `survival_prob_coxph()`:
+      ! `eval_time` can't be empty.
+
+---
+
+    Code
+      survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+    Condition
+      Error in `survival_prob_coxph()`:
+      ! `eval_time` can't contain missing values.
+

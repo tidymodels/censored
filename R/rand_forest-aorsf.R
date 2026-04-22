@@ -34,6 +34,8 @@ survival_prob_orsf <- function(
     eval_time <- time
   }
 
+  check_eval_time(eval_time, allow_empty = TRUE, allow_infinite = TRUE)
+
   pred <- predict(
     engine_fit,
     new_data = new_data,

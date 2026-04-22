@@ -114,6 +114,13 @@ survival_prob_survreg <- function(
     eval_time <- time
   }
 
+  check_eval_time(
+    eval_time,
+    allow_empty = TRUE,
+    allow_missing = TRUE,
+    allow_infinite = TRUE
+  )
+
   lp_estimate <- predict(engine_fit, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(engine_fit, new_data)
   res <-
@@ -155,6 +162,12 @@ hazard_survreg <- function(object, new_data, eval_time) {
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "survreg", arg = "object$fit")
   check_data_frame(new_data)
+  check_eval_time(
+    eval_time,
+    allow_empty = TRUE,
+    allow_missing = TRUE,
+    allow_infinite = TRUE
+  )
 
   lp_estimate <- predict(engine_fit, new_data, type = "lp")
   scale_estimate <- get_survreg_scale(engine_fit, new_data)

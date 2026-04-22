@@ -22,3 +22,35 @@
       Error in `survival_prob_pecRpart()`:
       ! `object$fit` must be a <pecRpart> object, not a <rpart> object.
 
+# survival_prob_pecRpart() fails gracefully for eval_time values it can't handle
+
+    Code
+      survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = numeric(0))
+    Condition
+      Error in `survival_prob_pecRpart()`:
+      ! `eval_time` can't be empty.
+
+---
+
+    Code
+      survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+    Condition
+      Error in `survival_prob_pecRpart()`:
+      ! `eval_time` can't contain missing values.
+
+---
+
+    Code
+      survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, Inf))
+    Condition
+      Error in `survival_prob_pecRpart()`:
+      ! `eval_time` can't contain infinite values.
+
+---
+
+    Code
+      survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+    Condition
+      Error in `survival_prob_pecRpart()`:
+      ! `eval_time` can't contain infinite values.
+

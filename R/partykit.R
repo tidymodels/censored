@@ -41,6 +41,8 @@ survival_prob_partykit <- function(
     eval_time <- time
   }
 
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
+
   # don't use the confidence intervals: the KM does not know about
   # how the sample for it got constructed (by the tree) and thus standard errors
   # don't take that into account

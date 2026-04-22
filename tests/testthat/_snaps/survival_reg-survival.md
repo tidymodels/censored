@@ -46,3 +46,35 @@
       Error in `hazard_survreg()`:
       ! `object$fit` must be a <survreg> object, not a <coxph> object.
 
+# survival_prob_survreg() fails gracefully for eval_time values it can't handle
+
+    Code
+      survival_prob_survreg(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+    Condition
+      Error in `survival_prob_survreg()`:
+      ! `eval_time` can't contain negative values.
+
+---
+
+    Code
+      survival_prob_survreg(mod, new_data = lung[1:2, ], eval_time = c(100, -50))
+    Condition
+      Error in `survival_prob_survreg()`:
+      ! `eval_time` can't contain negative values.
+
+# hazard_survreg() fails gracefully for eval_time values it can't handle
+
+    Code
+      hazard_survreg(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+    Condition
+      Error in `hazard_survreg()`:
+      ! `eval_time` can't contain negative values.
+
+---
+
+    Code
+      hazard_survreg(mod, new_data = lung[1:2, ], eval_time = c(100, -50))
+    Condition
+      Error in `hazard_survreg()`:
+      ! `eval_time` can't contain negative values.
+

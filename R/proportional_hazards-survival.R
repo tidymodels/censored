@@ -165,6 +165,8 @@ survival_prob_coxph <- function(
     eval_time <- time
   }
 
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
+
   interval <- rlang::arg_match(interval, c("none", "confidence"))
   output <- rlang::arg_match(output, c("surv", "conf", "haz"))
   if (output == "surv" & interval == "confidence") {

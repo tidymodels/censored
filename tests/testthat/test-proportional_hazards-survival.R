@@ -929,3 +929,42 @@ test_that("survival_prob_coxph() errors informatively on bad input", {
     survival_prob_coxph(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
   )
 })
+
+test_that("survival_prob_coxph() fails gracefully for eval_time values it can't handle", {
+  cox_mod <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+})
+
+test_that("survival_prob_coxph() accepts eval_time values that it can handle", {
+  cox_mod <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_coxph(cox_mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_coxph(cox_mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_coxph(cox_mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_coxph(
+      cox_mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})

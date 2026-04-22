@@ -664,6 +664,8 @@ survival_prob_coxnet <- function(
     eval_time <- time
   }
 
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
+
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }

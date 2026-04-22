@@ -350,3 +350,46 @@ test_that("survival_prob_survbagg() errors informatively on bad input", {
     )
   )
 })
+
+test_that("survival_prob_survbagg() fails gracefully for eval_time values it can't handle", {
+  skip_if_not_installed("ipred")
+  mod <- bag_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(mod, new_data = lung[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+})
+
+test_that("survival_prob_survbagg() accepts eval_time values that it can handle", {
+  skip_if_not_installed("ipred")
+  mod <- bag_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_survbagg(
+      mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})
