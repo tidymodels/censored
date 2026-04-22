@@ -210,7 +210,11 @@ test_that("survival_prob_pecRpart() errors informatively on bad input", {
   )
   expect_snapshot(
     error = TRUE,
-    survival_prob_pecRpart(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+    survival_prob_pecRpart(
+      wrong_engine,
+      new_data = lung[1:3, ],
+      eval_time = 100
+    )
   )
 })
 
@@ -235,7 +239,11 @@ test_that("survival_prob_pecRpart() fails gracefully for eval_time values it can
   )
   expect_snapshot(
     error = TRUE,
-    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+    survival_prob_pecRpart(
+      mod,
+      new_data = lung[1:2, ],
+      eval_time = c(100, -Inf)
+    )
   )
 })
 
@@ -258,4 +266,3 @@ test_that("survival_prob_pecRpart() accepts eval_time values that it can handle"
     )
   )
 })
-
