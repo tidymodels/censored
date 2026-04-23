@@ -107,7 +107,7 @@ proportion matrices. Default is 1 for each observation</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This wrapper translates from formula interface to glmnet's matrix due to how
 stratification can be specified. glmnet requires that the <em>response</em> is
-stratified via <code><a href="https://glmnet.stanford.edu/reference/stratifySurv.html" class="external-link">glmnet::stratifySurv()</a></code>. censored allows specification via a
+stratified via <code><a href="https://rdrr.io/pkg/glmnet/man/stratifySurv.html" class="external-link">glmnet::stratifySurv()</a></code>. censored allows specification via a
 <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">survival::strata()</a></code> term on the right-hand side of the formula. The formula
 is used to generate the stratification information needed for stratifying the
 response. The formula without the strata term is used for generating the

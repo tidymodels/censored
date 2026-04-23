@@ -2,6 +2,11 @@
 
 ## censored (development version)
 
+- The `survival_prob_*()` and `hazard_*()` helpers now validate their
+  inputs and return more informative error messages when given an
+  unusable `object`, `new_data`, or `eval_time`
+  ([\#271](https://github.com/tidymodels/censored/issues/271)).
+
 ## censored 0.3.4
 
 CRAN release: 2026-04-04
