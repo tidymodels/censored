@@ -499,6 +499,11 @@ survival_time_coxnet <- function(
   multi = FALSE,
   ...
 ) {
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxnet", arg = "object$fit")
+  check_data_frame(new_data)
+
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }
@@ -550,7 +555,7 @@ survival_time_coxnet <- function(
   }
 
   y <- survival::survfit(
-    object$fit,
+    engine_fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -645,6 +650,11 @@ survival_prob_coxnet <- function(
   multi = FALSE,
   ...
 ) {
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxnet", arg = "object$fit")
+  check_data_frame(new_data)
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -653,6 +663,8 @@ survival_prob_coxnet <- function(
     )
     eval_time <- time
   }
+
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
 
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
@@ -665,7 +677,7 @@ survival_prob_coxnet <- function(
     )
   }
 
-  output <- match.arg(output, c("surv", "haz"))
+  output <- arg_match(output, c("surv", "haz"))
 
   new_x <- coxnet_prepare_x(new_data, object)
 
@@ -707,7 +719,7 @@ survival_prob_coxnet <- function(
   }
 
   y <- survival::survfit(
-    object$fit,
+    engine_fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,

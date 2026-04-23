@@ -899,3 +899,72 @@ test_that("`fix_xy()` works", {
   xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
   expect_equal(f_pred_lp, xy_pred_lp)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_time_coxph() errors informatively on bad input", {
+  raw_fit <- survival::coxph(Surv(time, status) ~ age, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "survreg")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(error = TRUE, survival_time_coxph(raw_fit))
+  expect_snapshot(error = TRUE, survival_time_coxph(wrong_engine))
+})
+
+test_that("survival_prob_coxph() errors informatively on bad input", {
+  raw_fit <- survival::coxph(Surv(time, status) ~ age, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "survreg")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("survival_prob_coxph() fails gracefully for eval_time values it can't handle", {
+  cox_mod <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+})
+
+test_that("survival_prob_coxph() accepts eval_time values that it can handle", {
+  cox_mod <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_coxph(cox_mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_coxph(cox_mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_coxph(cox_mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_coxph(
+      cox_mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})

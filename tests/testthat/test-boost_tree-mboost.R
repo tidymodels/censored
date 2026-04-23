@@ -305,3 +305,77 @@ test_that("`fix_xy()` works", {
   xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
   expect_equal(f_pred_lp, xy_pred_lp)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_time_mboost() errors informatively on bad input", {
+  skip_if_not_installed("mboost")
+
+  raw_fit <- mboost::blackboost(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung[-14, ],
+    family = mboost::CoxPH()
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(error = TRUE, survival_time_mboost(raw_fit))
+  expect_snapshot(error = TRUE, survival_time_mboost(wrong_engine))
+})
+
+test_that("survival_prob_mboost() errors informatively on bad input", {
+  skip_if_not_installed("mboost")
+
+  raw_fit <- mboost::blackboost(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung[-14, ],
+    family = mboost::CoxPH()
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_mboost(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_mboost(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("survival_prob_mboost() accepts eval_time values that it can handle", {
+  skip_if_not_installed("mboost")
+  mod <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_mboost(mod, new_data = new_data, eval_time = numeric(0))
+  )
+  expect_no_error(
+    survival_prob_mboost(mod, new_data = new_data, eval_time = c(100, NA))
+  )
+  expect_no_error(
+    survival_prob_mboost(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_mboost(mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_mboost(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_mboost(
+      mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})

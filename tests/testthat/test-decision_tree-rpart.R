@@ -192,3 +192,77 @@ test_that("`fix_xy()` works", {
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_pecRpart() errors informatively on bad input", {
+  skip_if_not_installed("pec")
+
+  raw_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "rpart")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(
+      wrong_engine,
+      new_data = lung[1:3, ],
+      eval_time = 100
+    )
+  )
+})
+
+test_that("survival_prob_pecRpart() fails gracefully for eval_time values it can't handle", {
+  skip_if_not_installed("pec")
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, Inf))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(
+      mod,
+      new_data = lung[1:2, ],
+      eval_time = c(100, -Inf)
+    )
+  )
+})
+
+test_that("survival_prob_pecRpart() accepts eval_time values that it can handle", {
+  skip_if_not_installed("pec")
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_pecRpart(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_pecRpart(
+      mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})

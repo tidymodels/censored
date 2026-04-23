@@ -1854,3 +1854,84 @@ test_that("multi_predict() recognises default penalty", {
 
   expect_identical(pred_multi, exp_pred_multi)
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_time_coxnet() errors informatively on bad input", {
+  lung2 <- lung[-14, ]
+  raw_fit <- glmnet(
+    x = as.matrix(lung2[, c("age", "ph.ecog")]),
+    y = Surv(lung2$time, lung2$status),
+    family = "cox"
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(error = TRUE, survival_time_coxnet(raw_fit))
+  expect_snapshot(error = TRUE, survival_time_coxnet(wrong_engine))
+})
+
+test_that("survival_prob_coxnet() errors informatively on bad input", {
+  lung2 <- lung[-14, ]
+  raw_fit <- glmnet(
+    x = as.matrix(lung2[, c("age", "ph.ecog")]),
+    y = Surv(lung2$time, lung2$status),
+    family = "cox"
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxnet(raw_fit, new_data = lung2[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxnet(wrong_engine, new_data = lung2[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("survival_prob_coxnet() fails gracefully for eval_time values it can't handle", {
+  lung2 <- lung[-14, ]
+  mod <- proportional_hazards(penalty = 0.1) |>
+    set_engine("glmnet") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxnet(mod, new_data = lung2[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxnet(mod, new_data = lung2[1:2, ], eval_time = c(100, NA))
+  )
+})
+
+test_that("survival_prob_coxnet() accepts eval_time values that it can handle", {
+  lung2 <- lung[-14, ]
+  mod <- proportional_hazards(penalty = 0.1) |>
+    set_engine("glmnet") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+  new_data <- lung2[1:2, ]
+
+  expect_no_error(
+    survival_prob_coxnet(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_coxnet(mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_coxnet(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_coxnet(
+      mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})

@@ -325,3 +325,67 @@ test_that("can handle case weights", {
     as.vector(dat$wts)
   )
 })
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_orsf() errors informatively on bad input", {
+  skip_if_not_installed("aorsf")
+
+  raw_fit <- aorsf::orsf(
+    Surv(time, status) ~ age + ph.ecog,
+    data = na.omit(lung)
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("survival_prob_orsf() fails gracefully for eval_time values it can't handle", {
+  skip_if_not_installed("aorsf")
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, -50))
+  )
+})
+
+test_that("survival_prob_orsf() accepts eval_time values that it can handle", {
+  skip_if_not_installed("aorsf")
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_orsf(mod, new_data = new_data, eval_time = numeric(0))
+  )
+  expect_no_error(
+    survival_prob_orsf(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_orsf(mod, new_data = new_data, eval_time = c(100, 100, 200))
+  )
+})

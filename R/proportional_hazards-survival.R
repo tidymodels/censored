@@ -60,13 +60,12 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
 #'   fit(Surv(time, status) ~ ., data = lung)
 #' survival_time_coxph(cox_mod, new_data = lung[1:3, ])
 survival_time_coxph <- function(object, new_data) {
-  if (inherits(object, "coxph")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxph", arg = "object$fit")
+  check_data_frame(new_data)
 
-  missings_in_new_data <- get_missings_coxph(object$fit, new_data)
+  missings_in_new_data <- get_missings_coxph(engine_fit, new_data)
   if (!is.null(missings_in_new_data)) {
     n_total <- nrow(new_data)
     n_missing <- length(missings_in_new_data)
@@ -78,7 +77,7 @@ survival_time_coxph <- function(object, new_data) {
     new_data <- new_data[-missings_in_new_data, ]
   }
 
-  y <- survival::survfit(object$fit, new_data, na.action = stats::na.exclude)
+  y <- survival::survfit(engine_fit, new_data, na.action = stats::na.exclude)
 
   tabs <- summary(y)$table
   if (is.matrix(tabs)) {
@@ -145,11 +144,11 @@ survival_prob_coxph <- function(
   conf.int = .95,
   ...
 ) {
-  if (inherits(object, "coxph")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls coxph} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxph", arg = "object$fit")
+  check_data_frame(new_data)
+
   if (lifecycle::is_present(x)) {
     lifecycle::deprecate_stop(
       "0.3.0",
@@ -166,6 +165,8 @@ survival_prob_coxph <- function(
     eval_time <- time
   }
 
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
+
   interval <- rlang::arg_match(interval, c("none", "confidence"))
   output <- rlang::arg_match(output, c("surv", "conf", "haz"))
   if (output == "surv" & interval == "confidence") {
@@ -173,7 +174,7 @@ survival_prob_coxph <- function(
   }
 
   n_obs <- nrow(new_data)
-  missings_in_new_data <- get_missings_coxph(object$fit, new_data)
+  missings_in_new_data <- get_missings_coxph(engine_fit, new_data)
 
   if (!is.null(missings_in_new_data)) {
     n_missing <- length(missings_in_new_data)
@@ -187,7 +188,7 @@ survival_prob_coxph <- function(
   }
 
   surv_fit <- survival::survfit(
-    object$fit,
+    engine_fit,
     newdata = new_data,
     conf.int = conf.int,
     na.action = na.exclude,
