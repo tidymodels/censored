@@ -6,50 +6,59 @@
       parsnip model object
       
       
-      Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      weights = weights, alpha = alpha, lambda = lambda) 
+      Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      weights = weights, alpha = alpha, lambda = lambda, cox.ties = ..1) 
       
          Df %Dev   Lambda
-      1   0 0.00 0.225300
-      2   1 0.21 0.205300
-      3   1 0.39 0.187100
-      4   1 0.53 0.170500
-      5   1 0.65 0.155300
-      6   1 0.75 0.141500
-      7   1 0.84 0.128900
-      8   1 0.90 0.117500
-      9   1 0.96 0.107000
-      10  1 1.01 0.097540
-      11  1 1.05 0.088870
-      12  2 1.08 0.080980
-      13  2 1.13 0.073790
-      14  2 1.16 0.067230
-      15  2 1.19 0.061260
-      16  2 1.22 0.055820
-      17  2 1.24 0.050860
-      18  2 1.26 0.046340
-      19  2 1.27 0.042220
-      20  2 1.28 0.038470
-      21  2 1.29 0.035050
-      22  2 1.30 0.031940
-      23  2 1.31 0.029100
-      24  2 1.31 0.026520
-      25  2 1.32 0.024160
-      26  2 1.32 0.022010
-      27  2 1.33 0.020060
-      28  2 1.33 0.018280
-      29  2 1.33 0.016650
-      30  2 1.33 0.015170
-      31  2 1.33 0.013830
-      32  2 1.33 0.012600
-      33  2 1.34 0.011480
-      34  2 1.34 0.010460
-      35  2 1.34 0.009530
-      36  2 1.34 0.008683
-      37  2 1.34 0.007912
-      38  2 1.34 0.007209
-      39  2 1.34 0.006568
-      40  2 1.34 0.005985
-      41  2 1.34 0.005453
+      1   0 0.00 0.225800
+      2   1 0.20 0.205800
+      3   1 0.38 0.187500
+      4   1 0.52 0.170800
+      5   1 0.64 0.155600
+      6   1 0.74 0.141800
+      7   1 0.82 0.129200
+      8   1 0.88 0.117700
+      9   1 0.94 0.107300
+      10  1 0.99 0.097750
+      11  1 1.02 0.089070
+      12  2 1.05 0.081150
+      13  2 1.08 0.073940
+      14  2 1.10 0.067370
+      15  2 1.13 0.061390
+      16  2 1.16 0.055940
+      17  2 1.18 0.050970
+      18  2 1.20 0.046440
+      19  2 1.21 0.042310
+      20  2 1.23 0.038550
+      21  2 1.24 0.035130
+      22  2 1.25 0.032010
+      23  2 1.26 0.029160
+      24  2 1.27 0.026570
+      25  2 1.27 0.024210
+      26  2 1.28 0.022060
+      27  2 1.28 0.020100
+      28  2 1.28 0.018320
+      29  2 1.29 0.016690
+      30  2 1.29 0.015210
+      31  2 1.29 0.013860
+      32  2 1.30 0.012620
+      33  2 1.30 0.011500
+      34  2 1.30 0.010480
+      35  2 1.30 0.009550
+      36  2 1.30 0.008702
+      37  2 1.30 0.007929
+      38  2 1.30 0.007224
+      39  2 1.30 0.006583
+      40  2 1.30 0.005998
+      41  2 1.31 0.005465
+      42  2 1.31 0.004979
+      43  2 1.31 0.004537
+      44  2 1.31 0.004134
+      45  2 1.31 0.003767
+      46  2 1.31 0.003432
+      47  2 1.31 0.003127
+      48  2 1.31 0.002849
+      49  2 1.31 0.002596
+      50  2 1.31 0.002366
       The training data has been saved for prediction.
 
 # stratification is specified in a single term
@@ -101,76 +110,6 @@
 
 # predictions with strata and dot in formula
 
-    Code
-      f_fit <- fit(cox_spec, Surv(time, status) ~ . - sex + strata(sex), data = lung2)
-    Condition
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-
----
-
-    Code
-      f_fit_2 <- fit(cox_spec, Surv(time, status) ~ ph.ecog + age + strata(sex),
-      data = lung2)
-    Condition
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-      Warning:
-      cox.fit: algorithm did not converge
-
----
-
-    Code
-      predict(f_fit, lung2, type = "linear_pred")
-    Output
-      # A tibble: 227 x 1
-         .pred_linear_pred
-                     <dbl>
-       1            -1.09 
-       2            -0.579
-       3            -0.477
-       4            -0.940
-       5            -0.511
-       6            -1.09 
-       7            -1.49 
-       8            -1.51 
-       9            -0.906
-      10            -1.43 
-      # i 217 more rows
     Code
       predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
     Condition

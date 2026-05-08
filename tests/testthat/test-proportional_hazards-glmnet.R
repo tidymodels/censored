@@ -7,11 +7,13 @@ test_that("model object", {
   exp_f_fit <- glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
-    family = "cox"
+    family = "cox",
+    cox.ties = "efron"
   )
 
   # formula method
-  cox_spec <- proportional_hazards(penalty = 0.123) |> set_engine("glmnet")
+  cox_spec <- proportional_hazards(penalty = 0.123) |>
+    set_engine("glmnet", cox.ties = "efron")
   expect_no_error(
     f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
   )
@@ -23,7 +25,7 @@ test_that("model object", {
 test_that("print coxnet model", {
   lung2 <- lung[-14, ]
   f_fit <- proportional_hazards(penalty = 0.123) |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   expect_snapshot(f_fit)
@@ -40,13 +42,13 @@ test_that("time predictions without strata", {
   lung_y <- Surv(lung2$time, lung2$status)
   new_x <- as.matrix(lung2[1:3, c("age", "ph.ecog")])
   set.seed(14)
-  exp_f <- glmnet::glmnet(lung_x, lung_y, family = "cox")
+  exp_f <- glmnet::glmnet(lung_x, lung_y, family = "cox", cox.ties = "efron")
   exp_sf <- survfit(exp_f, newx = new_x, x = lung_x, y = lung_y, s = 0.1)
   exp_f_pred <- summary(exp_sf)$table[, "rmean"] |> unname()
 
   cox_spec <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
   set.seed(14)
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
@@ -80,7 +82,7 @@ test_that("time predictions with strata", {
   new_strata <- lung2$sex[1:3]
   set.seed(14)
   suppressWarnings(
-    exp_f <- glmnet::glmnet(lung_x, lung_y, family = "cox")
+    exp_f <- glmnet::glmnet(lung_x, lung_y, family = "cox", cox.ties = "efron")
   )
   exp_sf <- survfit(
     exp_f,
@@ -94,7 +96,7 @@ test_that("time predictions with strata", {
 
   cox_spec <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
   set.seed(14)
   suppressWarnings(
     f_fit <- fit(
@@ -127,7 +129,7 @@ test_that("time predictions with NA in predictor", {
 
   suppressWarnings(
     f_fit <- proportional_hazards(penalty = 0.123) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
   )
 
@@ -172,7 +174,7 @@ test_that("time predictions with NA in strata", {
 
   suppressWarnings(
     f_fit <- proportional_hazards(penalty = 0.123) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
   )
 
@@ -221,11 +223,11 @@ test_that("survival_time_coxnet() works for single penalty value", {
   lung_y <- Surv(lung2$time, lung2$status)
 
   exp_f_fit <- suppressWarnings(
-    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox")
+    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox", cox.ties = "efron")
   )
   f_fit <- suppressWarnings(
     proportional_hazards(penalty = 0.1) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
   )
 
@@ -298,11 +300,11 @@ test_that("survival_time_coxnet() works for multiple penalty values", {
   lung_y <- Surv(lung2$time, lung2$status)
 
   exp_f_fit <- suppressWarnings(
-    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox")
+    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox", cox.ties = "efron")
   )
   f_fit <- suppressWarnings(
     proportional_hazards(penalty = 0.1) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
   )
 
@@ -411,7 +413,7 @@ test_that("survival probabilities without strata", {
 
   cox_spec <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
 
   set.seed(14)
   expect_no_error(
@@ -513,7 +515,7 @@ test_that("survival probabilities without strata", {
 test_that("survival probabilities with strata", {
   cox_spec <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
 
   set.seed(14)
   expect_no_error(
@@ -612,7 +614,7 @@ test_that("survival prediction with NA in predictor", {
 
   suppressWarnings(
     f_fit <- proportional_hazards(penalty = 0.123) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
   )
 
@@ -702,7 +704,7 @@ test_that("survival prediction with NA in strata", {
 
   suppressWarnings(
     f_fit <- proportional_hazards(penalty = 0.123) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog + strata(sex), data = lung2)
   )
 
@@ -796,11 +798,11 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   lung_y <- Surv(lung2$time, lung2$status)
 
   exp_f_fit <- suppressWarnings(
-    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox")
+    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox", cox.ties = "efron")
   )
   f_fit <- suppressWarnings(
     proportional_hazards(penalty = 0.1) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
   )
 
@@ -880,11 +882,11 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   lung_y <- Surv(lung2$time, lung2$status)
 
   exp_f_fit <- suppressWarnings(
-    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox")
+    glmnet::glmnet(x = lung_x, y = lung_y, family = "cox", cox.ties = "efron")
   )
   f_fit <- suppressWarnings(
     proportional_hazards(penalty = 0.1) |>
-      set_engine("glmnet") |>
+      set_engine("glmnet", cox.ties = "efron") |>
       fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
   )
 
@@ -987,7 +989,7 @@ test_that("can predict for out-of-domain timepoints", {
 
   mod <- proportional_hazards(penalty = 0.1) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ ., data = lung)
 
   expect_no_error(
@@ -1007,9 +1009,11 @@ test_that("linear_pred predictions without strata", {
   exp_f_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
-    family = "cox"
+    family = "cox",
+    cox.ties = "efron"
   )
-  cox_spec <- proportional_hazards(penalty = 0.123) |> set_engine("glmnet")
+  cox_spec <- proportional_hazards(penalty = 0.123) |>
+    set_engine("glmnet", cox.ties = "efron")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # predict
@@ -1104,10 +1108,12 @@ test_that("linear_pred predictions with strata", {
     glmnet::glmnet(
       x = as.matrix(lung2[, c(4, 6)]),
       y = stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
-      family = "cox"
+      family = "cox",
+      cox.ties = "efron"
     )
   )
-  cox_spec <- proportional_hazards(penalty = 0.123) |> set_engine("glmnet")
+  cox_spec <- proportional_hazards(penalty = 0.123) |>
+    set_engine("glmnet", cox.ties = "efron")
   expect_no_error(
     suppressWarnings(
       f_fit <- fit(
@@ -1203,7 +1209,7 @@ test_that("linear_pred predictions with strata", {
 
 test_that("stratification is specified in a single term", {
   spec <- proportional_hazards(penalty = 0.123) |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
   expect_snapshot(error = TRUE, {
     fit(
       spec,
@@ -1235,7 +1241,7 @@ test_that("formula modifications to remove strata", {
 
   skip_if(R.version$major == "3")
   spec <- proportional_hazards(penalty = 0.1) |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
   expect_snapshot(error = TRUE, {
     fit(spec, Surv(time, status) ~ strata(sex), data = lung)
   })
@@ -1259,33 +1265,34 @@ test_that("predictions with strata and dot in formula", {
   # For R <= 3.6 only , glmnet models below give a warning for lack of convergence.
   skip_if(R.version$major == "3")
 
-  cox_spec <- proportional_hazards(penalty = 0.001) |> set_engine("glmnet")
+  cox_spec <- proportional_hazards(penalty = 0.001) |>
+    set_engine("glmnet", cox.ties = "efron")
   lung2 <- lung[, c("time", "status", "ph.ecog", "age", "sex")]
   lung2$sex <- factor(lung2$sex)
   lung2 <- lung2[complete.cases(lung2), ]
 
   # formula method
-  # expect warnings "cox.fit: algorithm did not converge"
-  expect_snapshot(
+  expect_no_error(
     f_fit <- fit(
       cox_spec,
       Surv(time, status) ~ . - sex + strata(sex),
       data = lung2
     )
   )
-  # expect warnings "cox.fit: algorithm did not converge"
-  expect_snapshot(
+  expect_no_error(
     f_fit_2 <- fit(
       cox_spec,
       Surv(time, status) ~ ph.ecog + age + strata(sex),
       data = lung2
     )
   )
-  # expect warnings "'to new 6 after EncodeVars()"
-  expect_snapshot({
+  expect_no_error(
     predict(f_fit, lung2, type = "linear_pred")
+  )
+  # expect warnings "'to new 6 after EncodeVars()"
+  expect_snapshot(
     predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
-  })
+  )
   expect_equal(
     predict(f_fit, lung2, type = "linear_pred"),
     predict(f_fit_2, lung2, type = "linear_pred")
@@ -1312,7 +1319,7 @@ test_that("`fit_xy()` works with matrix input", {
   lung_pred <- lung2[1:5, ]
 
   spec <- proportional_hazards(penalty = 0.1) |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
@@ -1348,7 +1355,7 @@ test_that("`fit_xy()` works with data frame input", {
   lung_pred <- lung2[1:5, ]
 
   spec <- proportional_hazards(penalty = 0.1) |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
   xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
 
@@ -1384,7 +1391,7 @@ test_that("`fit_xy()` errors with stratification", {
   lung_y_s <- glmnet::stratifySurv(lung_y, lung2$sex)
 
   spec <- proportional_hazards(penalty = 0.1) |>
-    set_engine("glmnet")
+    set_engine("glmnet", cox.ties = "efron")
 
   expect_snapshot(error = TRUE, {
     fit_xy(spec, x = lung_x, y = lung_y_s)
@@ -1400,7 +1407,7 @@ test_that("multi_predict(type = time)", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1441,7 +1448,7 @@ test_that("multi_predict(type = survival) for multiple eval_time points", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1484,7 +1491,7 @@ test_that("multi_predict(type = survival) for a single eval_time", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1527,7 +1534,7 @@ test_that("multi_predict(type = linear_pred)", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1569,12 +1576,13 @@ test_that("multi_predict(): type = raw", {
   exp_f_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
-    family = "cox"
+    family = "cox",
+    cox.ties = "efron"
   )
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   exp_pred <- predict(
@@ -1614,7 +1622,7 @@ test_that("multi_predict(type = time) works with single penalty", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1655,7 +1663,7 @@ test_that("multi_predict(type = survival) works with single penalty for multiple
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1698,7 +1706,7 @@ test_that("multi_predict(type = survival) works with single penalty for a single
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1741,7 +1749,7 @@ test_that("multi_predict(type = linear_pred) works with single penalty", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi <- multi_predict(
@@ -1780,9 +1788,11 @@ test_that("multi_predict(type = raw) works with single penalty", {
   exp_f_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
-    family = "cox"
+    family = "cox",
+    cox.ties = "efron"
   )
-  cox_spec <- proportional_hazards(penalty = 0.123) |> set_engine("glmnet")
+  cox_spec <- proportional_hazards(penalty = 0.123) |>
+    set_engine("glmnet", cox.ties = "efron")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   f_pred <- multi_predict(f_fit, lung2, type = "raw", penalty = 0.01)
@@ -1808,7 +1818,7 @@ test_that("multi_predict(): type = NULL", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   pred_multi_null <- multi_predict(
@@ -1834,7 +1844,7 @@ test_that("multi_predict() recognises default penalty", {
   set.seed(14)
   f_fit <- proportional_hazards(penalty = 0.123) |>
     set_mode("censored regression") |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # can use any prediction type to test
@@ -1862,7 +1872,8 @@ test_that("survival_time_coxnet() errors informatively on bad input", {
   raw_fit <- glmnet(
     x = as.matrix(lung2[, c("age", "ph.ecog")]),
     y = Surv(lung2$time, lung2$status),
-    family = "cox"
+    family = "cox",
+    cox.ties = "efron"
   )
   wrong_engine <- structure(
     list(fit = structure(list(), class = "coxph")),
@@ -1878,7 +1889,8 @@ test_that("survival_prob_coxnet() errors informatively on bad input", {
   raw_fit <- glmnet(
     x = as.matrix(lung2[, c("age", "ph.ecog")]),
     y = Surv(lung2$time, lung2$status),
-    family = "cox"
+    family = "cox",
+    cox.ties = "efron"
   )
   wrong_engine <- structure(
     list(fit = structure(list(), class = "coxph")),
@@ -1898,7 +1910,7 @@ test_that("survival_prob_coxnet() errors informatively on bad input", {
 test_that("survival_prob_coxnet() fails gracefully for eval_time values it can't handle", {
   lung2 <- lung[-14, ]
   mod <- proportional_hazards(penalty = 0.1) |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   expect_snapshot(
@@ -1914,7 +1926,7 @@ test_that("survival_prob_coxnet() fails gracefully for eval_time values it can't
 test_that("survival_prob_coxnet() accepts eval_time values that it can handle", {
   lung2 <- lung[-14, ]
   mod <- proportional_hazards(penalty = 0.1) |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
   new_data <- lung2[1:2, ]
 
