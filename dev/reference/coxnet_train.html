@@ -107,7 +107,7 @@ proportion matrices. Default is 1 for each observation</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This wrapper translates from formula interface to glmnet's matrix due to how
 stratification can be specified. glmnet requires that the <em>response</em> is
-stratified via <code><a href="https://rdrr.io/pkg/glmnet/man/stratifySurv.html" class="external-link">glmnet::stratifySurv()</a></code>. censored allows specification via a
+stratified via <code><a href="https://glmnet.stanford.edu/reference/stratifySurv.html" class="external-link">glmnet::stratifySurv()</a></code>. censored allows specification via a
 <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">survival::strata()</a></code> term on the right-hand side of the formula. The formula
 is used to generate the stratification information needed for stratifying the
 response. The formula without the strata term is used for generating the
@@ -119,6 +119,7 @@ including the training data to allow for predictions from the fitted model.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">coxnet_mod</span> <span class="op">&lt;-</span> <span class="fu">coxnet_train</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">lung</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Starting in glmnet 5.1, the default Cox tie-handling method will change from 'breslow' to 'efron' (matching survival::coxph). To silence this message and lock in the v5.0 default, pass cox.ties = 'breslow' explicitly. To preview the v5.1 behavior, pass cox.ties = 'efron'.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

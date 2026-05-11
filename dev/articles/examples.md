@@ -22,10 +22,11 @@ With the `"rpart"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
 ```
 
-      ## ── Attaching packages ───────────────────────────── tidymodels 1.4.1 ──
+      ## ── Attaching packages ───────────────────────────── tidymodels 1.5.0 ──
 
       ## ✔ broom        1.0.12     ✔ rsample      1.3.2 
       ## ✔ dials        1.4.3      ✔ tailor       0.1.0 
@@ -43,12 +44,14 @@ We’ll model the survival of lung cancer patients.
       ## ✖ recipes::step()  masks stats::step()
 
 ``` r
+
   library(censored)
 ```
 
       ## Loading required package: survival
 
 ``` r
+
   tidymodels_prefer()
   
   data(cancer)
@@ -61,6 +64,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   bt_spec <- 
     bag_tree(cost_complexity = 0) |>
     set_engine("rpart") |> 
@@ -79,6 +83,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   bt_fit <- bt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   bt_fit
@@ -95,6 +100,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as event time.
 
 ``` r
+
   predict(
     bt_fit, 
     lung_test, 
@@ -113,6 +119,7 @@ time points as well as event time.
       ## 3       1000        0.00496
 
 ``` r
+
   predict(bt_fit, lung_test, type = "time")
 ```
 
@@ -132,6 +139,7 @@ With the `"mboost"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -146,6 +154,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   bt_spec <- 
     boost_tree(trees = 15) |>
     set_engine("mboost") |> 
@@ -163,6 +172,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   bt_fit <- bt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   bt_fit
@@ -190,6 +200,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as the linear predictor.
 
 ``` r
+
   predict(
     bt_fit, 
     lung_test,
@@ -208,6 +219,7 @@ time points as well as the linear predictor.
       ## 3       1000         0.0441
 
 ``` r
+
   predict(bt_fit, lung_test, type = "linear_pred")
 ```
 
@@ -227,6 +239,7 @@ With the `"rpart"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -241,6 +254,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   dt_spec <- 
     decision_tree(cost_complexity = 0) |>
     set_engine("rpart") |> 
@@ -258,6 +272,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   dt_fit <- dt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   dt_fit
@@ -329,6 +344,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as event time.
 
 ``` r
+
   predict(
     dt_fit, 
     lung_test, 
@@ -347,6 +363,7 @@ time points as well as event time.
       ## 3       1000         NA
 
 ``` r
+
   predict(dt_fit, lung_test, type = "time")
 ```
 
@@ -364,6 +381,7 @@ With the `"partykit"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -378,6 +396,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   dt_spec <- 
     decision_tree() |>
     set_engine("partykit") |> 
@@ -392,6 +411,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   dt_fit <- dt_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   dt_fit
@@ -420,6 +440,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as event time.
 
 ``` r
+
   predict(
     dt_fit, 
     lung_test, 
@@ -438,6 +459,7 @@ time points as well as event time.
       ## 3       1000         0.0719
 
 ``` r
+
   predict(dt_fit, lung_test, type = "time")
 ```
 
@@ -457,6 +479,7 @@ With the `"survival"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -471,6 +494,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   ph_spec <- 
     proportional_hazards() |>
     set_engine("survival") |> 
@@ -485,6 +509,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   ph_fit <- ph_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   ph_fit
@@ -513,6 +538,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as the linear predictor and event time.
 
 ``` r
+
   predict(
     ph_fit, 
     lung_test, 
@@ -531,6 +557,7 @@ time points as well as the linear predictor and event time.
       ## 3       1000         0.0953
 
 ``` r
+
   predict(ph_fit, lung_test, type = "linear_pred")
 ```
 
@@ -544,6 +571,7 @@ time points as well as the linear predictor and event time.
       ## 5            -1.11
 
 ``` r
+
   predict(ph_fit, lung_test, type = "time")
 ```
 
@@ -561,6 +589,7 @@ With the `"glmnet"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -575,6 +604,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   ph_spec <- 
     proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet") |> 
@@ -592,8 +622,19 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   ph_fit <- ph_spec |> fit(Surv(time, status) ~ ., data = lung_train)
+```
+
+      ## Warning: Starting in glmnet 5.1, the default Cox tie-handling method
+      ## will change from 'breslow' to 'efron' (matching survival::coxph). To
+      ## silence this message and lock in the v5.0 default, pass cox.ties =
+      ## 'breslow' explicitly. To preview the v5.1 behavior, pass cox.ties =
+      ## 'efron'.
+
+``` r
+
   ph_fit
 ```
 
@@ -603,62 +644,65 @@ Now we create the model fit object:
       ## Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      weights = weights, alpha = alpha, lambda = lambda) 
       ## 
       ##    Df %Dev   Lambda
-      ## 1   0 0.00 0.221000
-      ## 2   1 0.23 0.201400
-      ## 3   2 0.43 0.183500
-      ## 4   2 0.72 0.167200
-      ## 5   2 0.96 0.152300
-      ## 6   2 1.17 0.138800
+      ## 1   0 0.00 0.221100
+      ## 2   1 0.23 0.201500
+      ## 3   2 0.44 0.183600
+      ## 4   2 0.71 0.167300
+      ## 5   2 0.96 0.152400
+      ## 6   2 1.16 0.138900
       ## 7   2 1.33 0.126500
-      ## 8   3 1.48 0.115200
-      ## 9   4 1.61 0.105000
-      ## 10  4 1.74 0.095660
-      ## 11  5 1.87 0.087160
-      ## 12  6 2.02 0.079420
-      ## 13  6 2.22 0.072370
-      ## 14  6 2.40 0.065940
-      ## 15  6 2.54 0.060080
-      ## 16  6 2.66 0.054740
-      ## 17  6 2.77 0.049880
-      ## 18  6 2.85 0.045450
-      ## 19  6 2.92 0.041410
-      ## 20  6 2.98 0.037730
-      ## 21  7 3.04 0.034380
-      ## 22  7 3.08 0.031330
-      ## 23  7 3.12 0.028540
-      ## 24  7 3.16 0.026010
-      ## 25  7 3.19 0.023700
-      ## 26  7 3.21 0.021590
-      ## 27  8 3.23 0.019670
-      ## 28  8 3.27 0.017930
-      ## 29  8 3.30 0.016330
-      ## 30  8 3.32 0.014880
-      ## 31  8 3.34 0.013560
-      ## 32  8 3.36 0.012360
-      ## 33  8 3.37 0.011260
-      ## 34  8 3.39 0.010260
-      ## 35  8 3.40 0.009346
-      ## 36  8 3.40 0.008516
-      ## 37  8 3.41 0.007760
-      ## 38  8 3.42 0.007070
-      ## 39  8 3.42 0.006442
-      ## 40  8 3.43 0.005870
-      ## 41  8 3.43 0.005348
-      ## 42  8 3.43 0.004873
-      ## 43  8 3.43 0.004440
-      ## 44  8 3.44 0.004046
-      ## 45  8 3.44 0.003686
-      ## 46  8 3.44 0.003359
-      ## 47  8 3.44 0.003061
-      ## 48  8 3.44 0.002789
-      ## 49  8 3.44 0.002541
-      ## 50  8 3.44 0.002315
+      ## 8   3 1.47 0.115300
+      ## 9   4 1.60 0.105100
+      ## 10  4 1.73 0.095730
+      ## 11  5 1.86 0.087220
+      ## 12  6 2.00 0.079470
+      ## 13  6 2.20 0.072410
+      ## 14  6 2.38 0.065980
+      ## 15  6 2.52 0.060120
+      ## 16  6 2.65 0.054780
+      ## 17  6 2.75 0.049910
+      ## 18  6 2.83 0.045480
+      ## 19  6 2.91 0.041440
+      ## 20  6 2.97 0.037760
+      ## 21  6 3.02 0.034400
+      ## 22  6 3.06 0.031350
+      ## 23  7 3.10 0.028560
+      ## 24  7 3.14 0.026020
+      ## 25  7 3.17 0.023710
+      ## 26  7 3.19 0.021610
+      ## 27  8 3.25 0.019690
+      ## 28  8 3.27 0.017940
+      ## 29  8 3.30 0.016340
+      ## 30  8 3.32 0.014890
+      ## 31  8 3.33 0.013570
+      ## 32  8 3.35 0.012360
+      ## 33  8 3.36 0.011270
+      ## 34  8 3.37 0.010260
+      ## 35  8 3.38 0.009353
+      ## 36  8 3.38 0.008522
+      ## 37  8 3.39 0.007765
+      ## 38  8 3.39 0.007075
+      ## 39  8 3.40 0.006446
+      ## 40  8 3.40 0.005874
+      ## 41  8 3.41 0.005352
+      ## 42  8 3.41 0.004876
+      ## 43  8 3.41 0.004443
+      ## 44  8 3.41 0.004048
+      ## 45  8 3.41 0.003689
+      ## 46  8 3.42 0.003361
+      ## 47  8 3.42 0.003063
+      ## 48  8 3.42 0.002790
+      ## 49  8 3.42 0.002543
+      ## 50  8 3.42 0.002317
+      ## 51  8 3.42 0.002111
+      ## 52  8 3.42 0.001923
       ## The training data has been saved for prediction.
 
 The holdout data can be predicted for survival probability at different
 time points as well as the linear predictor.
 
 ``` r
+
   predict(
     ph_fit, 
     lung_test, 
@@ -672,22 +716,23 @@ time points as well as the linear predictor.
       ## # A tibble: 3 × 2
       ##   .eval_time .pred_survival
       ##        <dbl>          <dbl>
-      ## 1        100         0.874 
+      ## 1        100         0.873 
       ## 2        500         0.349 
-      ## 3       1000         0.0804
+      ## 3       1000         0.0801
 
 ``` r
+
   predict(ph_fit, lung_test, type = "linear_pred")
 ```
 
       ## # A tibble: 5 × 1
       ##   .pred_linear_pred
       ##               <dbl>
-      ## 1         0.272    
-      ## 2         0.0000798
-      ## 3         0.00575  
-      ## 4        -0.0211   
-      ## 5        -0.00345
+      ## 1            0.175 
+      ## 2           -0.0783
+      ## 3           -0.0945
+      ## 4           -0.114 
+      ## 5           -0.112
 
 ## `rand_forest()` models
 
@@ -696,6 +741,7 @@ With the `"partykit"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -710,6 +756,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   rf_spec <- 
     rand_forest(trees = 200) |>
     set_engine("partykit") |> 
@@ -727,6 +774,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   rf_fit <- rf_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   rf_fit
@@ -6198,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x5594d13782d8>
+      ## <environment: 0x56009c64d190>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x5594d13782d8>
+      ## <environment: 0x56009c64d190>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x5594d13782d8>
+      ## <environment: 0x56009c64d190>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6277,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x5594b8fcf730>
+      ## <bytecode: 0x560092256db0>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6297,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5594c2d3e140>
-      ## <environment: 0x5594d13a64a0>
+      ## <bytecode: 0x56009b647978>
+      ## <environment: 0x56009d9a2c80>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6308,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5594c2d3c1b0>
-      ## <environment: 0x5594d13a63c0>
+      ## <bytecode: 0x56009b643860>
+      ## <environment: 0x56009d9a2d60>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6319,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5594c2d3e140>
-      ## <environment: 0x5594d13a62e0>
+      ## <bytecode: 0x56009b647978>
+      ## <environment: 0x56009d9a2e40>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6330,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5594c2d3c1b0>
-      ## <environment: 0x5594d13a6190>
+      ## <bytecode: 0x56009b643860>
+      ## <environment: 0x56009d9a2f90>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6375,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x5594c73aa390>
-      ## <environment: 0x5594d13aa810>
+      ## <bytecode: 0x560092f60c08>
+      ## <environment: 0x56009d9a0ba0>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6404,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x5594d13782d8>
+      ## <environment: 0x56009c64d190>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x5594d13782d8>
+      ## <environment: 0x56009c64d190>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x5594d13782d8>
+      ## <environment: 0x56009c64d190>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6422,6 +6470,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as event time.
 
 ``` r
+
   predict(
     rf_fit, 
     lung_test, 
@@ -6440,6 +6489,7 @@ time points as well as event time.
       ## 3       1000         0.0443
 
 ``` r
+
   predict(rf_fit, lung_test, type = "time")
 ```
 
@@ -6457,6 +6507,7 @@ With the `"aorsf"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -6471,6 +6522,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   rf_spec <- 
     rand_forest(trees = 200) |>
     set_engine("aorsf") |> 
@@ -6488,6 +6540,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   
   rf_fit <- rf_spec |> fit(Surv(time, status) ~ ., data = lung_train)
@@ -6517,6 +6570,7 @@ The holdout data can be predicted for survival probability at different
 time points as well as event time.
 
 ``` r
+
   predict(
     rf_fit, 
     lung_test, 
@@ -6535,6 +6589,7 @@ time points as well as event time.
       ## 3       1000         0.0538
 
 ``` r
+
   predict(rf_fit, lung_test, type = "time")
 ```
 
@@ -6554,6 +6609,7 @@ With the `"survival"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -6568,6 +6624,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   sr_spec <- 
     survival_reg(dist = "weibull") |>
     set_engine("survival") |> 
@@ -6585,6 +6642,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   sr_fit <- sr_spec |> fit(Surv(time, status) ~ ., data = lung_train)
   sr_fit
@@ -6613,6 +6671,7 @@ time points as well as event time, linear predictor, quantile, and
 hazard.
 
 ``` r
+
   predict(
     sr_fit, 
     lung_test, 
@@ -6631,6 +6690,7 @@ hazard.
       ## 3       1000         0.0742
 
 ``` r
+
   predict(sr_fit, lung_test, type = "time")
 ```
 
@@ -6644,6 +6704,7 @@ hazard.
       ## 5       313.
 
 ``` r
+
   predict(sr_fit, lung_test, type = "linear_pred")
 ```
 
@@ -6657,6 +6718,7 @@ hazard.
       ## 5              5.75
 
 ``` r
+
   predict(sr_fit, lung_test, type = "quantile")
 ```
 
@@ -6670,6 +6732,7 @@ hazard.
       ## 5          [243]
 
 ``` r
+
   predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) |> 
     slice(1) |> 
     tidyr::unnest(col = .pred)
@@ -6687,6 +6750,7 @@ With the `"flexsurv"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -6701,6 +6765,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model with specific parameters:
 
 ``` r
+
   sr_spec <- 
     survival_reg(dist = "weibull") |>
     set_engine("flexsurv") |> 
@@ -6718,6 +6783,7 @@ We can define the model with specific parameters:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   sr_fit <- sr_spec |> 
     fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
@@ -6754,6 +6820,7 @@ time points as well as event time, linear predictor, quantile, and
 hazard.
 
 ``` r
+
   predict(
     sr_fit, 
     lung_test, 
@@ -6772,6 +6839,7 @@ hazard.
       ## 3       1000         0.0543
 
 ``` r
+
   predict(sr_fit, lung_test, type = "time")
 ```
 
@@ -6785,6 +6853,7 @@ hazard.
       ## 5       327.
 
 ``` r
+
   predict(sr_fit, lung_test, type = "linear_pred")
 ```
 
@@ -6798,6 +6867,7 @@ hazard.
       ## 5              5.88
 
 ``` r
+
   predict(sr_fit, lung_test, type = "quantile")
 ```
 
@@ -6811,6 +6881,7 @@ hazard.
       ## 5          [276]
 
 ``` r
+
   predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) |> 
     slice(1) |> 
     tidyr::unnest(col = .pred)
@@ -6828,6 +6899,7 @@ With the `"flexsurvspline"` engine
 We’ll model the survival of lung cancer patients.
 
 ``` r
+
   library(tidymodels)
   library(censored)
   tidymodels_prefer()
@@ -6842,6 +6914,7 @@ We’ll model the survival of lung cancer patients.
 We can define the model:
 
 ``` r
+
   sr_spec <- 
     survival_reg() |>
     set_engine("flexsurvspline") |> 
@@ -6856,6 +6929,7 @@ We can define the model:
 Now we create the model fit object:
 
 ``` r
+
   set.seed(1)
   sr_fit <- sr_spec |> 
     fit(Surv(time, status) ~ age + sex + ph.ecog, data = lung_train)
@@ -6892,6 +6966,7 @@ time points as well as event time, linear predictor, quantile, and
 hazard.
 
 ``` r
+
   predict(
     sr_fit, 
     lung_test, 
@@ -6910,6 +6985,7 @@ hazard.
       ## 3       1000         0.0543
 
 ``` r
+
   predict(sr_fit, lung_test, type = "time")
 ```
 
@@ -6923,6 +6999,7 @@ hazard.
       ## 5       327.
 
 ``` r
+
   predict(sr_fit, lung_test, type = "linear_pred")
 ```
 
@@ -6936,6 +7013,7 @@ hazard.
       ## 5             -8.20
 
 ``` r
+
   predict(sr_fit, lung_test, type = "quantile")
 ```
 
@@ -6949,6 +7027,7 @@ hazard.
       ## 5          [276]
 
 ``` r
+
   predict(sr_fit, lung_test, type = "hazard", eval_time = c(100, 500, 1000)) |> 
     slice(1) |> 
     tidyr::unnest(col = .pred)
