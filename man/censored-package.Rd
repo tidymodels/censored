@@ -54,6 +54,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Hannah Frick \email{hannah@posit.co} (\href{https://orcid.org/0000-0002-6049-5258}{ORCID})
   \item Emil Hvitfeldt \email{emil.hvitfeldt@posit.co} (\href{https://orcid.org/0000-0002-0679-1945}{ORCID})
 }
 
