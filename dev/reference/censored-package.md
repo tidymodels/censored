@@ -24,6 +24,9 @@ Useful links:
 
 Authors:
 
+- Hannah Frick <hannah@posit.co>
+  ([ORCID](https://orcid.org/0000-0002-6049-5258))
+
 - Emil Hvitfeldt <emil.hvitfeldt@posit.co>
   ([ORCID](https://orcid.org/0000-0002-0679-1945))
 
