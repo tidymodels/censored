@@ -1384,6 +1384,43 @@ test_that("`fit_xy()` works with data frame input", {
   expect_equal(f_pred_lp, xy_pred_lp)
 })
 
+test_that("`fit_xy()` works with factor predictors (#365)", {
+  lung2 <- lung[-14, ]
+  lung2$sex <- factor(lung2$sex)
+  lung_x <- lung2[, c("age", "ph.ecog", "sex")]
+  lung_y <- Surv(lung2$time, lung2$status)
+  lung_pred <- lung2[1:5, ]
+
+  spec <- proportional_hazards(penalty = 0.1) |>
+    set_engine("glmnet", cox.ties = "efron")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog + sex, data = lung2)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  expect_equal(f_fit$fit$fit, xy_fit$fit$fit)
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  expect_equal(f_pred_survival, xy_pred_survival)
+
+  f_pred_lp <- predict(f_fit, new_data = lung_pred, type = "linear_pred")
+  xy_pred_lp <- predict(xy_fit, new_data = lung_pred, type = "linear_pred")
+  expect_equal(f_pred_lp, xy_pred_lp)
+})
+
 test_that("`fit_xy()` errors with stratification", {
   lung2 <- lung[-14, ]
   lung_x <- as.matrix(lung2[, c("age", "ph.ecog")])
