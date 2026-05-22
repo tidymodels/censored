@@ -509,8 +509,6 @@ survival_time_coxnet <- function(
 
   new_x <- coxnet_prepare_x(new_data, object)
 
-  # strata can only enter via the formula API (`fit.proportional_hazards()`
-  # is the only path that sets `object$formula`)
   if (
     !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
@@ -673,8 +671,6 @@ survival_prob_coxnet <- function(
 
   new_x <- coxnet_prepare_x(new_data, object)
 
-  # strata can only enter via the formula API (`fit.proportional_hazards()`
-  # is the only path that sets `object$formula`)
   if (
     !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)

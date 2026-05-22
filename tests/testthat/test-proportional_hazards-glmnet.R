@@ -1384,7 +1384,7 @@ test_that("`fit_xy()` works with data frame input", {
   expect_equal(f_pred_lp, xy_pred_lp)
 })
 
-test_that("`fit_xy()` works with factor predictors (#365)", {
+test_that("`fit_xy()` + prediction work with factor predictors (#365)", {
   lung2 <- lung[-14, ]
   lung2$sex <- factor(lung2$sex)
   lung_x <- lung2[, c("age", "ph.ecog", "sex")]
