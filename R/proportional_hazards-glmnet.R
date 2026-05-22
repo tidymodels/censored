@@ -197,20 +197,11 @@ print._coxnet <- function(x, ...) {
 # prediction --------------------------------------------------------------
 
 coxnet_prepare_x <- function(new_data, object) {
-  went_through_formula_interface <- !is.null(object$preproc$coxnet)
-
-  if (went_through_formula_interface) {
-    new_x <- parsnip::.convert_form_to_xy_new(
-      object$preproc$coxnet,
-      new_data,
-      composition = "matrix"
-    )$x
-  } else {
-    new_x <- new_data[, object$preproc$x_var, drop = FALSE] |>
-      as.matrix()
-  }
-
-  new_x
+  parsnip::.convert_form_to_xy_new(
+    object$preproc$coxnet,
+    new_data,
+    composition = "matrix"
+  )$x
 }
 
 # notes adapted from parsnip:
@@ -518,9 +509,8 @@ survival_time_coxnet <- function(
 
   new_x <- coxnet_prepare_x(new_data, object)
 
-  went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (
-    went_through_formula_interface &&
+    !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
     new_strata <- get_strata_glmnet(
@@ -681,9 +671,8 @@ survival_prob_coxnet <- function(
 
   new_x <- coxnet_prepare_x(new_data, object)
 
-  went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (
-    went_through_formula_interface &&
+    !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
     new_strata <- get_strata_glmnet(
