@@ -1,3 +1,38 @@
+#' A wrapper for survival time predictions with pecRpart models
+#'
+#' Returns the median survival time of each leaf's Kaplan-Meier curve, as
+#' stored in `pecRpart`'s stratified `prodlim` fit. `Inf` is returned when the
+#' leaf's KM never crosses 0.5.
+#' @param object A parsnip `model_fit` object resulting from [decision_tree() with engine = "rpart"][parsnip::details_decision_tree_rpart].
+#' @param new_data Data for prediction.
+#' @return A numeric vector of predicted survival times.
+#' @keywords internal
+#' @export
+#' @examplesIf rlang::is_installed("pec")
+#' mod <- decision_tree() |>
+#'   set_mode("censored regression") |>
+#'     set_engine("rpart") |>
+#'     fit(Surv(time, status) ~ ., data = lung)
+#' survival_time_pecRpart(mod, new_data = lung[1:3, ])
+survival_time_pecRpart <- function(object, new_data) {
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "pecRpart", arg = "object$fit")
+  check_data_frame(new_data)
+
+  leaf <- factor(
+    predict(engine_fit$rpart, newdata = new_data),
+    levels = engine_fit$levels
+  )
+
+  medians <- stats::quantile(engine_fit$survfit, q = 0.5)
+  med_by_leaf <- medians$quantile[
+    match(as.character(leaf), as.character(medians$rpartFactor))
+  ]
+  med_by_leaf[is.na(med_by_leaf)] <- Inf
+  unname(med_by_leaf)
+}
+
 #' A wrapper for survival probabilities with pecRpart models
 #' @param object A parsnip `model_fit` object resulting from [decision_tree() with engine = "rpart"][parsnip::details_decision_tree_rpart].
 #' @param new_data Data for prediction.
