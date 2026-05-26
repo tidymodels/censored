@@ -1,4 +1,4 @@
-skip_if_not_installed("parsnip", minimum_version = "1.5.0.9001")
+skip_if_not_installed("parsnip", minimum_version = "1.6.0.9000")
 
 test_that("predict() with add_censoring_weights = TRUE works when new_data has separate time and event columns", {
   cox_spec <- proportional_hazards(penalty = 0.1) |>
