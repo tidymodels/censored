@@ -263,7 +263,11 @@ multi_predict._blackboost <- function(
   mstop_original <- mboost::mstop(engine_fit)
   on.exit(engine_fit[mstop_original], add = TRUE)
 
-  trees <- check_trees(trees, mstop_original)
+  if (is.null(trees)) {
+    trees <- mstop_original
+  }
+  check_trees(trees, mstop_original)
+  trees <- sort(unique(as.integer(trees)))
 
   pred <- switch(
     type,
@@ -285,30 +289,49 @@ multi_predict._blackboost <- function(
   pred
 }
 
-check_trees <- function(trees, mstop_original, call = caller_env()) {
-  if (is.null(trees)) {
-    trees <- mstop_original
-  }
-  if (
-    !is.numeric(trees) || any(trees != as.integer(trees)) || any(trees < 1L)
-  ) {
-    cli::cli_abort(
-      "{.arg trees} must be a vector of positive integers.",
+check_trees <- function(
+  x,
+  mstop_original,
+  ...,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  if (missing(x) || !is.numeric(x)) {
+    rlang::stop_input_type(
+      x,
+      "a numeric vector",
+      ...,
+      arg = arg,
       call = call
     )
   }
-  trees <- sort(unique(as.integer(trees)))
-  if (any(trees > mstop_original)) {
+  if (length(x) == 0) {
+    cli::cli_abort("{.arg {arg}} can't be empty.", call = call)
+  }
+  if (anyNA(x) || any(!is.finite(x))) {
+    cli::cli_abort(
+      "{.arg {arg}} can't contain missing or infinite values.",
+      call = call
+    )
+  }
+  if (any(x != floor(x)) || any(x < 1)) {
+    cli::cli_abort(
+      "{.arg {arg}} must be a vector of positive integers.",
+      call = call
+    )
+  }
+  if (any(x > mstop_original)) {
     cli::cli_abort(
       c(
-        "{.arg trees} values must not exceed the number of boosting \\
-         iterations in the fitted model ({mstop_original}).",
+        "{.arg {arg}} values must not exceed the number of boosting iterations
+        in the fitted model ({mstop_original}).",
         i = "mboost would otherwise refit additional iterations."
       ),
       call = call
     )
   }
-  trees
+
+  invisible(NULL)
 }
 
 multi_predict_mboost_time <- function(object, new_data, trees) {
