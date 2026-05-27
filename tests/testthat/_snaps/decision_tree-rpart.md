@@ -22,6 +22,22 @@
       Error in `survival_prob_pecRpart()`:
       ! `object$fit` must be a <pecRpart> object, not a <rpart> object.
 
+# survival_time_pecRpart() errors informatively on bad input
+
+    Code
+      survival_time_pecRpart(raw_fit, new_data = lung[1:3, ])
+    Condition
+      Error in `survival_time_pecRpart()`:
+      ! `object` must be a <model_fit> object, not a <pecRpart> object.
+
+---
+
+    Code
+      survival_time_pecRpart(wrong_engine, new_data = lung[1:3, ])
+    Condition
+      Error in `survival_time_pecRpart()`:
+      ! `object$fit` must be a <pecRpart> object, not a <rpart> object.
+
 # survival_prob_pecRpart() fails gracefully for eval_time values it can't handle
 
     Code
