@@ -1,5 +1,7 @@
 # censored (development version)
 
+* `multi_predict()` is now available for `boost_tree()` with the `"mboost"` engine over the `trees` submodel parameter (#290).
+
 * Prediction for `proportional_hazards()` with the `"glmnet"` engine no longer fails on data with factors when fitted through `fit_xy()` (#365).
 
 * The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
