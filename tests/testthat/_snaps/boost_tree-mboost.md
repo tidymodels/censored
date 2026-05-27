@@ -44,8 +44,8 @@
       multi_predict(f_fit, new_data = new_data_3, type = "survival", trees = c(25,
         100))
     Condition
-      Error in `check_pred_type_dots()`:
-      ! When using `type` values of 'survival' or 'hazard', a numeric vector `eval_time` should also be given.
+      Error in `multi_predict()`:
+      ! When using `type` values of "survival" or "hazard" a numeric vector `eval_time` should also be given.
 
 ---
 
@@ -53,8 +53,8 @@
       multi_predict(f_fit, new_data = new_data_3, type = "time", eval_time = 100,
         trees = c(25, 100))
     Condition
-      Error in `check_pred_type_dots()`:
-      ! `eval_time` should only be passed to `predict()` when `type` is one of: 'survival', 'hazard'
+      Error in `multi_predict()`:
+      ! `eval_time` should only be passed to `predict()` when `type` is one of "survival" or "hazard".
 
 ---
 
