@@ -2,6 +2,12 @@
 
 ## censored (development version)
 
+- [`multi_predict()`](https://parsnip.tidymodels.org/reference/multi_predict.html)
+  is now available for
+  [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine over the `trees` submodel parameter
+  ([\#290](https://github.com/tidymodels/censored/issues/290)).
+
 - [`decision_tree()`](https://parsnip.tidymodels.org/reference/decision_tree.html)
   with the `"rpart"` engine now correctly returns the median survival
   time of the leaf’s Kaplan-Meier curve for `type = "time"` predictions,

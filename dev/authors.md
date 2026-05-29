@@ -17,13 +17,13 @@ Source:
 [`DESCRIPTION`](https://github.com/tidymodels/censored/blob/main/DESCRIPTION)
 
 Hvitfeldt E, Frick H (2026). *censored: 'parsnip' Engines for Survival
-Models*. R package version 0.3.4.9000,
+Models*. R package version 0.3.4.9001,
 <https://github.com/tidymodels/censored>.
 
     @Manual{,
       title = {censored: 'parsnip' Engines for Survival Models},
       author = {Emil Hvitfeldt and Hannah Frick},
       year = {2026},
-      note = {R package version 0.3.4.9000},
+      note = {R package version 0.3.4.9001},
       url = {https://github.com/tidymodels/censored},
     }
