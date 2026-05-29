@@ -59,11 +59,11 @@ make_decision_tree_rpart <- function() {
     type = "time",
     value = list(
       pre = NULL,
-      post = unname,
-      func = c(fun = "predict"),
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_pecRpart"),
       args = list(
-        object = quote(object$fit$rpart),
-        newdata = quote(new_data)
+        object = rlang::expr(object),
+        new_data = rlang::expr(new_data)
       )
     )
   )
