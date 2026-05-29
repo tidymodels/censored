@@ -56,6 +56,7 @@ NULL
 utils::globalVariables(
   c(
     "eval_time",
+    ".eval_time",
     ".time",
     "object",
     "new_data",

@@ -379,3 +379,506 @@ test_that("survival_prob_mboost() accepts eval_time values that it can handle", 
     )
   )
 })
+
+# `multi_predict()` works for all `type`s available for `predict()` -------
+
+test_that("multi_predict(type = time)", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    trees = c(25, 100)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_equal(nrow(pred_multi), nrow(new_data_3))
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      \(.x) all(names(.x) == c("trees", ".pred_time"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_multi$.pred, nrow),
+    rep(2L, nrow(new_data_3))
+  )
+})
+
+test_that("multi_predict(type = survival) for multiple eval_time points", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = c(100, 500),
+    trees = c(25, 100)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_equal(nrow(pred_multi), nrow(new_data_3))
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      \(.x) all(names(.x) == c("trees", ".eval_time", ".pred_survival"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_multi$.pred, nrow),
+    rep(4L, nrow(new_data_3))
+  )
+})
+
+test_that("multi_predict(type = survival) for a single eval_time", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = 100,
+    trees = c(25, 100)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_equal(nrow(pred_multi), nrow(new_data_3))
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      \(.x) all(names(.x) == c("trees", ".eval_time", ".pred_survival"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_multi$.pred, nrow),
+    rep(2L, nrow(new_data_3))
+  )
+})
+
+test_that("multi_predict(type = time) values match per-tree predict()", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    trees = c(25, 100)
+  )
+  unnested <- tidyr::unnest(pred_multi, cols = .pred)
+
+  # mboost objects share mutable state, so mutating `engine_fit` also mutates
+  # `f_fit$fit` — that's how `predict(f_fit, ...)` sees the subset iterations.
+  engine_fit <- hardhat::extract_fit_engine(f_fit)
+  mstop_original <- mboost::mstop(engine_fit)
+  engine_fit[25]
+  exp_25 <- predict(f_fit, new_data = new_data_3, type = "time")
+  engine_fit[100]
+  exp_100 <- predict(f_fit, new_data = new_data_3, type = "time")
+  engine_fit[mstop_original]
+
+  expect_equal(
+    unnested$.pred_time[unnested$trees == 25],
+    exp_25$.pred_time
+  )
+  expect_equal(
+    unnested$.pred_time[unnested$trees == 100],
+    exp_100$.pred_time
+  )
+})
+
+test_that("multi_predict(type = survival) values match per-tree predict()", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+  eval_time <- c(100, 500)
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = eval_time,
+    trees = c(25, 100)
+  )
+  unnested <- tidyr::unnest(pred_multi, cols = .pred)
+
+  # mboost objects share mutable state, so mutating `engine_fit` also mutates
+  # `f_fit$fit` — that's how `predict(f_fit, ...)` sees the subset iterations.
+  engine_fit <- hardhat::extract_fit_engine(f_fit)
+  mstop_original <- mboost::mstop(engine_fit)
+  engine_fit[25]
+  exp_25 <- predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = eval_time
+  ) |>
+    tidyr::unnest(cols = .pred)
+  engine_fit[100]
+  exp_100 <- predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = eval_time
+  ) |>
+    tidyr::unnest(cols = .pred)
+  engine_fit[mstop_original]
+
+  expect_equal(
+    unnested$.pred_survival[unnested$trees == 25],
+    exp_25$.pred_survival
+  )
+  expect_equal(
+    unnested$.pred_survival[unnested$trees == 100],
+    exp_100$.pred_survival
+  )
+})
+
+test_that("multi_predict(type = linear_pred) values match per-tree predict()", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    trees = c(25, 100)
+  )
+  unnested <- tidyr::unnest(pred_multi, cols = .pred)
+
+  # mboost objects share mutable state, so mutating `engine_fit` also mutates
+  # `f_fit$fit` — that's how `predict(f_fit, ...)` sees the subset iterations.
+  engine_fit <- hardhat::extract_fit_engine(f_fit)
+  mstop_original <- mboost::mstop(engine_fit)
+  engine_fit[25]
+  exp_25 <- predict(f_fit, new_data = new_data_3, type = "linear_pred")
+  engine_fit[100]
+  exp_100 <- predict(f_fit, new_data = new_data_3, type = "linear_pred")
+  engine_fit[mstop_original]
+
+  expect_equal(
+    unnested$.pred_linear_pred[unnested$trees == 25],
+    exp_25$.pred_linear_pred
+  )
+  expect_equal(
+    unnested$.pred_linear_pred[unnested$trees == 100],
+    exp_100$.pred_linear_pred
+  )
+
+  # increasing = FALSE forwarded via opts
+  pred_multi_raw <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    trees = c(25, 100),
+    increasing = FALSE
+  )
+  unnested_raw <- tidyr::unnest(pred_multi_raw, cols = .pred)
+  expect_equal(
+    unnested_raw$.pred_linear_pred,
+    -unnested$.pred_linear_pred
+  )
+})
+
+test_that("multi_predict() works with a single `trees` value", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_time <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    trees = 50
+  )
+  expect_equal(names(pred_time), ".pred")
+  expect_true(
+    all(purrr::map_lgl(
+      pred_time$.pred,
+      \(.x) all(names(.x) == c("trees", ".pred_time"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_time$.pred, nrow),
+    rep(1L, nrow(new_data_3))
+  )
+
+  pred_surv <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = c(100, 500),
+    trees = 50
+  )
+  expect_true(
+    all(purrr::map_lgl(
+      pred_surv$.pred,
+      \(.x) all(names(.x) == c("trees", ".eval_time", ".pred_survival"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_surv$.pred, nrow),
+    rep(2L, nrow(new_data_3))
+  )
+
+  pred_lp <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    trees = 50
+  )
+  expect_true(
+    all(purrr::map_lgl(
+      pred_lp$.pred,
+      \(.x) all(names(.x) == c("trees", ".pred_linear_pred"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_lp$.pred, nrow),
+    rep(1L, nrow(new_data_3))
+  )
+})
+
+test_that("multi_predict(type = linear_pred)", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred_multi <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    trees = c(25, 100)
+  )
+
+  expect_equal(names(pred_multi), ".pred")
+  expect_equal(nrow(pred_multi), nrow(new_data_3))
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi$.pred,
+      \(.x) all(names(.x) == c("trees", ".pred_linear_pred"))
+    ))
+  )
+  expect_equal(
+    purrr::map_int(pred_multi$.pred, nrow),
+    rep(2L, nrow(new_data_3))
+  )
+
+  # single observation
+  pred_multi_1 <- multi_predict(
+    f_fit,
+    new_data = new_data_3[1, ],
+    type = "linear_pred",
+    trees = c(25, 100)
+  )
+  expect_equal(names(pred_multi_1), ".pred")
+  expect_equal(nrow(pred_multi_1), 1L)
+  expect_true(
+    all(purrr::map_lgl(
+      pred_multi_1$.pred,
+      \(.x) all(names(.x) == c("trees", ".pred_linear_pred"))
+    ))
+  )
+  expect_equal(purrr::map_int(pred_multi_1$.pred, nrow), 2L)
+})
+
+test_that("multi_predict() reports `trees` as a submodel arg", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  expect_equal(multi_predict_args(f_fit), "trees")
+  expect_true(has_multi_predict(f_fit))
+})
+
+test_that("multi_predict() leaves the fitted model's mstop unchanged", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+  # mboost objects share mutable state: `multi_predict()` mutates the engine fit
+  # while iterating over `trees` and must reset it before returning, otherwise
+  # `f_fit$fit` would be left at the last `trees` value.
+  engine_fit <- hardhat::extract_fit_engine(f_fit)
+  mstop_before <- mboost::mstop(engine_fit)
+
+  multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "time",
+    trees = c(25, 100)
+  )
+  expect_equal(mboost::mstop(engine_fit), mstop_before)
+
+  multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "survival",
+    eval_time = c(100, 500),
+    trees = c(25, 100)
+  )
+  expect_equal(mboost::mstop(engine_fit), mstop_before)
+
+  multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    trees = c(25, 100)
+  )
+  expect_equal(mboost::mstop(engine_fit), mstop_before)
+
+  # `mstop` is also restored when the helper errors after the on.exit is set
+  try(
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "survival",
+      trees = c(25, 100)
+    ),
+    silent = TRUE
+  )
+  expect_equal(mboost::mstop(engine_fit), mstop_before)
+})
+
+test_that("multi_predict() errors informatively on bad input", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  # missing eval_time for type = "survival"
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "survival",
+      trees = c(25, 100)
+    )
+  )
+
+  # eval_time supplied for a type that does not use it
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      eval_time = 100,
+      trees = c(25, 100)
+    )
+  )
+
+  # `trees` above the fitted model's mstop
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = c(50, 10000)
+    )
+  )
+
+  # non-positive `trees`
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = c(0, 50)
+    )
+  )
+
+  # non-integer `trees`
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = c(1.5, 50)
+    )
+  )
+})

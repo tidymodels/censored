@@ -38,3 +38,46 @@
       Error in `survival_prob_mboost()`:
       ! `object$fit` must be a <mboost> object, not a <coxph> object.
 
+# multi_predict() errors informatively on bad input
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "survival", trees = c(25,
+        100))
+    Condition
+      Error in `multi_predict()`:
+      ! When using `type` values of "survival" or "hazard" a numeric vector `eval_time` should also be given.
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", eval_time = 100,
+        trees = c(25, 100))
+    Condition
+      Error in `multi_predict()`:
+      ! `eval_time` should only be passed to `predict()` when `type` is one of "survival" or "hazard".
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", trees = c(50, 10000))
+    Condition
+      Error in `multi_predict()`:
+      ! `trees` values must not exceed the number of boosting iterations in the fitted model (100).
+      i mboost would otherwise refit additional iterations.
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", trees = c(0, 50))
+    Condition
+      Error in `multi_predict()`:
+      ! `trees` must be a vector of positive integers.
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", trees = c(1.5, 50))
+    Condition
+      Error in `multi_predict()`:
+      ! `trees` must be a vector of positive integers.
+

@@ -1,14 +1,18 @@
 # censored (development version)
 
+* `multi_predict()` is now available for `boost_tree()` with the `"mboost"` engine over the `trees` submodel parameter (#290).
+
 * `decision_tree()` with the `"rpart"` engine now correctly returns the median survival time of the leaf's Kaplan-Meier curve for `type = "time"` predictions, instead of rpart's relative event rate (#331).
 
 * Prediction for `proportional_hazards()` with the `"glmnet"` engine no longer fails on data with factors when fitted through `fit_xy()` (#365).
 
 * The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
 
+
 # censored 0.3.4
 
 * Adapted tests for hardhat 1.4.3 (#358).
+
 
 # censored 0.3.3
 

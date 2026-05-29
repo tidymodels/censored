@@ -43,7 +43,7 @@ make_boost_tree_mboost <- function() {
     parsnip = "trees",
     original = "mstop",
     func = list(pkg = "dials", fun = "trees"),
-    has_submodel = FALSE
+    has_submodel = TRUE
   )
 
   parsnip::set_model_arg(
