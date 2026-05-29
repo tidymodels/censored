@@ -2,6 +2,12 @@
 
 ## censored (development version)
 
+- [`decision_tree()`](https://parsnip.tidymodels.org/reference/decision_tree.html)
+  with the `"rpart"` engine now correctly returns the median survival
+  time of the leaf’s Kaplan-Meier curve for `type = "time"` predictions,
+  instead of rpart’s relative event rate
+  ([\#331](https://github.com/tidymodels/censored/issues/331)).
+
 - Prediction for
   [`proportional_hazards()`](https://parsnip.tidymodels.org/reference/proportional_hazards.html)
   with the `"glmnet"` engine no longer fails on data with factors when

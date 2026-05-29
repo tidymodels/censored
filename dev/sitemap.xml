@@ -22,6 +22,7 @@
 <url><loc>https://censored.tidymodels.org/dev/reference/survival_time_coxnet.html</loc></url>
 <url><loc>https://censored.tidymodels.org/dev/reference/survival_time_coxph.html</loc></url>
 <url><loc>https://censored.tidymodels.org/dev/reference/survival_time_mboost.html</loc></url>
+<url><loc>https://censored.tidymodels.org/dev/reference/survival_time_pecRpart.html</loc></url>
 <url><loc>https://censored.tidymodels.org/dev/reference/survival_time_survbagg.html</loc></url>
 <url><loc>https://censored.tidymodels.org/dev/reference/time_to_million.html</loc></url>
 </urlset>

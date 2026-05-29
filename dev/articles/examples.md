@@ -370,11 +370,11 @@ time points as well as event time.
       ## # A tibble: 5 × 1
       ##   .pred_time
       ##        <dbl>
-      ## 1       1.64
-      ## 2       2.24
-      ## 3       1.23
-      ## 4       1.91
-      ## 5       1.91
+      ## 1        270
+      ## 2        197
+      ## 3        301
+      ## 4        201
+      ## 5        201
 
 With the `"partykit"` engine
 
@@ -6246,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x555f74e478f0>
+      ## <environment: 0x560cd05ee248>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x555f74e478f0>
+      ## <environment: 0x560cd05ee248>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x555f74e478f0>
+      ## <environment: 0x560cd05ee248>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6325,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x555f666fcdb0>
+      ## <bytecode: 0x560cba728660>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6345,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x555f6fb3b810>
-      ## <environment: 0x555f74f04f00>
+      ## <bytecode: 0x560cc3bb7690>
+      ## <environment: 0x560cd06543e8>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6356,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x555f6fb39618>
-      ## <environment: 0x555f74f04e20>
+      ## <bytecode: 0x560cc3bb57a8>
+      ## <environment: 0x560cd0654308>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6367,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x555f6fb3b810>
-      ## <environment: 0x555f74f04d40>
+      ## <bytecode: 0x560cc3bb7690>
+      ## <environment: 0x560cd0654228>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6378,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x555f6fb39618>
-      ## <environment: 0x555f74f04bf0>
+      ## <bytecode: 0x560cc3bb57a8>
+      ## <environment: 0x560cd06540d8>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6423,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x555f72a8cb10>
-      ## <environment: 0x555f74f06e90>
+      ## <bytecode: 0x560cc8b8bac8>
+      ## <environment: 0x560cd06564c8>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6452,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x555f74e478f0>
+      ## <environment: 0x560cd05ee248>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x555f74e478f0>
+      ## <environment: 0x560cd05ee248>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x555f74e478f0>
+      ## <environment: 0x560cd05ee248>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6557,7 +6557,7 @@ Now we create the model fit object:
       ##                  N trees: 200
       ##       N predictors total: 8
       ##    N predictors per node: 3
-      ##  Average leaves per tree: 17.175
+      ##  Average leaves per tree: 17.15
       ## Min observations in leaf: 5
       ##       Min events in leaf: 1
       ##           OOB stat value: 0.62
@@ -6584,9 +6584,9 @@ time points as well as event time.
       ## # A tibble: 3 × 2
       ##   .eval_time .pred_survival
       ##        <dbl>          <dbl>
-      ## 1        100         0.917 
+      ## 1        100         0.911 
       ## 2        500         0.397 
-      ## 3       1000         0.0538
+      ## 3       1000         0.0648
 
 ``` r
 
@@ -6596,11 +6596,11 @@ time points as well as event time.
       ## # A tibble: 5 × 1
       ##   .pred_time
       ##        <dbl>
-      ## 1       397.
-      ## 2       277.
-      ## 3       240.
-      ## 4       228.
-      ## 5       226.
+      ## 1       398.
+      ## 2       268.
+      ## 3       243.
+      ## 4       224.
+      ## 5       219.
 
 ## `survival_reg()` models
 
