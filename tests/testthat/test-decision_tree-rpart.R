@@ -27,23 +27,56 @@ test_that("time predictions", {
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  cox_spec <- decision_tree() |>
+  spec <- decision_tree() |>
     set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
-  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   f_pred <- predict(f_fit, lung, type = "time")
-  exp_f_pred <- predict(exp_f_fit$rpart, lung)
+
+  exp_leaf <- factor(
+    predict(exp_f_fit$rpart, newdata = lung),
+    levels = exp_f_fit$levels
+  )
+  exp_medians <- stats::quantile(exp_f_fit$survfit, q = 0.5)
+  exp_time <- exp_medians$quantile[
+    match(as.character(exp_leaf), as.character(exp_medians$rpartFactor))
+  ]
+  exp_time[is.na(exp_time)] <- Inf
 
   expect_s3_class(f_pred, "tbl_df")
   expect_true(all(names(f_pred) == ".pred_time"))
-  expect_equal(f_pred$.pred_time, unname(exp_f_pred))
+  expect_equal(f_pred$.pred_time, exp_time)
   expect_equal(nrow(f_pred), nrow(lung))
 
   # single observation
   f_pred_1 <- predict(f_fit, lung[2, ], type = "time")
   expect_identical(nrow(f_pred_1), 1L)
+})
+
+test_that("time predictions are Inf for leaves whose KM never reaches 0.5", {
+  skip_if_not_installed("pec")
+
+  spec <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart")
+  set.seed(1234)
+  f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
+
+  engine_fit <- extract_fit_engine(f_fit)
+  medians <- stats::quantile(engine_fit$survfit, q = 0.5)
+  inf_leaves <- as.character(medians$rpartFactor)[is.na(medians$quantile)]
+  expect_gt(length(inf_leaves), 0)
+
+  leaves <- as.character(factor(
+    predict(engine_fit$rpart, newdata = lung),
+    levels = engine_fit$levels
+  ))
+  f_pred <- predict(f_fit, lung, type = "time")
+  expect_true(any(is.infinite(f_pred$.pred_time)))
+  expect_true(all(is.infinite(f_pred$.pred_time[leaves %in% inf_leaves])))
+  expect_true(all(is.finite(f_pred$.pred_time[!leaves %in% inf_leaves])))
 })
 
 
@@ -215,6 +248,25 @@ test_that("survival_prob_pecRpart() errors informatively on bad input", {
       new_data = lung[1:3, ],
       eval_time = 100
     )
+  )
+})
+
+test_that("survival_time_pecRpart() errors informatively on bad input", {
+  skip_if_not_installed("pec")
+
+  raw_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "rpart")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_time_pecRpart(raw_fit, new_data = lung[1:3, ])
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_time_pecRpart(wrong_engine, new_data = lung[1:3, ])
   )
 })
 
