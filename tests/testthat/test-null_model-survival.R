@@ -3,7 +3,7 @@ library(survival)
 
 test_that("model object ignores predictors", {
   spec <- null_model() |>
-    set_engine("censored") |>
+    set_engine("survival") |>
     set_mode("censored regression")
 
   expect_no_error(
@@ -18,7 +18,7 @@ test_that("model object ignores predictors", {
 
 test_that("time predictions", {
   spec <- null_model() |>
-    set_engine("censored") |>
+    set_engine("survival") |>
     set_mode("censored regression")
   f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
   f_pred <- predict(f_fit, lung, type = "time")
@@ -37,7 +37,7 @@ test_that("time predictions", {
 
 test_that("survival predictions", {
   spec <- null_model() |>
-    set_engine("censored") |>
+    set_engine("survival") |>
     set_mode("censored regression")
   f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
   eval_time <- c(100, 300)
@@ -60,7 +60,7 @@ test_that("survival predictions", {
 
 test_that("predictions ignore missing values in predictors", {
   spec <- null_model() |>
-    set_engine("censored") |>
+    set_engine("survival") |>
     set_mode("censored regression")
   f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
 

@@ -9,29 +9,29 @@
 
 # nocov start
 
-make_null_model_censored <- function() {
+make_null_model_survival <- function() {
   parsnip::set_model_mode("null_model", "censored regression")
   parsnip::set_model_engine(
     "null_model",
     mode = "censored regression",
-    eng = "censored"
+    eng = "survival"
   )
   parsnip::set_dependency(
     "null_model",
-    eng = "censored",
+    eng = "survival",
     pkg = "survival",
     mode = "censored regression"
   )
   parsnip::set_dependency(
     "null_model",
-    eng = "censored",
+    eng = "survival",
     pkg = "censored",
     mode = "censored regression"
   )
 
   parsnip::set_fit(
     model = "null_model",
-    eng = "censored",
+    eng = "survival",
     mode = "censored regression",
     value = list(
       interface = "formula",
@@ -43,7 +43,7 @@ make_null_model_censored <- function() {
 
   parsnip::set_encoding(
     model = "null_model",
-    eng = "censored",
+    eng = "survival",
     mode = "censored regression",
     options = list(
       predictor_indicators = "none",
@@ -55,7 +55,7 @@ make_null_model_censored <- function() {
 
   parsnip::set_pred(
     model = "null_model",
-    eng = "censored",
+    eng = "survival",
     mode = "censored regression",
     type = "time",
     value = list(
@@ -71,7 +71,7 @@ make_null_model_censored <- function() {
 
   parsnip::set_pred(
     model = "null_model",
-    eng = "censored",
+    eng = "survival",
     mode = "censored regression",
     type = "survival",
     value = list(

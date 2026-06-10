@@ -18,14 +18,14 @@ survfit_null <- function(formula, data, ...) {
 
 #' A wrapper for survival times with null models
 #' @param object A parsnip `model_fit` object resulting from a `null_model()`
-#' with engine = "censored".
+#' with engine = "survival".
 #' @param new_data Data for prediction.
 #' @return A numeric vector of predicted median survival times.
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("survival")
 #' mod <- parsnip::null_model() |>
-#'   parsnip::set_engine("censored") |>
+#'   parsnip::set_engine("survival") |>
 #'   parsnip::set_mode("censored regression") |>
 #'   fit(survival::Surv(time, status) ~ ., data = survival::lung)
 #' survival_time_survfit_null(mod, new_data = survival::lung[1:3, ])
@@ -41,7 +41,7 @@ survival_time_survfit_null <- function(object, new_data) {
 
 #' A wrapper for survival probabilities with null models
 #' @param object A parsnip `model_fit` object resulting from a `null_model()`
-#' with engine = "censored".
+#' with engine = "survival".
 #' @param new_data Data for prediction.
 #' @param eval_time A vector of integers for prediction times.
 #' @return A tibble with a list column of nested tibbles.
@@ -49,7 +49,7 @@ survival_time_survfit_null <- function(object, new_data) {
 #' @export
 #' @examplesIf rlang::is_installed("survival")
 #' mod <- parsnip::null_model() |>
-#'   parsnip::set_engine("censored") |>
+#'   parsnip::set_engine("survival") |>
 #'   parsnip::set_mode("censored regression") |>
 #'   fit(survival::Surv(time, status) ~ ., data = survival::lung)
 #' survival_prob_survfit_null(mod, new_data = survival::lung[1:3, ], eval_time = 300)

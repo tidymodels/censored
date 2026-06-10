@@ -4,7 +4,7 @@
 
 * `decision_tree()` with the `"rpart"` engine now correctly returns the median survival time of the leaf's Kaplan-Meier curve for `type = "time"` predictions, instead of rpart's relative event rate (#331).
 
-* `null_model()` now supports the `"censored regression"` mode with a new `"censored"` engine, fitting a Kaplan-Meier curve via `survival::survfit()` (#353).
+* `null_model()` now supports the `"censored regression"` mode with a new `"survival"` engine, fitting a Kaplan-Meier curve via `survival::survfit()` (#353).
 
 * Prediction for `proportional_hazards()` with the `"glmnet"` engine no longer fails on data with factors when fitted through `fit_xy()` (#365).
 
