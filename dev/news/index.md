@@ -14,6 +14,12 @@
   instead of rpart’s relative event rate
   ([\#331](https://github.com/tidymodels/censored/issues/331)).
 
+- [`null_model()`](https://parsnip.tidymodels.org/reference/null_model.html)
+  now supports the `"censored regression"` mode with a new `"survival"`
+  engine, fitting a Kaplan-Meier curve via
+  [`survival::survfit()`](https://rdrr.io/pkg/survival/man/survfit.html)
+  ([\#353](https://github.com/tidymodels/censored/issues/353)).
+
 - Prediction for
   [`proportional_hazards()`](https://parsnip.tidymodels.org/reference/proportional_hazards.html)
   with the `"glmnet"` engine no longer fails on data with factors when
