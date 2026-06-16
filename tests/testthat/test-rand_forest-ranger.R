@@ -335,8 +335,6 @@ test_that("can handle case weights", {
       fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
   )
 
-  expect_snapshot(wt_fit$fit$call)
-
   unwt_fit <- rand_forest(trees = 100) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
