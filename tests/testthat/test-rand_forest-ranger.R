@@ -233,6 +233,51 @@ test_that("can predict for out-of-domain timepoints", {
   )
 })
 
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fit_xy()` works", {
+  skip_if_not_installed("ranger")
+
+  lung_ranger <- na.omit(lung)
+
+  lung_x <- as.matrix(lung_ranger[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung_ranger$time, lung_ranger$status)
+  lung_pred <- lung_ranger[1:5, ]
+
+  spec <- rand_forest(trees = 100) |>
+    set_engine("ranger", seed = 1) |>
+    set_mode("censored regression")
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  elements_to_ignore <- c(
+    "call",
+    "dependent.variable.name",
+    "status.variable.name"
+  )
+  f_ignore <- which(names(f_fit$fit) %in% elements_to_ignore)
+  xy_ignore <- which(names(xy_fit$fit) %in% elements_to_ignore)
+  expect_equal(f_fit$fit[-f_ignore], xy_fit$fit[-xy_ignore])
+
+  f_pred_time <- predict(f_fit, new_data = lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, new_data = lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_survival <- predict(
+    f_fit,
+    new_data = lung_pred,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  xy_pred_survival <- predict(
+    xy_fit,
+    new_data = lung_pred,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  expect_equal(f_pred_survival, xy_pred_survival)
+})
+
 # missing data -------------------------------------------------------------
 
 test_that("missing predictors don't drop rows", {
