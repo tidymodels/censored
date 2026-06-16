@@ -1,5 +1,7 @@
 # censored (development version)
 
+* `rand_forest()` now supports the `"censored regression"` mode with a new `"ranger"` engine, fitting a survival random forest via `ranger::ranger()` (#TODO).
+
 * `multi_predict()` is now available for `boost_tree()` with the `"mboost"` engine over the `trees` submodel parameter (#290).
 
 * `decision_tree()` with the `"rpart"` engine now correctly returns the median survival time of the leaf's Kaplan-Meier curve for `type = "time"` predictions, instead of rpart's relative event rate (#331).
