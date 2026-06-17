@@ -52,6 +52,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          use-public-rspm: ${{ runner.os != 'macOS' }}
           extra-packages:
             any::rcmdcheck,
             pec=?ignore-before-r=4.4.0
