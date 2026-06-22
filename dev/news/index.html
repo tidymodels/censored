@@ -10,7 +10,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">censored</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="censored-development-version">censored (development version)<a class="anchor" aria-label="anchor" href="#censored-development-version"></a></h2>
-<ul><li><p><code><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict()</a></code> is now available for <code><a href="https://parsnip.tidymodels.org/reference/boost_tree.html" class="external-link">boost_tree()</a></code> with the <code>"mboost"</code> engine over the <code>trees</code> submodel parameter (<a href="https://github.com/tidymodels/censored/issues/290" class="external-link">#290</a>).</p></li>
+<ul><li><p><code><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest()</a></code> now supports the <code>"censored regression"</code> mode with a new <code>"ranger"</code> engine, fitting a survival random forest via <code><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger::ranger()</a></code> (<a href="https://github.com/tidymodels/censored/issues/131" class="external-link">#131</a>).</p></li>
+<li><p><code><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict()</a></code> is now available for <code><a href="https://parsnip.tidymodels.org/reference/boost_tree.html" class="external-link">boost_tree()</a></code> with the <code>"mboost"</code> engine over the <code>trees</code> submodel parameter (<a href="https://github.com/tidymodels/censored/issues/290" class="external-link">#290</a>).</p></li>
 <li><p><code><a href="https://parsnip.tidymodels.org/reference/decision_tree.html" class="external-link">decision_tree()</a></code> with the <code>"rpart"</code> engine now correctly returns the median survival time of the leaf’s Kaplan-Meier curve for <code>type = "time"</code> predictions, instead of rpart’s relative event rate (<a href="https://github.com/tidymodels/censored/issues/331" class="external-link">#331</a>).</p></li>
 <li><p><code><a href="https://parsnip.tidymodels.org/reference/null_model.html" class="external-link">null_model()</a></code> now supports the <code>"censored regression"</code> mode with a new <code>"survival"</code> engine, fitting a Kaplan-Meier curve via <code><a href="https://rdrr.io/pkg/survival/man/survfit.html" class="external-link">survival::survfit()</a></code> (<a href="https://github.com/tidymodels/censored/issues/353" class="external-link">#353</a>).</p></li>
 <li><p>Prediction for <code><a href="https://parsnip.tidymodels.org/reference/proportional_hazards.html" class="external-link">proportional_hazards()</a></code> with the <code>"glmnet"</code> engine no longer fails on data with factors when fitted through <code><a href="https://generics.r-lib.org/reference/fit_xy.html" class="external-link">fit_xy()</a></code> (<a href="https://github.com/tidymodels/censored/issues/365" class="external-link">#365</a>).</p></li>
