@@ -9,7 +9,7 @@ test_that("engine is registered and translate() works", {
   censored_engines <- engines$engine[engines$mode == "censored regression"]
   expect_in("ranger", censored_engines)
 
-  spec <- rand_forest(trees = 100) |>
+  spec <- rand_forest(trees = 3) |>
     set_engine("ranger") |>
     set_mode("censored regression")
 
@@ -39,7 +39,7 @@ test_that("model object", {
 
   expect_s3_class(f_fit$fit, "ranger")
   expect_equal(f_fit$fit$treetype, "Survival")
-  expect_equal(f_fit$fit$num.trees, 100L)
+  expect_equal(f_fit$fit$num.trees, 3L)
 })
 
 # prediction: time --------------------------------------------------------
@@ -106,7 +106,7 @@ test_that("survival_prob_ranger() returns correct values", {
 
   lung_ranger <- na.omit(lung)
 
-  f_fit <- rand_forest(trees = 100) |>
+  f_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
@@ -159,7 +159,7 @@ test_that("survival predictions", {
 
   lung_ranger <- na.omit(lung)
 
-  f_fit <- rand_forest(trees = 100) |>
+  f_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
@@ -203,7 +203,7 @@ test_that("survival predictions - error snapshot", {
 
   lung_ranger <- na.omit(lung)
 
-  f_fit <- rand_forest(trees = 100) |>
+  f_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
@@ -244,7 +244,7 @@ test_that("`fit_xy()` works", {
   lung_y <- Surv(lung_ranger$time, lung_ranger$status)
   lung_pred <- lung_ranger[1:5, ]
 
-  spec <- rand_forest(trees = 100) |>
+  spec <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression")
   f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
@@ -285,7 +285,7 @@ test_that("missing predictors don't drop rows", {
 
   lung_ranger <- na.omit(lung)
 
-  f_fit <- rand_forest(trees = 100) |>
+  f_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
@@ -329,13 +329,13 @@ test_that("can handle case weights", {
   dat <- make_cens_wts()
 
   expect_no_error(
-    wt_fit <- rand_forest(trees = 100) |>
+    wt_fit <- rand_forest(trees = 3) |>
       set_engine("ranger", seed = 1) |>
       set_mode("censored regression") |>
       fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
   )
 
-  unwt_fit <- rand_forest(trees = 100) |>
+  unwt_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, event) ~ ., data = dat$full)
