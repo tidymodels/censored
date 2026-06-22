@@ -90,7 +90,7 @@ test_that("time predictions", {
   f_pred <- predict(f_fit, new_data, type = "time")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred_time")
+  expect_named(f_pred, ".pred_time")
   expect_equal(nrow(f_pred), nrow(new_data))
   expect_equal(f_pred$.pred_time, survival_time_ranger(f_fit, new_data))
 
@@ -117,7 +117,7 @@ test_that("survival_prob_ranger() returns correct values", {
   result <- survival_prob_ranger(f_fit, new_data, eval_time)
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(names(result), ".pred")
+  expect_named(result, ".pred")
   expect_equal(nrow(result), nrow(new_data))
   expect_all_equal(purrr::map_int(result$.pred, nrow), length(eval_time))
   expect_all_true(purrr::map_lgl(
@@ -170,7 +170,7 @@ test_that("survival predictions", {
   f_pred <- predict(f_fit, new_data, type = "survival", eval_time = eval_time)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_equal(names(f_pred), ".pred")
+  expect_named(f_pred, ".pred")
   expect_equal(nrow(f_pred), nrow(new_data))
   expect_all_equal(purrr::map_int(f_pred$.pred, nrow), length(eval_time))
   expect_all_true(purrr::map_lgl(
