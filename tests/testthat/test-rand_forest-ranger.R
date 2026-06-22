@@ -25,7 +25,7 @@ test_that("model object", {
 
   lung_ranger <- na.omit(lung)
 
-  mod_spec <- rand_forest(trees = 100) |>
+  mod_spec <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression")
 
@@ -49,7 +49,7 @@ test_that("survival_time_ranger() returns correct values", {
 
   lung_ranger <- na.omit(lung)
 
-  f_fit <- rand_forest(trees = 100) |>
+  f_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
@@ -80,7 +80,7 @@ test_that("time predictions", {
 
   lung_ranger <- na.omit(lung)
 
-  f_fit <- rand_forest(trees = 100) |>
+  f_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung_ranger)
