@@ -59,7 +59,7 @@ survival_prob_ranger <- function(object, new_data, eval_time) {
   prob_matrix <- surv_matrix[, cols, drop = FALSE]
   prob_matrix[, idx == 0L] <- 1
 
-  data.frame(
+  tibble::tibble(
     .row = rep(seq_len(n_obs), times = n_eval_time),
     .eval_time = rep(eval_time, each = n_obs),
     .pred_survival = as.numeric(prob_matrix)
