@@ -20,6 +20,7 @@
   make_rand_forest_partykit()
   make_rand_forest_aorsf()
   make_rand_forest_ranger()
+  make_rand_forest_randomForestSRC()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()

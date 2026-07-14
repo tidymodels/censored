@@ -306,4 +306,106 @@ make_rand_forest_ranger <- function() {
   )
 }
 
+make_rand_forest_randomForestSRC <- function() {
+  parsnip::set_model_engine(
+    "rand_forest",
+    mode = "censored regression",
+    eng = "randomForestSRC"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "randomForestSRC",
+    pkg = "randomForestSRC",
+    mode = "censored regression"
+  )
+  parsnip::set_dependency(
+    "rand_forest",
+    eng = "randomForestSRC",
+    pkg = "censored",
+    mode = "censored regression"
+  )
+
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "randomForestSRC",
+    parsnip = "trees",
+    original = "ntree",
+    func = list(pkg = "dials", fun = "trees"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "randomForestSRC",
+    parsnip = "min_n",
+    original = "nodesize",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "randomForestSRC",
+    parsnip = "mtry",
+    original = "mtry",
+    func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_fit(
+    model = "rand_forest",
+    eng = "randomForestSRC",
+    mode = "censored regression",
+    value = list(
+      interface = "formula",
+      protect = c("formula", "data", "weights"),
+      func = c(pkg = "censored", fun = "rfsrc_train"),
+      defaults = list()
+    )
+  )
+
+  parsnip::set_encoding(
+    model = "rand_forest",
+    mode = "censored regression",
+    eng = "randomForestSRC",
+    options = list(
+      predictor_indicators = "none",
+      compute_intercept = FALSE,
+      remove_intercept = FALSE,
+      allow_sparse_x = FALSE
+    )
+  )
+
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "randomForestSRC",
+    mode = "censored regression",
+    type = "time",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_time_rfsrc"),
+      args = list(
+        object = rlang::expr(object),
+        new_data = rlang::expr(new_data)
+      )
+    )
+  )
+
+  parsnip::set_pred(
+    model = "rand_forest",
+    eng = "randomForestSRC",
+    mode = "censored regression",
+    type = "survival",
+    value = list(
+      pre = NULL,
+      post = NULL,
+      func = c(pkg = "censored", fun = "survival_prob_rfsrc"),
+      args = list(
+        object = rlang::expr(object),
+        new_data = rlang::expr(new_data),
+        eval_time = rlang::expr(eval_time)
+      )
+    )
+  )
+}
+
 # nocov end

@@ -47,6 +47,7 @@ Suggests:
     ipred,
     partykit,
     pec,
+    randomForestSRC,
     ranger,
     rmarkdown,
     rpart,
