@@ -19,11 +19,15 @@ NULL
 #' @rdname randomForestSRC_internal
 #' @export
 rfsrc_train <- function(formula, data, weights = NULL, ...) {
+  # To normalize a 1/2 status variable to 0/1, evaluate the `Surv()` call and
+  # then pass on the time and status columns to `rfsrc()`.
+  # This also makes it possible to use a pre-made Surv object as the response.
+
   surv <- eval(formula[[2]], envir = data, enclos = environment(formula))
   if (!.is_censored_right(surv)) {
     surv_type <- .extract_surv_type(surv)
     cli::cli_abort(
-      "The {.val randomForestSRC} engine only supports right-censored data, \\
+      "The {.val randomForestSRC} engine only supports right-censored data,
        not data with censoring type {.val {surv_type}}."
     )
   }
@@ -32,7 +36,6 @@ rfsrc_train <- function(formula, data, weights = NULL, ...) {
   # can't pick them up as predictors
   data[intersect(names(data), all.vars(formula[[2]]))] <- NULL
 
-  # inject the normalized 0/1 response under collision-safe names
   time_nm <- avoid_name_collision("..y_time", names(data))
   status_nm <- avoid_name_collision("..y_status", names(data))
   data[[time_nm]] <- .extract_surv_time(surv)
@@ -54,9 +57,10 @@ avoid_name_collision <- function(nm, existing) {
 #' `survival_time_rfsrc()` returns the median survival time, i.e. the first
 #' event time at which the predicted survival curve drops to 0.5 or below. A
 #' curve that never crosses 0.5 has an undefined median and yields `NA`; the
-#' helper does not impute it. For a rank-based use such as the concordance
-#' index, these `NA`s can be imputed as `Inf` in post-processing (a non-crossing
-#' curve marks the longest survivors, so `Inf` ranks them at the top).
+#' helper does not impute it.
+#' For a rank-based use such as the concordance index, these `NA`s can be
+#' imputed as `Inf` in post-processing (a non-crossing curve marks the longest
+#' survivors, so `Inf` ranks them at the top).
 #' @export
 survival_time_rfsrc <- function(object, new_data) {
   check_inherits(object, "model_fit")
