@@ -81,7 +81,6 @@ survival_prob_rfsrc <- function(object, new_data, eval_time) {
   engine_fit <- hardhat::extract_fit_engine(object)
   check_inherits(engine_fit, "rfsrc", arg = "object$fit")
   check_data_frame(new_data)
-  check_eval_time(eval_time, allow_empty = TRUE, allow_infinite = TRUE)
 
   pred <- predict(engine_fit, newdata = new_data, na.action = "na.impute")
 

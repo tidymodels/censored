@@ -1,5 +1,3 @@
-library(testthat)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {
@@ -152,7 +150,7 @@ test_that("survival_time_rfsrc() works", {
   engine_fit <- hardhat::extract_fit_engine(f_fit)
   pred <- predict(engine_fit, newdata = new_data, na.action = "na.impute")
   times <- pred$time.interest
-  expected <- apply(pred$survival, 1, \(srow) {
+  expected <- apply(pred$survival, 1, function(srow) {
     below <- which(srow <= 0.5)
     if (length(below) == 0) NA_real_ else times[min(below)]
   })
@@ -161,7 +159,7 @@ test_that("survival_time_rfsrc() works", {
   # a non-crossing curve gives NA, never Inf (unlike ranger)
   expect_false(any(is.infinite(result)))
 
-  # single observation stays a matrix -> length-1 result
+  # single observation
   result_1 <- survival_time_rfsrc(f_fit, lung[1, ])
   expect_length(result_1, 1)
 })
@@ -288,6 +286,69 @@ test_that("survival predictions - error snapshot", {
   })
 })
 
+test_that("can predict for out-of-domain timepoints", {
+  skip_if_not_installed("randomForestSRC")
+
+  # 1022 is the largest event time in lung; 2000 is beyond observed follow-up
+  eval_time_obs_max_and_ood <- c(1022, 2000)
+  obs_without_NA <- lung[2, ]
+
+  mod <- rand_forest(trees = 50) |>
+    set_mode("censored regression") |>
+    set_engine("randomForestSRC") |>
+    fit(Surv(time, status) ~ ., data = lung)
+
+  expect_no_error(
+    predict(
+      mod,
+      obs_without_NA,
+      type = "survival",
+      eval_time = eval_time_obs_max_and_ood
+    )
+  )
+})
+
+# fit via matrix interface ------------------------------------------------
+
+test_that("`fit_xy()` works", {
+  skip_if_not_installed("randomForestSRC")
+
+  lung_no_na <- na.omit(lung)
+  lung_x <- as.matrix(lung_no_na[, c("age", "ph.ecog")])
+  lung_y <- Surv(lung_no_na$time, lung_no_na$status)
+  lung_pred <- lung_no_na[1:5, ]
+
+  spec <- rand_forest(trees = 50) |>
+    set_engine("randomForestSRC") |>
+    set_mode("censored regression")
+
+  set.seed(1)
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung_no_na)
+  set.seed(1)
+  xy_fit <- fit_xy(spec, x = lung_x, y = lung_y)
+
+  expect_s3_class(xy_fit$fit, "rfsrc")
+  expect_equal(xy_fit$fit$survival, f_fit$fit$survival)
+
+  f_pred_time <- predict(f_fit, lung_pred, type = "time")
+  xy_pred_time <- predict(xy_fit, lung_pred, type = "time")
+  expect_equal(f_pred_time, xy_pred_time)
+
+  f_pred_surv <- predict(
+    f_fit,
+    lung_pred,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  xy_pred_surv <- predict(
+    xy_fit,
+    lung_pred,
+    type = "survival",
+    eval_time = c(100, 200)
+  )
+  expect_equal(f_pred_surv, xy_pred_surv)
+})
+
 # missing data ------------------------------------------------------------
 
 test_that("missing predictors don't drop rows", {
@@ -351,4 +412,99 @@ test_that("can handle case weights", {
     fit(Surv(time, event) ~ ., data = dat$full)
 
   expect_unequal(wt_fit$fit$survival, unwt_fit$fit$survival)
+})
+
+test_that("case weights change predictions", {
+  skip_if_not_installed("randomForestSRC")
+
+  dat <- make_cens_wts()
+
+  spec <- rand_forest(trees = 50) |>
+    set_engine("randomForestSRC") |>
+    set_mode("censored regression")
+
+  set.seed(1)
+  wt_fit <- fit(
+    spec,
+    Surv(time, event) ~ .,
+    data = dat$full,
+    case_weights = dat$wts
+  )
+  set.seed(1)
+  unwt_fit <- fit(spec, Surv(time, event) ~ ., data = dat$full)
+
+  new_data <- dat$full
+  eval_time <- c(100, 300)
+
+  expect_unequal(
+    predict(wt_fit, new_data, type = "time"),
+    predict(unwt_fit, new_data, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, new_data, type = "survival", eval_time = eval_time),
+    predict(unwt_fit, new_data, type = "survival", eval_time = eval_time)
+  )
+})
+
+# input checks ------------------------------------------------------------
+
+test_that("prediction helpers error informatively on bad input", {
+  skip_if_not_installed("randomForestSRC")
+
+  raw_fit <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ age + ph.ecog,
+    data = dplyr::mutate(na.omit(lung), status = status - 1)
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_time_rfsrc(raw_fit, new_data = lung[1:3, ])
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_time_rfsrc(wrong_engine, new_data = lung[1:3, ])
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_rfsrc(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_rfsrc(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("survival_prob_rfsrc() accepts eval_time values that it can handle", {
+  skip_if_not_installed("randomForestSRC")
+
+  mod <- rand_forest(trees = 50) |>
+    set_mode("censored regression") |>
+    set_engine("randomForestSRC") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  new_data <- lung[1:2, ]
+
+  # eval_time handling is delegated to survival_curve_to_prob(), so the
+  # handleable values match the mboost engine, which shares that helper
+  expect_no_error(
+    survival_prob_rfsrc(mod, new_data = new_data, eval_time = numeric(0))
+  )
+  expect_no_error(
+    survival_prob_rfsrc(mod, new_data = new_data, eval_time = c(100, NA))
+  )
+  expect_no_error(
+    survival_prob_rfsrc(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_rfsrc(mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_rfsrc(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_rfsrc(mod, new_data = new_data, eval_time = c(100, 100, 200))
+  )
 })

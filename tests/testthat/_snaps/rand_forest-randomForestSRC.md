@@ -30,3 +30,35 @@
       Error in `predict()`:
       ! When using `type` values of "survival" or "hazard" a numeric vector `eval_time` should also be given.
 
+# prediction helpers error informatively on bad input
+
+    Code
+      survival_time_rfsrc(raw_fit, new_data = lung[1:3, ])
+    Condition
+      Error in `survival_time_rfsrc()`:
+      ! `object` must be a <model_fit> object, not a <rfsrc> object.
+
+---
+
+    Code
+      survival_time_rfsrc(wrong_engine, new_data = lung[1:3, ])
+    Condition
+      Error in `survival_time_rfsrc()`:
+      ! `object$fit` must be a <rfsrc> object, not a <coxph> object.
+
+---
+
+    Code
+      survival_prob_rfsrc(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_rfsrc()`:
+      ! `object` must be a <model_fit> object, not a <rfsrc> object.
+
+---
+
+    Code
+      survival_prob_rfsrc(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_rfsrc()`:
+      ! `object$fit` must be a <rfsrc> object, not a <coxph> object.
+
