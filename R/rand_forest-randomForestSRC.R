@@ -23,7 +23,8 @@ rfsrc_train <- function(formula, data, weights = NULL, ...) {
   # then pass on the time and status columns to `rfsrc()`.
   # This also makes it possible to use a pre-made Surv object as the response.
 
-  surv <- eval(formula[[2]], envir = data, enclos = environment(formula))
+  outcome <- rlang::f_lhs(formula)
+  surv <- rlang::eval_tidy(outcome, data = data, env = rlang::f_env(formula))
   if (!.is_censored_right(surv)) {
     surv_type <- .extract_surv_type(surv)
     cli::cli_abort(
@@ -34,13 +35,19 @@ rfsrc_train <- function(formula, data, weights = NULL, ...) {
 
   # drop the original outcome columns so a `.` in the formula's right-hand side
   # can't pick them up as predictors
-  data[intersect(names(data), all.vars(formula[[2]]))] <- NULL
+  data[intersect(names(data), all.vars(outcome))] <- NULL
 
   time_nm <- avoid_name_collision("..y_time", names(data))
   status_nm <- avoid_name_collision("..y_status", names(data))
   data[[time_nm]] <- .extract_surv_time(surv)
   data[[status_nm]] <- .extract_surv_status(surv)
-  formula[[2]] <- call("Surv", as.name(time_nm), as.name(status_nm))
+  # `rfsrc()` recognizes the survival response only from a bare `Surv()` call in
+  # the formula, so build it unnamespaced (not `survival::Surv()`)
+  rlang::f_lhs(formula) <- rlang::call2(
+    "Surv",
+    rlang::sym(time_nm),
+    rlang::sym(status_nm)
+  )
 
   randomForestSRC::rfsrc(formula, data = data, case.wt = weights, ...)
 }
