@@ -54,7 +54,8 @@ jobs:
         with:
           extra-packages:
             any::rcmdcheck,
-            pec=?ignore-before-r=4.4.0
+            pec=?ignore-before-r=4.4.0,
+            randomForestSRC=?ignore-before-r=4.3.0
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
