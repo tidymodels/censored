@@ -29,7 +29,7 @@ We’ll model the survival of lung cancer patients.
       ## ── Attaching packages ───────────────────────────── tidymodels 1.5.0 ──
 
       ## ✔ broom        1.0.13     ✔ rsample      1.3.2 
-      ## ✔ dials        1.4.3      ✔ tailor       0.1.0 
+      ## ✔ dials        1.4.4      ✔ tailor       0.1.0 
       ## ✔ dplyr        1.2.1      ✔ tidyr        1.3.2 
       ## ✔ infer        1.1.0      ✔ tune         2.1.0 
       ## ✔ modeldata    1.5.1      ✔ workflows    1.3.0 
@@ -6246,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x5598ce41a638>
+      ## <environment: 0x5569583505a0>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x5598ce41a638>
+      ## <environment: 0x5569583505a0>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x5598ce41a638>
+      ## <environment: 0x5569583505a0>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6325,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x5598c30f1da0>
+      ## <bytecode: 0x55694cfb2da0>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6345,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5598d07c8d88>
-      ## <environment: 0x5598ce3e9390>
+      ## <bytecode: 0x556955bd4648>
+      ## <environment: 0x556958324868>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6356,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5598d07caea0>
-      ## <environment: 0x5598ce3e9470>
+      ## <bytecode: 0x556955bd2610>
+      ## <environment: 0x556958324948>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6367,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5598d07c8d88>
-      ## <environment: 0x5598ce3e9550>
+      ## <bytecode: 0x556955bd4648>
+      ## <environment: 0x556958321bb8>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6378,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5598d07caea0>
-      ## <environment: 0x5598ce3e96d8>
+      ## <bytecode: 0x556955bd2610>
+      ## <environment: 0x556958321d08>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6423,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x5598d0a15150>
-      ## <environment: 0x5598ce3e7588>
+      ## <bytecode: 0x55695e07cfa8>
+      ## <environment: 0x556958320910>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6452,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x5598ce41a638>
+      ## <environment: 0x5569583505a0>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x5598ce41a638>
+      ## <environment: 0x5569583505a0>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x5598ce41a638>
+      ## <environment: 0x5569583505a0>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 

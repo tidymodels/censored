@@ -67,7 +67,7 @@ A fitted `glmnet` model.
 This wrapper translates from formula interface to glmnet's matrix due to
 how stratification can be specified. glmnet requires that the *response*
 is stratified via
-[`glmnet::stratifySurv()`](https://rdrr.io/pkg/glmnet/man/stratifySurv.html).
+[`glmnet::stratifySurv()`](https://glmnet.stanford.edu/reference/stratifySurv.html).
 censored allows specification via a
 [`survival::strata()`](https://rdrr.io/pkg/survival/man/strata.html)
 term on the right-hand side of the formula. The formula is used to

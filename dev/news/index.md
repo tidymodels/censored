@@ -8,6 +8,12 @@
   [`ranger::ranger()`](http://imbs-hl.github.io/ranger/reference/ranger.md)
   ([\#131](https://github.com/tidymodels/censored/issues/131)).
 
+- [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)
+  now supports the `"randomForestSRC"` engine for censored regression,
+  fitting a survival random forest via
+  [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  ([\#130](https://github.com/tidymodels/censored/issues/130)).
+
 - [`multi_predict()`](https://parsnip.tidymodels.org/reference/multi_predict.html)
   is now available for
   [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
