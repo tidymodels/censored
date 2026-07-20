@@ -389,3 +389,20 @@ test_that("survival_prob_orsf() accepts eval_time values that it can handle", {
     survival_prob_orsf(mod, new_data = new_data, eval_time = c(100, 100, 200))
   )
 })
+
+test_that("survival_prob_orsf() warns about deprecated `time` argument", {
+  skip_if_not_installed("aorsf")
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_orsf(mod, new_data = new_data, time = 100)
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_orsf(mod, new_data = new_data, eval_time = 100)
+  )
+})

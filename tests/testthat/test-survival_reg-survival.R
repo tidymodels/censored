@@ -342,6 +342,25 @@ test_that("deprecation of `time` arg for type 'hazard'", {
   expect_identical(pred, exp_pred)
 })
 
+test_that("survival_prob_survreg() warns about deprecated `time` argument", {
+  mod <- survival_reg() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_survreg(
+      mod,
+      new_data = new_data,
+      time = 100
+    )
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_survreg(mod, new_data = new_data, eval_time = 100)
+  )
+})
+
 # input checks ------------------------------------------------------------
 
 test_that("survival_prob_survreg() errors informatively on bad input", {

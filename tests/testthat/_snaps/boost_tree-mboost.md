@@ -38,6 +38,15 @@
       Error in `survival_prob_mboost()`:
       ! `object$fit` must be a <mboost> object, not a <coxph> object.
 
+# survival_prob_mboost() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- survival_prob_mboost(mod, new_data = new_data, time = 100)
+    Condition
+      Warning:
+      The `time` argument of `survival_prob_mboost()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
+
 # multi_predict() errors informatively on bad input
 
     Code

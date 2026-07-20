@@ -930,6 +930,37 @@ test_that("survival_prob_coxph() errors informatively on bad input", {
   )
 })
 
+test_that("survival_prob_coxph() warns about deprecated `time` argument", {
+  mod <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_coxph(mod, new_data = new_data, time = 100)
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_coxph(mod, new_data = new_data, eval_time = 100)
+  )
+})
+
+test_that("survival_prob_coxph() errors about deprecated `x` argument", {
+  mod <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(
+      mod,
+      x = mod$fit,
+      new_data = lung[1:2, ],
+      eval_time = 100
+    )
+  )
+})
+
 test_that("survival_prob_coxph() fails gracefully for eval_time values it can't handle", {
   cox_mod <- proportional_hazards() |>
     set_engine("survival") |>

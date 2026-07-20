@@ -54,3 +54,12 @@
       Error in `survival_prob_survbagg()`:
       ! `eval_time` can't contain missing values.
 
+# survival_prob_survbagg() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- survival_prob_survbagg(mod, new_data = new_data, time = 100)
+    Condition
+      Warning:
+      The `time` argument of `survival_prob_survbagg()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
+

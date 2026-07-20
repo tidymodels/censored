@@ -149,6 +149,16 @@
       Error in `fit_xy()`:
       ! For stratification, please use the formula interface via `fit()`.
 
+# multi_predict() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- multi_predict(f_fit, new_data = lung2[1:2, ], type = "survival",
+      time = c(100, 200), penalty = 0.1)
+    Condition
+      Warning:
+      The `time` argument of `multi_predict()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
+
 # survival_time_coxnet() errors informatively on bad input
 
     Code
@@ -196,4 +206,13 @@
     Condition
       Error in `survival_prob_coxnet()`:
       ! `eval_time` can't contain missing values.
+
+# survival_prob_coxnet() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- survival_prob_coxnet(mod, new_data = new_data, time = 100)
+    Condition
+      Warning:
+      The `time` argument of `survival_prob_coxnet()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
 
