@@ -62,6 +62,24 @@
       Error in `survival_prob_coxph()`:
       ! `object$fit` must be a <coxph> object, not a <survreg> object.
 
+# survival_prob_coxph() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- survival_prob_coxph(mod, new_data = new_data, time = 100)
+    Condition
+      Warning:
+      The `time` argument of `survival_prob_coxph()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
+
+# survival_prob_coxph() errors about deprecated `x` argument
+
+    Code
+      survival_prob_coxph(mod, x = mod$fit, new_data = lung[1:2, ], eval_time = 100)
+    Condition
+      Error:
+      ! The `x` argument of `survival_prob_coxph()` was deprecated in censored 0.3.0 and is now defunct.
+      i Please use the `object` argument instead.
+
 # survival_prob_coxph() fails gracefully for eval_time values it can't handle
 
     Code

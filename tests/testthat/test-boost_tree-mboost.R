@@ -380,6 +380,27 @@ test_that("survival_prob_mboost() accepts eval_time values that it can handle", 
   )
 })
 
+test_that("survival_prob_mboost() warns about deprecated `time` argument", {
+  skip_if_not_installed("mboost")
+  mod <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_mboost(
+      mod,
+      new_data = new_data,
+      time = 100
+    )
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_mboost(mod, new_data = new_data, eval_time = 100)
+  )
+})
+
 # `multi_predict()` works for all `type`s available for `predict()` -------
 
 test_that("multi_predict(type = time)", {

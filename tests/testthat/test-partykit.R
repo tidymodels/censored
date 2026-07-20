@@ -236,3 +236,25 @@ test_that("survival_prob_partykit() accepts eval_time values that it can handle"
     )
   )
 })
+
+test_that("survival_prob_partykit() warns about deprecated `time` argument", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("partykit") |>
+    fit(Surv(time, status) ~ age, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_partykit(
+      mod,
+      new_data = new_data,
+      time = 100
+    )
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_partykit(mod, new_data = new_data, eval_time = 100)
+  )
+})

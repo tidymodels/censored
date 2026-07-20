@@ -1902,6 +1902,34 @@ test_that("multi_predict() recognises default penalty", {
   expect_identical(pred_multi, exp_pred_multi)
 })
 
+test_that("multi_predict() warns about deprecated `time` argument", {
+  lung2 <- lung[-14, ]
+  f_fit <- proportional_hazards(penalty = 0.123) |>
+    set_mode("censored regression") |>
+    set_engine("glmnet", cox.ties = "efron") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  expect_snapshot(
+    pred_deprecated <- multi_predict(
+      f_fit,
+      new_data = lung2[1:2, ],
+      type = "survival",
+      time = c(100, 200),
+      penalty = 0.1
+    )
+  )
+  expect_equal(
+    pred_deprecated,
+    multi_predict(
+      f_fit,
+      new_data = lung2[1:2, ],
+      type = "survival",
+      eval_time = c(100, 200),
+      penalty = 0.1
+    )
+  )
+})
+
 # input checks ------------------------------------------------------------
 
 test_that("survival_time_coxnet() errors informatively on bad input", {
@@ -1982,5 +2010,25 @@ test_that("survival_prob_coxnet() accepts eval_time values that it can handle", 
       new_data = new_data,
       eval_time = c(100, 100, 200)
     )
+  )
+})
+
+test_that("survival_prob_coxnet() warns about deprecated `time` argument", {
+  lung2 <- lung[-14, ]
+  mod <- proportional_hazards(penalty = 0.1) |>
+    set_engine("glmnet", cox.ties = "efron") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+  new_data <- lung2[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_coxnet(
+      mod,
+      new_data = new_data,
+      time = 100
+    )
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_coxnet(mod, new_data = new_data, eval_time = 100)
   )
 })
