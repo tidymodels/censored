@@ -16,8 +16,11 @@ test_that("model object", {
     set_engine("glmnet", cox.ties = "efron")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
-  # Removing call element
-  expect_equal(f_fit$fit[-11], exp_f_fit[-11])
+  # Removing `call` element from both
+  expect_equal(
+    f_fit$fit[names(f_fit$fit) != "call"],
+    exp_f_fit[names(exp_f_fit) != "call"]
+  )
 })
 
 test_that("print coxnet model", {
