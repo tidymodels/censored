@@ -958,6 +958,10 @@ test_that("survival_prob_coxph() fails gracefully for eval_time values it can't 
     error = TRUE,
     survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = c(100, NA))
   )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(cox_mod, new_data = lung[1:2, ])
+  )
 })
 
 test_that("survival_prob_coxph() accepts eval_time values that it can handle", {

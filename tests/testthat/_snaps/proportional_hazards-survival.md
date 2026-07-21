@@ -96,3 +96,11 @@
       Error in `survival_prob_coxph()`:
       ! `eval_time` can't contain missing values.
 
+---
+
+    Code
+      survival_prob_coxph(cox_mod, new_data = lung[1:2, ])
+    Condition
+      Error in `survival_prob_coxph()`:
+      ! `eval_time` must be a numeric vector, not absent.
+
