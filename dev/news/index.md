@@ -44,6 +44,14 @@
   unusable `object`, `new_data`, or `eval_time`
   ([\#271](https://github.com/tidymodels/censored/issues/271)).
 
+- [`survival_reg()`](https://parsnip.tidymodels.org/reference/survival_reg.html)
+  with the `"survival"` engine and
+  [`strata()`](https://rdrr.io/pkg/survival/man/strata.html) terms now
+  returns `NA` survival and hazard predictions for new data rows with a
+  missing value in a stratification variable, instead of silently using
+  another stratum’s scale
+  ([\#383](https://github.com/tidymodels/censored/issues/383)).
+
 ## censored 0.3.4
 
 CRAN release: 2026-04-04
