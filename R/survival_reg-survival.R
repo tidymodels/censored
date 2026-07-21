@@ -57,17 +57,11 @@ compute_strata <- function(object, new_data) {
 
 deparse_survreg_strata <- function(object, new_data) {
   new_new_data <- compute_strata(object, new_data)
-  lvls <- levels(new_new_data$.strata)
 
-  # link this to scales vector
-  scales <- tibble(.strata = names(object$scale), .scale = unname(object$scale))
-  scales$.strata <- factor(scales$.strata, levels = lvls)
-
-  # return a vector with appropriate estimates for new data
-  new_new_data$.row <- seq_len(nrow(new_new_data))
-  new_new_data <- dplyr::left_join(new_new_data, scales, by = ".strata")
-  new_new_data <- new_new_data[order(new_new_data$.row), ]
-  new_new_data$.scale
+  # Match each row's stratum to its scale by name. A missing strata value
+  # (or one not seen when fitting) matches no scale and so yields `NA`.
+  strata <- as.character(new_new_data$.strata)
+  unname(object$scale[strata])
 }
 
 survreg_survival <- function(location, object, scale, eval_time, ...) {
