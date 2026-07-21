@@ -12,7 +12,11 @@ test_that("model object", {
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # Removing `call` element from both, it differs in the `data` arg
-  expect_equal(f_fit$fit[-6], exp_f_fit[-6], ignore_formula_env = TRUE)
+  expect_equal(
+    f_fit$fit[names(f_fit$fit) != "call"],
+    exp_f_fit[names(exp_f_fit) != "call"],
+    ignore_formula_env = TRUE
+  )
 })
 
 test_that("main args work without set_model_arg()", {
@@ -36,7 +40,11 @@ test_that("main args work without set_model_arg()", {
   f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # Removing `call` element from both
-  expect_equal(f_fit$fit[-6], exp_f_fit[-6], ignore_formula_env = TRUE)
+  expect_equal(
+    f_fit$fit[names(f_fit$fit) != "call"],
+    exp_f_fit[names(exp_f_fit) != "call"],
+    ignore_formula_env = TRUE
+  )
 })
 
 # prediction: time --------------------------------------------------------

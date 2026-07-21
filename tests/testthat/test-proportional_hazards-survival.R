@@ -10,8 +10,12 @@ test_that("model object", {
   cox_spec <- proportional_hazards() |> set_engine("survival")
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + sex, data = lung)
 
-  # Removing `model` element from f_fit and `call` from both
-  expect_equal(f_fit$fit[-c(16, 21)], exp_f_fit[-20], ignore_formula_env = TRUE)
+  # Removing `call` from both and `model` (only present in the parsnip fit)
+  expect_equal(
+    f_fit$fit[!names(f_fit$fit) %in% c("call", "model")],
+    exp_f_fit[!names(exp_f_fit) %in% c("call", "model")],
+    ignore_formula_env = TRUE
+  )
 })
 
 # prediction: time --------------------------------------------------------

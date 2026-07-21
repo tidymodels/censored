@@ -17,9 +17,11 @@ test_that("model object", {
   f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # Removing `call` element from both
+  f_obj <- unclass(f_fit$fit)
+  exp_obj <- unclass(exp_f_fit)
   expect_equal(
-    unclass(f_fit$fit)[-24],
-    unclass(exp_f_fit)[-24],
+    f_obj[names(f_obj) != "call"],
+    exp_obj[names(exp_obj) != "call"],
     ignore_function_env = TRUE
   )
 })
