@@ -12,9 +12,7 @@ test_that("model object", {
     set_mode("censored regression") |>
     set_engine("partykit")
   set.seed(1234)
-  expect_no_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-  )
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # Removing `call` element from comparison
   f_fit$fit$info$call <- NULL
@@ -101,12 +99,11 @@ test_that("survival predictions", {
   # single observation
   f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = 306)
   new_km <- predict(exp_f_fit, newdata = lung[1, ], type = "prob")[[1]]
-  # Prediction should be fairly near the actual value
+  exp_surv <- summary(new_km, times = 306, extend = TRUE)$surv
 
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
-    new_km$surv[new_km$time == 306],
-    tolerance = .1
+    exp_surv
   )
 })
 

@@ -6,9 +6,7 @@ test_that("model object ignores predictors", {
     set_engine("survival") |>
     set_mode("censored regression")
 
-  expect_no_error(
-    f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
-  )
+  f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
 
   exp_fit <- survfit(Surv(time, status) ~ 1, data = lung)
   expect_s3_class(f_fit$fit, "survfit")

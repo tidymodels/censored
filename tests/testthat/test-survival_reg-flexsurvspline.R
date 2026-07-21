@@ -483,13 +483,11 @@ test_that("can handle case weights", {
   wts <- runif(nrow(lung))
   wts <- importance_weights(wts)
 
-  expect_no_error(
-    wt_fit <- survival_reg() |>
-      set_engine("flexsurvspline", k = 1) |>
-      set_mode("censored regression") |>
-      fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) |>
-      suppressWarnings()
-  )
+  wt_fit <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
+    set_mode("censored regression") |>
+    fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) |>
+    suppressWarnings()
 
   unwt_fit <-
     survival_reg() |>

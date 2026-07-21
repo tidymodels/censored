@@ -9,9 +9,7 @@ test_that("model object", {
   # formula method
   mod_spec <- bag_tree(engine = "rpart") |> set_mode("censored regression")
   set.seed(1234)
-  expect_no_error(
-    f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-  )
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # Removing `call` element from both, it differs in the `data` arg
   expect_equal(f_fit$fit[-6], exp_f_fit[-6], ignore_formula_env = TRUE)
@@ -77,9 +75,7 @@ test_that("time predictions without surrogate splits for NA", {
   # lung$ph.ecog[14] is NA
   new_data_3 <- lung[13:15, ]
 
-  expect_no_error(
-    f_pred <- predict(f_fit, new_data_3, type = "time")
-  )
+  f_pred <- predict(f_fit, new_data_3, type = "time")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(which(is.na(f_pred$.pred_time)), 2)
 })
@@ -235,13 +231,11 @@ test_that("survival predictions without surrogate splits for NA", {
   # lung$ph.ecog[14] is NA
   new_data_3 <- lung[13:15, ]
 
-  expect_no_error(
-    f_pred <- predict(
-      f_fit,
-      new_data_3,
-      type = "survival",
-      eval_time = c(100, 500, 1000)
-    )
+  f_pred <- predict(
+    f_fit,
+    new_data_3,
+    type = "survival",
+    eval_time = c(100, 500, 1000)
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_true(!any(is.na(f_pred$.pred[[1]]$.pred_survival)))
