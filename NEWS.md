@@ -14,6 +14,8 @@
 
 * The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
 
+* `survival_reg()` with the `"survival"` engine and `strata()` terms now returns `NA` survival and hazard predictions for new data rows with a missing value in a stratification variable, instead of silently using another stratum's scale (#383).
+
 
 # censored 0.3.4
 

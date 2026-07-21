@@ -226,6 +226,151 @@ test_that("survival hazard prediction", {
   expect_identical(nrow(f_pred_1), 1L)
 })
 
+# prediction with strata --------------------------------------------------
+
+test_that("survival probabilities with strata match a hand computation", {
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + strata(sex), data = lung)
+  engine_fit <- extract_fit_engine(f_fit)
+
+  # strata give one scale per stratum, exercising the multi-scale branch
+  expect_named(engine_fit$scale, c("sex=1", "sex=2"))
+
+  new_data <- lung[c(1, 7, 20), ]
+  # both strata represented
+  expect_equal(new_data$sex, c(1, 2, 1))
+
+  eval_time <- c(100, 500)
+  pred <- predict(f_fit, new_data, type = "survival", eval_time = eval_time)
+  lp <- predict(engine_fit, new_data, type = "lp")
+
+  # match each row to its stratum's scale by hand
+  expect_equal(
+    pred$.pred[[1]]$.pred_survival,
+    1 -
+      survival::psurvreg(
+        eval_time,
+        lp[1],
+        distribution = engine_fit$dist,
+        scale = engine_fit$scale[["sex=1"]]
+      )
+  )
+  expect_equal(
+    pred$.pred[[2]]$.pred_survival,
+    1 -
+      survival::psurvreg(
+        eval_time,
+        lp[2],
+        distribution = engine_fit$dist,
+        scale = engine_fit$scale[["sex=2"]]
+      )
+  )
+  expect_equal(
+    pred$.pred[[3]]$.pred_survival,
+    1 -
+      survival::psurvreg(
+        eval_time,
+        lp[3],
+        distribution = engine_fit$dist,
+        scale = engine_fit$scale[["sex=1"]]
+      )
+  )
+})
+
+test_that("NA in the strata variable gives NA predictions with rows preserved", {
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + strata(sex), data = lung)
+
+  eval_time <- c(100, 500)
+  na_pred <- rep(NA_real_, length(eval_time))
+
+  # A missing strata value must predict NA regardless of which strata the
+  # other rows belong to (see https://github.com/tidymodels/censored/issues/383).
+  na_and_sex1 <- lung[c(1, 2), ]
+  na_and_sex1$sex[1] <- NA
+  na_and_sex2 <- lung[c(1, 7), ]
+  na_and_sex2$sex[1] <- NA
+
+  pred_1 <- predict(
+    f_fit,
+    na_and_sex1,
+    type = "survival",
+    eval_time = eval_time
+  )
+  pred_2 <- predict(
+    f_fit,
+    na_and_sex2,
+    type = "survival",
+    eval_time = eval_time
+  )
+
+  expect_equal(nrow(pred_1), 2)
+  expect_equal(nrow(pred_2), 2)
+  expect_equal(pred_1$.pred[[1]]$.pred_survival, na_pred)
+  expect_equal(pred_2$.pred[[1]]$.pred_survival, na_pred)
+})
+
+test_that("hazard predictions with strata match a hand computation", {
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + strata(sex), data = lung)
+  engine_fit <- extract_fit_engine(f_fit)
+
+  new_data <- lung[c(1, 7, 20), ]
+  eval_time <- c(100, 500)
+  pred <- predict(f_fit, new_data, type = "hazard", eval_time = eval_time)
+  lp <- predict(engine_fit, new_data, type = "lp")
+
+  hand_hazard <- function(lp_i, scale_i) {
+    survival::dsurvreg(
+      eval_time,
+      lp_i,
+      scale_i,
+      distribution = engine_fit$dist
+    ) /
+      (1 -
+        survival::psurvreg(
+          eval_time,
+          lp_i,
+          distribution = engine_fit$dist,
+          scale = scale_i
+        ))
+  }
+
+  expect_equal(
+    pred$.pred[[1]]$.pred_hazard,
+    hand_hazard(lp[1], engine_fit$scale[["sex=1"]])
+  )
+  expect_equal(
+    pred$.pred[[2]]$.pred_hazard,
+    hand_hazard(lp[2], engine_fit$scale[["sex=2"]])
+  )
+  expect_equal(
+    pred$.pred[[3]]$.pred_hazard,
+    hand_hazard(lp[3], engine_fit$scale[["sex=1"]])
+  )
+})
+
+test_that("survival_prob_survreg() and hazard_survreg() work on stratified fits", {
+  f_fit <- survival_reg() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + strata(sex), data = lung)
+
+  new_data <- lung[c(1, 7, 20), ]
+  eval_time <- c(100, 500)
+
+  expect_equal(
+    survival_prob_survreg(f_fit, new_data, eval_time = eval_time),
+    predict(f_fit, new_data, type = "survival", eval_time = eval_time)
+  )
+  expect_equal(
+    hazard_survreg(f_fit, new_data, eval_time = eval_time),
+    predict(f_fit, new_data, type = "hazard", eval_time = eval_time)
+  )
+})
+
 # fit via matrix interface ------------------------------------------------
 
 test_that("`fix_xy()` works", {
