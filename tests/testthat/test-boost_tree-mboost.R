@@ -14,9 +14,7 @@ test_that("model object", {
   cox_spec <- boost_tree() |>
     set_engine("mboost") |>
     set_mode("censored regression")
-  expect_no_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
-  )
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   # Removing `call` element from both
   expect_equal(

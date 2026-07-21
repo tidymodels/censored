@@ -29,12 +29,10 @@ test_that("model object", {
     set_engine("ranger", seed = 1) |>
     set_mode("censored regression")
 
-  expect_no_error(
-    f_fit <- fit(
-      mod_spec,
-      Surv(time, status) ~ age + ph.ecog,
-      data = lung_ranger
-    )
+  f_fit <- fit(
+    mod_spec,
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung_ranger
   )
 
   expect_s3_class(f_fit$fit, "ranger")
@@ -328,12 +326,10 @@ test_that("can handle case weights", {
 
   dat <- make_cens_wts()
 
-  expect_no_error(
-    wt_fit <- rand_forest(trees = 3) |>
-      set_engine("ranger", seed = 1) |>
-      set_mode("censored regression") |>
-      fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
-  )
+  wt_fit <- rand_forest(trees = 3) |>
+    set_engine("ranger", seed = 1) |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
 
   unwt_fit <- rand_forest(trees = 3) |>
     set_engine("ranger", seed = 1) |>

@@ -12,9 +12,7 @@ test_that("model object", {
     set_mode("censored regression") |>
     set_engine("partykit")
   set.seed(1234)
-  expect_no_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-  )
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # Removing `call` element from comparison
   f_fit$fit$info$call <- NULL

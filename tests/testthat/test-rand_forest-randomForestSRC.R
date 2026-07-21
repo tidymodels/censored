@@ -398,12 +398,10 @@ test_that("can handle case weights", {
   dat <- make_cens_wts()
 
   set.seed(1)
-  expect_no_error(
-    wt_fit <- rand_forest(trees = 50) |>
-      set_engine("randomForestSRC") |>
-      set_mode("censored regression") |>
-      fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
-  )
+  wt_fit <- rand_forest(trees = 50) |>
+    set_engine("randomForestSRC") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
 
   set.seed(1)
   unwt_fit <- rand_forest(trees = 50) |>
