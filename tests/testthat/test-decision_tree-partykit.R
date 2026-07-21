@@ -99,12 +99,11 @@ test_that("survival predictions", {
   # single observation
   f_pred <- predict(f_fit, lung[1, ], type = "survival", eval_time = 306)
   new_km <- predict(exp_f_fit, newdata = lung[1, ], type = "prob")[[1]]
-  # Prediction should be fairly near the actual value
+  exp_surv <- summary(new_km, times = 306, extend = TRUE)$surv
 
   expect_equal(
     f_pred$.pred[[1]]$.pred_survival,
-    new_km$surv[new_km$time == 306],
-    tolerance = .1
+    exp_surv
   )
 })
 
