@@ -434,6 +434,34 @@ test_that("survival_prob_coxph() works with confidence intervals", {
   )
 })
 
+test_that("survival_prob_coxph() with strata handles confidence intervals and NA rows", {
+  mod <- proportional_hazards() |>
+    fit(Surv(time, status) ~ age + strata(ph.ecog), data = lung)
+  engine_fit <- extract_fit_engine(mod)
+
+  # row 14 has a missing strata value (ph.ecog), rows 13 and 15 do not
+  lung_pred <- lung[13:15, ]
+  eval_time <- c(306, 455)
+  pred <- survival_prob_coxph(
+    mod,
+    new_data = lung_pred,
+    eval_time = eval_time,
+    interval = "confidence"
+  )
+
+  expect_equal(nrow(pred), nrow(lung_pred))
+  expect_named(
+    pred$.pred[[1]],
+    c(".eval_time", ".pred_survival", ".pred_lower", ".pred_upper")
+  )
+
+  # the NA-strata row is all-NA in every prediction column
+  na_row <- pred$.pred[[2]]
+  expect_equal(na_row$.pred_survival, rep(NA_real_, length(eval_time)))
+  expect_equal(na_row$.pred_lower, rep(NA_real_, length(eval_time)))
+  expect_equal(na_row$.pred_upper, rep(NA_real_, length(eval_time)))
+})
+
 test_that("can predict for out-of-domain timepoints", {
   eval_time_obs_max_and_ood <- c(1022, 2000)
   obs_without_NA <- lung[2, ]
@@ -929,6 +957,10 @@ test_that("survival_prob_coxph() fails gracefully for eval_time values it can't 
   expect_snapshot(
     error = TRUE,
     survival_prob_coxph(cox_mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_coxph(cox_mod, new_data = lung[1:2, ])
   )
 })
 
