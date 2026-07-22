@@ -305,10 +305,16 @@ test_that("can handle case weights", {
 
   dat <- make_cens_wts()
 
+  set.seed(1)
   wt_fit <- rand_forest() |>
     set_engine("aorsf") |>
     set_mode("censored regression") |>
     fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
+  set.seed(1)
+  unwt_fit <- rand_forest() |>
+    set_engine("aorsf") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full)
 
   if (utils::packageVersion("aorsf") >= "0.1.2") {
     fit_weights <- wt_fit$fit$weights
@@ -319,6 +325,16 @@ test_that("can handle case weights", {
   expect_equal(
     fit_weights,
     as.vector(dat$wts)
+  )
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, dat$full, type = "survival", eval_time = c(100, 300))
   )
 })
 

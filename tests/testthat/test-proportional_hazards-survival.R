@@ -987,3 +987,34 @@ test_that("survival_prob_coxph() accepts eval_time values that it can handle", {
     )
   )
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  # coxph requires strictly positive weights
+  set.seed(1)
+  wts <- importance_weights(runif(nrow(lung)))
+
+  wt_fit <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts)
+  unwt_fit <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + sex, data = lung)
+
+  expect_equal(unname(wt_fit$fit$weights), as.numeric(wts))
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, lung, type = "time"),
+    predict(unwt_fit, lung, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "survival", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "survival", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "linear_pred"),
+    predict(unwt_fit, lung, type = "linear_pred")
+  )
+})

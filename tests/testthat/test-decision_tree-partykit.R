@@ -194,3 +194,37 @@ test_that("`fix_xy()` works", {
   )
   expect_equal(f_pred_survival, xy_pred_survival)
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  skip_if_not_installed("partykit")
+  skip_if_not_installed("coin")
+
+  dat <- make_cens_wts()
+  # ctree interprets weights as case counts, so use frequency weights
+  wts <- frequency_weights(rep(c(1L, 2L), length.out = nrow(dat$full)))
+  wt_fit <- decision_tree() |>
+    set_engine("partykit") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full, case_weights = wts)
+  unwt_fit <- decision_tree() |>
+    set_engine("partykit") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full)
+
+  expect_equal(
+    as.numeric(wt_fit$fit$fitted[["(weights)"]]),
+    as.numeric(wts)
+  )
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
+})

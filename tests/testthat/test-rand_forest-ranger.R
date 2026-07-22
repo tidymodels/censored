@@ -337,4 +337,14 @@ test_that("can handle case weights", {
     fit(Surv(time, event) ~ ., data = dat$full)
 
   expect_unequal(wt_fit$fit$survival, unwt_fit$fit$survival)
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
 })
