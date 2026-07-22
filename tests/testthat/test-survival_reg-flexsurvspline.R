@@ -498,4 +498,26 @@ test_that("can handle case weights", {
 
   expect_snapshot(wt_fit$fit$call)
   expect_unequal(coef(unwt_fit$fit), coef(wt_fit$fit))
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, lung, type = "time"),
+    predict(unwt_fit, lung, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "survival", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "survival", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "hazard", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "hazard", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "linear_pred"),
+    predict(unwt_fit, lung, type = "linear_pred")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "quantile"),
+    predict(unwt_fit, lung, type = "quantile")
+  )
 })

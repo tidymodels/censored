@@ -903,3 +903,38 @@ test_that("multi_predict() errors informatively on bad input", {
     )
   )
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  skip_if_not_installed("mboost")
+  skip("weighted prediction not yet supported by mboost, see #363")
+
+  dat <- make_cens_wts()
+  spec <- boost_tree() |>
+    set_engine("mboost") |>
+    set_mode("censored regression")
+  wt_fit <- fit(
+    spec,
+    Surv(time, event) ~ .,
+    data = dat$full,
+    case_weights = dat$wts
+  )
+  unwt_fit <- fit(spec, Surv(time, event) ~ ., data = dat$full)
+
+  expect_equal(as.numeric(wt_fit$fit[["(weights)"]]), as.numeric(dat$wts))
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "linear_pred"),
+    predict(unwt_fit, dat$full, type = "linear_pred")
+  )
+})

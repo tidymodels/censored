@@ -316,3 +316,35 @@ test_that("survival_prob_pecRpart() accepts eval_time values that it can handle"
     )
   )
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  skip_if_not_installed("pec")
+
+  dat <- make_cens_wts()
+  spec <- decision_tree() |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+  wt_fit <- fit(
+    spec,
+    Surv(time, event) ~ .,
+    data = dat$full,
+    case_weights = dat$wts
+  )
+  unwt_fit <- fit(spec, Surv(time, event) ~ ., data = dat$full)
+
+  # the tree structure differs when the fit honors the weights
+  expect_unequal(wt_fit$fit$rpart$frame, unwt_fit$fit$rpart$frame)
+
+  # time predictions differ; the survival probabilities happen to coincide at
+  # most eval times even though the tree structure differs.
+  # they differ for eval_time = 50 but this seems too brittle to test
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_no_error(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
+})

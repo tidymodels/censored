@@ -458,3 +458,45 @@ test_that("`fix_xy()` works", {
   )
   expect_equal(f_pred_hazard, xy_pred_hazard)
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  skip_if_not_installed("flexsurv")
+  # flexsurv engine can only take weights > 0
+  set.seed(1)
+  wts <- importance_weights(runif(nrow(lung)))
+
+  wt_fit <- survival_reg() |>
+    set_engine("flexsurv") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts)
+  unwt_fit <- survival_reg() |>
+    set_engine("flexsurv") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, status) ~ age + sex, data = lung)
+
+  expect_unequal(coef(unwt_fit$fit), coef(wt_fit$fit))
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, lung, type = "time"),
+    predict(unwt_fit, lung, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "survival", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "survival", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "hazard", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "hazard", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "linear_pred"),
+    predict(unwt_fit, lung, type = "linear_pred")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "quantile"),
+    predict(unwt_fit, lung, type = "quantile")
+  )
+})

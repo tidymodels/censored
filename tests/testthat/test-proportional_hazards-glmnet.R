@@ -1991,3 +1991,41 @@ test_that("survival_prob_coxnet() warns about deprecated `time` argument", {
     survival_prob_coxnet(mod, new_data = new_data, eval_time = 100)
   )
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  dat <- make_cens_wts()
+  spec <- proportional_hazards(penalty = 0.1) |>
+    set_engine("glmnet", cox.ties = "efron")
+  wt_fit <- fit(
+    spec,
+    Surv(time, event) ~ .,
+    data = dat$full,
+    case_weights = dat$wts
+  )
+  unwt_fit <- fit(spec, Surv(time, event) ~ ., data = dat$full)
+
+  expect_unequal(
+    as.matrix(coef(wt_fit$fit, s = 0.1)),
+    as.matrix(coef(unwt_fit$fit, s = 0.1))
+  )
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "linear_pred"),
+    predict(unwt_fit, dat$full, type = "linear_pred")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "raw"),
+    predict(unwt_fit, dat$full, type = "raw")
+  )
+})
