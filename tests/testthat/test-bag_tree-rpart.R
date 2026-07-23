@@ -1,5 +1,24 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("ipred")
+
+  engines <- parsnip::show_engines("bag_tree")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("rpart", censored_engines)
+
+  spec <- bag_tree() |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "bagging")
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   skip_if_not_installed("ipred")
 

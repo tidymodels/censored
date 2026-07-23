@@ -1,5 +1,23 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  engines <- parsnip::show_engines("proportional_hazards")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("survival", censored_engines)
+
+  spec <- proportional_hazards() |>
+    set_engine("survival") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "coxph")
+  expect_equal(translated$method$fit$defaults$model, TRUE)
+})
+
+# fit ---------------------------------------------------------------------
+
 # survival has some issues where missing predictor value get ommited despite
 # na.action = na.exclude. See https://github.com/therneau/survival/issues/137
 

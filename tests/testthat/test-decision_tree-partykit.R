@@ -1,5 +1,25 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("partykit")
+
+  engines <- parsnip::show_engines("decision_tree")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("partykit", censored_engines)
+
+  spec <- decision_tree(tree_depth = 20, min_n = 5) |>
+    set_engine("partykit") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "ctree_train")
+  expect_in(c("maxdepth", "minsplit"), names(translated$method$fit$args))
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   skip_if_not_installed("partykit")
   skip_if_not_installed("coin")
@@ -193,6 +213,27 @@ test_that("`fix_xy()` works", {
     eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("partykit")
+
+  spec <- decision_tree(tree_depth = tune(), min_n = tune()) |>
+    set_engine(
+      "partykit",
+      mincriterion = tune(),
+      teststat = tune(),
+      testtype = tune()
+    ) |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(
+    params$name,
+    c("tree_depth", "min_n", "mincriterion", "teststat", "testtype")
+  )
 })
 
 # case weights ------------------------------------------------------------

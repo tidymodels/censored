@@ -2,6 +2,27 @@ library(testthat)
 skip_if_not_installed("glmnet")
 suppressPackageStartupMessages(library(glmnet))
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("glmnet")
+
+  engines <- parsnip::show_engines("proportional_hazards")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("glmnet", censored_engines)
+
+  spec <- proportional_hazards(penalty = 0.1, mixture = 0.5) |>
+    set_engine("glmnet") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "coxnet_train")
+  expect_in("alpha", names(translated$method$fit$args))
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$alpha), 0.5)
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   lung2 <- lung[-14, ]
   exp_f_fit <- glmnet(
@@ -1990,6 +2011,19 @@ test_that("survival_prob_coxnet() warns about deprecated `time` argument", {
     pred_deprecated,
     survival_prob_coxnet(mod, new_data = new_data, eval_time = 100)
   )
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("glmnet")
+
+  spec <- proportional_hazards(penalty = tune(), mixture = tune()) |>
+    set_engine("glmnet") |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, c("penalty", "mixture"))
 })
 
 # case weights ------------------------------------------------------------

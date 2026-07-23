@@ -1,5 +1,29 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("mboost")
+
+  engines <- parsnip::show_engines("boost_tree")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("mboost", censored_engines)
+
+  spec <- boost_tree(trees = 100, min_n = 5, tree_depth = 3) |>
+    set_engine("mboost") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "blackboost_train")
+  expect_in(
+    c("mstop", "minsplit", "maxdepth"),
+    names(translated$method$fit$args)
+  )
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$mstop), 100)
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   skip_if_not_installed("mboost")
 
@@ -901,6 +925,28 @@ test_that("multi_predict() errors informatively on bad input", {
       type = "time",
       trees = c(1.5, 50)
     )
+  )
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("mboost")
+
+  spec <- boost_tree(
+    mtry = tune(),
+    trees = tune(),
+    min_n = tune(),
+    tree_depth = tune(),
+    loss_reduction = tune()
+  ) |>
+    set_engine("mboost") |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(
+    params$name,
+    c("mtry", "trees", "min_n", "tree_depth", "loss_reduction")
   )
 })
 
