@@ -79,7 +79,9 @@ make_boost_tree_mboost <- function() {
     mode = "censored regression",
     value = list(
       interface = "formula",
-      protect = c("formula", "data", "weights"),
+      # case weights are not enabled because mboost cannot predict from a
+      # weighted fit (#363)
+      protect = c("formula", "data"),
       func = c(pkg = "censored", fun = "blackboost_train"),
       defaults = list(family = expr(mboost::CoxPH()))
     )
