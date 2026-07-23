@@ -1,5 +1,25 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("flexsurv")
+
+  engines <- parsnip::show_engines("survival_reg")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("flexsurvspline", censored_engines)
+
+  spec <- survival_reg() |>
+    set_engine("flexsurvspline", k = 2) |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "flexsurvspline")
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$k), 2)
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   skip_if_not_installed("flexsurv")
 
@@ -471,6 +491,19 @@ test_that("`fix_xy()` works", {
     eval_time = c(100, 200)
   )
   expect_equal(f_pred_hazard, xy_pred_hazard)
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("flexsurv")
+
+  spec <- survival_reg() |>
+    set_engine("flexsurvspline", k = tune()) |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, "k")
 })
 
 # case weights ------------------------------------------------------------

@@ -1,5 +1,23 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  engines <- parsnip::show_engines("survival_reg")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("survival", censored_engines)
+
+  spec <- survival_reg(dist = "weibull") |>
+    set_engine("survival") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "survreg")
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$dist), "weibull")
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   set.seed(1234)
   exp_f_fit <- survival::survreg(
@@ -614,6 +632,17 @@ test_that("hazard_survreg() accepts eval_time values that it can handle", {
   expect_no_error(
     hazard_survreg(mod, new_data = new_data, eval_time = c(100, 100, 200))
   )
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  spec <- survival_reg(dist = tune()) |>
+    set_engine("survival") |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, "dist")
 })
 
 # case weights ------------------------------------------------------------

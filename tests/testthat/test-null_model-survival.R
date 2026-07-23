@@ -1,6 +1,23 @@
 library(testthat)
 library(survival)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  engines <- parsnip::show_engines("null_model")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("survival", censored_engines)
+
+  spec <- null_model() |>
+    set_engine("survival") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "survfit_null")
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object ignores predictors", {
   spec <- null_model() |>
     set_engine("survival") |>

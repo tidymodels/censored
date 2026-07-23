@@ -1,5 +1,25 @@
 library(testthat)
 
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("pec")
+
+  engines <- parsnip::show_engines("decision_tree")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("rpart", censored_engines)
+
+  spec <- decision_tree(tree_depth = 20) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "pecRpart")
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$maxdepth), 20)
+})
+
+# fit ---------------------------------------------------------------------
+
 test_that("model object", {
   skip_if_not_installed("pec")
 
@@ -315,6 +335,23 @@ test_that("survival_prob_pecRpart() accepts eval_time values that it can handle"
       eval_time = c(100, 100, 200)
     )
   )
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("pec")
+
+  spec <- decision_tree(
+    cost_complexity = tune(),
+    tree_depth = tune(),
+    min_n = tune()
+  ) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, c("cost_complexity", "tree_depth", "min_n"))
 })
 
 # case weights ------------------------------------------------------------
