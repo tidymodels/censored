@@ -2,6 +2,11 @@
 
 ## censored (development version)
 
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine no longer accepts case weights because
+  mboost cannot predict from a weighted fit
+  ([\#363](https://github.com/tidymodels/censored/issues/363)).
+
 - [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)
   now supports the `"censored regression"` mode with a new `"ranger"`
   engine, fitting a survival random forest via
