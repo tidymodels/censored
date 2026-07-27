@@ -91,8 +91,8 @@ test_that("time predictions are Inf for leaves whose KM never reaches 0.5", {
   ))
   f_pred <- predict(f_fit, lung, type = "time")
   expect_true(any(is.infinite(f_pred$.pred_time)))
-  expect_true(all(is.infinite(f_pred$.pred_time[leaves %in% inf_leaves])))
-  expect_true(all(is.finite(f_pred$.pred_time[!leaves %in% inf_leaves])))
+  expect_all_true(is.infinite(f_pred$.pred_time[leaves %in% inf_leaves]))
+  expect_all_true(is.finite(f_pred$.pred_time[!leaves %in% inf_leaves]))
 })
 
 

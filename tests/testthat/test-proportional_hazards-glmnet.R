@@ -649,8 +649,8 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[4]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -659,8 +659,8 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[3]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -669,8 +669,8 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -679,7 +679,7 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -688,7 +688,7 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -697,7 +697,7 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
 })
 
 test_that("survival prediction with NA in strata", {
@@ -727,8 +727,8 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[4]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -737,8 +737,8 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[3]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -747,8 +747,8 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -757,7 +757,7 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -766,7 +766,7 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -775,7 +775,7 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
 })
 
 test_that("survival_prob_coxnet() works for single penalty value", {
@@ -822,7 +822,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -859,7 +859,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
     penalty = pred_penalty
   )
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival_prob_coxnet() works for multiple penalty values", {
@@ -911,7 +911,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   exp_prob <- purrr::map(surv_fit_summary, \(.x) .x$surv[, 2]) |> unlist()
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, rep(pred_time, length(pred_penalty)))
   expect_equal(prob_non_na$.pred_survival, exp_prob)

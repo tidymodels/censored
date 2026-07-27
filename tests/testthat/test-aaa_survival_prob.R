@@ -10,7 +10,7 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -26,7 +26,7 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -47,7 +47,7 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -63,7 +63,7 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -92,7 +92,7 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -114,7 +114,7 @@ test_that("survfit_summary_typestable() works for survival prob - unstratified (
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -153,7 +153,7 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), nrow(lung_pred)))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>
@@ -176,7 +176,7 @@ test_that("survfit_summary_typestable() works for survival prob - stratified (co
     survfit_summary_typestable()
   prob <- surv_fit_summary$surv
   expect_equal(dim(prob), c(length(pred_time), 1))
-  expect_true(all(prob[1, ] > prob[2, ]))
+  expect_all_true(prob[1, ] > prob[2, ])
 
   pred_time <- 100
   surv_fit_summary <- summary(surv_fit, times = pred_time) |>

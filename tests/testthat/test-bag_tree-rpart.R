@@ -209,7 +209,7 @@ test_that("survival_prob_survbagg() works", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -244,7 +244,7 @@ test_that("survival_prob_survbagg() works", {
     eval_time = pred_time
   )
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival predictions without surrogate splits for NA", {
@@ -263,9 +263,9 @@ test_that("survival predictions without surrogate splits for NA", {
     eval_time = c(100, 500, 1000)
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(!any(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(!is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(!is.na(f_pred$.pred[[3]]$.pred_survival))
 })
 
 test_that("can predict for out-of-domain timepoints", {

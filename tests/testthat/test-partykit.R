@@ -75,7 +75,7 @@ test_that("survival_prob_partykit() works for ctree", {
   ) |>
     tidyr::unnest(cols = .pred)
 
-  expect_true(all(!is.na(prob$.pred_survival)))
+  expect_all_true(!is.na(prob$.pred_survival))
 })
 
 test_that("survival_prob_partykit() works for cforest", {
@@ -159,7 +159,7 @@ test_that("survival_prob_partykit() works for cforest", {
   ) |>
     tidyr::unnest(cols = .pred)
 
-  expect_true(all(!is.na(prob$.pred_survival)))
+  expect_all_true(!is.na(prob$.pred_survival))
 })
 
 # input checks ------------------------------------------------------------

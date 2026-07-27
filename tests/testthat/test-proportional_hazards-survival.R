@@ -128,7 +128,7 @@ test_that("time predictions with NA", {
 
   f_pred <- predict(f_fit, na_1_data_0, type = "time")
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(is.na(f_pred$.pred_time))
+  expect_all_true(is.na(f_pred$.pred_time))
 })
 
 test_that("prediction from stratified models require strata variables in new_data", {
@@ -317,8 +317,8 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[4]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -327,8 +327,8 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[3]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -337,8 +337,8 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -347,7 +347,7 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -356,7 +356,7 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -365,7 +365,7 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
 })
 
 test_that("survival_prob_coxph() works", {
@@ -388,7 +388,7 @@ test_that("survival_prob_coxph() works", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -409,7 +409,7 @@ test_that("survival_prob_coxph() works", {
 
   prob <- survival_prob_coxph(mod, new_data = lung_pred, eval_time = pred_time)
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival_prob_coxph() works with confidence intervals", {
@@ -435,8 +435,8 @@ test_that("survival_prob_coxph() works with confidence intervals", {
   pred_non_na <- pred$.pred[[3]]
 
   # get missings right
-  expect_true(all(is.na(pred_na$.pred_lower)))
-  expect_true(all(is.na(pred_na$.pred_upper)))
+  expect_all_true(is.na(pred_na$.pred_lower))
+  expect_all_true(is.na(pred_na$.pred_upper))
   # for non-missings, get interval right
   expect_equal(
     pred_non_na |>
