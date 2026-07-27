@@ -114,12 +114,7 @@ test_that("survival probability prediction", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(3, 2))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 3)
   expect_all_true(
     purrr::map_lgl(f_pred$.pred, \(x) {
       identical(names(x), c(".eval_time", ".pred_survival"))
@@ -353,12 +348,7 @@ test_that("hazard prediction", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(3, 2))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 3)
   expect_all_true(
     purrr::map_lgl(f_pred$.pred, \(x) {
       identical(names(x), c(".eval_time", ".pred_hazard"))

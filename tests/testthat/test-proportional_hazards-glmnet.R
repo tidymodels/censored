@@ -460,9 +460,7 @@ test_that("survival probabilities without strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(2, 2))))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_all_true(
     purrr::map_lgl(f_pred$.pred, \(x) {
       identical(names(x), c(".eval_time", ".pred_survival"))
@@ -510,12 +508,7 @@ test_that("survival probabilities without strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2 * 2, 3))
-    ))
-  )
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2 * 2)
   expect_all_true(
     purrr::map_lgl(pred_multi$.pred, \(x) {
       identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
@@ -552,9 +545,7 @@ test_that("survival probabilities with strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(2, 2))))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_all_true(
     purrr::map_lgl(f_pred$.pred, \(x) {
       identical(names(x), c(".eval_time", ".pred_survival"))
@@ -601,12 +592,7 @@ test_that("survival probabilities with strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2 * 2, 3))
-    ))
-  )
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2 * 2)
   expect_all_true(
     purrr::map_lgl(pred_multi$.pred, \(x) {
       identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
@@ -1065,12 +1051,7 @@ test_that("linear_pred predictions without strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2, 2))
-    ))
-  )
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2)
   expect_all_true(
     purrr::map_lgl(pred_multi$.pred, \(x) {
       identical(names(x), c("penalty", ".pred_linear_pred"))
@@ -1165,12 +1146,7 @@ test_that("linear_pred predictions with strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2, 2))
-    ))
-  )
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2)
   expect_all_true(
     purrr::map_lgl(pred_multi$.pred, \(x) {
       identical(names(x), c("penalty", ".pred_linear_pred"))

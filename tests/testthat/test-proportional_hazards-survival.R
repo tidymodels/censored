@@ -173,14 +173,7 @@ test_that("survival predictions without strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(dim(.x) == c(2, 2))
-      )
-    )
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_all_true(
     purrr::map_lgl(f_pred$.pred, \(x) {
       identical(names(x), c(".eval_time", ".pred_survival"))
@@ -253,12 +246,7 @@ test_that("survival predictions with strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(2, 2))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_all_true(
     purrr::map_lgl(f_pred$.pred, \(x) {
       identical(names(x), c(".eval_time", ".pred_survival"))
@@ -607,12 +595,7 @@ test_that("confidence intervals", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(2, 4))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_true(
     all(
       purrr::map_lgl(
@@ -651,12 +634,7 @@ test_that("confidence intervals", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(2, 4))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_true(
     all(
       purrr::map_lgl(
