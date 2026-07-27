@@ -1910,6 +1910,66 @@ test_that("multi_predict() warns about deprecated `time` argument", {
   )
 })
 
+test_that("multi_predict() warns when `opts` is ignored", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) |>
+    set_mode("censored regression") |>
+    set_engine("glmnet", cox.ties = "efron") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  expect_snapshot(
+    pred_opts <- multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "linear_pred",
+      penalty = 0.1,
+      opts = list(s = 0.05)
+    )
+  )
+  expect_equal(
+    pred_opts,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "linear_pred",
+      penalty = 0.1
+    )
+  )
+})
+
+test_that("multi_predict(type = linear_pred) forwards `increasing`", {
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+
+  set.seed(14)
+  f_fit <- proportional_hazards(penalty = 0.123) |>
+    set_mode("censored regression") |>
+    set_engine("glmnet", cox.ties = "efron") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  pred <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    penalty = c(0.05, 0.1)
+  )
+  pred_raw <- multi_predict(
+    f_fit,
+    new_data = new_data_3,
+    type = "linear_pred",
+    penalty = c(0.05, 0.1),
+    increasing = FALSE
+  )
+
+  expect_identical(
+    -tidyr::unnest(pred, cols = .pred)$.pred_linear_pred,
+    tidyr::unnest(pred_raw, cols = .pred)$.pred_linear_pred
+  )
+})
+
 # input checks ------------------------------------------------------------
 
 test_that("survival_time_coxnet() errors informatively on bad input", {

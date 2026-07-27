@@ -159,6 +159,15 @@
       The `time` argument of `multi_predict()` is deprecated as of censored 0.2.0.
       i Please use the `eval_time` argument instead.
 
+# multi_predict() warns when `opts` is ignored
+
+    Code
+      pred_opts <- multi_predict(f_fit, new_data = new_data_3, type = "linear_pred",
+        penalty = 0.1, opts = list(s = 0.05))
+    Condition
+      Warning:
+      `opts` is only used with `type = 'raw'` and was ignored.
+
 # survival_time_coxnet() errors informatively on bad input
 
     Code
