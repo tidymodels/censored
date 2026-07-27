@@ -61,7 +61,7 @@ test_that("time predictions", {
   f_pred <- predict(f_fit, lung, type = "time")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(nrow(f_pred), nrow(lung))
 
   # single observation
@@ -265,7 +265,7 @@ test_that("linear_pred predictions", {
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung2))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -274,7 +274,7 @@ test_that("linear_pred predictions", {
   exp_f_pred <- unname(predict(exp_f_fit, newdata = lung2))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 

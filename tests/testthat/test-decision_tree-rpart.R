@@ -62,7 +62,7 @@ test_that("time predictions", {
   exp_time[is.na(exp_time)] <- Inf
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, exp_time)
   expect_equal(nrow(f_pred), nrow(lung))
 

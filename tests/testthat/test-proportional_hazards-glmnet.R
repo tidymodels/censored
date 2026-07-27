@@ -82,7 +82,7 @@ test_that("time predictions without strata", {
   f_pred <- predict(f_fit, new_data = new_data_3, type = "time", penalty = 0.1)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(f_pred$.pred_time, exp_f_pred)
 
@@ -136,7 +136,7 @@ test_that("time predictions with strata", {
   f_pred <- predict(f_fit, new_data = new_data_3, type = "time", penalty = 0.1)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(f_pred$.pred_time, exp_f_pred)
 
@@ -1017,7 +1017,7 @@ test_that("linear_pred predictions without strata", {
   )
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1040,7 +1040,7 @@ test_that("linear_pred predictions without strata", {
   ))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1118,7 +1118,7 @@ test_that("linear_pred predictions with strata", {
   ))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1141,7 +1141,7 @@ test_that("linear_pred predictions with strata", {
   ))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 

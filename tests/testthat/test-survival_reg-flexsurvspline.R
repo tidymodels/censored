@@ -236,7 +236,7 @@ test_that("linear predictor", {
 
   expect_equal(f_pred$.pred_linear_pred, exp_pred$.pred_link)
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(nrow(f_pred), 5)
 
   # single observation

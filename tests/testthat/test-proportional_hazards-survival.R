@@ -48,7 +48,7 @@ test_that("time predictions without strata", {
   exp_f_pred <- unname(tabs[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -78,7 +78,7 @@ test_that("time predictions with strata", {
   exp_f_pred <- unname(tabs[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(new_data_3))
 
@@ -509,7 +509,7 @@ test_that("linear_pred predictions without strata", {
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -522,7 +522,7 @@ test_that("linear_pred predictions without strata", {
   exp_f_pred <- unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 })
@@ -542,7 +542,7 @@ test_that("linear_pred predictions with strata", {
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -555,7 +555,7 @@ test_that("linear_pred predictions with strata", {
   exp_f_pred <- unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 })
