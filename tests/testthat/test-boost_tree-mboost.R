@@ -109,13 +109,10 @@ test_that("survival predictions", {
   expect_true(
     all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(4, 2))))
   )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
@@ -446,11 +443,10 @@ test_that("multi_predict(type = time)", {
 
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("trees", ".pred_time"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("trees", ".pred_time"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_multi$.pred, nrow),
@@ -480,11 +476,10 @@ test_that("multi_predict(type = survival) for multiple eval_time points", {
 
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("trees", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("trees", ".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_multi$.pred, nrow),
@@ -514,11 +509,10 @@ test_that("multi_predict(type = survival) for a single eval_time", {
 
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("trees", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("trees", ".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_multi$.pred, nrow),
@@ -693,11 +687,10 @@ test_that("multi_predict() works with a single `trees` value", {
     trees = 50
   )
   expect_equal(names(pred_time), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_time$.pred,
-      \(.x) all(names(.x) == c("trees", ".pred_time"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_time$.pred, \(x) {
+      identical(names(x), c("trees", ".pred_time"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_time$.pred, nrow),
@@ -711,11 +704,10 @@ test_that("multi_predict() works with a single `trees` value", {
     eval_time = c(100, 500),
     trees = 50
   )
-  expect_true(
-    all(purrr::map_lgl(
-      pred_surv$.pred,
-      \(.x) all(names(.x) == c("trees", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_surv$.pred, \(x) {
+      identical(names(x), c("trees", ".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_surv$.pred, nrow),
@@ -728,11 +720,10 @@ test_that("multi_predict() works with a single `trees` value", {
     type = "linear_pred",
     trees = 50
   )
-  expect_true(
-    all(purrr::map_lgl(
-      pred_lp$.pred,
-      \(.x) all(names(.x) == c("trees", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_lp$.pred, \(x) {
+      identical(names(x), c("trees", ".pred_linear_pred"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_lp$.pred, nrow),
@@ -761,11 +752,10 @@ test_that("multi_predict(type = linear_pred)", {
 
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("trees", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("trees", ".pred_linear_pred"))
+    })
   )
   expect_equal(
     purrr::map_int(pred_multi$.pred, nrow),
@@ -781,11 +771,10 @@ test_that("multi_predict(type = linear_pred)", {
   )
   expect_equal(names(pred_multi_1), ".pred")
   expect_equal(nrow(pred_multi_1), 1L)
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("trees", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("trees", ".pred_linear_pred"))
+    })
   )
   expect_equal(purrr::map_int(pred_multi_1$.pred, nrow), 2L)
 })

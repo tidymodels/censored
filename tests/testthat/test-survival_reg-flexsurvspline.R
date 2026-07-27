@@ -120,13 +120,10 @@ test_that("survival probability prediction", {
       \(.x) all(dim(.x) == c(3, 2))
     ))
   )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
 
   expect_equal(f_pred, exp_pred)
@@ -362,13 +359,10 @@ test_that("hazard prediction", {
       \(.x) all(dim(.x) == c(3, 2))
     ))
   )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_hazard"))
-      )
-    )
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_hazard"))
+    })
   )
   expect_equal(f_pred, exp_pred)
 
