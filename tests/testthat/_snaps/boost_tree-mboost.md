@@ -47,6 +47,15 @@
       The `time` argument of `survival_prob_mboost()` is deprecated as of censored 0.2.0.
       i Please use the `eval_time` argument instead.
 
+# multi_predict() warns when `opts` is ignored
+
+    Code
+      pred_opts <- multi_predict(f_fit, new_data = new_data_3, type = "time", trees = 50,
+        opts = list(x = 1))
+    Condition
+      Warning:
+      `opts` is only used with `type = 'raw'` and was ignored.
+
 # multi_predict() errors informatively on bad input
 
     Code
@@ -89,4 +98,28 @@
     Condition
       Error in `multi_predict()`:
       ! `trees` must be a vector of positive integers.
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", trees = "a")
+    Condition
+      Error in `multi_predict()`:
+      ! `trees` must be a numeric vector, not the string "a".
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", trees = integer(0))
+    Condition
+      Error in `multi_predict()`:
+      ! `trees` can't be empty.
+
+---
+
+    Code
+      multi_predict(f_fit, new_data = new_data_3, type = "time", trees = c(50, NA))
+    Condition
+      Error in `multi_predict()`:
+      ! `trees` can't contain missing or infinite values.
 

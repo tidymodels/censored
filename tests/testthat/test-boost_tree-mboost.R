@@ -860,6 +860,54 @@ test_that("multi_predict() leaves the fitted model's mstop unchanged", {
   expect_equal(mboost::mstop(engine_fit), mstop_before)
 })
 
+test_that("multi_predict() warns when `opts` is ignored", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+
+  expect_snapshot(
+    pred_opts <- multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = 50,
+      opts = list(x = 1)
+    )
+  )
+  expect_equal(
+    pred_opts,
+    multi_predict(f_fit, new_data = new_data_3, type = "time", trees = 50)
+  )
+})
+
+test_that("multi_predict() defaults to the fitted number of trees", {
+  skip_if_not_installed("mboost")
+
+  lung2 <- lung[-14, ]
+  new_data_3 <- lung2[1:3, ]
+  set.seed(403)
+  f_fit <- boost_tree() |>
+    set_mode("censored regression") |>
+    set_engine("mboost") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
+  mstop_original <- mboost::mstop(hardhat::extract_fit_engine(f_fit))
+
+  pred_multi <- multi_predict(f_fit, new_data = new_data_3, type = "time")
+  unnested <- tidyr::unnest(pred_multi, cols = .pred)
+
+  expect_all_equal(unnested$trees, mstop_original)
+  expect_equal(
+    unnested$.pred_time,
+    predict(f_fit, new_data = new_data_3, type = "time")$.pred_time
+  )
+})
+
 test_that("multi_predict() errors informatively on bad input", {
   skip_if_not_installed("mboost")
 
@@ -924,6 +972,39 @@ test_that("multi_predict() errors informatively on bad input", {
       new_data = new_data_3,
       type = "time",
       trees = c(1.5, 50)
+    )
+  )
+
+  # non-numeric `trees`
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = "a"
+    )
+  )
+
+  # empty `trees`
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = integer(0)
+    )
+  )
+
+  # missing values in `trees`
+  expect_snapshot(
+    error = TRUE,
+    multi_predict(
+      f_fit,
+      new_data = new_data_3,
+      type = "time",
+      trees = c(50, NA)
     )
   )
 })
