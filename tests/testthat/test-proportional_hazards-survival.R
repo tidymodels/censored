@@ -720,7 +720,7 @@ test_that("get_missings_coxph() can identify missings without strata", {
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 })
 
 test_that("get_missings_coxph() can identify missings with single strata term", {
@@ -765,7 +765,7 @@ test_that("get_missings_coxph() can identify missings with single strata term", 
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 
   # missing in strata
   cox_spec <- proportional_hazards() |> set_engine("survival")
@@ -808,7 +808,7 @@ test_that("get_missings_coxph() can identify missings with single strata term", 
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 })
 
 test_that("get_missings_coxph() can identify missings with two strata terms", {
@@ -853,7 +853,7 @@ test_that("get_missings_coxph() can identify missings with two strata terms", {
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 })
 
 
