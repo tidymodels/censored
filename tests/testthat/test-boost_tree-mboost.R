@@ -288,7 +288,7 @@ test_that("linear_pred predictions", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("mboost")
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])

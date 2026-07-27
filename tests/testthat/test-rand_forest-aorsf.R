@@ -268,7 +268,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("aorsf")
 
   lung_orsf <- na.omit(lung)

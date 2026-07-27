@@ -198,7 +198,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("pec")
   skip_if_not_installed("prodlim", minimum_version = "2023.3.31")
 

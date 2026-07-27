@@ -478,7 +478,7 @@ test_that("missing predictors don't drop rows", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("flexsurv")
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
