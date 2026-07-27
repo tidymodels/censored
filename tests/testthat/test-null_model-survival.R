@@ -1,6 +1,3 @@
-library(testthat)
-library(survival)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {

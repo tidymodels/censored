@@ -1,4 +1,3 @@
-library(testthat)
 skip_if_not_installed("glmnet")
 suppressPackageStartupMessages(library(glmnet))
 
