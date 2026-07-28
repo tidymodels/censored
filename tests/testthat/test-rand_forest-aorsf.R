@@ -117,10 +117,7 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_equal(
-    unique(purrr::map_int(f_pred$.pred, nrow)),
-    3
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 3)
 
   expect_all_true(
     purrr::map_lgl(
