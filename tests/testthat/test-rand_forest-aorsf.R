@@ -122,15 +122,10 @@ test_that("survival predictions", {
     3
   )
 
-  cf_names <-
-    c(".eval_time", ".pred_survival")
-
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        ~ identical(names(.x), cf_names)
-      )
+  expect_all_true(
+    purrr::map_lgl(
+      f_pred$.pred,
+      \(x) identical(names(x), c(".eval_time", ".pred_survival"))
     )
   )
 

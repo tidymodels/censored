@@ -99,14 +99,10 @@ test_that("survival predictions", {
     unique(purrr::map_int(f_pred$.pred, nrow)),
     101
   )
-  cf_names <-
-    c(".eval_time", ".pred_survival")
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) identical(names(.x), cf_names)
-      )
+  expect_all_true(
+    purrr::map_lgl(
+      f_pred$.pred,
+      \(x) identical(names(x), c(".eval_time", ".pred_survival"))
     )
   )
   expect_equal(
