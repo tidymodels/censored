@@ -1,5 +1,4 @@
 skip_if_not_installed("glmnet")
-suppressPackageStartupMessages(library(glmnet))
 
 # registration ------------------------------------------------------------
 
@@ -24,7 +23,7 @@ test_that("engine is registered and translate() works", {
 
 test_that("model object", {
   lung2 <- lung[-14, ]
-  exp_f_fit <- glmnet(
+  exp_f_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
     family = "cox",
@@ -1070,7 +1069,7 @@ test_that("linear_pred predictions with strata", {
   exp_f_fit <- suppressWarnings(
     glmnet::glmnet(
       x = as.matrix(lung2[, c(4, 6)]),
-      y = stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
+      y = glmnet::stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
       family = "cox",
       cox.ties = "efron"
     )
@@ -1927,7 +1926,7 @@ test_that("multi_predict(type = linear_pred) forwards `increasing`", {
 
 test_that("survival_time_coxnet() errors informatively on bad input", {
   lung2 <- lung[-14, ]
-  raw_fit <- glmnet(
+  raw_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c("age", "ph.ecog")]),
     y = Surv(lung2$time, lung2$status),
     family = "cox",
@@ -1944,7 +1943,7 @@ test_that("survival_time_coxnet() errors informatively on bad input", {
 
 test_that("survival_prob_coxnet() errors informatively on bad input", {
   lung2 <- lung[-14, ]
-  raw_fit <- glmnet(
+  raw_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c("age", "ph.ecog")]),
     y = Surv(lung2$time, lung2$status),
     family = "cox",
