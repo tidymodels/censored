@@ -6246,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x5648c84c63b0>
+      ## <environment: 0x55be129046f8>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x5648c84c63b0>
+      ## <environment: 0x55be129046f8>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x5648c84c63b0>
+      ## <environment: 0x55be129046f8>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6325,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x5648bd153de0>
+      ## <bytecode: 0x55be075b2de0>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6345,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5648c5d6ffe0>
-      ## <environment: 0x5648c8496d18>
+      ## <bytecode: 0x55be101cef18>
+      ## <environment: 0x55be128d5060>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6356,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5648c5d6e1d8>
-      ## <environment: 0x5648c8496df8>
+      ## <bytecode: 0x55be101ccf50>
+      ## <environment: 0x55be128d5140>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6367,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5648c5d6ffe0>
-      ## <environment: 0x5648c8496ed8>
+      ## <bytecode: 0x55be101cef18>
+      ## <environment: 0x55be128d5220>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6378,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x5648c5d6e1d8>
-      ## <environment: 0x5648c8497028>
+      ## <bytecode: 0x55be101ccf50>
+      ## <environment: 0x55be128d5370>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6423,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x5648ce24a8e0>
-      ## <environment: 0x5648c847aaa8>
+      ## <bytecode: 0x55be1869c608>
+      ## <environment: 0x55be128b8df0>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6452,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x5648c84c63b0>
+      ## <environment: 0x55be129046f8>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x5648c84c63b0>
+      ## <environment: 0x55be129046f8>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x5648c84c63b0>
+      ## <environment: 0x55be129046f8>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
