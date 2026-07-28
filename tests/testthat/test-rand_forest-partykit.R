@@ -1,5 +1,3 @@
-library(testthat)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {
@@ -75,7 +73,7 @@ test_that("time predictions", {
   exp_f_pred <- predict(exp_f_fit, newdata = lung, type = "response")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, unname(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -110,18 +108,11 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_equal(
-    unique(purrr::map_int(f_pred$.pred, nrow)),
-    101
-  )
-  cf_names <-
-    c(".eval_time", ".pred_survival")
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        ~ identical(names(.x), cf_names)
-      )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 101)
+  expect_all_true(
+    purrr::map_lgl(
+      f_pred$.pred,
+      \(x) identical(names(x), c(".eval_time", ".pred_survival"))
     )
   )
 
@@ -190,7 +181,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("partykit")
   skip_if_not_installed("coin")
 

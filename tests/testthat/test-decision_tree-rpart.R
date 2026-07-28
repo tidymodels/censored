@@ -1,5 +1,3 @@
-library(testthat)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {
@@ -64,7 +62,7 @@ test_that("time predictions", {
   exp_time[is.na(exp_time)] <- Inf
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, exp_time)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -93,8 +91,8 @@ test_that("time predictions are Inf for leaves whose KM never reaches 0.5", {
   ))
   f_pred <- predict(f_fit, lung, type = "time")
   expect_true(any(is.infinite(f_pred$.pred_time)))
-  expect_true(all(is.infinite(f_pred$.pred_time[leaves %in% inf_leaves])))
-  expect_true(all(is.finite(f_pred$.pred_time[!leaves %in% inf_leaves])))
+  expect_all_true(is.infinite(f_pred$.pred_time[leaves %in% inf_leaves]))
+  expect_all_true(is.finite(f_pred$.pred_time[!leaves %in% inf_leaves]))
 })
 
 
@@ -120,21 +118,11 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(dim(.x) == c(101, 2))
-      )
-    )
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 101)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
@@ -149,13 +137,10 @@ test_that("survival predictions", {
   # single observation
   f_pred <- predict(f_fit, lung[2, ], type = "survival", eval_time = 100:200)
   expect_identical(nrow(f_pred), 1L)
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(f_pred$.pred[[1]]$.eval_time, 100:200)
 })
@@ -198,7 +183,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("pec")
   skip_if_not_installed("prodlim", minimum_version = "2023.3.31")
 

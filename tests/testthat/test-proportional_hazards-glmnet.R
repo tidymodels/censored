@@ -1,6 +1,4 @@
-library(testthat)
 skip_if_not_installed("glmnet")
-suppressPackageStartupMessages(library(glmnet))
 
 # registration ------------------------------------------------------------
 
@@ -25,7 +23,7 @@ test_that("engine is registered and translate() works", {
 
 test_that("model object", {
   lung2 <- lung[-14, ]
-  exp_f_fit <- glmnet(
+  exp_f_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c(4, 6)]),
     y = Surv(lung2$time, lung2$status),
     family = "cox",
@@ -83,7 +81,7 @@ test_that("time predictions without strata", {
   f_pred <- predict(f_fit, new_data = new_data_3, type = "time", penalty = 0.1)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(f_pred$.pred_time, exp_f_pred)
 
@@ -137,7 +135,7 @@ test_that("time predictions with strata", {
   f_pred <- predict(f_fit, new_data = new_data_3, type = "time", penalty = 0.1)
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(f_pred$.pred_time, exp_f_pred)
 
@@ -461,14 +459,11 @@ test_that("survival probabilities without strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(2, 2))))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-    ))
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
 
   # single observation
@@ -512,17 +507,11 @@ test_that("survival probabilities without strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2 * 2, 3))
-    ))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2 * 2)
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     pred_multi |> tidyr::unnest(cols = .pred),
@@ -555,14 +544,11 @@ test_that("survival probabilities with strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(2, 2))))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-    ))
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   # single observation
   f_pred_1 <- predict(
@@ -605,17 +591,11 @@ test_that("survival probabilities with strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2 * 2, 3))
-    ))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2 * 2)
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     pred_multi |> tidyr::unnest(cols = .pred),
@@ -650,8 +630,8 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[4]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -660,8 +640,8 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[3]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -670,8 +650,8 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -680,7 +660,7 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -689,7 +669,7 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -698,7 +678,7 @@ test_that("survival prediction with NA in predictor", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
 })
 
 test_that("survival prediction with NA in strata", {
@@ -728,8 +708,8 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[4]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -738,8 +718,8 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[3]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -748,8 +728,8 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -758,7 +738,7 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -767,7 +747,7 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -776,7 +756,7 @@ test_that("survival prediction with NA in strata", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
 })
 
 test_that("survival_prob_coxnet() works for single penalty value", {
@@ -823,7 +803,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -860,7 +840,7 @@ test_that("survival_prob_coxnet() works for single penalty value", {
     penalty = pred_penalty
   )
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival_prob_coxnet() works for multiple penalty values", {
@@ -912,7 +892,7 @@ test_that("survival_prob_coxnet() works for multiple penalty values", {
   exp_prob <- purrr::map(surv_fit_summary, \(.x) .x$surv[, 2]) |> unlist()
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, rep(pred_time, length(pred_penalty)))
   expect_equal(prob_non_na$.pred_survival, exp_prob)
@@ -1018,7 +998,7 @@ test_that("linear_pred predictions without strata", {
   )
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1041,7 +1021,7 @@ test_that("linear_pred predictions without strata", {
   ))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1070,17 +1050,11 @@ test_that("linear_pred predictions without strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2, 2))
-    ))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
-    ))
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2)
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_linear_pred"))
+    })
   )
   expect_equal(
     pred_multi |> tidyr::unnest(cols = .pred),
@@ -1095,7 +1069,7 @@ test_that("linear_pred predictions with strata", {
   exp_f_fit <- suppressWarnings(
     glmnet::glmnet(
       x = as.matrix(lung2[, c(4, 6)]),
-      y = stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
+      y = glmnet::stratifySurv(Surv(lung2$time, lung2$status), lung2$sex),
       family = "cox",
       cox.ties = "efron"
     )
@@ -1119,7 +1093,7 @@ test_that("linear_pred predictions with strata", {
   ))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1142,7 +1116,7 @@ test_that("linear_pred predictions with strata", {
   ))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung2))
 
@@ -1171,17 +1145,11 @@ test_that("linear_pred predictions with strata", {
   expect_s3_class(pred_multi, "tbl_df")
   expect_equal(names(pred_multi), ".pred")
   expect_equal(nrow(pred_multi), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(dim(.x) == c(2, 2))
-    ))
-  )
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
-    ))
+  expect_all_equal(purrr::map_int(pred_multi$.pred, nrow), 2)
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_linear_pred"))
+    })
   )
   expect_equal(
     pred_multi |> tidyr::unnest(cols = .pred),
@@ -1435,11 +1403,10 @@ test_that("multi_predict(type = time)", {
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_time"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_time"))
+    })
   )
 
   # single observation
@@ -1450,11 +1417,10 @@ test_that("multi_predict(type = time)", {
     penalty = c(0.01, 0.1)
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_time"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_time"))
+    })
   )
 })
 
@@ -1477,11 +1443,10 @@ test_that("multi_predict(type = survival) for multiple eval_time points", {
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 
   # single observation
@@ -1493,11 +1458,10 @@ test_that("multi_predict(type = survival) for multiple eval_time points", {
     penalty = c(0.01, 0.1)
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 })
 
@@ -1520,11 +1484,10 @@ test_that("multi_predict(type = survival) for a single eval_time", {
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 
   # single observation
@@ -1536,11 +1499,10 @@ test_that("multi_predict(type = survival) for a single eval_time", {
     penalty = c(0.01, 0.1)
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 })
 
@@ -1562,11 +1524,10 @@ test_that("multi_predict(type = linear_pred)", {
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_linear_pred"))
+    })
   )
 
   # single observation
@@ -1577,11 +1538,10 @@ test_that("multi_predict(type = linear_pred)", {
     penalty = c(0.01, 0.1)
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_linear_pred"))
+    })
   )
 })
 
@@ -1650,11 +1610,10 @@ test_that("multi_predict(type = time) works with single penalty", {
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_time"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_time"))
+    })
   )
 
   # single observation
@@ -1665,11 +1624,10 @@ test_that("multi_predict(type = time) works with single penalty", {
     penalty = 0.1
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_time"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_time"))
+    })
   )
 })
 
@@ -1692,11 +1650,10 @@ test_that("multi_predict(type = survival) works with single penalty for multiple
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 
   # single observation
@@ -1708,11 +1665,10 @@ test_that("multi_predict(type = survival) works with single penalty for multiple
     penalty = 0.1
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 })
 
@@ -1735,11 +1691,10 @@ test_that("multi_predict(type = survival) works with single penalty for a single
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 
   # single observation
@@ -1751,11 +1706,10 @@ test_that("multi_predict(type = survival) works with single penalty for a single
     penalty = 0.1
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".eval_time", ".pred_survival"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".eval_time", ".pred_survival"))
+    })
   )
 })
 
@@ -1777,11 +1731,10 @@ test_that("multi_predict(type = linear_pred) works with single penalty", {
   )
 
   expect_equal(names(pred_multi), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_linear_pred"))
+    })
   )
 
   # single observation
@@ -1792,11 +1745,10 @@ test_that("multi_predict(type = linear_pred) works with single penalty", {
     penalty = 0.1
   )
   expect_equal(names(pred_multi_1), ".pred")
-  expect_true(
-    all(purrr::map_lgl(
-      pred_multi_1$.pred,
-      \(.x) all(names(.x) == c("penalty", ".pred_linear_pred"))
-    ))
+  expect_all_true(
+    purrr::map_lgl(pred_multi_1$.pred, \(x) {
+      identical(names(x), c("penalty", ".pred_linear_pred"))
+    })
   )
 })
 
@@ -1974,7 +1926,7 @@ test_that("multi_predict(type = linear_pred) forwards `increasing`", {
 
 test_that("survival_time_coxnet() errors informatively on bad input", {
   lung2 <- lung[-14, ]
-  raw_fit <- glmnet(
+  raw_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c("age", "ph.ecog")]),
     y = Surv(lung2$time, lung2$status),
     family = "cox",
@@ -1991,7 +1943,7 @@ test_that("survival_time_coxnet() errors informatively on bad input", {
 
 test_that("survival_prob_coxnet() errors informatively on bad input", {
   lung2 <- lung[-14, ]
-  raw_fit <- glmnet(
+  raw_fit <- glmnet::glmnet(
     x = as.matrix(lung2[, c("age", "ph.ecog")]),
     y = Surv(lung2$time, lung2$status),
     family = "cox",

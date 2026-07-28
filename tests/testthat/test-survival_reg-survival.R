@@ -1,5 +1,3 @@
-library(testthat)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {
@@ -84,7 +82,7 @@ test_that("survival probability prediction", {
     dplyr::mutate(.patient = dplyr::row_number()) |>
     tidyr::unnest(cols = .pred)
 
-  expect_true(all(names(exp_pred) == ".pred"))
+  expect_named(exp_pred, ".pred")
   expect_equal(
     names(exp_pred_vert),
     c(".eval_time", ".pred_survival", ".patient")
@@ -146,7 +144,7 @@ test_that("linear predictor", {
   exp_pred <- predict(exp_fit, lung[1:5, ], type = "linear")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, unname(exp_pred))
   expect_equal(nrow(f_pred), 5)
 
@@ -226,7 +224,7 @@ test_that("survival hazard prediction", {
     dplyr::mutate(.patient = dplyr::row_number()) |>
     tidyr::unnest(cols = .pred)
 
-  expect_true(all(names(exp_pred) == ".pred"))
+  expect_named(exp_pred, ".pred")
   expect_equal(
     names(exp_pred_vert),
     c(".eval_time", ".pred_hazard", ".patient")
@@ -454,7 +452,7 @@ test_that("missing predictors don't drop rows", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

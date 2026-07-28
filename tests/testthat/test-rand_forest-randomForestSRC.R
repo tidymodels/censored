@@ -157,7 +157,7 @@ test_that("survival_time_rfsrc() works", {
   expect_equal(result, expected)
 
   # a non-crossing curve gives NA, never Inf (unlike ranger)
-  expect_false(any(is.infinite(result)))
+  expect_all_true(!is.infinite(result))
 
   # single observation
   result_1 <- survival_time_rfsrc(f_fit, lung[1, ])

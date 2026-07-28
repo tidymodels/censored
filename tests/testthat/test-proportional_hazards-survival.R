@@ -1,5 +1,3 @@
-library(testthat)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {
@@ -50,7 +48,7 @@ test_that("time predictions without strata", {
   exp_f_pred <- unname(tabs[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -80,7 +78,7 @@ test_that("time predictions with strata", {
   exp_f_pred <- unname(tabs[, "rmean"])
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(new_data_3))
 
@@ -130,7 +128,7 @@ test_that("time predictions with NA", {
 
   f_pred <- predict(f_fit, na_1_data_0, type = "time")
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(is.na(f_pred$.pred_time))
+  expect_all_true(is.na(f_pred$.pred_time))
 })
 
 test_that("prediction from stratified models require strata variables in new_data", {
@@ -175,21 +173,11 @@ test_that("survival predictions without strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(dim(.x) == c(2, 2))
-      )
-    )
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -258,19 +246,11 @@ test_that("survival predictions with strata", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(2, 2))
-    ))
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -319,8 +299,8 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[4]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[4]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -329,8 +309,8 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[3]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -339,8 +319,8 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_x_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -349,7 +329,7 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_x))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -358,7 +338,7 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_1))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
 
   f_pred <- predict(
     f_fit,
@@ -367,7 +347,7 @@ test_that("survival prediction with NA", {
     eval_time = c(306, 455)
   )
   expect_equal(nrow(f_pred), nrow(na_1_data_0))
-  expect_true(all(is.na(f_pred$.pred[[1]]$.pred_survival)))
+  expect_all_true(is.na(f_pred$.pred[[1]]$.pred_survival))
 })
 
 test_that("survival_prob_coxph() works", {
@@ -390,7 +370,7 @@ test_that("survival_prob_coxph() works", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -411,7 +391,7 @@ test_that("survival_prob_coxph() works", {
 
   prob <- survival_prob_coxph(mod, new_data = lung_pred, eval_time = pred_time)
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival_prob_coxph() works with confidence intervals", {
@@ -437,8 +417,8 @@ test_that("survival_prob_coxph() works with confidence intervals", {
   pred_non_na <- pred$.pred[[3]]
 
   # get missings right
-  expect_true(all(is.na(pred_na$.pred_lower)))
-  expect_true(all(is.na(pred_na$.pred_upper)))
+  expect_all_true(is.na(pred_na$.pred_lower))
+  expect_all_true(is.na(pred_na$.pred_upper))
   # for non-missings, get interval right
   expect_equal(
     pred_non_na |>
@@ -511,7 +491,7 @@ test_that("linear_pred predictions without strata", {
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -524,7 +504,7 @@ test_that("linear_pred predictions without strata", {
   exp_f_pred <- unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 })
@@ -544,7 +524,7 @@ test_that("linear_pred predictions with strata", {
   exp_f_pred <- -unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -557,7 +537,7 @@ test_that("linear_pred predictions with strata", {
   exp_f_pred <- unname(predict(exp_f_fit, newdata = lung, reference = "zero"))
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(f_pred$.pred_linear_pred, exp_f_pred)
   expect_equal(nrow(f_pred), nrow(lung))
 })
@@ -615,12 +595,7 @@ test_that("confidence intervals", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(2, 4))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_true(
     all(
       purrr::map_lgl(
@@ -659,12 +634,7 @@ test_that("confidence intervals", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(2, 4))
-    ))
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 2)
   expect_true(
     all(
       purrr::map_lgl(
@@ -722,7 +692,7 @@ test_that("get_missings_coxph() can identify missings without strata", {
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 })
 
 test_that("get_missings_coxph() can identify missings with single strata term", {
@@ -767,7 +737,7 @@ test_that("get_missings_coxph() can identify missings with single strata term", 
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 
   # missing in strata
   cox_spec <- proportional_hazards() |> set_engine("survival")
@@ -810,7 +780,7 @@ test_that("get_missings_coxph() can identify missings with single strata term", 
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 })
 
 test_that("get_missings_coxph() can identify missings with two strata terms", {
@@ -855,13 +825,13 @@ test_that("get_missings_coxph() can identify missings with two strata terms", {
     get_missings_coxph(f_fit$fit, na_1_data_0) |> unclass() |> unname(),
     1
   )
-  expect_true(is.null(get_missings_coxph(f_fit$fit, na_0_data_x)))
+  expect_null(get_missings_coxph(f_fit$fit, na_0_data_x))
 })
 
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
   lung_y <- Surv(lung$time, lung$status)
   lung_pred <- lung[1:5, ]

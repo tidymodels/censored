@@ -1,5 +1,3 @@
-library(testthat)
-
 # registration ------------------------------------------------------------
 
 test_that("engine is registered and translate() works", {
@@ -81,7 +79,7 @@ test_that("time predictions", {
   f_pred <- predict(f_fit, lung, type = "time")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(
     f_pred$.pred_time,
     purrr::map_dbl(exp_f_pred, \(.x) quantile(.x, probs = .5)$quantile)
@@ -130,16 +128,11 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(101, 2))))
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 101)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -211,7 +204,7 @@ test_that("survival_prob_survbagg() works", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -246,7 +239,7 @@ test_that("survival_prob_survbagg() works", {
     eval_time = pred_time
   )
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival predictions without surrogate splits for NA", {
@@ -265,9 +258,9 @@ test_that("survival predictions without surrogate splits for NA", {
     eval_time = c(100, 500, 1000)
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(!any(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(!is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(!is.na(f_pred$.pred[[3]]$.pred_survival))
 })
 
 test_that("can predict for out-of-domain timepoints", {
@@ -293,7 +286,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("ipred")
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
