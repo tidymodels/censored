@@ -7,7 +7,7 @@ giving a non-informative baseline for censored regression.
 ## Usage
 
 ``` r
-survfit_null(formula, data, ...)
+survfit_null(formula, data, weights = NULL, ...)
 ```
 
 ## Arguments
@@ -22,6 +22,10 @@ survfit_null(formula, data, ...)
 
   A data frame.
 
+- weights:
+
+  An optional numeric vector of case weights.
+
 - ...:
 
   Options to pass to
@@ -35,7 +39,7 @@ A `survfit` object.
 
 ``` r
 survfit_null(survival::Surv(time, status) ~ ., data = survival::lung)
-#> Call: survfit(formula = formula, data = data)
+#> Call: survfit(formula = formula, data = data, weights = weights)
 #> 
 #>        n events median 0.95LCL 0.95UCL
 #> [1,] 228    165    310     285     363
