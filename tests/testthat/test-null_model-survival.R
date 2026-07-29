@@ -96,3 +96,29 @@ test_that("predictions ignore missing values in predictors", {
     predict(f_fit, lung[1:3, ], type = "survival", eval_time = c(100, 300))
   )
 })
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  set.seed(1)
+  wts <- importance_weights(runif(nrow(lung)))
+
+  spec <- null_model() |>
+    set_engine("survival") |>
+    set_mode("censored regression")
+  wt_fit <- fit(spec, Surv(time, status) ~ ., data = lung, case_weights = wts)
+  unwt_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
+
+  # `survfit` records the weighted rather than the observed number at risk
+  expect_equal(wt_fit$fit$n.risk[1], sum(as.numeric(wts)))
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, lung, type = "time"),
+    predict(unwt_fit, lung, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, lung, type = "survival", eval_time = c(100, 300))
+  )
+})

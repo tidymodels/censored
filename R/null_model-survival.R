@@ -5,15 +5,24 @@
 #' regression.
 #' @param formula A formula with a [survival::Surv()] response.
 #' @param data A data frame.
+#' @param weights An optional numeric vector of case weights.
 #' @param ... Options to pass to [survival::survfit()].
 #' @return A `survfit` object.
 #' @keywords internal
 #' @export
 #' @examplesIf rlang::is_installed("survival")
 #' survfit_null(survival::Surv(time, status) ~ ., data = survival::lung)
-survfit_null <- function(formula, data, ...) {
+survfit_null <- function(formula, data, weights = NULL, ...) {
   formula <- stats::update(formula, . ~ 1)
-  survival::survfit(formula, data = data, ...)
+  # `survfit()` re-evaluates the expression given as `weights` in the formula's
+  # environment, so the values need to be reachable from there. parsnip already
+  # patches the formula environment with the case weights but we patch it here
+  # too so that weights also work when calling `survfit_null()` directly.
+  environment(formula) <- rlang::new_environment(
+    list(weights = weights),
+    parent = environment(formula)
+  )
+  survival::survfit(formula, data = data, weights = weights, ...)
 }
 
 #' A wrapper for survival times with null models
