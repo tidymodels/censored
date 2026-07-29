@@ -4,12 +4,14 @@
 \alias{survfit_null}
 \title{A wrapper for fitting a null model with survival data}
 \usage{
-survfit_null(formula, data, ...)
+survfit_null(formula, data, weights = NULL, ...)
 }
 \arguments{
 \item{formula}{A formula with a \code{\link[survival:Surv]{survival::Surv()}} response.}
 
 \item{data}{A data frame.}
+
+\item{weights}{An optional numeric vector of case weights.}
 
 \item{...}{Options to pass to \code{\link[survival:survfit]{survival::survfit()}}.}
 }
