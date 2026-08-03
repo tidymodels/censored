@@ -2,9 +2,13 @@
 
 ## censored (development version)
 
+- [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  with the `"rpart"` engine no longer accepts case weights
+  ([\#390](https://github.com/tidymodels/censored/issues/390)).
+
 - [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
   with the `"mboost"` engine no longer accepts case weights because
-  mboost cannot predict from a weighted fit
+  mboost doesn’t predict from a weighted fit
   ([\#363](https://github.com/tidymodels/censored/issues/363)).
 
 - [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)

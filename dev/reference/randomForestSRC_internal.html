@@ -97,9 +97,10 @@
     <p><code>survival_time_rfsrc()</code> returns the median survival time, i.e. the first
 event time at which the predicted survival curve drops to 0.5 or below. A
 curve that never crosses 0.5 has an undefined median and yields <code>NA</code>; the
-helper does not impute it. For a rank-based use such as the concordance
-index, these <code>NA</code>s can be imputed as <code>Inf</code> in post-processing (a non-crossing
-curve marks the longest survivors, so <code>Inf</code> ranks them at the top).</p>
+helper does not impute it.
+For a rank-based use such as the concordance index, these <code>NA</code>s can be
+imputed as <code>Inf</code> in post-processing (a non-crossing curve marks the longest
+survivors, so <code>Inf</code> ranks them at the top).</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
