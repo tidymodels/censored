@@ -43,8 +43,9 @@ Internal helper functions for randomForestSRC survival models
 \code{survival_time_rfsrc()} returns the median survival time, i.e. the first
 event time at which the predicted survival curve drops to 0.5 or below. A
 curve that never crosses 0.5 has an undefined median and yields \code{NA}; the
-helper does not impute it. For a rank-based use such as the concordance
-index, these \code{NA}s can be imputed as \code{Inf} in post-processing (a non-crossing
-curve marks the longest survivors, so \code{Inf} ranks them at the top).
+helper does not impute it.
+For a rank-based use such as the concordance index, these \code{NA}s can be
+imputed as \code{Inf} in post-processing (a non-crossing curve marks the longest
+survivors, so \code{Inf} ranks them at the top).
 }
 \keyword{internal}

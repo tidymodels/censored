@@ -1,6 +1,8 @@
 # censored (development version)
 
-* `boost_tree()` with the `"mboost"` engine no longer accepts case weights because mboost cannot predict from a weighted fit (#363).
+* `bag_tree()` with the `"rpart"` engine no longer accepts case weights (#390).
+
+* `boost_tree()` with the `"mboost"` engine no longer accepts case weights because mboost doesn't predict from a weighted fit (#363).
 
 * `rand_forest()` now supports the `"censored regression"` mode with a new `"ranger"` engine, fitting a survival random forest via `ranger::ranger()` (#131).
 
