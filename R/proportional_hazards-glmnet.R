@@ -56,7 +56,7 @@ coxnet_train <- function(
 
   if (has_strata(formula, data)) {
     check_strata_nterms(formula, data, call = call)
-    strata <- get_strata_glmnet(formula, data)
+    strata <- get_strata(formula, data)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
 
@@ -98,17 +98,6 @@ check_strata_nterms <- function(formula, data, call = caller_env()) {
     )
   }
   invisible(formula)
-}
-
-get_strata_glmnet <- function(formula, data, na.action = stats::na.omit) {
-  mod_terms <- stats::terms(formula, specials = "strata", data = data)
-  mod_terms <- stats::delete.response(mod_terms)
-  mod_frame <- stats::model.frame(mod_terms, data, na.action = na.action)
-
-  strata_ind <- attr(mod_terms, "specials")$strata
-  strata <- purrr::pluck(mod_frame, strata_ind)
-
-  strata
 }
 
 remove_strata <- function(formula, data, call = rlang::caller_env()) {
@@ -513,7 +502,7 @@ survival_time_coxnet <- function(
     !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
-    new_strata <- get_strata_glmnet(
+    new_strata <- get_strata(
       object$formula,
       data = new_data,
       na.action = stats::na.pass
@@ -675,7 +664,7 @@ survival_prob_coxnet <- function(
     !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
-    new_strata <- get_strata_glmnet(
+    new_strata <- get_strata(
       object$formula,
       data = new_data,
       na.action = stats::na.pass

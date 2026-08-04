@@ -67,7 +67,6 @@ utils::globalVariables(
     ".tmp",
     "engine",
     "predictor_indicators",
-    ".strata",
     "group",
     ".pred_quantile",
     ".quantile",

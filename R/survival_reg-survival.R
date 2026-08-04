@@ -31,37 +31,20 @@ survreg_quant <- function(results, object) {
 # but it is buried inside of `predict.survreg()`
 
 get_survreg_scale <- function(object, new_data) {
-  n <- nrow(new_data)
   if (length(object$scale) == 1) {
-    res <- rep(unname(object$scale), n)
-  } else {
-    res <- deparse_survreg_strata(object, new_data)
+    return(rep(unname(object$scale), nrow(new_data)))
   }
-  res
-}
 
-compute_strata <- function(object, new_data) {
-  trms <- stats::delete.response(object$terms)
-  new_new_data <-
-    stats::model.frame(
-      trms,
-      data = new_data,
-      na.action = na.pass,
-      xlev = object$xlevels
-    )
-  strata_info <- survival::untangle.specials(trms, "strata", 1)
-  new_new_data$.strata <-
-    survival::strata(new_new_data[, strata_info$vars], shortlabel = TRUE)
-  tibble::as_tibble(new_new_data)
-}
-
-deparse_survreg_strata <- function(object, new_data) {
-  new_new_data <- compute_strata(object, new_data)
+  strata <- get_strata(
+    object$terms,
+    new_data,
+    xlev = object$xlevels,
+    na.action = stats::na.pass
+  )
 
   # Match each row's stratum to its scale by name. A missing strata value
   # (or one not seen when fitting) matches no scale and so yields `NA`.
-  strata <- as.character(new_new_data$.strata)
-  unname(object$scale[strata])
+  unname(object$scale[as.character(strata)])
 }
 
 survreg_survival <- function(location, object, scale, eval_time, ...) {
