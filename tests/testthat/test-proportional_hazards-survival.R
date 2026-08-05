@@ -87,6 +87,31 @@ test_that("time predictions with strata", {
   expect_equal(nrow(f_pred_1), 1)
 })
 
+test_that("time predictions with a multi-variable strata term", {
+  cox_spec <- proportional_hazards() |> set_engine("survival")
+  exp_f_fit <- coxph(
+    Surv(time, status) ~ age + strata(sex, ph.ecog),
+    data = lung,
+    x = TRUE
+  )
+
+  f_fit <- fit(
+    cox_spec,
+    Surv(time, status) ~ age + strata(sex, ph.ecog),
+    data = lung
+  )
+  new_data_3 <- lung[1:3, ]
+  f_pred <- predict(f_fit, new_data_3, type = "time")
+  tabs <- summary(survfit(exp_f_fit, new_data_3, na.action = na.pass))$table
+  colnames(tabs) <- gsub("[[:punct:]]", "", colnames(tabs))
+  exp_f_pred <- unname(tabs[, "rmean"])
+
+  expect_s3_class(f_pred, "tbl_df")
+  expect_named(f_pred, ".pred_time")
+  expect_equal(f_pred$.pred_time, exp_f_pred)
+  expect_equal(nrow(f_pred), nrow(new_data_3))
+})
+
 test_that("time predictions with NA", {
   cox_spec <- proportional_hazards() |> set_engine("survival")
   f_fit <- fit(
@@ -149,6 +174,14 @@ test_that("prediction from stratified models require strata variables in new_dat
 
   expect_snapshot(error = TRUE, {
     predict(f_fit, new_data = dplyr::select(lung, -inst, -ph.ecog))
+  })
+
+  f_fit <- proportional_hazards() |>
+    set_engine("survival") |>
+    fit(Surv(time, status) ~ age + strata(sex, ph.ecog), data = lung)
+
+  expect_snapshot(error = TRUE, {
+    predict(f_fit, new_data = dplyr::select(lung, -sex, -ph.ecog))
   })
 })
 
