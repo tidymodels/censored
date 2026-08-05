@@ -48,6 +48,13 @@
   [`fit_xy()`](https://generics.r-lib.org/reference/fit_xy.html)
   ([\#365](https://github.com/tidymodels/censored/issues/365)).
 
+- Prediction for
+  [`proportional_hazards()`](https://parsnip.tidymodels.org/reference/proportional_hazards.html)
+  with the `"survival"` engine no longer fails when a single
+  [`strata()`](https://rdrr.io/pkg/survival/man/strata.html) term
+  contains more than one variable, e.g. `strata(s1, s2)`
+  ([\#404](https://github.com/tidymodels/censored/issues/404)).
+
 - The `survival_prob_*()` and `hazard_*()` helpers now validate their
   inputs and return more informative error messages when given an
   unusable `object`, `new_data`, or `eval_time`
