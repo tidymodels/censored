@@ -27,10 +27,11 @@ cph_survival_pre <- function(new_data, object, ..., call = caller_env()) {
   has_strata <- !is.null(terms_special$strata)
 
   if (has_strata) {
-    strata <- attr(terms_x, "term.labels")
-    strata <- grep(pattern = "^strata", x = strata, value = TRUE)
-    strata <- sub(pattern = "strata\\(", replacement = "", x = strata)
-    strata <- sub(pattern = "\\)", replacement = "", x = strata)
+    # Term labels collapse a multi-variable term into a single string, e.g.
+    # "strata(s1, s2)", so get the names from the `strata()` calls.
+    # The first element of `variables` attribute is the `list` call wrapping them.
+    variables <- as.list(attr(terms_x, "variables"))[-1]
+    strata <- unlist(purrr::map(variables[terms_special$strata], all.vars))
     strata_available <- strata %in% names(new_data)
     strata_missing <- strata[!strata_available]
 

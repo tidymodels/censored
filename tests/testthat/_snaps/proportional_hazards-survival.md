@@ -14,6 +14,14 @@
       Error in `predict_time()`:
       ! `new_data` is missing the following stratification variables: `inst` and `ph.ecog`.
 
+---
+
+    Code
+      predict(f_fit, new_data = dplyr::select(lung, -sex, -ph.ecog))
+    Condition
+      Error in `predict_time()`:
+      ! `new_data` is missing the following stratification variables: `sex` and `ph.ecog`.
+
 # survival predictions - error snapshot
 
     Code
