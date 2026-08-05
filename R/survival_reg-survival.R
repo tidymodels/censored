@@ -35,12 +35,7 @@ get_survreg_scale <- function(object, new_data) {
     return(rep(unname(object$scale), nrow(new_data)))
   }
 
-  strata <- get_strata(
-    object$terms,
-    new_data,
-    xlev = object$xlevels,
-    na.action = stats::na.pass
-  )
+  strata <- get_strata(object$terms, new_data, xlev = object$xlevels)
 
   # Match each row's stratum to its scale by name. A missing strata value
   # (or one not seen when fitting) matches no scale and so yields `NA`.

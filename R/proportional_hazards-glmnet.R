@@ -56,7 +56,7 @@ coxnet_train <- function(
 
   if (has_strata(formula, data)) {
     check_strata_nterms(formula, data, call = call)
-    strata <- get_strata(formula, data)
+    strata <- get_strata(formula, data, na.action = stats::na.omit)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
 
@@ -502,11 +502,7 @@ survival_time_coxnet <- function(
     !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
-    new_strata <- get_strata(
-      object$formula,
-      data = new_data,
-      na.action = stats::na.pass
-    )
+    new_strata <- get_strata(object$formula, data = new_data)
   } else {
     new_strata <- NULL
   }
@@ -664,11 +660,7 @@ survival_prob_coxnet <- function(
     !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
-    new_strata <- get_strata(
-      object$formula,
-      data = new_data,
-      na.action = stats::na.pass
-    )
+    new_strata <- get_strata(object$formula, data = new_data)
   } else {
     new_strata <- NULL
   }

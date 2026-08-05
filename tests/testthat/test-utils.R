@@ -32,7 +32,7 @@ test_that("get_strata() passes on or omits missing strata values", {
   new_data$sex[2] <- NA
 
   passed <- get_strata(form, new_data, na.action = stats::na.pass)
-  omitted <- get_strata(form, new_data)
+  omitted <- get_strata(form, new_data, na.action = stats::na.omit)
 
   expect_length(passed, 7)
   expect_equal(which(is.na(passed)), 2L)
@@ -52,7 +52,7 @@ test_that("get_strata() works with the terms of a fit and new data without the o
   # survreg() uses `xlevels` only for the predictors.
   new_data <- lung_fct[lung_fct$sex == "female", c("age", "sex")][1:3, ]
 
-  strata <- get_strata(engine_fit$terms, new_data, na.action = stats::na.pass)
+  strata <- get_strata(engine_fit$terms, new_data)
 
   expect_equal(as.character(strata), rep("female", 3))
 })
