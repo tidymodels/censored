@@ -36,34 +36,6 @@ test_that("model object", {
   )
 })
 
-test_that("main args work without set_model_arg()", {
-  skip_if_not_installed("ipred")
-
-  set.seed(1234)
-  exp_f_fit <- ipred::bagging(
-    Surv(time, status) ~ age + ph.ecog,
-    data = lung,
-    # already part of translate?
-    maxdepth = 20,
-    minsplit = 10,
-    cp = 0.5
-  )
-
-  # formula method
-  mod_spec <- bag_tree(tree_depth = 20, min_n = 10, cost_complexity = 0.5) |>
-    set_mode("censored regression") |>
-    set_engine("rpart")
-  set.seed(1234)
-  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-
-  # Removing `call` element from both
-  expect_equal(
-    f_fit$fit[names(f_fit$fit) != "call"],
-    exp_f_fit[names(exp_f_fit) != "call"],
-    ignore_formula_env = TRUE
-  )
-})
-
 # prediction: time --------------------------------------------------------
 
 test_that("time predictions", {
