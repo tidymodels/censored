@@ -68,3 +68,23 @@ check_eval_time <- function(
   }
   invisible(NULL)
 }
+
+get_strata <- function(x, data, ..., na.action = na.pass, xlev = NULL) {
+  check_dots_empty()
+  # `x` is either a formula or the terms of a fit, e.g. `survreg_fit$terms`.
+  trms <- stats::terms(x, specials = "strata", data = data)
+  trms <- stats::delete.response(trms)
+  mod_frame <- stats::model.frame(
+    trms,
+    data,
+    xlev = xlev,
+    na.action = na.action
+  )
+
+  strata_cols <- mod_frame[attr(trms, "specials")$strata]
+
+  # There is one column per strata term and only survreg allows more than one
+  # term, so this is a no-op for glmnet. For several columns it collapses them
+  # into a single factor, labelled to match the names of `survreg_fit$scale`.
+  survival::strata(strata_cols, shortlabel = TRUE)
+}
