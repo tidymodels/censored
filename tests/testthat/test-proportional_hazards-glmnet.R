@@ -23,7 +23,7 @@ test_that("model object", {
 test_that("print coxnet model", {
   lung2 <- lung[-14, ]
   f_fit <- proportional_hazards(penalty = 0.123) |>
-    set_engine("glmnet") |>
+    set_engine("glmnet", cox.ties = "efron") |>
     fit(Surv(time, status) ~ age + ph.ecog, data = lung2)
 
   expect_snapshot(f_fit)
@@ -1259,7 +1259,8 @@ test_that("predictions with strata and dot in formula", {
   # For R <= 3.6 only , glmnet models below give a warning for lack of convergence.
   skip_if(R.version$major == "3")
 
-  cox_spec <- proportional_hazards(penalty = 0.001) |> set_engine("glmnet")
+  cox_spec <- proportional_hazards(penalty = 0.001) |>
+    set_engine("glmnet", cox.ties = "efron")
   lung2 <- lung[, c("time", "status", "ph.ecog", "age", "sex")]
   lung2$sex <- factor(lung2$sex)
   lung2 <- lung2[complete.cases(lung2), ]
