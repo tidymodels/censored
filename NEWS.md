@@ -1,3 +1,7 @@
+# censored 0.3.5
+
+* Adapted tests for ipred 0.9-16 (#408).
+
 # censored 0.3.4
 
 * Adapted tests for hardhat 1.4.3 (#358).
