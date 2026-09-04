@@ -254,7 +254,7 @@ test_that("survival predictions with strata", {
       0.725922785669273,
       0.904152770723571
     ),
-    .Dim = 3:2
+    dim = 3:2
   )
 
   expect_s3_class(f_pred, "tbl_df")
