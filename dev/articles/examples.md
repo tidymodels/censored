@@ -32,10 +32,10 @@ We’ll model the survival of lung cancer patients.
       ## ✔ dials        1.4.4      ✔ tailor       0.1.0 
       ## ✔ dplyr        1.2.1      ✔ tidyr        1.3.2 
       ## ✔ infer        1.1.0      ✔ tune         2.1.0 
-      ## ✔ modeldata    1.5.1      ✔ workflows    1.3.0 
+      ## ✔ modeldata    1.6.0      ✔ workflows    1.3.0 
       ## ✔ parsnip      1.6.0      ✔ workflowsets 1.1.1 
       ## ✔ purrr        1.2.2      ✔ yardstick    1.4.0 
-      ## ✔ recipes      1.3.3
+      ## ✔ recipes      1.4.0
 
       ## ── Conflicts ──────────────────────────────── tidymodels_conflicts() ──
       ## ✖ purrr::discard() masks scales::discard()
@@ -6246,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x55d7ca78d1f0>
+      ## <environment: 0x55d2b2d7a818>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x55d7ca78d1f0>
+      ## <environment: 0x55d2b2d7a818>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x55d7ca78d1f0>
+      ## <environment: 0x55d2b2d7a818>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6325,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x55d7adf6cde0>
+      ## <bytecode: 0x55d2a8d20de0>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6345,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55d7b78352e0>
-      ## <environment: 0x55d7ca7d38e0>
+      ## <bytecode: 0x55d2ab8707b0>
+      ## <environment: 0x55d2b2d4de80>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6356,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55d7b78313c0>
-      ## <environment: 0x55d7ca7d7630>
+      ## <bytecode: 0x55d2ab58d1c0>
+      ## <environment: 0x55d2b2d4df60>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6367,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55d7b78352e0>
-      ## <environment: 0x55d7ca7d7550>
+      ## <bytecode: 0x55d2ab8707b0>
+      ## <environment: 0x55d2b2d4e040>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6378,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55d7b78313c0>
-      ## <environment: 0x55d7ca7d7400>
+      ## <bytecode: 0x55d2ab58d1c0>
+      ## <environment: 0x55d2b2d4e190>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6423,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x55d7b5d271b0>
-      ## <environment: 0x55d7ca7d59c0>
+      ## <bytecode: 0x55d2b647ce88>
+      ## <environment: 0x55d2b2d4fbd0>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6452,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x55d7ca78d1f0>
+      ## <environment: 0x55d2b2d7a818>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x55d7ca78d1f0>
+      ## <environment: 0x55d2b2d7a818>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x55d7ca78d1f0>
+      ## <environment: 0x55d2b2d7a818>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
