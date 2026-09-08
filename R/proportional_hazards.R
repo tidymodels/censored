@@ -54,6 +54,9 @@ fit_xy.proportional_hazards <- function(
     # res$fit$preproc carries it as used inside of `coxnet_train()`
     training_data_ind <- names(res$fit$preproc) %in% c("x", "y")
     res$training_data <- res$fit$preproc[training_data_ind]
+    # We are storing it in $preproc$coxnet rather than $preproc directly
+    # to be consistent with the formula interface `fit()`.
+    res$preproc$coxnet <- res$fit$preproc[!training_data_ind]
     res$fit <- res$fit$fit
   }
 

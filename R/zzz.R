@@ -12,11 +12,15 @@
   make_decision_tree_rpart()
   make_decision_tree_partykit()
 
+  make_null_model_survival()
+
   make_proportional_hazards_survival()
   make_proportional_hazards_glmnet()
 
   make_rand_forest_partykit()
   make_rand_forest_aorsf()
+  make_rand_forest_ranger()
+  make_rand_forest_randomForestSRC()
 
   make_survival_reg_survival()
   make_survival_reg_flexsurv()

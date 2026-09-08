@@ -111,34 +111,6 @@
 # predictions with strata and dot in formula
 
     Code
-      f_fit <- fit(cox_spec, Surv(time, status) ~ . - sex + strata(sex), data = lung2)
-
----
-
-    Code
-      f_fit_2 <- fit(cox_spec, Surv(time, status) ~ ph.ecog + age + strata(sex),
-      data = lung2)
-
----
-
-    Code
-      predict(f_fit, lung2, type = "linear_pred")
-    Output
-      # A tibble: 227 x 1
-         .pred_linear_pred
-                     <dbl>
-       1            -1.07 
-       2            -0.562
-       3            -0.462
-       4            -0.929
-       5            -0.495
-       6            -1.07 
-       7            -1.48 
-       8            -1.50 
-       9            -0.896
-      10            -1.42 
-      # i 217 more rows
-    Code
       predict(f_fit, lung2, type = "survival", eval_time = c(100, 300))
     Condition
       Warning in `terms.formula()`:
@@ -176,4 +148,80 @@
     Condition
       Error in `fit_xy()`:
       ! For stratification, please use the formula interface via `fit()`.
+
+# multi_predict() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- multi_predict(f_fit, new_data = lung2[1:2, ], type = "survival",
+      time = c(100, 200), penalty = 0.1)
+    Condition
+      Warning:
+      The `time` argument of `multi_predict()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
+
+# multi_predict() warns when `opts` is ignored
+
+    Code
+      pred_opts <- multi_predict(f_fit, new_data = new_data_3, type = "linear_pred",
+        penalty = 0.1, opts = list(s = 0.05))
+    Condition
+      Warning:
+      `opts` is only used with `type = 'raw'` and was ignored.
+
+# survival_time_coxnet() errors informatively on bad input
+
+    Code
+      survival_time_coxnet(raw_fit)
+    Condition
+      Error in `survival_time_coxnet()`:
+      ! `object` must be a <model_fit> object, not a <coxnet> object.
+
+---
+
+    Code
+      survival_time_coxnet(wrong_engine)
+    Condition
+      Error in `survival_time_coxnet()`:
+      ! `object$fit` must be a <coxnet> object, not a <coxph> object.
+
+# survival_prob_coxnet() errors informatively on bad input
+
+    Code
+      survival_prob_coxnet(raw_fit, new_data = lung2[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_coxnet()`:
+      ! `object` must be a <model_fit> object, not a <coxnet> object.
+
+---
+
+    Code
+      survival_prob_coxnet(wrong_engine, new_data = lung2[1:3, ], eval_time = 100)
+    Condition
+      Error in `survival_prob_coxnet()`:
+      ! `object$fit` must be a <coxnet> object, not a <coxph> object.
+
+# survival_prob_coxnet() fails gracefully for eval_time values it can't handle
+
+    Code
+      survival_prob_coxnet(mod, new_data = lung2[1:2, ], eval_time = numeric(0))
+    Condition
+      Error in `survival_prob_coxnet()`:
+      ! `eval_time` can't be empty.
+
+---
+
+    Code
+      survival_prob_coxnet(mod, new_data = lung2[1:2, ], eval_time = c(100, NA))
+    Condition
+      Error in `survival_prob_coxnet()`:
+      ! `eval_time` can't contain missing values.
+
+# survival_prob_coxnet() warns about deprecated `time` argument
+
+    Code
+      pred_deprecated <- survival_prob_coxnet(mod, new_data = new_data, time = 100)
+    Condition
+      Warning:
+      The `time` argument of `survival_prob_coxnet()` is deprecated as of censored 0.2.0.
+      i Please use the `eval_time` argument instead.
 

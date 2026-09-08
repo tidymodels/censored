@@ -1,4 +1,22 @@
-library(testthat)
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("pec")
+
+  engines <- parsnip::show_engines("decision_tree")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("rpart", censored_engines)
+
+  spec <- decision_tree(tree_depth = 20) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "pecRpart")
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$maxdepth), 20)
+})
+
+# fit ---------------------------------------------------------------------
 
 test_that("model object", {
   skip_if_not_installed("pec")
@@ -11,9 +29,7 @@ test_that("model object", {
     set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
-  expect_no_error(
-    f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-  )
+  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   expect_equal(f_fit$fit, exp_f_fit, ignore_formula_env = TRUE)
 })
@@ -27,23 +43,56 @@ test_that("time predictions", {
   set.seed(1234)
   exp_f_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
 
-  cox_spec <- decision_tree() |>
+  spec <- decision_tree() |>
     set_mode("censored regression") |>
     set_engine("rpart")
   set.seed(1234)
-  f_fit <- fit(cox_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   f_pred <- predict(f_fit, lung, type = "time")
-  exp_f_pred <- predict(exp_f_fit$rpart, lung)
+
+  exp_leaf <- factor(
+    predict(exp_f_fit$rpart, newdata = lung),
+    levels = exp_f_fit$levels
+  )
+  exp_medians <- stats::quantile(exp_f_fit$survfit, q = 0.5)
+  exp_time <- exp_medians$quantile[
+    match(as.character(exp_leaf), as.character(exp_medians$rpartFactor))
+  ]
+  exp_time[is.na(exp_time)] <- Inf
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
-  expect_equal(f_pred$.pred_time, unname(exp_f_pred))
+  expect_named(f_pred, ".pred_time")
+  expect_equal(f_pred$.pred_time, exp_time)
   expect_equal(nrow(f_pred), nrow(lung))
 
   # single observation
   f_pred_1 <- predict(f_fit, lung[2, ], type = "time")
   expect_identical(nrow(f_pred_1), 1L)
+})
+
+test_that("time predictions are Inf for leaves whose KM never reaches 0.5", {
+  skip_if_not_installed("pec")
+
+  spec <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart")
+  set.seed(1234)
+  f_fit <- fit(spec, Surv(time, status) ~ ., data = lung)
+
+  engine_fit <- extract_fit_engine(f_fit)
+  medians <- stats::quantile(engine_fit$survfit, q = 0.5)
+  inf_leaves <- as.character(medians$rpartFactor)[is.na(medians$quantile)]
+  expect_gt(length(inf_leaves), 0)
+
+  leaves <- as.character(factor(
+    predict(engine_fit$rpart, newdata = lung),
+    levels = engine_fit$levels
+  ))
+  f_pred <- predict(f_fit, lung, type = "time")
+  expect_true(any(is.infinite(f_pred$.pred_time)))
+  expect_all_true(is.infinite(f_pred$.pred_time[leaves %in% inf_leaves]))
+  expect_all_true(is.finite(f_pred$.pred_time[!leaves %in% inf_leaves]))
 })
 
 
@@ -69,21 +118,11 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(dim(.x) == c(101, 2))
-      )
-    )
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 101)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.eval_time,
@@ -98,13 +137,10 @@ test_that("survival predictions", {
   # single observation
   f_pred <- predict(f_fit, lung[2, ], type = "survival", eval_time = 100:200)
   expect_identical(nrow(f_pred), 1L)
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(f_pred$.pred[[1]]$.eval_time, 100:200)
 })
@@ -147,7 +183,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("pec")
   skip_if_not_installed("prodlim", minimum_version = "2023.3.31")
 
@@ -191,4 +227,146 @@ test_that("`fix_xy()` works", {
     eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
+})
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_pecRpart() errors informatively on bad input", {
+  skip_if_not_installed("pec")
+
+  raw_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "rpart")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(
+      wrong_engine,
+      new_data = lung[1:3, ],
+      eval_time = 100
+    )
+  )
+})
+
+test_that("survival_time_pecRpart() errors informatively on bad input", {
+  skip_if_not_installed("pec")
+
+  raw_fit <- pec::pecRpart(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "rpart")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_time_pecRpart(raw_fit, new_data = lung[1:3, ])
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_time_pecRpart(wrong_engine, new_data = lung[1:3, ])
+  )
+})
+
+test_that("survival_prob_pecRpart() fails gracefully for eval_time values it can't handle", {
+  skip_if_not_installed("pec")
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(mod, new_data = lung[1:2, ], eval_time = c(100, Inf))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_pecRpart(
+      mod,
+      new_data = lung[1:2, ],
+      eval_time = c(100, -Inf)
+    )
+  )
+})
+
+test_that("survival_prob_pecRpart() accepts eval_time values that it can handle", {
+  skip_if_not_installed("pec")
+  mod <- decision_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_pecRpart(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_pecRpart(
+      mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("pec")
+
+  spec <- decision_tree(
+    cost_complexity = tune(),
+    tree_depth = tune(),
+    min_n = tune()
+  ) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, c("cost_complexity", "tree_depth", "min_n"))
+})
+
+# case weights ------------------------------------------------------------
+
+test_that("can handle case weights", {
+  skip_if_not_installed("pec")
+
+  dat <- make_cens_wts()
+  spec <- decision_tree() |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+  wt_fit <- fit(
+    spec,
+    Surv(time, event) ~ .,
+    data = dat$full,
+    case_weights = dat$wts
+  )
+  unwt_fit <- fit(spec, Surv(time, event) ~ ., data = dat$full)
+
+  # the tree structure differs when the fit honors the weights
+  expect_unequal(wt_fit$fit$rpart$frame, unwt_fit$fit$rpart$frame)
+
+  # time predictions differ; the survival probabilities happen to coincide at
+  # most eval times even though the tree structure differs.
+  # they differ for eval_time = 50 but this seems too brittle to test
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_no_error(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
 })

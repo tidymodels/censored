@@ -1,4 +1,22 @@
-library(testthat)
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("flexsurv")
+
+  engines <- parsnip::show_engines("survival_reg")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("flexsurvspline", censored_engines)
+
+  spec <- survival_reg() |>
+    set_engine("flexsurvspline", k = 2) |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "flexsurvspline")
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$k), 2)
+})
+
+# fit ---------------------------------------------------------------------
 
 test_that("model object", {
   skip_if_not_installed("flexsurv")
@@ -96,19 +114,11 @@ test_that("survival probability prediction", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(3, 2))
-    ))
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 3)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
 
   expect_equal(f_pred, exp_pred)
@@ -218,7 +228,7 @@ test_that("linear predictor", {
 
   expect_equal(f_pred$.pred_linear_pred, exp_pred$.pred_link)
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_linear_pred"))
+  expect_named(f_pred, ".pred_linear_pred")
   expect_equal(nrow(f_pred), 5)
 
   # single observation
@@ -338,19 +348,11 @@ test_that("hazard prediction", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(head(lung)))
-  expect_true(
-    all(purrr::map_lgl(
-      f_pred$.pred,
-      \(.x) all(dim(.x) == c(3, 2))
-    ))
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_hazard"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 3)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_hazard"))
+    })
   )
   expect_equal(f_pred, exp_pred)
 
@@ -391,9 +393,74 @@ test_that("hazard for single eval time point", {
 })
 
 
+# missing data -------------------------------------------------------------
+
+test_that("missing predictors don't drop rows", {
+  skip_if_not_installed("flexsurv")
+
+  f_fit <- survival_reg() |>
+    set_engine("flexsurvspline") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  new_data <- lung[13:15, ] # row 2 has ph.ecog = NA
+  eval_time <- c(100, 300)
+  na_pred <- rep(NA_real_, length(eval_time))
+
+  f_pred_time <- predict(f_fit, new_data, type = "time")
+  expect_equal(nrow(f_pred_time), 3)
+  expect_equal(which(is.na(f_pred_time$.pred_time)), 2L)
+  expect_all_true(is.finite(f_pred_time$.pred_time[c(1, 3)]))
+
+  f_pred_lp <- predict(f_fit, new_data, type = "linear_pred")
+  expect_equal(nrow(f_pred_lp), 3)
+  expect_equal(which(is.na(f_pred_lp$.pred_linear_pred)), 2L)
+  expect_all_true(is.finite(f_pred_lp$.pred_linear_pred[c(1, 3)]))
+
+  f_pred_surv <- predict(
+    f_fit,
+    new_data,
+    type = "survival",
+    eval_time = eval_time
+  )
+  expect_equal(nrow(f_pred_surv), 3)
+  expect_equal(f_pred_surv$.pred[[2]]$.eval_time, eval_time)
+  expect_equal(f_pred_surv$.pred[[2]]$.pred_survival, na_pred)
+  expect_all_true(is.finite(f_pred_surv$.pred[[1]]$.pred_survival))
+  expect_all_true(is.finite(f_pred_surv$.pred[[3]]$.pred_survival))
+
+  f_pred_hazard <- predict(
+    f_fit,
+    new_data,
+    type = "hazard",
+    eval_time = eval_time
+  )
+  expect_equal(nrow(f_pred_hazard), 3)
+  expect_equal(f_pred_hazard$.pred[[2]]$.pred_hazard, na_pred)
+  expect_all_true(is.finite(f_pred_hazard$.pred[[1]]$.pred_hazard))
+  expect_all_true(is.finite(f_pred_hazard$.pred[[3]]$.pred_hazard))
+
+  f_pred_quantile <- predict(
+    f_fit,
+    new_data,
+    type = "quantile",
+    quantile_levels = c(0.2, 0.5, 0.8)
+  )
+  expect_equal(nrow(f_pred_quantile), 3)
+  expect_equal(
+    as.vector(unclass(f_pred_quantile$.pred_quantile[2])[[1]]),
+    rep(NA_real_, 3)
+  )
+  expect_all_true(
+    is.finite(as.vector(unclass(f_pred_quantile$.pred_quantile[1])[[1]]))
+  )
+  expect_all_true(
+    is.finite(as.vector(unclass(f_pred_quantile$.pred_quantile[3])[[1]]))
+  )
+})
+
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("flexsurv")
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
@@ -473,6 +540,19 @@ test_that("`fix_xy()` works", {
   expect_equal(f_pred_hazard, xy_pred_hazard)
 })
 
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("flexsurv")
+
+  spec <- survival_reg() |>
+    set_engine("flexsurvspline", k = tune()) |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, "k")
+})
+
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {
@@ -483,13 +563,11 @@ test_that("can handle case weights", {
   wts <- runif(nrow(lung))
   wts <- importance_weights(wts)
 
-  expect_no_error(
-    wt_fit <- survival_reg() |>
-      set_engine("flexsurvspline", k = 1) |>
-      set_mode("censored regression") |>
-      fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) |>
-      suppressWarnings()
-  )
+  wt_fit <- survival_reg() |>
+    set_engine("flexsurvspline", k = 1) |>
+    set_mode("censored regression") |>
+    fit(Surv(time, status) ~ age + sex, data = lung, case_weights = wts) |>
+    suppressWarnings()
 
   unwt_fit <-
     survival_reg() |>
@@ -500,4 +578,26 @@ test_that("can handle case weights", {
 
   expect_snapshot(wt_fit$fit$call)
   expect_unequal(coef(unwt_fit$fit), coef(wt_fit$fit))
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, lung, type = "time"),
+    predict(unwt_fit, lung, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "survival", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "survival", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "hazard", eval_time = c(100, 500)),
+    predict(unwt_fit, lung, type = "hazard", eval_time = c(100, 500))
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "linear_pred"),
+    predict(unwt_fit, lung, type = "linear_pred")
+  )
+  expect_unequal(
+    predict(wt_fit, lung, type = "quantile"),
+    predict(unwt_fit, lung, type = "quantile")
+  )
 })

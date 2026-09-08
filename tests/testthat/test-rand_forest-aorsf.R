@@ -1,4 +1,23 @@
-library(testthat)
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("aorsf")
+
+  engines <- parsnip::show_engines("rand_forest")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("aorsf", censored_engines)
+
+  spec <- rand_forest(trees = 100, min_n = 5) |>
+    set_engine("aorsf") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "orsf")
+  expect_in(c("n_tree", "leaf_min_obs"), names(translated$method$fit$args))
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$n_tree), 100)
+})
+
+# fit ---------------------------------------------------------------------
 
 test_that("model object", {
   skip_if_not_installed("aorsf")
@@ -17,12 +36,10 @@ test_that("model object", {
     set_mode("censored regression")
 
   set.seed(1234)
-  expect_no_error(
-    f_fit <- fit(
-      mod_spec,
-      Surv(time, status) ~ age + ph.ecog,
-      data = lung_orsf
-    )
+  f_fit <- fit(
+    mod_spec,
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung_orsf
   )
 
   expect_equal(
@@ -59,7 +76,7 @@ test_that("time predictions", {
   f_pred <- predict(f_fit, lung, type = "time")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(f_pred$.pred_time, as.vector(exp_f_pred))
   expect_equal(nrow(f_pred), nrow(lung))
 
@@ -100,20 +117,12 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_equal(
-    unique(purrr::map_int(f_pred$.pred, nrow)),
-    3
-  )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 3)
 
-  cf_names <-
-    c(".eval_time", ".pred_survival")
-
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        ~ identical(names(.x), cf_names)
-      )
+  expect_all_true(
+    purrr::map_lgl(
+      f_pred$.pred,
+      \(x) identical(names(x), c(".eval_time", ".pred_survival"))
     )
   )
 
@@ -249,7 +258,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("aorsf")
 
   lung_orsf <- na.omit(lung)
@@ -300,6 +309,19 @@ test_that("`fix_xy()` works", {
 })
 
 
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("aorsf")
+
+  spec <- rand_forest(mtry = tune(), trees = tune(), min_n = tune()) |>
+    set_engine("aorsf", split_min_stat = tune()) |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, c("mtry", "trees", "min_n", "split_min_stat"))
+})
+
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {
@@ -307,12 +329,16 @@ test_that("can handle case weights", {
 
   dat <- make_cens_wts()
 
-  expect_no_error(
-    wt_fit <- rand_forest() |>
-      set_engine("aorsf") |>
-      set_mode("censored regression") |>
-      fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
-  )
+  set.seed(1)
+  wt_fit <- rand_forest() |>
+    set_engine("aorsf") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full, case_weights = dat$wts)
+  set.seed(1)
+  unwt_fit <- rand_forest() |>
+    set_engine("aorsf") |>
+    set_mode("censored regression") |>
+    fit(Surv(time, event) ~ ., data = dat$full)
 
   if (utils::packageVersion("aorsf") >= "0.1.2") {
     fit_weights <- wt_fit$fit$weights
@@ -323,5 +349,96 @@ test_that("can handle case weights", {
   expect_equal(
     fit_weights,
     as.vector(dat$wts)
+  )
+
+  # weighted predictions differ from the unweighted fit for every type
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "time"),
+    predict(unwt_fit, dat$full, type = "time")
+  )
+  expect_unequal(
+    predict(wt_fit, dat$full, type = "survival", eval_time = c(100, 300)),
+    predict(unwt_fit, dat$full, type = "survival", eval_time = c(100, 300))
+  )
+})
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_prob_orsf() errors informatively on bad input", {
+  skip_if_not_installed("aorsf")
+
+  raw_fit <- aorsf::orsf(
+    Surv(time, status) ~ age + ph.ecog,
+    data = na.omit(lung)
+  )
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(wrong_engine, new_data = lung[1:3, ], eval_time = 100)
+  )
+})
+
+test_that("survival_prob_orsf() fails gracefully for eval_time values it can't handle", {
+  skip_if_not_installed("aorsf")
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, -Inf))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_orsf(mod, new_data = lung[1:2, ], eval_time = c(100, -50))
+  )
+})
+
+test_that("survival_prob_orsf() accepts eval_time values that it can handle", {
+  skip_if_not_installed("aorsf")
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_orsf(mod, new_data = new_data, eval_time = numeric(0))
+  )
+  expect_no_error(
+    survival_prob_orsf(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_orsf(mod, new_data = new_data, eval_time = c(100, 100, 200))
+  )
+})
+
+test_that("survival_prob_orsf() warns about deprecated `time` argument", {
+  skip_if_not_installed("aorsf")
+  mod <- rand_forest() |>
+    set_mode("censored regression") |>
+    set_engine("aorsf") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_orsf(mod, new_data = new_data, time = 100)
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_orsf(mod, new_data = new_data, eval_time = 100)
   )
 })

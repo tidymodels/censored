@@ -1,4 +1,21 @@
-library(testthat)
+# registration ------------------------------------------------------------
+
+test_that("engine is registered and translate() works", {
+  skip_if_not_installed("ipred")
+
+  engines <- parsnip::show_engines("bag_tree")
+  censored_engines <- engines$engine[engines$mode == "censored regression"]
+  expect_in("rpart", censored_engines)
+
+  spec <- bag_tree() |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(translated$method$fit$func[["fun"]], "bagging")
+})
+
+# fit ---------------------------------------------------------------------
 
 test_that("model object", {
   skip_if_not_installed("ipred")
@@ -9,12 +26,14 @@ test_that("model object", {
   # formula method
   mod_spec <- bag_tree(engine = "rpart") |> set_mode("censored regression")
   set.seed(1234)
-  expect_no_error(
-    f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
-  )
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
 
   # Removing `call` element from both, it differs in the `data` arg
-  expect_equal(f_fit$fit[-6], exp_f_fit[-6], ignore_formula_env = TRUE)
+  expect_equal(
+    f_fit$fit[names(f_fit$fit) != "call"],
+    exp_f_fit[names(exp_f_fit) != "call"],
+    ignore_formula_env = TRUE
+  )
 })
 
 # prediction: time --------------------------------------------------------
@@ -32,7 +51,7 @@ test_that("time predictions", {
   f_pred <- predict(f_fit, lung, type = "time")
 
   expect_s3_class(f_pred, "tbl_df")
-  expect_true(all(names(f_pred) == ".pred_time"))
+  expect_named(f_pred, ".pred_time")
   expect_equal(
     f_pred$.pred_time,
     purrr::map_dbl(exp_f_pred, \(.x) quantile(.x, probs = .5)$quantile)
@@ -53,19 +72,9 @@ test_that("time predictions without surrogate splits for NA", {
   # lung$ph.ecog[14] is NA
   new_data_3 <- lung[13:15, ]
 
-  expect_no_error(
-    f_pred <- predict(f_fit, new_data_3, type = "time")
-  )
+  f_pred <- predict(f_fit, new_data_3, type = "time")
   expect_equal(nrow(f_pred), nrow(new_data_3))
   expect_equal(which(is.na(f_pred$.pred_time)), 2)
-})
-
-test_that("survival_time_survbagg() throws an informative error with an engine object", {
-  skip_if_not_installed("ipred")
-  mod <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
-  expect_snapshot(error = TRUE, {
-    survival_time_survbagg(mod)
-  })
 })
 
 # prediction: survival ----------------------------------------------------
@@ -91,16 +100,11 @@ test_that("survival predictions", {
   expect_s3_class(f_pred, "tbl_df")
   expect_equal(names(f_pred), ".pred")
   expect_equal(nrow(f_pred), nrow(lung))
-  expect_true(
-    all(purrr::map_lgl(f_pred$.pred, \(.x) all(dim(.x) == c(101, 2))))
-  )
-  expect_true(
-    all(
-      purrr::map_lgl(
-        f_pred$.pred,
-        \(.x) all(names(.x) == c(".eval_time", ".pred_survival"))
-      )
-    )
+  expect_all_equal(purrr::map_int(f_pred$.pred, nrow), 101)
+  expect_all_true(
+    purrr::map_lgl(f_pred$.pred, \(x) {
+      identical(names(x), c(".eval_time", ".pred_survival"))
+    })
   )
   expect_equal(
     tidyr::unnest(f_pred, cols = c(.pred))$.pred_survival,
@@ -172,7 +176,7 @@ test_that("survival_prob_survbagg() works", {
   exp_prob_non_na <- exp_prob[, 2]
 
   # get missings right
-  expect_true(all(is.na(prob_na$.pred_survival)))
+  expect_all_true(is.na(prob_na$.pred_survival))
   # for non-missings, get probs right
   expect_equal(prob_non_na$.eval_time, pred_time)
   expect_equal(prob_non_na$.pred_survival, exp_prob_non_na)
@@ -207,7 +211,7 @@ test_that("survival_prob_survbagg() works", {
     eval_time = pred_time
   )
   prob <- tidyr::unnest(prob, cols = .pred)
-  expect_true(all(is.na(prob$.pred_survival)))
+  expect_all_true(is.na(prob$.pred_survival))
 })
 
 test_that("survival predictions without surrogate splits for NA", {
@@ -219,18 +223,16 @@ test_that("survival predictions without surrogate splits for NA", {
   # lung$ph.ecog[14] is NA
   new_data_3 <- lung[13:15, ]
 
-  expect_no_error(
-    f_pred <- predict(
-      f_fit,
-      new_data_3,
-      type = "survival",
-      eval_time = c(100, 500, 1000)
-    )
+  f_pred <- predict(
+    f_fit,
+    new_data_3,
+    type = "survival",
+    eval_time = c(100, 500, 1000)
   )
   expect_equal(nrow(f_pred), nrow(new_data_3))
-  expect_true(!any(is.na(f_pred$.pred[[1]]$.pred_survival)))
-  expect_true(all(is.na(f_pred$.pred[[2]]$.pred_survival)))
-  expect_true(!any(is.na(f_pred$.pred[[3]]$.pred_survival)))
+  expect_all_true(!is.na(f_pred$.pred[[1]]$.pred_survival))
+  expect_all_true(is.na(f_pred$.pred[[2]]$.pred_survival))
+  expect_all_true(!is.na(f_pred$.pred[[3]]$.pred_survival))
 })
 
 test_that("can predict for out-of-domain timepoints", {
@@ -256,7 +258,7 @@ test_that("can predict for out-of-domain timepoints", {
 
 # fit via matrix interface ------------------------------------------------
 
-test_that("`fix_xy()` works", {
+test_that("`fit_xy()` works", {
   skip_if_not_installed("ipred")
 
   lung_x <- as.matrix(lung[, c("age", "ph.ecog")])
@@ -297,4 +299,104 @@ test_that("`fix_xy()` works", {
     eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
+})
+
+# input checks ------------------------------------------------------------
+
+test_that("survival_time_survbagg() errors informatively on bad input", {
+  skip_if_not_installed("ipred")
+  raw_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(error = TRUE, survival_time_survbagg(raw_fit))
+  expect_snapshot(error = TRUE, survival_time_survbagg(wrong_engine))
+})
+
+test_that("survival_prob_survbagg() errors informatively on bad input", {
+  skip_if_not_installed("ipred")
+  raw_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  wrong_engine <- structure(
+    list(fit = structure(list(), class = "coxph")),
+    class = "model_fit"
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(raw_fit, new_data = lung[1:3, ], eval_time = 100)
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(
+      wrong_engine,
+      new_data = lung[1:3, ],
+      eval_time = 100
+    )
+  )
+})
+
+test_that("survival_prob_survbagg() fails gracefully for eval_time values it can't handle", {
+  skip_if_not_installed("ipred")
+  mod <- bag_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(mod, new_data = lung[1:2, ], eval_time = numeric(0))
+  )
+  expect_snapshot(
+    error = TRUE,
+    survival_prob_survbagg(mod, new_data = lung[1:2, ], eval_time = c(100, NA))
+  )
+})
+
+test_that("survival_prob_survbagg() accepts eval_time values that it can handle", {
+  skip_if_not_installed("ipred")
+  mod <- bag_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_no_error(
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = c(100, Inf))
+  )
+  expect_no_error(
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = c(100, -Inf))
+  )
+  expect_no_error(
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = c(100, -50))
+  )
+  expect_no_error(
+    survival_prob_survbagg(
+      mod,
+      new_data = new_data,
+      eval_time = c(100, 100, 200)
+    )
+  )
+})
+
+test_that("survival_prob_survbagg() warns about deprecated `time` argument", {
+  skip_if_not_installed("ipred")
+  mod <- bag_tree() |>
+    set_mode("censored regression") |>
+    set_engine("rpart") |>
+    fit(Surv(time, status) ~ age + ph.ecog, data = lung)
+  new_data <- lung[1:2, ]
+
+  expect_snapshot(
+    pred_deprecated <- survival_prob_survbagg(
+      mod,
+      new_data = new_data,
+      time = 100
+    )
+  )
+  expect_equal(
+    pred_deprecated,
+    survival_prob_survbagg(mod, new_data = new_data, eval_time = 100)
+  )
 })

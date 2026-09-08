@@ -1,10 +1,37 @@
+# censored (development version)
+
+* `bag_tree()` with the `"rpart"` engine no longer accepts case weights (#390).
+
+* `boost_tree()` with the `"mboost"` engine no longer accepts case weights because mboost doesn't predict from a weighted fit (#363).
+
+* `rand_forest()` now supports the `"censored regression"` mode with a new `"ranger"` engine, fitting a survival random forest via `ranger::ranger()` (#131).
+
+* `rand_forest()` now supports the `"randomForestSRC"` engine for censored regression, fitting a survival random forest via `randomForestSRC::rfsrc()` (#130).
+
+* `multi_predict()` is now available for `boost_tree()` with the `"mboost"` engine over the `trees` submodel parameter (#290).
+
+* `decision_tree()` with the `"rpart"` engine now correctly returns the median survival time of the leaf's Kaplan-Meier curve for `type = "time"` predictions, instead of rpart's relative event rate (#331).
+
+* `null_model()` now supports the `"censored regression"` mode with a new `"survival"` engine, fitting a Kaplan-Meier curve via `survival::survfit()` (#353).
+
+* Prediction for `proportional_hazards()` with the `"glmnet"` engine no longer fails on data with factors when fitted through `fit_xy()` (#365).
+
+* Prediction for `proportional_hazards()` with the `"survival"` engine no longer fails when a single `strata()` term contains more than one variable, e.g. `strata(s1, s2)` (#404).
+
+* The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
+
+* `survival_reg()` with the `"survival"` engine and `strata()` terms now returns `NA` survival and hazard predictions for new data rows with a missing value in a stratification variable, instead of silently using another stratum's scale (#383).
+
+
 # censored 0.3.5
 
 * Adapted tests for ipred 0.9-16 (#408).
 
+
 # censored 0.3.4
 
 * Adapted tests for hardhat 1.4.3 (#358).
+
 
 # censored 0.3.3
 

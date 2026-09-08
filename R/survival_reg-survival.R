@@ -31,43 +31,15 @@ survreg_quant <- function(results, object) {
 # but it is buried inside of `predict.survreg()`
 
 get_survreg_scale <- function(object, new_data) {
-  n <- nrow(new_data)
   if (length(object$scale) == 1) {
-    res <- rep(unname(object$scale), n)
-  } else {
-    res <- deparse_survreg_strata(object, new_data)
+    return(rep(unname(object$scale), nrow(new_data)))
   }
-  res
-}
 
-compute_strata <- function(object, new_data) {
-  trms <- stats::delete.response(object$terms)
-  new_new_data <-
-    stats::model.frame(
-      trms,
-      data = new_data,
-      na.action = na.pass,
-      xlev = object$xlevels
-    )
-  strata_info <- survival::untangle.specials(trms, "strata", 1)
-  new_new_data$.strata <-
-    survival::strata(new_new_data[, strata_info$vars], shortlabel = TRUE)
-  tibble::as_tibble(new_new_data)
-}
+  strata <- get_strata(object$terms, new_data, xlev = object$xlevels)
 
-deparse_survreg_strata <- function(object, new_data) {
-  new_new_data <- compute_strata(object, new_data)
-  lvls <- levels(new_new_data$.strata)
-
-  # link this to scales vector
-  scales <- tibble(.strata = names(object$scale), .scale = unname(object$scale))
-  scales$.strata <- factor(scales$.strata, levels = lvls)
-
-  # return a vector with appropriate estimates for new data
-  new_new_data$.row <- seq_len(nrow(new_new_data))
-  new_new_data <- dplyr::left_join(new_new_data, scales, by = ".strata")
-  new_new_data <- new_new_data[order(new_new_data$.row), ]
-  new_new_data$.scale
+  # Match each row's stratum to its scale by name. A missing strata value
+  # (or one not seen when fitting) matches no scale and so yields `NA`.
+  unname(object$scale[as.character(strata)])
 }
 
 survreg_survival <- function(location, object, scale, eval_time, ...) {
@@ -100,11 +72,11 @@ survival_prob_survreg <- function(
   eval_time,
   time = deprecated()
 ) {
-  if (inherits(object, "survreg")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object."
-    )
-  }
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "survreg", arg = "object$fit")
+  check_data_frame(new_data)
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -114,15 +86,22 @@ survival_prob_survreg <- function(
     eval_time <- time
   }
 
-  lp_estimate <- predict(object$fit, new_data, type = "lp")
-  scale_estimate <- get_survreg_scale(object$fit, new_data)
+  check_eval_time(
+    eval_time,
+    allow_empty = TRUE,
+    allow_missing = TRUE,
+    allow_infinite = TRUE
+  )
+
+  lp_estimate <- predict(engine_fit, new_data, type = "lp")
+  scale_estimate <- get_survreg_scale(engine_fit, new_data)
   res <-
     purrr::map2(
       lp_estimate,
       scale_estimate,
       ~ survreg_survival(
         .x,
-        object = object$fit,
+        object = engine_fit,
         eval_time = eval_time,
         scale = .y
       )
@@ -151,20 +130,26 @@ survreg_hazard <- function(
 #' @export
 #' @rdname survival_prob_survreg
 hazard_survreg <- function(object, new_data, eval_time) {
-  if (inherits(object, "survreg")) {
-    cli::cli_abort(
-      "{.arg object} needs to be a parsnip {.cls model_fit} object, not a {.cls survreg} object."
-    )
-  }
-  lp_estimate <- predict(object$fit, new_data, type = "lp")
-  scale_estimate <- get_survreg_scale(object$fit, new_data)
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "survreg", arg = "object$fit")
+  check_data_frame(new_data)
+  check_eval_time(
+    eval_time,
+    allow_empty = TRUE,
+    allow_missing = TRUE,
+    allow_infinite = TRUE
+  )
+
+  lp_estimate <- predict(engine_fit, new_data, type = "lp")
+  scale_estimate <- get_survreg_scale(engine_fit, new_data)
   res <-
     purrr::map2(
       lp_estimate,
       scale_estimate,
       ~ survreg_hazard(
         .x,
-        object = object$fit,
+        object = engine_fit,
         eval_time = eval_time,
         scale = .y
       )

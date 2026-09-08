@@ -15,55 +15,23 @@ keep_cols <- function(x, output, keep_penalty = FALSE) {
   dplyr::select(x, dplyr::all_of(cols_to_keep))
 }
 
-stack_survfit <- function(x, n, penalty = NULL) {
-  # glmnet does not calculate confidence intervals
-  if (is.null(x$lower)) {
-    x$lower <- NA_real_
-  }
-  if (is.null(x$upper)) {
-    x$upper <- NA_real_
-  }
-
-  has_strata <- any(names(x) == "strata")
-
-  if (has_strata) {
-    # All components are vectors of length {t_i x n}
-    res <- tibble::tibble(
-      penalty = penalty,
-      .time = x$time,
-      .pred_survival = x$surv,
-      .pred_lower = x$lower,
-      .pred_upper = x$upper,
-      .pred_hazard_cumulative = x$cumhaz,
-      .row = rep(seq_len(n), x$strata)
-    )
+stack_survfit <- function(x, n) {
+  # All components are {t x n} matrices (unless nrow(new_data) = 1)
+  if (is.matrix(x$surv)) {
+    times <- nrow(x$surv)
   } else {
-    # All components are {t x n} matrices (unless nrow(new_data) = 1)
-    if (is.matrix(x$surv)) {
-      times <- nrow(x$surv)
-    } else {
-      times <- 1
-    }
-    res <- tibble::tibble(
-      penalty = penalty,
-      .time = rep(x$time, n),
-      .pred_survival = as.vector(x$surv),
-      .pred_lower = as.vector(x$lower),
-      .pred_upper = as.vector(x$upper),
-      .pred_hazard_cumulative = as.vector(x$cumhaz),
-      .row = rep(seq_len(n), each = times)
-    )
+    times <- 1
   }
-
-  res
+  tibble::tibble(
+    .time = rep(x$time, n),
+    .pred_survival = as.vector(x$surv),
+    .row = rep(seq_len(n), each = times)
+  )
 }
 
 prob_template <- tibble::tibble(
   .time = 0,
-  .pred_survival = 1,
-  .pred_lower = NA_real_,
-  .pred_upper = NA_real_,
-  .pred_hazard_cumulative = 0
+  .pred_survival = 1
 )
 
 

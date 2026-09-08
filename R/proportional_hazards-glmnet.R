@@ -56,7 +56,7 @@ coxnet_train <- function(
 
   if (has_strata(formula, data)) {
     check_strata_nterms(formula, data, call = call)
-    strata <- get_strata_glmnet(formula, data)
+    strata <- get_strata(formula, data, na.action = stats::na.omit)
     data_obj$y <- glmnet::stratifySurv(data_obj$y, strata = strata)
   }
 
@@ -98,17 +98,6 @@ check_strata_nterms <- function(formula, data, call = caller_env()) {
     )
   }
   invisible(formula)
-}
-
-get_strata_glmnet <- function(formula, data, na.action = stats::na.omit) {
-  mod_terms <- stats::terms(formula, specials = "strata", data = data)
-  mod_terms <- stats::delete.response(mod_terms)
-  mod_frame <- stats::model.frame(mod_terms, data, na.action = na.action)
-
-  strata_ind <- attr(mod_terms, "specials")$strata
-  strata <- purrr::pluck(mod_frame, strata_ind)
-
-  strata
 }
 
 remove_strata <- function(formula, data, call = rlang::caller_env()) {
@@ -197,20 +186,11 @@ print._coxnet <- function(x, ...) {
 # prediction --------------------------------------------------------------
 
 coxnet_prepare_x <- function(new_data, object) {
-  went_through_formula_interface <- !is.null(object$preproc$coxnet)
-
-  if (went_through_formula_interface) {
-    new_x <- parsnip::.convert_form_to_xy_new(
-      object$preproc$coxnet,
-      new_data,
-      composition = "matrix"
-    )$x
-  } else {
-    new_x <- new_data[, object$preproc$x_var, drop = FALSE] |>
-      as.matrix()
-  }
-
-  new_x
+  parsnip::.convert_form_to_xy_new(
+    object$preproc$coxnet,
+    new_data,
+    composition = "matrix"
+  )$x
 }
 
 # notes adapted from parsnip:
@@ -499,6 +479,11 @@ survival_time_coxnet <- function(
   multi = FALSE,
   ...
 ) {
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxnet", arg = "object$fit")
+  check_data_frame(new_data)
+
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
   }
@@ -513,16 +498,11 @@ survival_time_coxnet <- function(
 
   new_x <- coxnet_prepare_x(new_data, object)
 
-  went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (
-    went_through_formula_interface &&
+    !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
-    new_strata <- get_strata_glmnet(
-      object$formula,
-      data = new_data,
-      na.action = stats::na.pass
-    )
+    new_strata <- get_strata(object$formula, data = new_data)
   } else {
     new_strata <- NULL
   }
@@ -550,7 +530,7 @@ survival_time_coxnet <- function(
   }
 
   y <- survival::survfit(
-    object$fit,
+    engine_fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,
@@ -645,6 +625,11 @@ survival_prob_coxnet <- function(
   multi = FALSE,
   ...
 ) {
+  check_inherits(object, "model_fit")
+  engine_fit <- hardhat::extract_fit_engine(object)
+  check_inherits(engine_fit, "coxnet", arg = "object$fit")
+  check_data_frame(new_data)
+
   if (lifecycle::is_present(time)) {
     lifecycle::deprecate_warn(
       "0.2.0",
@@ -653,6 +638,8 @@ survival_prob_coxnet <- function(
     )
     eval_time <- time
   }
+
+  check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
 
   if (is.null(penalty)) {
     penalty <- object$spec$args$penalty
@@ -665,20 +652,15 @@ survival_prob_coxnet <- function(
     )
   }
 
-  output <- match.arg(output, c("surv", "haz"))
+  output <- arg_match(output, c("surv", "haz"))
 
   new_x <- coxnet_prepare_x(new_data, object)
 
-  went_through_formula_interface <- !is.null(object$preproc$coxnet)
   if (
-    went_through_formula_interface &&
+    !is.null(object$formula) &&
       has_strata(object$formula, object$training_data)
   ) {
-    new_strata <- get_strata_glmnet(
-      object$formula,
-      data = new_data,
-      na.action = stats::na.pass
-    )
+    new_strata <- get_strata(object$formula, data = new_data)
   } else {
     new_strata <- NULL
   }
@@ -707,7 +689,7 @@ survival_prob_coxnet <- function(
   }
 
   y <- survival::survfit(
-    object$fit,
+    engine_fit,
     newx = new_x,
     newstrata = new_strata,
     s = penalty,

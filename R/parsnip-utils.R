@@ -81,16 +81,14 @@ check_pred_type <- function(object, type, ...) {
 }
 
 # used directly, maybe export?
-check_spec_pred_type <- function(object, type) {
+check_spec_pred_type <- function(object, type, call = caller_env()) {
   if (!spec_has_pred_type(object, type)) {
     possible_preds <- names(object$spec$method$pred)
-    rlang::abort(c(
-      glue::glue("No {type} prediction method available for this model."),
-      glue::glue(
-        "Value for `type` should be one of: ",
-        glue::glue_collapse(glue::glue("'{possible_preds}'"), sep = ", ")
-      )
-    ))
+    cli::cli_abort(
+      "No {.val {type}} prediction method available for this model. \\
+      {.arg type} should be one of: {.val {possible_preds}}.",
+      call = call
+    )
   }
   invisible(NULL)
 }
@@ -120,50 +118,50 @@ check_pred_type_dots <- function(
     "interval",
     "level",
     "std_error",
-    "quantile",
+    "quantile_levels",
     "time",
     "eval_time",
-    "increasing"
+    "increasing",
+    "add_censoring_weights"
   )
+
+  eval_time_types <- c("survival", "hazard")
+
   is_pred_arg <- names(the_dots) %in% other_args
-  if (any(!is_pred_arg)) {
+  if (!all(is_pred_arg)) {
     bad_args <- names(the_dots)[!is_pred_arg]
     bad_args <- paste0("`", bad_args, "`", collapse = ", ")
-    rlang::abort(
-      glue::glue(
-        "The ellipses are not used to pass args to the model function's ",
-        "predict function. These arguments cannot be used: {bad_args}",
-      )
+    cli::cli_abort(
+      "The ellipses are not used to pass args to the model function's
+         predict function. These arguments cannot be used: {.val bad_args}",
+      call = call
     )
   }
 
   # ----------------------------------------------------------------------------
   # places where eval_time should not be given
   if (any(nms == "eval_time") & !type %in% c("survival", "hazard")) {
-    rlang::abort(
-      paste(
-        "`eval_time` should only be passed to `predict()` when `type` is one of:",
-        paste0("'", c("survival", "hazard"), "'", collapse = ", ")
-      )
+    cli::cli_abort(
+      "{.arg eval_time} should only be passed to {.fn predict} when \\
+       {.arg type} is one of {.or {.val {eval_time_types}}}.",
+      call = call
     )
   }
   if (any(nms == "time") & !type %in% c("survival", "hazard")) {
-    rlang::abort(
-      paste(
-        "'time' should only be passed to `predict()` when 'type' is one of:",
-        paste0("'", c("survival", "hazard"), "'", collapse = ", ")
-      )
+    cli::cli_abort(
+      "{.arg time} should only be passed to {.fn predict} when {.arg type} is
+       one of {.or {.val {eval_time_types}}}.",
+      call = call
     )
   }
   # when eval_time should be passed
   if (
     !any(nms %in% c("eval_time", "time")) & type %in% c("survival", "hazard")
   ) {
-    rlang::abort(
-      paste(
-        "When using `type` values of 'survival' or 'hazard',",
-        "a numeric vector `eval_time` should also be given."
-      )
+    cli::cli_abort(
+      "When using {.arg type} values of {.or {.val {eval_time_types}}} a numeric
+     vector {.arg eval_time} should also be given.",
+      call = call
     )
   }
 
@@ -173,11 +171,19 @@ check_pred_type_dots <- function(
       !(type == "linear_pred" &
         object$spec$mode == "censored regression")
   ) {
-    rlang::abort(
-      paste(
-        "The 'increasing' argument only applies to predictions of",
-        "type 'linear_pred' for the mode censored regression."
-      )
+    cli::cli_abort(
+      "{.arg increasing} only applies to predictions of
+       type 'linear_pred' for the mode censored regression.",
+      call = call
+    )
+  }
+
+  # `add_censoring_weights` only applies to survival predictions
+  if (any(nms == "add_censoring_weights") & type != "survival") {
+    cli::cli_abort(
+      "{.arg add_censoring_weights} should only be passed to {.fn predict}
+       when {.arg type} is {.val survival}.",
+      call = call
     )
   }
 
