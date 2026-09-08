@@ -23,6 +23,11 @@
 * `survival_reg()` with the `"survival"` engine and `strata()` terms now returns `NA` survival and hazard predictions for new data rows with a missing value in a stratification variable, instead of silently using another stratum's scale (#383).
 
 
+# censored 0.3.5
+
+* Adapted tests for ipred 0.9-16 (#408).
+
+
 # censored 0.3.4
 
 * Adapted tests for hardhat 1.4.3 (#358).
