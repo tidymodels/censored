@@ -10,7 +10,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">censored</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.4.9003</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.5.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,10 @@
 <li><p>Prediction for <code><a href="https://parsnip.tidymodels.org/reference/proportional_hazards.html" class="external-link">proportional_hazards()</a></code> with the <code>"survival"</code> engine no longer fails when a single <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata()</a></code> term contains more than one variable, e.g. <code>strata(s1, s2)</code> (<a href="https://github.com/tidymodels/censored/issues/404" class="external-link">#404</a>).</p></li>
 <li><p>The <code>survival_prob_*()</code> and <code>hazard_*()</code> helpers now validate their inputs and return more informative error messages when given an unusable <code>object</code>, <code>new_data</code>, or <code>eval_time</code> (<a href="https://github.com/tidymodels/censored/issues/271" class="external-link">#271</a>).</p></li>
 <li><p><code><a href="https://parsnip.tidymodels.org/reference/survival_reg.html" class="external-link">survival_reg()</a></code> with the <code>"survival"</code> engine and <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata()</a></code> terms now returns <code>NA</code> survival and hazard predictions for new data rows with a missing value in a stratification variable, instead of silently using another stratum’s scale (<a href="https://github.com/tidymodels/censored/issues/383" class="external-link">#383</a>).</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.5" id="censored-035">censored 0.3.5<a class="anchor" aria-label="anchor" href="#censored-035"></a></h2>
+<ul><li>Adapted tests for ipred 0.9-16 (<a href="https://github.com/tidymodels/censored/issues/408" class="external-link">#408</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.4" id="censored-034">censored 0.3.4<a class="anchor" aria-label="anchor" href="#censored-034"></a></h2><p class="text-muted">CRAN release: 2026-04-04</p>
