@@ -65,6 +65,7 @@ A tibble with a list column of nested tibbles.
 cox_mod <- proportional_hazards(penalty = 0.1) |>
   set_engine("glmnet") |>
   fit(Surv(time, status) ~ ., data = lung)
+#> Warning: Starting in glmnet 5.1, the default Cox tie-handling method will change from 'breslow' to 'efron' (matching survival::coxph). To silence this message and lock in the v5.0 default, pass cox.ties = 'breslow' explicitly. To preview the v5.1 behavior, pass cox.ties = 'efron'.
 survival_prob_coxnet(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 #> # A tibble: 3 × 1
 #>   .pred           

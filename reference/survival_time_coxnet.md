@@ -43,6 +43,7 @@ A vector.
 cox_mod <- proportional_hazards(penalty = 0.1) |>
   set_engine("glmnet") |>
   fit(Surv(time, status) ~ ., data = lung)
+#> Warning: Starting in glmnet 5.1, the default Cox tie-handling method will change from 'breslow' to 'efron' (matching survival::coxph). To silence this message and lock in the v5.0 default, pass cox.ties = 'breslow' explicitly. To preview the v5.1 behavior, pass cox.ties = 'efron'.
 survival_time_coxnet(cox_mod, new_data = lung[1:3, ], penalty = 0.1)
-#> [1]       NA 425.4722       NA
+#> [1]       NA 428.1231       NA
 ```

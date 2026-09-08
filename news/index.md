@@ -1,5 +1,10 @@
 # Changelog
 
+## censored 0.3.5
+
+- Adapted tests for ipred 0.9-16
+  ([\#408](https://github.com/tidymodels/censored/issues/408)).
+
 ## censored 0.3.4
 
 CRAN release: 2026-04-04

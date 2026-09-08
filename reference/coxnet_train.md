@@ -67,7 +67,7 @@ A fitted `glmnet` model.
 This wrapper translates from formula interface to glmnet's matrix due to
 how stratification can be specified. glmnet requires that the *response*
 is stratified via
-[`glmnet::stratifySurv()`](https://rdrr.io/pkg/glmnet/man/stratifySurv.html).
+[`glmnet::stratifySurv()`](https://glmnet.stanford.edu/reference/stratifySurv.html).
 censored allows specification via a
 [`survival::strata()`](https://rdrr.io/pkg/survival/man/strata.html)
 term on the right-hand side of the formula. The formula is used to
@@ -83,4 +83,5 @@ model.
 
 ``` r
 coxnet_mod <- coxnet_train(Surv(time, status) ~ age + sex, data = lung)
+#> Warning: Starting in glmnet 5.1, the default Cox tie-handling method will change from 'breslow' to 'efron' (matching survival::coxph). To silence this message and lock in the v5.0 default, pass cox.ties = 'breslow' explicitly. To preview the v5.1 behavior, pass cox.ties = 'efron'.
 ```
