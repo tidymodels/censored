@@ -27,6 +27,32 @@ make_bag_tree_rpart <- function() {
     pkg = "censored",
     mode = "censored regression"
   )
+
+  parsnip::set_model_arg(
+    model = "bag_tree",
+    eng = "rpart",
+    parsnip = "tree_depth",
+    original = "maxdepth",
+    func = list(pkg = "dials", fun = "tree_depth"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "bag_tree",
+    eng = "rpart",
+    parsnip = "min_n",
+    original = "minsplit",
+    func = list(pkg = "dials", fun = "min_n"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "bag_tree",
+    eng = "rpart",
+    parsnip = "cost_complexity",
+    original = "cp",
+    func = list(pkg = "dials", fun = "cost_complexity"),
+    has_submodel = FALSE
+  )
+
   parsnip::set_fit(
     model = "bag_tree",
     eng = "rpart",
@@ -36,7 +62,7 @@ make_bag_tree_rpart <- function() {
       # case weights are not enabled because `ipred::bagging()` drops them
       # instead of passing them on to rpart (#390)
       protect = c("formula", "data"),
-      func = c(pkg = "ipred", fun = "bagging"),
+      func = c(pkg = "censored", fun = "bagging_surv_train"),
       defaults = list()
     )
   )

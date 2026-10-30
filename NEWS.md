@@ -2,6 +2,8 @@
 
 * `bag_tree()` with the `"rpart"` engine no longer accepts case weights (#390).
 
+* `bag_tree()` with the `"rpart"` engine now passes `tree_depth`, `min_n`, and `cost_complexity`, as well as other `rpart::rpart.control()` arguments set via `set_engine()`, on to the trees. Previously they were silently ignored. As a result, default fits now use the `bag_tree()` defaults of `cost_complexity = 0` and `min_n = 2` (#406).
+
 * `boost_tree()` with the `"mboost"` engine no longer accepts case weights because mboost doesn't predict from a weighted fit (#363).
 
 * `rand_forest()` now supports the `"censored regression"` mode with a new `"ranger"` engine, fitting a survival random forest via `ranger::ranger()` (#131).

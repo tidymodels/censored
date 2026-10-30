@@ -12,7 +12,18 @@ test_that("engine is registered and translate() works", {
     set_mode("censored regression")
 
   translated <- translate(spec)
-  expect_equal(translated$method$fit$func[["fun"]], "bagging")
+  expect_equal(translated$method$fit$func[["fun"]], "bagging_surv_train")
+})
+
+test_that("main arguments are translated", {
+  skip_if_not_installed("ipred")
+
+  spec <- bag_tree(tree_depth = 2, min_n = 10, cost_complexity = 0.05) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_in(c("maxdepth", "minsplit", "cp"), names(translated$method$fit$args))
 })
 
 # fit ---------------------------------------------------------------------
@@ -21,7 +32,11 @@ test_that("model object", {
   skip_if_not_installed("ipred")
 
   set.seed(1234)
-  exp_f_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- ipred::bagging(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    control = rpart::rpart.control(cp = 0, minsplit = 2, xval = 0)
+  )
 
   # formula method
   mod_spec <- bag_tree(engine = "rpart") |> set_mode("censored regression")
@@ -36,13 +51,92 @@ test_that("model object", {
   )
 })
 
+test_that("main arguments are passed on to rpart", {
+  skip_if_not_installed("ipred")
+
+  set.seed(1234)
+  exp_f_fit <- ipred::bagging(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    control = rpart::rpart.control(
+      maxdepth = 2,
+      minsplit = 10,
+      cp = 0.05,
+      xval = 0
+    )
+  )
+
+  mod_spec <- bag_tree(tree_depth = 2, min_n = 10, cost_complexity = 0.05) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+  set.seed(1234)
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_equal(
+    f_fit$fit$mtrees[[1]]$btree$control[c("maxdepth", "minsplit", "cp")],
+    list(maxdepth = 2, minsplit = 10, cp = 0.05)
+  )
+  expect_equal(
+    f_fit$fit[names(f_fit$fit) != "call"],
+    exp_f_fit[names(exp_f_fit) != "call"],
+    ignore_formula_env = TRUE
+  )
+})
+
+test_that("bagging_surv_train() uses ipred's defaults", {
+  skip_if_not_installed("ipred")
+
+  set.seed(1234)
+  exp_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  set.seed(1234)
+  fit <- bagging_surv_train(Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_equal(
+    fit$mtrees[[1]]$btree$control,
+    exp_fit$mtrees[[1]]$btree$control
+  )
+})
+
+test_that("engine arguments are passed on to rpart and ipred", {
+  skip_if_not_installed("ipred")
+
+  mod_spec <- bag_tree() |>
+    set_engine("rpart", minbucket = 3, nbagg = 5) |>
+    set_mode("censored regression")
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_equal(f_fit$fit$mtrees[[1]]$btree$control$minbucket, 3)
+  expect_length(f_fit$fit$mtrees, 5)
+})
+
+test_that("`control` engine argument is merged with main arguments", {
+  skip_if_not_installed("ipred")
+
+  mod_spec <- bag_tree(cost_complexity = 0.05) |>
+    set_engine(
+      "rpart",
+      control = rpart::rpart.control(maxsurrogate = 0, xval = 3)
+    ) |>
+    set_mode("censored regression")
+  f_fit <- fit(mod_spec, Surv(time, status) ~ age + ph.ecog, data = lung)
+
+  expect_equal(
+    f_fit$fit$mtrees[[1]]$btree$control[c("maxsurrogate", "xval", "cp")],
+    list(maxsurrogate = 0L, xval = 3L, cp = 0.05)
+  )
+})
+
 # prediction: time --------------------------------------------------------
 
 test_that("time predictions", {
   skip_if_not_installed("ipred")
 
   set.seed(1234)
-  exp_f_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- ipred::bagging(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    control = rpart::rpart.control(cp = 0, minsplit = 2, xval = 0)
+  )
   exp_f_pred <- predict(exp_f_fit, lung)
 
   mod_spec <- bag_tree(engine = "rpart") |> set_mode("censored regression")
@@ -83,7 +177,11 @@ test_that("survival predictions", {
   skip_if_not_installed("ipred")
 
   set.seed(1234)
-  exp_f_fit <- ipred::bagging(Surv(time, status) ~ age + ph.ecog, data = lung)
+  exp_f_fit <- ipred::bagging(
+    Surv(time, status) ~ age + ph.ecog,
+    data = lung,
+    control = rpart::rpart.control(cp = 0, minsplit = 2, xval = 0)
+  )
 
   mod_spec <- bag_tree(engine = "rpart") |> set_mode("censored regression")
   set.seed(1234)
@@ -299,6 +397,23 @@ test_that("`fit_xy()` works", {
     eval_time = c(100, 200)
   )
   expect_equal(f_pred_survival, xy_pred_survival)
+})
+
+# tuning ------------------------------------------------------------------
+
+test_that("tuning parameters are inherited", {
+  skip_if_not_installed("ipred")
+
+  spec <- bag_tree(
+    cost_complexity = tune(),
+    tree_depth = tune(),
+    min_n = tune()
+  ) |>
+    set_engine("rpart") |>
+    set_mode("censored regression")
+
+  params <- hardhat::extract_parameter_set_dials(spec)
+  expect_setequal(params$name, c("cost_complexity", "tree_depth", "min_n"))
 })
 
 # input checks ------------------------------------------------------------
