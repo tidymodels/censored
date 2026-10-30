@@ -1,3 +1,66 @@
+#' Bagged trees via ipred
+#'
+#' `bagging_surv_train()` is a wrapper for the `bagging()` function in the
+#' \pkg{ipred} package that passes the main arguments for the trees on to
+#' [rpart::rpart.control()].
+#'
+#' @param formula A symbolic description of the model to be fitted.
+#' @param data A data frame containing the variables in the model.
+#' @param maxdepth The maximum depth of any node of the final tree.
+#' @param minsplit The minimum number of observations in a node in order for
+#'   a split to be attempted.
+#' @param cp The complexity parameter.
+#' @param ... Other arguments to pass to [rpart::rpart.control()] or
+#'   [ipred::bagging()], matched by name.
+#' @details Arguments for [rpart::rpart.control()] which are not set take their
+#'   default values from \pkg{ipred}, or from a `control` object if one is
+#'   passed via `...`. The main arguments and other [rpart::rpart.control()]
+#'   arguments passed via `...` take precedence over a `control` object.
+#' @return A fitted bagging model.
+#' @keywords internal
+#' @export
+#' @examplesIf rlang::is_installed("ipred")
+#' bagging_surv_train(Surv(time, status) ~ age + ph.ecog, data = lung, maxdepth = 2)
+bagging_surv_train <- function(
+  formula,
+  data,
+  maxdepth = NULL,
+  minsplit = NULL,
+  cp = NULL,
+  ...
+) {
+  dots <- list(...)
+  base_control <- dots[["control"]] %||% ipred_default_control()
+  dots[["control"]] <- NULL
+  is_control_arg <- names(dots) %in% names(formals(rpart::rpart.control))
+
+  control_args <- purrr::list_modify(
+    base_control,
+    !!!purrr::compact(list(maxdepth = maxdepth, minsplit = minsplit, cp = cp)),
+    !!!dots[is_control_arg]
+  )
+  control <- rlang::exec(rpart::rpart.control, !!!control_args)
+
+  rlang::inject(
+    ipred::bagging(
+      formula,
+      data = data,
+      control = control,
+      !!!dots[!is_control_arg]
+    )
+  )
+}
+
+ipred_default_control <- function() {
+  # ipred's default is a call, e.g. `rpart.control(xval = 0)`
+  ipredbagg_surv <- utils::getS3method(
+    "ipredbagg",
+    "Surv",
+    envir = asNamespace("ipred")
+  )
+  rlang::call_args(formals(ipredbagg_surv)$control)
+}
+
 #' A wrapper for survival times with `survbagg` models
 #' @param object A parsnip `model_fit` object resulting from [bag_tree() with engine = "rpart"][parsnip::details_bag_tree_rpart].
 #' @param new_data Data for prediction
