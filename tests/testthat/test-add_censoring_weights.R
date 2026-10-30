@@ -1,6 +1,8 @@
 skip_if_not_installed("parsnip", minimum_version = "1.6.0.9000")
 
 test_that("predict() with add_censoring_weights = TRUE works when new_data has separate time and event columns", {
+  skip_if_not_installed("glmnet")
+
   cox_spec <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "breslow")
 
@@ -33,6 +35,8 @@ test_that("predict() with add_censoring_weights = TRUE works when new_data has s
 })
 
 test_that("predict() with add_censoring_weights = TRUE works when new_data has a single Surv column", {
+  skip_if_not_installed("glmnet")
+
   lung_surv <- lung[, c("age", "ph.ecog")]
   lung_surv$outcome <- Surv(lung$time, lung$status)
   cox_spec <- proportional_hazards(penalty = 0.1) |>
@@ -77,6 +81,8 @@ test_that("predict() with add_censoring_weights = TRUE works when new_data has a
 })
 
 test_that("predict() with add_censoring_weights = TRUE errors when new_data is missing the survival outcome", {
+  skip_if_not_installed("glmnet")
+
   cox_spec <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "breslow")
 
@@ -100,6 +106,8 @@ test_that("predict() with add_censoring_weights = TRUE errors when new_data is m
 })
 
 test_that("predict() with add_censoring_weights = TRUE errors when fit_xy was used and new_data has no Surv column", {
+  skip_if_not_installed("glmnet")
+
   cox_spec <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "breslow")
 
@@ -123,6 +131,8 @@ test_that("predict() with add_censoring_weights = TRUE errors when fit_xy was us
 })
 
 test_that("default predict() output is unchanged when add_censoring_weights is omitted", {
+  skip_if_not_installed("glmnet")
+
   cox_spec <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "breslow")
 
@@ -143,6 +153,8 @@ test_that("default predict() output is unchanged when add_censoring_weights is o
 })
 
 test_that("add_censoring_weights = FALSE matches default behavior", {
+  skip_if_not_installed("glmnet")
+
   cox_spec <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "breslow")
 
@@ -170,6 +182,8 @@ test_that("add_censoring_weights = FALSE matches default behavior", {
 })
 
 test_that("add_censoring_weights validates the flag", {
+  skip_if_not_installed("glmnet")
+
   cox_spec <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "breslow")
 

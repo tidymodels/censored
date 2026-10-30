@@ -6,11 +6,11 @@
       parsnip model object
       
       
-      Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      weights = weights, alpha = alpha, lambda = lambda, cox.ties = ..1) 
+      Call:  glmnet::glmnet(x = data_obj$x, y = data_obj$y, family = "cox",      weights = weights, alpha = alpha, lambda = lambda, cox.ties = "efron") 
       
          Df %Dev   Lambda
       1   0 0.00 0.225800
-      2   1 0.20 0.205800
+      2   1 0.21 0.205800
       3   1 0.38 0.187500
       4   1 0.52 0.170800
       5   1 0.64 0.155600
@@ -27,7 +27,7 @@
       16  2 1.16 0.055940
       17  2 1.18 0.050970
       18  2 1.20 0.046440
-      19  2 1.21 0.042310
+      19  2 1.22 0.042310
       20  2 1.23 0.038550
       21  2 1.24 0.035130
       22  2 1.25 0.032010
@@ -58,7 +58,6 @@
       47  2 1.31 0.003127
       48  2 1.31 0.002849
       49  2 1.31 0.002596
-      50  2 1.31 0.002366
       The training data has been saved for prediction.
 
 # stratification is specified in a single term
