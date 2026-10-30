@@ -70,6 +70,8 @@
 
 ## censored 0.3.5
 
+CRAN release: 2026-09-08
+
 - Adapted tests for ipred 0.9-16
   ([\#408](https://github.com/tidymodels/censored/issues/408)).
 
