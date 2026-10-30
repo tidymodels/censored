@@ -42,7 +42,7 @@ mod <- rand_forest() |>
   set_mode("censored regression") |>
   fit(Surv(time, status) ~ age + ph.ecog, data = na.omit(lung))
 survival_time_ranger(mod, new_data = lung[1:3, ])
-#> [1] 643 428 337
+#> [1] Inf 428 337
 mod <- rand_forest() |>
   set_engine("ranger") |>
   set_mode("censored regression") |>

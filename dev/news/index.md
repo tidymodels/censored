@@ -6,6 +6,18 @@
   with the `"rpart"` engine no longer accepts case weights
   ([\#390](https://github.com/tidymodels/censored/issues/390)).
 
+- [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  with the `"rpart"` engine now passes `tree_depth`, `min_n`, and
+  `cost_complexity`, as well as other
+  [`rpart::rpart.control()`](https://rdrr.io/pkg/rpart/man/rpart.control.html)
+  arguments set via
+  [`set_engine()`](https://parsnip.tidymodels.org/reference/set_engine.html),
+  on to the trees. Previously they were silently ignored. As a result,
+  default fits now use the
+  [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  defaults of `cost_complexity = 0` and `min_n = 2`
+  ([\#406](https://github.com/tidymodels/censored/issues/406)).
+
 - [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
   with the `"mboost"` engine no longer accepts case weights because
   mboost doesn’t predict from a weighted fit
