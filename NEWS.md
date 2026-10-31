@@ -8,6 +8,8 @@
 
 * `boost_tree()` with the `"mboost"` engine now passes `learn_rate` on to `mboost::boost_control(nu)`, making it tunable. Previously it was silently ignored. Setting `nu` via `set_engine()` is no longer possible; use `learn_rate` instead (#395).
 
+* `boost_tree()` with the `"mboost"` engine now warns and ignores `control` and `tree_controls` when set via `set_engine()`. Previously they silently overrode the main arguments, such as `trees` and `tree_depth` (#414).
+
 * `rand_forest()` now supports the `"censored regression"` mode with a new `"ranger"` engine, fitting a survival random forest via `ranger::ranger()` (#131).
 
 * `rand_forest()` now supports the `"randomForestSRC"` engine for censored regression, fitting a survival random forest via `randomForestSRC::rfsrc()` (#130).

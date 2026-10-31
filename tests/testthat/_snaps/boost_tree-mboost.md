@@ -1,3 +1,11 @@
+# `control` and `tree_controls` cannot be set via engine args
+
+    Code
+      f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
+    Condition
+      Warning:
+      The following arguments cannot be manually modified and were removed: `control` and `tree_controls`.
+
 # survival predictions - error snapshot
 
     Code

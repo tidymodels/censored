@@ -51,26 +51,21 @@ blackboost_train <-
     ...
   ) {
     other_args <- list(...)
-    protect_ct <- c(
-      "teststat",
-      "testtype",
-      "mincriterion",
-      "minsplit",
-      "minbucket",
-      "maxdepth",
-      "saveinfo"
-    )
-    protect_cb <- character()
-    protect_fit <- c("formula", "data", "family", "weight")
+
+    # these are built from the main and engine args below and would override them
+    protect <- c("control", "tree_controls")
+    protected_args <- intersect(names(other_args), protect)
+    if (length(protected_args) > 0) {
+      cli::cli_warn(
+        "The following argument{?s} cannot be manually modified and
+        {?was/were} removed: {.arg {protected_args}}."
+      )
+      other_args[protected_args] <- NULL
+    }
 
     ct_names <- names(formals(getFromNamespace("ctree_control", "partykit")))
     cb_names <- names(formals(getFromNamespace("boost_control", "mboost")))
     fit_names <- names(formals(getFromNamespace("blackboost", "mboost")))
-
-    other_args <- other_args[
-      !(other_args %in%
-        c(protect_ct, protect_cb, protect_fit))
-    ]
 
     ct_args <- other_args[names(other_args) %in% ct_names]
     cb_args <- other_args[names(other_args) %in% cb_names]
