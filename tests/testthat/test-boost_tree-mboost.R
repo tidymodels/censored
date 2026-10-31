@@ -64,6 +64,24 @@ test_that("model object", {
   )
 })
 
+test_that("`control` and `tree_controls` cannot be set via engine args", {
+  skip_if_not_installed("mboost")
+
+  spec <- boost_tree(trees = 7, tree_depth = 5) |>
+    set_engine(
+      "mboost",
+      control = mboost::boost_control(mstop = 3),
+      tree_controls = partykit::ctree_control(maxdepth = 1)
+    ) |>
+    set_mode("censored regression")
+
+  expect_snapshot(
+    f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
+  )
+  expect_equal(mboost::mstop(f_fit$fit), 7)
+  expect_equal(f_fit$fit$call$tree_controls$maxdepth, 5)
+})
+
 # prediction: time --------------------------------------------------------
 
 test_that("time predictions", {
