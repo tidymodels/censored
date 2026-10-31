@@ -31,6 +31,14 @@
   is no longer possible; use `learn_rate` instead
   ([\#395](https://github.com/tidymodels/censored/issues/395)).
 
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine now warns and ignores `control` and
+  `tree_controls` when set via
+  [`set_engine()`](https://parsnip.tidymodels.org/reference/set_engine.html).
+  Previously they silently overrode the main arguments, such as `trees`
+  and `tree_depth`
+  ([\#414](https://github.com/tidymodels/censored/issues/414)).
+
 - [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)
   now supports the `"censored regression"` mode with a new `"ranger"`
   engine, fitting a survival random forest via
