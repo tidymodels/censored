@@ -67,6 +67,15 @@ make_boost_tree_mboost <- function() {
   parsnip::set_model_arg(
     model = "boost_tree",
     eng = "mboost",
+    parsnip = "learn_rate",
+    original = "nu",
+    func = list(pkg = "dials", fun = "learn_rate"),
+    has_submodel = FALSE
+  )
+
+  parsnip::set_model_arg(
+    model = "boost_tree",
+    eng = "mboost",
     parsnip = "loss_reduction",
     original = "mincriterion",
     func = list(pkg = "dials", fun = "loss_reduction"),

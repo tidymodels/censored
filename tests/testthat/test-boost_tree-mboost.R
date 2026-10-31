@@ -20,6 +20,22 @@ test_that("engine is registered and translate() works", {
   expect_equal(rlang::eval_tidy(translated$method$fit$args$mstop), 100)
 })
 
+test_that("learn_rate is passed on as nu", {
+  skip_if_not_installed("mboost")
+
+  spec <- boost_tree(learn_rate = 0.05) |>
+    set_engine("mboost") |>
+    set_mode("censored regression")
+
+  translated <- translate(spec)
+  expect_equal(rlang::eval_tidy(translated$method$fit$args$nu), 0.05)
+
+  f_fit <- fit(spec, Surv(time, status) ~ age + ph.ecog, data = lung[-14, ])
+  expect_equal(f_fit$fit$control$nu, 0.05)
+
+  expect_in("learn_rate", generics::tunable(spec)$name)
+})
+
 # fit ---------------------------------------------------------------------
 
 test_that("model object", {
