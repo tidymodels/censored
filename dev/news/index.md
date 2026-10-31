@@ -23,6 +23,14 @@
   mboost doesn’t predict from a weighted fit
   ([\#363](https://github.com/tidymodels/censored/issues/363)).
 
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine now passes `learn_rate` on to
+  `mboost::boost_control(nu)`, making it tunable. Previously it was
+  silently ignored. Setting `nu` via
+  [`set_engine()`](https://parsnip.tidymodels.org/reference/set_engine.html)
+  is no longer possible; use `learn_rate` instead
+  ([\#395](https://github.com/tidymodels/censored/issues/395)).
+
 - [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)
   now supports the `"censored regression"` mode with a new `"ranger"`
   engine, fitting a survival random forest via
