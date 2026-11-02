@@ -1,5 +1,7 @@
 # censored (development version)
 
+* Engine-specific tuning parameters are now registered by censored rather than added by parsnip: `mincriterion`, `teststat`, and `testtype` for `rand_forest()` and `decision_tree()` with the `"partykit"` engine, `split_min_stat` for `rand_forest()` with the `"aorsf"` engine, and `k` for `survival_reg()` with the `"flexsurvspline"` engine.
+
 * `bag_tree()` with the `"rpart"` engine no longer accepts case weights (#390).
 
 * `bag_tree()` with the `"rpart"` engine now passes `tree_depth`, `min_n`, and `cost_complexity`, as well as other `rpart::rpart.control()` arguments set via `set_engine()`, on to the trees. Previously they were silently ignored. As a result, default fits now use the `bag_tree()` defaults of `cost_complexity = 0` and `min_n = 2` (#406).

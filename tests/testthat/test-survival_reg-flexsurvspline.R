@@ -553,6 +553,23 @@ test_that("tuning parameters are inherited", {
   expect_setequal(params$name, "k")
 })
 
+test_that("engine arguments are tunable", {
+  spec <- survival_reg() |>
+    set_engine("flexsurvspline") |>
+    set_mode("censored regression")
+
+  res <- generics::tunable(spec)
+  res <- res[res$name %in% c("k"), ]
+  funs <- purrr::map_chr(res$call_info, "fun")
+  names(funs) <- res$name
+  expect_equal(
+    funs[c("k")],
+    c(
+      k = "num_knots"
+    )
+  )
+})
+
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {

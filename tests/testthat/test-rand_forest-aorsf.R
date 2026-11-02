@@ -322,6 +322,23 @@ test_that("tuning parameters are inherited", {
   expect_setequal(params$name, c("mtry", "trees", "min_n", "split_min_stat"))
 })
 
+test_that("engine arguments are tunable", {
+  spec <- rand_forest() |>
+    set_engine("aorsf") |>
+    set_mode("censored regression")
+
+  res <- generics::tunable(spec)
+  res <- res[res$name %in% c("split_min_stat"), ]
+  funs <- purrr::map_chr(res$call_info, "fun")
+  names(funs) <- res$name
+  expect_equal(
+    funs[c("split_min_stat")],
+    c(
+      split_min_stat = "conditional_min_criterion"
+    )
+  )
+})
+
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {

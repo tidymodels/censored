@@ -227,6 +227,25 @@ test_that("tuning parameters are inherited", {
   )
 })
 
+test_that("engine arguments are tunable", {
+  spec <- decision_tree() |>
+    set_engine("partykit") |>
+    set_mode("censored regression")
+
+  res <- generics::tunable(spec)
+  res <- res[res$name %in% c("mincriterion", "teststat", "testtype"), ]
+  funs <- purrr::map_chr(res$call_info, "fun")
+  names(funs) <- res$name
+  expect_equal(
+    funs[c("mincriterion", "teststat", "testtype")],
+    c(
+      mincriterion = "conditional_min_criterion",
+      teststat = "conditional_test_statistic",
+      testtype = "conditional_test_type"
+    )
+  )
+})
+
 # case weights ------------------------------------------------------------
 
 test_that("can handle case weights", {
