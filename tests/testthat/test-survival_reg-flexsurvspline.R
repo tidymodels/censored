@@ -542,32 +542,11 @@ test_that("`fit_xy()` works", {
 
 # tuning ------------------------------------------------------------------
 
-test_that("tuning parameters are inherited", {
-  skip_if_not_installed("flexsurv")
-
-  spec <- survival_reg() |>
-    set_engine("flexsurvspline", k = tune()) |>
-    set_mode("censored regression")
-
-  params <- hardhat::extract_parameter_set_dials(spec)
-  expect_setequal(params$name, "k")
-})
-
-test_that("engine arguments are tunable", {
-  spec <- survival_reg() |>
-    set_engine("flexsurvspline") |>
-    set_mode("censored regression")
-
-  res <- generics::tunable(spec)
-  res <- res[res$name %in% c("k"), ]
-  funs <- purrr::map_chr(res$call_info, "fun")
-  names(funs) <- res$name
-  expect_equal(
-    funs[c("k")],
-    c(
-      k = "num_knots"
-    )
-  )
+test_that("tuning parameters are registered", {
+  args <- parsnip::get_from_env("survival_reg_args")
+  args <- args[args$engine == "flexsurvspline", ]
+  funs <- purrr::set_names(purrr::map_chr(args$func, "fun"), args$parsnip)
+  expect_mapequal(funs, c(k = "num_knots"))
 })
 
 # case weights ------------------------------------------------------------

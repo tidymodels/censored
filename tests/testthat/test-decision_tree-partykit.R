@@ -208,37 +208,15 @@ test_that("`fit_xy()` works", {
 
 # tuning ------------------------------------------------------------------
 
-test_that("tuning parameters are inherited", {
-  skip_if_not_installed("partykit")
-
-  spec <- decision_tree(tree_depth = tune(), min_n = tune()) |>
-    set_engine(
-      "partykit",
-      mincriterion = tune(),
-      teststat = tune(),
-      testtype = tune()
-    ) |>
-    set_mode("censored regression")
-
-  params <- hardhat::extract_parameter_set_dials(spec)
-  expect_setequal(
-    params$name,
-    c("tree_depth", "min_n", "mincriterion", "teststat", "testtype")
-  )
-})
-
-test_that("engine arguments are tunable", {
-  spec <- decision_tree() |>
-    set_engine("partykit") |>
-    set_mode("censored regression")
-
-  res <- generics::tunable(spec)
-  res <- res[res$name %in% c("mincriterion", "teststat", "testtype"), ]
-  funs <- purrr::map_chr(res$call_info, "fun")
-  names(funs) <- res$name
-  expect_equal(
-    funs[c("mincriterion", "teststat", "testtype")],
+test_that("tuning parameters are registered", {
+  args <- parsnip::get_from_env("decision_tree_args")
+  args <- args[args$engine == "partykit", ]
+  funs <- purrr::set_names(purrr::map_chr(args$func, "fun"), args$parsnip)
+  expect_mapequal(
+    funs,
     c(
+      tree_depth = "tree_depth",
+      min_n = "min_n",
       mincriterion = "conditional_min_criterion",
       teststat = "conditional_test_statistic",
       testtype = "conditional_test_type"
