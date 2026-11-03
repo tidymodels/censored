@@ -2,6 +2,10 @@
 
 ## censored (development version)
 
+- Engine-specific tuning parameters are now registered by censored
+  instead of parsnip
+  ([\#417](https://github.com/tidymodels/censored/issues/417)).
+
 - [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
   with the `"rpart"` engine no longer accepts case weights
   ([\#390](https://github.com/tidymodels/censored/issues/390)).

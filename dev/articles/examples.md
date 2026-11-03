@@ -6246,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x56038c899018>
+      ## <environment: 0x55cfb2287fd0>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x56038c899018>
+      ## <environment: 0x55cfb2287fd0>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x56038c899018>
+      ## <environment: 0x55cfb2287fd0>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6325,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x560383f38de0>
+      ## <bytecode: 0x55cfaab052a0>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6345,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x560390f56470>
-      ## <environment: 0x56038c82bea8>
+      ## <bytecode: 0x55cfbc7f5fd8>
+      ## <environment: 0x55cfb21e6888>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6356,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x560390f584a8>
-      ## <environment: 0x56038c82bfc0>
+      ## <bytecode: 0x55cfbc7f8208>
+      ## <environment: 0x55cfb21e6968>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6367,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x560390f56470>
-      ## <environment: 0x56038c82c0d8>
+      ## <bytecode: 0x55cfbc7f5fd8>
+      ## <environment: 0x55cfb21e6a48>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6378,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x560390f584a8>
-      ## <environment: 0x56038c82c228>
+      ## <bytecode: 0x55cfbc7f8208>
+      ## <environment: 0x55cfb21e6bd0>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6423,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x560392956828>
-      ## <environment: 0x56038c82af80>
+      ## <bytecode: 0x55cfba0dc5b0>
+      ## <environment: 0x55cfb21e24e0>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6452,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x56038c899018>
+      ## <environment: 0x55cfb2287fd0>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x56038c899018>
+      ## <environment: 0x55cfb2287fd0>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x56038c899018>
+      ## <environment: 0x55cfb2287fd0>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6557,7 +6557,7 @@ Now we create the model fit object:
       ##                  N trees: 200
       ##       N predictors total: 8
       ##    N predictors per node: 3
-      ##  Average leaves per tree: 17.175
+      ##  Average leaves per tree: 17.15
       ## Min observations in leaf: 5
       ##       Min events in leaf: 1
       ##           OOB stat value: 0.62
@@ -6584,9 +6584,9 @@ time points as well as event time.
       ## # A tibble: 3 × 2
       ##   .eval_time .pred_survival
       ##        <dbl>          <dbl>
-      ## 1        100         0.917 
+      ## 1        100         0.911 
       ## 2        500         0.397 
-      ## 3       1000         0.0538
+      ## 3       1000         0.0648
 
 ``` r
 
@@ -6596,11 +6596,11 @@ time points as well as event time.
       ## # A tibble: 5 × 1
       ##   .pred_time
       ##        <dbl>
-      ## 1       397.
-      ## 2       277.
-      ## 3       240.
-      ## 4       228.
-      ## 5       226.
+      ## 1       398.
+      ## 2       268.
+      ## 3       243.
+      ## 4       224.
+      ## 5       219.
 
 ## `survival_reg()` models
 
