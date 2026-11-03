@@ -58,6 +58,30 @@ make_rand_forest_partykit <- function() {
     func = list(pkg = "dials", fun = "mtry"),
     has_submodel = FALSE
   )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "mincriterion",
+    original = "mincriterion",
+    func = list(pkg = "dials", fun = "conditional_min_criterion"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "teststat",
+    original = "teststat",
+    func = list(pkg = "dials", fun = "conditional_test_statistic"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "partykit",
+    parsnip = "testtype",
+    original = "testtype",
+    func = list(pkg = "dials", fun = "conditional_test_type"),
+    has_submodel = FALSE
+  )
 
   parsnip::set_fit(
     model = "rand_forest",
@@ -159,6 +183,14 @@ make_rand_forest_aorsf <- function() {
     parsnip = "mtry",
     original = "mtry",
     func = list(pkg = "dials", fun = "mtry"),
+    has_submodel = FALSE
+  )
+  parsnip::set_model_arg(
+    model = "rand_forest",
+    eng = "aorsf",
+    parsnip = "split_min_stat",
+    original = "split_min_stat",
+    func = list(pkg = "dials", fun = "conditional_min_criterion"),
     has_submodel = FALSE
   )
 

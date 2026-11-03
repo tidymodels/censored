@@ -311,15 +311,19 @@ test_that("`fit_xy()` works", {
 
 # tuning ------------------------------------------------------------------
 
-test_that("tuning parameters are inherited", {
-  skip_if_not_installed("aorsf")
-
-  spec <- rand_forest(mtry = tune(), trees = tune(), min_n = tune()) |>
-    set_engine("aorsf", split_min_stat = tune()) |>
-    set_mode("censored regression")
-
-  params <- hardhat::extract_parameter_set_dials(spec)
-  expect_setequal(params$name, c("mtry", "trees", "min_n", "split_min_stat"))
+test_that("tuning parameters are registered", {
+  args <- parsnip::get_from_env("rand_forest_args")
+  args <- args[args$engine == "aorsf", ]
+  funs <- purrr::set_names(purrr::map_chr(args$func, "fun"), args$parsnip)
+  expect_mapequal(
+    funs,
+    c(
+      trees = "trees",
+      min_n = "min_n",
+      mtry = "mtry",
+      split_min_stat = "conditional_min_criterion"
+    )
+  )
 })
 
 # case weights ------------------------------------------------------------

@@ -230,22 +230,20 @@ test_that("`fit_xy()` works", {
 
 # tuning ------------------------------------------------------------------
 
-test_that("tuning parameters are inherited", {
-  skip_if_not_installed("partykit")
-
-  spec <- rand_forest(mtry = tune(), trees = tune(), min_n = tune()) |>
-    set_engine(
-      "partykit",
-      mincriterion = tune(),
-      teststat = tune(),
-      testtype = tune()
-    ) |>
-    set_mode("censored regression")
-
-  params <- hardhat::extract_parameter_set_dials(spec)
-  expect_setequal(
-    params$name,
-    c("mtry", "trees", "min_n", "mincriterion", "teststat", "testtype")
+test_that("tuning parameters are registered", {
+  args <- parsnip::get_from_env("rand_forest_args")
+  args <- args[args$engine == "partykit", ]
+  funs <- purrr::set_names(purrr::map_chr(args$func, "fun"), args$parsnip)
+  expect_mapequal(
+    funs,
+    c(
+      trees = "trees",
+      min_n = "min_n",
+      mtry = "mtry",
+      mincriterion = "conditional_min_criterion",
+      teststat = "conditional_test_statistic",
+      testtype = "conditional_test_type"
+    )
   )
 })
 

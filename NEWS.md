@@ -1,5 +1,7 @@
 # censored (development version)
 
+* Engine-specific tuning parameters are now registered by censored instead of parsnip (#417).
+
 * `bag_tree()` with the `"rpart"` engine no longer accepts case weights (#390).
 
 * `bag_tree()` with the `"rpart"` engine now passes `tree_depth`, `min_n`, and `cost_complexity`, as well as other `rpart::rpart.control()` arguments set via `set_engine()`, on to the trees. Previously they were silently ignored. As a result, default fits now use the `bag_tree()` defaults of `cost_complexity = 0` and `min_n = 2` (#406).
