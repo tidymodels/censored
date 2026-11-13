@@ -1,34 +1,48 @@
-# censored (development version)
+# censored 0.4.0
 
-* Engine-specific tuning parameters are now registered by censored instead of parsnip (#417).
+## Breaking changes
 
-* `bag_tree()` with the `"rpart"` engine no longer accepts case weights (#390).
+* `bag_tree()` with the `"rpart"` engine no longer accepts case weights. Fit the model without case weights instead (#390).
 
-* `bag_tree()` with the `"rpart"` engine now passes `tree_depth`, `min_n`, and `cost_complexity`, as well as other `rpart::rpart.control()` arguments set via `set_engine()`, on to the trees. Previously they were silently ignored. As a result, default fits now use the `bag_tree()` defaults of `cost_complexity = 0` and `min_n = 2` (#406).
+* `bag_tree()` with the `"rpart"` engine now passes `tree_depth`, `min_n`, and `cost_complexity` on to the trees, so default fits now use the `bag_tree()` defaults of `cost_complexity = 0` and `min_n = 2`. To restore the previous fits, set `cost_complexity = 0.01` and `min_n = 20` (#406).
 
-* `boost_tree()` with the `"mboost"` engine no longer accepts case weights because mboost doesn't predict from a weighted fit (#363).
+* `boost_tree()` with the `"mboost"` engine no longer accepts case weights because mboost doesn't predict from a weighted fit. Fit the model without case weights instead (#363).
 
-* `boost_tree()` with the `"mboost"` engine now passes `learn_rate` on to `mboost::boost_control(nu)`, making it tunable. Previously it was silently ignored. Setting `nu` via `set_engine()` is no longer possible; use `learn_rate` instead (#395).
+* `boost_tree()` with the `"mboost"` engine no longer allows setting `nu` via `set_engine()`. Use `learn_rate` instead (#395).
 
-* `boost_tree()` with the `"mboost"` engine now warns and ignores `control` and `tree_controls` when set via `set_engine()`. Previously they silently overrode the main arguments, such as `trees` and `tree_depth` (#414).
+* `boost_tree()` with the `"mboost"` engine now warns and ignores `control` and `tree_controls` when set via `set_engine()`. Previously they silently overrode the main arguments, such as `trees` and `tree_depth`. Use the main arguments of `boost_tree()` instead (#414).
 
-* `rand_forest()` now supports the `"censored regression"` mode with a new `"ranger"` engine, fitting a survival random forest via `ranger::ranger()` (#131).
+* `survival_prob_*()` functions now error when given the defunct `time` argument. Use `eval_time` instead (#419).
 
-* `rand_forest()` now supports the `"randomForestSRC"` engine for censored regression, fitting a survival random forest via `randomForestSRC::rfsrc()` (#130).
+* `survival_prob_coxph()` no longer has the defunct `x` argument. Use `object` instead (#419).
+
+## New features
+
+* `boost_tree()` with the `"mboost"` engine now passes `learn_rate` on to `mboost::boost_control(nu)`, making it tunable. Previously it was silently ignored (#395).
 
 * `multi_predict()` is now available for `boost_tree()` with the `"mboost"` engine over the `trees` submodel parameter (#290).
 
+* `null_model()` gains a `"survival"` engine for censored regression, fitting a Kaplan-Meier curve via `survival::survfit()` (#353).
+
+* `rand_forest()` gains a `"randomForestSRC"` engine for censored regression, fitting a survival random forest via `randomForestSRC::rfsrc()` (#130).
+
+* `rand_forest()` gains a `"ranger"` engine for censored regression, fitting a survival random forest via `ranger::ranger()` (#131).
+
+## Minor improvements and fixes
+
+* `bag_tree()` with the `"rpart"` engine now passes `tree_depth`, `min_n`, and `cost_complexity`, as well as other `rpart::rpart.control()` arguments set via `set_engine()`, on to the trees. Previously they were silently ignored (#406).
+
 * `decision_tree()` with the `"rpart"` engine now correctly returns the median survival time of the leaf's Kaplan-Meier curve for `type = "time"` predictions, instead of rpart's relative event rate (#331).
 
-* `null_model()` now supports the `"censored regression"` mode with a new `"survival"` engine, fitting a Kaplan-Meier curve via `survival::survfit()` (#353).
+* `proportional_hazards()` with the `"glmnet"` engine now predicts on data with factors when fitted through `fit_xy()` (#365).
 
-* Prediction for `proportional_hazards()` with the `"glmnet"` engine no longer fails on data with factors when fitted through `fit_xy()` (#365).
+* `proportional_hazards()` with the `"survival"` engine now predicts when a single `strata()` term contains more than one variable, e.g. `strata(s1, s2)` (#404).
 
-* Prediction for `proportional_hazards()` with the `"survival"` engine no longer fails when a single `strata()` term contains more than one variable, e.g. `strata(s1, s2)` (#404).
-
-* The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
+* `survival_prob_*()` and `hazard_*()` now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
 
 * `survival_reg()` with the `"survival"` engine and `strata()` terms now returns `NA` survival and hazard predictions for new data rows with a missing value in a stratification variable, instead of silently using another stratum's scale (#383).
+
+* Engine-specific tuning parameters are now registered by censored instead of parsnip (#417).
 
 
 # censored 0.3.5

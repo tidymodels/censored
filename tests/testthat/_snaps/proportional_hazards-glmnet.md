@@ -215,12 +215,12 @@
       Error in `survival_prob_coxnet()`:
       ! `eval_time` can't contain missing values.
 
-# survival_prob_coxnet() warns about deprecated `time` argument
+# survival_prob_coxnet() errors on defunct `time` argument
 
     Code
-      pred_deprecated <- survival_prob_coxnet(mod, new_data = new_data, time = 100)
+      survival_prob_coxnet(mod, new_data = new_data, time = 100)
     Condition
-      Warning:
-      The `time` argument of `survival_prob_coxnet()` is deprecated as of censored 0.2.0.
+      Error:
+      ! The `time` argument of `survival_prob_coxnet()` was deprecated in censored 0.2.0 and is now defunct.
       i Please use the `eval_time` argument instead.
 

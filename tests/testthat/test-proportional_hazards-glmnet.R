@@ -2005,7 +2005,7 @@ test_that("survival_prob_coxnet() accepts eval_time values that it can handle", 
   )
 })
 
-test_that("survival_prob_coxnet() warns about deprecated `time` argument", {
+test_that("survival_prob_coxnet() errors on defunct `time` argument", {
   lung2 <- lung[-14, ]
   mod <- proportional_hazards(penalty = 0.1) |>
     set_engine("glmnet", cox.ties = "efron") |>
@@ -2013,15 +2013,8 @@ test_that("survival_prob_coxnet() warns about deprecated `time` argument", {
   new_data <- lung2[1:2, ]
 
   expect_snapshot(
-    pred_deprecated <- survival_prob_coxnet(
-      mod,
-      new_data = new_data,
-      time = 100
-    )
-  )
-  expect_equal(
-    pred_deprecated,
-    survival_prob_coxnet(mod, new_data = new_data, eval_time = 100)
+    error = TRUE,
+    survival_prob_coxnet(mod, new_data = new_data, time = 100)
   )
 })
 

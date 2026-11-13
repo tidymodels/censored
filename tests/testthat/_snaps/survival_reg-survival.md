@@ -14,13 +14,13 @@
       Error in `predict()`:
       ! When using `type` values of "survival" or "hazard" a numeric vector `eval_time` should also be given.
 
-# survival_prob_survreg() warns about deprecated `time` argument
+# survival_prob_survreg() errors on defunct `time` argument
 
     Code
-      pred_deprecated <- survival_prob_survreg(mod, new_data = new_data, time = 100)
+      survival_prob_survreg(mod, new_data = new_data, time = 100)
     Condition
-      Warning:
-      The `time` argument of `survival_prob_survreg()` is deprecated as of censored 0.2.0.
+      Error:
+      ! The `time` argument of `survival_prob_survreg()` was deprecated in censored 0.2.0 and is now defunct.
       i Please use the `eval_time` argument instead.
 
 # survival_prob_survreg() errors informatively on bad input

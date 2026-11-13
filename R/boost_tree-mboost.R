@@ -143,12 +143,11 @@ survival_prob_mboost <- function(
   check_data_frame(new_data)
 
   if (lifecycle::is_present(time)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.2.0",
       "survival_prob_mboost(time)",
       "survival_prob_mboost(eval_time)"
     )
-    eval_time <- time
   }
 
   survival_curve <- mboost::survFit(engine_fit, newdata = new_data)
