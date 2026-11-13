@@ -7,7 +7,6 @@ A wrapper for survival probabilities with coxph models
 ``` r
 survival_prob_coxph(
   object,
-  x = deprecated(),
   new_data,
   eval_time,
   time = deprecated(),
@@ -25,10 +24,6 @@ survival_prob_coxph(
   A parsnip `model_fit` object resulting from [proportional_hazards()
   with engine =
   "survival"](https://parsnip.tidymodels.org/reference/details_proportional_hazards_survival.html).
-
-- x:
-
-  Deprecated. A model from `coxph()`.
 
 - new_data:
 
