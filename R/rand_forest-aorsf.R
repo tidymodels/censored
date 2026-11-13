@@ -26,12 +26,11 @@ survival_prob_orsf <- function(
   check_data_frame(new_data)
 
   if (lifecycle::is_present(time)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.2.0",
       "survival_prob_orsf(time)",
       "survival_prob_orsf(eval_time)"
     )
-    eval_time <- time
   }
 
   check_eval_time(eval_time, allow_empty = TRUE, allow_infinite = TRUE)

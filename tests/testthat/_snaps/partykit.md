@@ -30,12 +30,12 @@
       Error in `survival_prob_partykit()`:
       ! `eval_time` can't contain missing values.
 
-# survival_prob_partykit() warns about deprecated `time` argument
+# survival_prob_partykit() errors on defunct `time` argument
 
     Code
-      pred_deprecated <- survival_prob_partykit(mod, new_data = new_data, time = 100)
+      survival_prob_partykit(mod, new_data = new_data, time = 100)
     Condition
-      Warning:
-      The `time` argument of `survival_prob_partykit()` is deprecated as of censored 0.2.0.
+      Error:
+      ! The `time` argument of `survival_prob_partykit()` was deprecated in censored 0.2.0 and is now defunct.
       i Please use the `eval_time` argument instead.
 

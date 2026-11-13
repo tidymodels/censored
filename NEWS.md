@@ -28,6 +28,10 @@
 
 * The `survival_prob_*()` and `hazard_*()` helpers now validate their inputs and return more informative error messages when given an unusable `object`, `new_data`, or `eval_time` (#271).
 
+* The `time` argument of `survival_prob_coxnet()`, `survival_prob_coxph()`, `survival_prob_mboost()`, `survival_prob_orsf()`, `survival_prob_partykit()`, `survival_prob_survbagg()`, and `survival_prob_survreg()` is now defunct and errors. Use `eval_time` instead (#419).
+
+* `survival_prob_coxph()` no longer has the defunct `x` argument. Use `object` instead (#419).
+
 * `survival_reg()` with the `"survival"` engine and `strata()` terms now returns `NA` survival and hazard predictions for new data rows with a missing value in a stratification variable, instead of silently using another stratum's scale (#383).
 
 

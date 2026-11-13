@@ -431,7 +431,7 @@ test_that("survival_prob_mboost() accepts eval_time values that it can handle", 
   )
 })
 
-test_that("survival_prob_mboost() warns about deprecated `time` argument", {
+test_that("survival_prob_mboost() errors on defunct `time` argument", {
   skip_if_not_installed("mboost")
   mod <- boost_tree() |>
     set_mode("censored regression") |>
@@ -440,15 +440,8 @@ test_that("survival_prob_mboost() warns about deprecated `time` argument", {
   new_data <- lung[1:2, ]
 
   expect_snapshot(
-    pred_deprecated <- survival_prob_mboost(
-      mod,
-      new_data = new_data,
-      time = 100
-    )
-  )
-  expect_equal(
-    pred_deprecated,
-    survival_prob_mboost(mod, new_data = new_data, eval_time = 100)
+    error = TRUE,
+    survival_prob_mboost(mod, new_data = new_data, time = 100)
   )
 })
 

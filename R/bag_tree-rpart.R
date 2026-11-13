@@ -143,12 +143,11 @@ survival_prob_survbagg <- function(
   check_data_frame(new_data)
 
   if (lifecycle::is_present(time)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.2.0",
       "survival_prob_survbagg(time)",
       "survival_prob_survbagg(eval_time)"
     )
-    eval_time <- time
   }
 
   check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)

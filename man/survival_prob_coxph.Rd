@@ -6,7 +6,6 @@
 \usage{
 survival_prob_coxph(
   object,
-  x = deprecated(),
   new_data,
   eval_time,
   time = deprecated(),
@@ -19,8 +18,6 @@ survival_prob_coxph(
 \arguments{
 \item{object}{A parsnip \code{model_fit} object resulting from
 \link[parsnip:details_proportional_hazards_survival]{proportional_hazards() with engine = "survival"}.}
-
-\item{x}{Deprecated. A model from \code{coxph()}.}
 
 \item{new_data}{Data for prediction}
 

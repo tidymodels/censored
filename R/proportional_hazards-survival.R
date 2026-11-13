@@ -117,7 +117,6 @@ get_missings_coxph <- function(object, new_data) {
 #' A wrapper for survival probabilities with coxph models
 #' @param object A parsnip `model_fit` object resulting from
 #' [proportional_hazards() with engine = "survival"][parsnip::details_proportional_hazards_survival].
-#' @param x Deprecated. A model from `coxph()`.
 #' @param new_data Data for prediction
 #' @param eval_time A vector of integers for prediction times.
 #' @param time Deprecated in favor of `eval_time`. A vector of integers for prediction times.
@@ -136,7 +135,6 @@ get_missings_coxph <- function(object, new_data) {
 #' survival_prob_coxph(cox_mod, new_data = lung[1:3, ], eval_time = 300)
 survival_prob_coxph <- function(
   object,
-  x = deprecated(),
   new_data,
   eval_time,
   time = deprecated(),
@@ -150,20 +148,12 @@ survival_prob_coxph <- function(
   check_inherits(engine_fit, "coxph", arg = "object$fit")
   check_data_frame(new_data)
 
-  if (lifecycle::is_present(x)) {
-    lifecycle::deprecate_stop(
-      "0.3.0",
-      "survival_prob_coxph(x)",
-      "survival_prob_coxph(object)"
-    )
-  }
   if (lifecycle::is_present(time)) {
-    lifecycle::deprecate_warn(
+    lifecycle::deprecate_stop(
       "0.2.0",
       "survival_prob_coxph(time)",
       "survival_prob_coxph(eval_time)"
     )
-    eval_time <- time
   }
 
   check_eval_time(eval_time, allow_infinite = TRUE, allow_negative = TRUE)
