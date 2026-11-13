@@ -1,6 +1,132 @@
 # Changelog
 
+## censored 0.4.0
+
+### Breaking changes
+
+- [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  with the `"rpart"` engine no longer accepts case weights. Fit the
+  model without case weights instead
+  ([\#390](https://github.com/tidymodels/censored/issues/390)).
+
+- [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  with the `"rpart"` engine now passes `tree_depth`, `min_n`, and
+  `cost_complexity` on to the trees, so default fits now use the
+  [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  defaults of `cost_complexity = 0` and `min_n = 2`. To restore the
+  previous fits, set `cost_complexity = 0.01` and `min_n = 20`
+  ([\#406](https://github.com/tidymodels/censored/issues/406)).
+
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine no longer accepts case weights because
+  mboost doesn’t predict from a weighted fit. Fit the model without case
+  weights instead
+  ([\#363](https://github.com/tidymodels/censored/issues/363)).
+
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine no longer allows setting `nu` via
+  [`set_engine()`](https://parsnip.tidymodels.org/reference/set_engine.html).
+  Use `learn_rate` instead
+  ([\#395](https://github.com/tidymodels/censored/issues/395)).
+
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine now warns and ignores `control` and
+  `tree_controls` when set via
+  [`set_engine()`](https://parsnip.tidymodels.org/reference/set_engine.html).
+  Previously they silently overrode the main arguments, such as `trees`
+  and `tree_depth`. Use the main arguments of
+  [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  instead ([\#414](https://github.com/tidymodels/censored/issues/414)).
+
+- `survival_prob_*()` functions now error when given the defunct `time`
+  argument. Use `eval_time` instead
+  ([\#419](https://github.com/tidymodels/censored/issues/419)).
+
+- [`survival_prob_coxph()`](https://censored.tidymodels.org/reference/survival_prob_coxph.md)
+  no longer has the defunct `x` argument. Use `object` instead
+  ([\#419](https://github.com/tidymodels/censored/issues/419)).
+
+### New features
+
+- [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine now passes `learn_rate` on to
+  `mboost::boost_control(nu)`, making it tunable. Previously it was
+  silently ignored
+  ([\#395](https://github.com/tidymodels/censored/issues/395)).
+
+- [`multi_predict()`](https://parsnip.tidymodels.org/reference/multi_predict.html)
+  is now available for
+  [`boost_tree()`](https://parsnip.tidymodels.org/reference/boost_tree.html)
+  with the `"mboost"` engine over the `trees` submodel parameter
+  ([\#290](https://github.com/tidymodels/censored/issues/290)).
+
+- [`null_model()`](https://parsnip.tidymodels.org/reference/null_model.html)
+  gains a `"survival"` engine for censored regression, fitting a
+  Kaplan-Meier curve via
+  [`survival::survfit()`](https://rdrr.io/pkg/survival/man/survfit.html)
+  ([\#353](https://github.com/tidymodels/censored/issues/353)).
+
+- [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)
+  gains a `"randomForestSRC"` engine for censored regression, fitting a
+  survival random forest via
+  [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  ([\#130](https://github.com/tidymodels/censored/issues/130)).
+
+- [`rand_forest()`](https://parsnip.tidymodels.org/reference/rand_forest.html)
+  gains a `"ranger"` engine for censored regression, fitting a survival
+  random forest via
+  [`ranger::ranger()`](http://imbs-hl.github.io/ranger/reference/ranger.md)
+  ([\#131](https://github.com/tidymodels/censored/issues/131)).
+
+### Minor improvements and fixes
+
+- [`bag_tree()`](https://parsnip.tidymodels.org/reference/bag_tree.html)
+  with the `"rpart"` engine now passes `tree_depth`, `min_n`, and
+  `cost_complexity`, as well as other
+  [`rpart::rpart.control()`](https://rdrr.io/pkg/rpart/man/rpart.control.html)
+  arguments set via
+  [`set_engine()`](https://parsnip.tidymodels.org/reference/set_engine.html),
+  on to the trees. Previously they were silently ignored
+  ([\#406](https://github.com/tidymodels/censored/issues/406)).
+
+- [`decision_tree()`](https://parsnip.tidymodels.org/reference/decision_tree.html)
+  with the `"rpart"` engine now correctly returns the median survival
+  time of the leaf’s Kaplan-Meier curve for `type = "time"` predictions,
+  instead of rpart’s relative event rate
+  ([\#331](https://github.com/tidymodels/censored/issues/331)).
+
+- [`proportional_hazards()`](https://parsnip.tidymodels.org/reference/proportional_hazards.html)
+  with the `"glmnet"` engine now predicts on data with factors when
+  fitted through
+  [`fit_xy()`](https://generics.r-lib.org/reference/fit_xy.html)
+  ([\#365](https://github.com/tidymodels/censored/issues/365)).
+
+- [`proportional_hazards()`](https://parsnip.tidymodels.org/reference/proportional_hazards.html)
+  with the `"survival"` engine now predicts when a single
+  [`strata()`](https://rdrr.io/pkg/survival/man/strata.html) term
+  contains more than one variable, e.g. `strata(s1, s2)`
+  ([\#404](https://github.com/tidymodels/censored/issues/404)).
+
+- `survival_prob_*()` and `hazard_*()` now validate their inputs and
+  return more informative error messages when given an unusable
+  `object`, `new_data`, or `eval_time`
+  ([\#271](https://github.com/tidymodels/censored/issues/271)).
+
+- [`survival_reg()`](https://parsnip.tidymodels.org/reference/survival_reg.html)
+  with the `"survival"` engine and
+  [`strata()`](https://rdrr.io/pkg/survival/man/strata.html) terms now
+  returns `NA` survival and hazard predictions for new data rows with a
+  missing value in a stratification variable, instead of silently using
+  another stratum’s scale
+  ([\#383](https://github.com/tidymodels/censored/issues/383)).
+
+- Engine-specific tuning parameters are now registered by censored
+  instead of parsnip
+  ([\#417](https://github.com/tidymodels/censored/issues/417)).
+
 ## censored 0.3.5
+
+CRAN release: 2026-09-08
 
 - Adapted tests for ipred 0.9-16
   ([\#408](https://github.com/tidymodels/censored/issues/408)).

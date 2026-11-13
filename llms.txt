@@ -39,10 +39,13 @@ with `type = "quantile"`, and the hazard with `type = "hazard"`.
 | boost_tree | mboost | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
 | decision_tree | rpart | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
 | decision_tree | partykit | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| null_model | survival | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
 | proportional_hazards | survival | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
 | proportional_hazards | glmnet | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ |
 | rand_forest | partykit | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
 | rand_forest | aorsf | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| rand_forest | ranger | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| rand_forest | randomForestSRC | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
 | survival_reg | survival | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |
 | survival_reg | flexsurv | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |
 | survival_reg | flexsurvspline | ✔ | ✔ | ✔ | ✖ | ✔ | ✔ |

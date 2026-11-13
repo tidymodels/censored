@@ -29,11 +29,11 @@ We’ll model the survival of lung cancer patients.
       ## ── Attaching packages ───────────────────────────── tidymodels 1.5.0 ──
 
       ## ✔ broom        1.0.13     ✔ rsample      1.3.2 
-      ## ✔ dials        1.4.4      ✔ tailor       0.1.0 
+      ## ✔ dials        1.4.5      ✔ tailor       0.1.0 
       ## ✔ dplyr        1.2.1      ✔ tidyr        1.3.2 
       ## ✔ infer        1.1.0      ✔ tune         2.1.0 
       ## ✔ modeldata    1.6.0      ✔ workflows    1.3.0 
-      ## ✔ parsnip      1.6.0      ✔ workflowsets 1.1.1 
+      ## ✔ parsnip      1.6.1      ✔ workflowsets 1.1.1 
       ## ✔ purrr        1.2.2      ✔ yardstick    1.4.0 
       ## ✔ recipes      1.4.0
 
@@ -94,7 +94,7 @@ Now we create the model fit object:
       ## 
       ## Bagging survival trees with 25 bootstrap replications 
       ## 
-      ## Call: bagging.data.frame(formula = Surv(time, status) ~ ., data = data)
+      ## Call: bagging.data.frame(formula = formula, data = data, control = control)
 
 The holdout data can be predicted for survival probability at different
 time points as well as event time.
@@ -114,9 +114,9 @@ time points as well as event time.
       ## # A tibble: 3 × 2
       ##   .eval_time .pred_survival
       ##        <dbl>          <dbl>
-      ## 1        100        0.946  
-      ## 2        500        0.333  
-      ## 3       1000        0.00496
+      ## 1        100          0.868
+      ## 2        500          0.510
+      ## 3       1000          0
 
 ``` r
 
@@ -126,11 +126,11 @@ time points as well as event time.
       ## # A tibble: 5 × 1
       ##   .pred_time
       ##        <dbl>
-      ## 1        353
-      ## 2        293
-      ## 3        230
-      ## 4        201
-      ## 5        268
+      ## 1        524
+      ## 2        156
+      ## 3        179
+      ## 4        110
+      ## 5        163
 
 ## `boost_tree()` models
 
@@ -370,11 +370,11 @@ time points as well as event time.
       ## # A tibble: 5 × 1
       ##   .pred_time
       ##        <dbl>
-      ## 1       1.64
-      ## 2       2.24
-      ## 3       1.23
-      ## 4       1.91
-      ## 5       1.91
+      ## 1        270
+      ## 2        197
+      ## 3        301
+      ## 4        201
+      ## 5        201
 
 With the `"partykit"` engine
 
@@ -6246,14 +6246,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 1
       ## attr(,".Environment")
-      ## <environment: 0x55605da62878>
+      ## <environment: 0x557c4f0751a8>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x55605da62878>
+      ## <environment: 0x557c4f0751a8>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x55605da62878>
+      ## <environment: 0x557c4f0751a8>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6325,7 +6325,7 @@ Now we create the model fit object:
       ##         X <- as.list(X)
       ##     .Internal(lapply(X, FUN))
       ## }
-      ## <bytecode: 0x55604de36de0>
+      ## <bytecode: 0x557c41c80de0>
       ## <environment: namespace:base>
       ## 
       ## $info$control$saveinfo
@@ -6345,8 +6345,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55605ea5cc88>
-      ## <environment: 0x55605da24210>
+      ## <bytecode: 0x557c4f594420>
+      ## <environment: 0x557c4f050cd8>
       ## 
       ## $info$control$splitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6356,8 +6356,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55605ea5eeb8>
-      ## <environment: 0x55605da242f0>
+      ## <bytecode: 0x557c4f596650>
+      ## <environment: 0x557c4f050db8>
       ## 
       ## $info$control$svselectfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6367,8 +6367,8 @@ Now we create the model fit object:
       ##     .select(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55605ea5cc88>
-      ## <environment: 0x55605da243d0>
+      ## <bytecode: 0x557c4f594420>
+      ## <environment: 0x557c4f050e98>
       ## 
       ## $info$control$svsplitfun
       ## function (model, trafo, data, subset, weights, whichvar, ctrl) 
@@ -6378,8 +6378,8 @@ Now we create the model fit object:
       ##     .split(model, trafo, data, subset, weights, whichvar, ctrl, 
       ##         FUN = .ctree_test)
       ## }
-      ## <bytecode: 0x55605ea5eeb8>
-      ## <environment: 0x55605da206f0>
+      ## <bytecode: 0x557c4f596650>
+      ## <environment: 0x557c4f050fe8>
       ## 
       ## $info$control$teststat
       ## [1] "quadratic"
@@ -6423,8 +6423,8 @@ Now we create the model fit object:
       ## $trafo
       ## function (subset, weights, info, estfun, object, ...) 
       ## list(estfun = Y, unweighted = TRUE)
-      ## <bytecode: 0x55605da44d48>
-      ## <environment: 0x55605da222f0>
+      ## <bytecode: 0x557c45fc14f0>
+      ## <environment: 0x557c4f052a28>
       ## 
       ## $predictf
       ## ~inst + age + sex + ph.ecog + ph.karno + pat.karno + meal.cal + 
@@ -6452,14 +6452,14 @@ Now we create the model fit object:
       ## attr(,"response")
       ## [1] 0
       ## attr(,".Environment")
-      ## <environment: 0x55605da62878>
+      ## <environment: 0x557c4f0751a8>
       ## attr(,"Formula_with_dot")
       ## Surv(time, status) ~ .
-      ## <environment: 0x55605da62878>
+      ## <environment: 0x557c4f0751a8>
       ## attr(,"Formula_without_dot")
       ## Surv(time, status) ~ inst + age + sex + ph.ecog + ph.karno + 
       ##     pat.karno + meal.cal + wt.loss
-      ## <environment: 0x55605da62878>
+      ## <environment: 0x557c4f0751a8>
       ## attr(,"dot")
       ## [1] "sequential"
       ## 
@@ -6652,7 +6652,7 @@ Now we create the model fit object:
       ## 
       ## Call:
       ## survival::survreg(formula = Surv(time, status) ~ ., data = data, 
-      ##     dist = ~"weibull", model = TRUE)
+      ##     dist = "weibull", model = TRUE)
       ## 
       ## Coefficients:
       ##   (Intercept)          inst           age           sex       ph.ecog 
@@ -6794,7 +6794,7 @@ Now we create the model fit object:
       ## 
       ## Call:
       ## flexsurv::flexsurvreg(formula = Surv(time, status) ~ age + sex + 
-      ##     ph.ecog, data = data, dist = ~"weibull")
+      ##     ph.ecog, data = data, dist = "weibull")
       ## 
       ## Estimates: 
       ##          data mean  est        L95%       U95%       se       
